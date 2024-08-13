@@ -1,0 +1,21 @@
+{
+	"name": "create-site",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"astro": "astro",
+		"build": "astro check && astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"start": "astro dev"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.9.0",
+		"@astrojs/starlight": "^0.25.0",
+		"@konami-emoji-blast/astro": "^0.1.1",
+		"@types/node": "^22.1.0",
+		"astro": "^4.8.6",
+		"konami-emoji-blast": "^0.5.4",
+		"typescript": "^5.4.5"
+	}
+}

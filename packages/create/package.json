@@ -1,0 +1,35 @@
+{
+	"name": "create",
+	"version": "0.0.0",
+	"description": "Composable, testable, type-safe templates. 💝",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JoshuaKGoldberg/create",
+		"directory": "packages/create"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Josh Goldberg ✨",
+		"email": "npm@joshuakgoldberg.com"
+	},
+	"type": "module",
+	"main": "./dist/index.js",
+	"files": [
+		"dist/",
+		"package.json",
+		"LICENSE.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup"
+	},
+	"devDependencies": {
+		"tsup": "^8.2.4"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"publishConfig": {
+		"provenance": true
+	}
+}
