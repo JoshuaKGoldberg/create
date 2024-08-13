@@ -1,0 +1,36 @@
+{
+	"dictionaries": ["typescript"],
+	"ignorePaths": [
+		"./coverage*",
+		"./script/__snapshots__",
+		".github",
+		"CHANGELOG.md",
+		"lib",
+		"node_modules",
+		"pnpm-lock.yaml"
+	],
+	"words": [
+		"allcontributors",
+		"apexskier",
+		"arethetypeswrong",
+		"automerge",
+		"codecov",
+		"codespace",
+		"contributorsrc",
+		"execa",
+		"infile",
+		"knip",
+		"markdownlintignore",
+		"mtfoley",
+		"npmignore",
+		"npmpackagejsonlintrc",
+		"outro",
+		"packagejson",
+		"precommit",
+		"quickstart",
+		"tada",
+		"tseslint",
+		"tsup",
+		"vitest"
+	]
+}
