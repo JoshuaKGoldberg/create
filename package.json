@@ -40,7 +40,7 @@
 		"@types/eslint__js": "^8.42.3",
 		"@types/node": "^22.2.0",
 		"@vitest/coverage-v8": "^2.0.5",
-		"console-fail-test": "^0.4.4",
+		"console-fail-test": "^0.5.0",
 		"cspell": "^8.13.3",
 		"eslint": "^9.9.0",
 		"eslint-plugin-jsdoc": "^50.0.1",

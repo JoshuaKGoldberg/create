@@ -27,8 +27,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(vitest@2.0.5(@types/node@22.2.0))
       console-fail-test:
-        specifier: ^0.4.4
-        version: 0.4.4
+        specifier: ^0.5.0
+        version: 0.5.0
       cspell:
         specifier: ^8.13.3
         version: 8.13.3
@@ -1655,8 +1655,8 @@ packages:
     resolution: {integrity: sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==}
     engines: {node: ^14.18.0 || >=16.10.0}
 
-  console-fail-test@0.4.4:
-    resolution: {integrity: sha512-wWH0xCDWmy8/3ty8+VYG9+Jvc0QSm2kiN5rs5tjeYDqrcUF+9vfc99gVmimTN4mASkIUgGR7mF4CGVDuWtjvaA==}
+  console-fail-test@0.5.0:
+    resolution: {integrity: sha512-nghkQcJ9DJMYtdN1L/ZNu1GvnLMo38DTneWX23+WbIdvjuVkbcshGFxgIG5LbI9j/th4dgwUc0Hiwtq85VWb/Q==}
     engines: {node: '>=18'}
 
   convert-source-map@2.0.0:
@@ -5611,7 +5611,7 @@ snapshots:
 
   consola@3.2.3: {}
 
-  console-fail-test@0.4.4: {}
+  console-fail-test@0.5.0: {}
 
   convert-source-map@2.0.0: {}
 
