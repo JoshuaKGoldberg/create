@@ -1,12 +1,12 @@
-import eslint from "@eslint/js";
+import js from "@eslint/js";
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs";
+import vitest from "@vitest/eslint-plugin";
 import jsdoc from "eslint-plugin-jsdoc";
 import jsonc from "eslint-plugin-jsonc";
 import markdown from "eslint-plugin-markdown";
 import packageJson from "eslint-plugin-package-json/configs/recommended";
 import perfectionist from "eslint-plugin-perfectionist";
 import * as regexp from "eslint-plugin-regexp";
-import vitest from "eslint-plugin-vitest";
 import yml from "eslint-plugin-yml";
 import tseslint from "typescript-eslint";
 
@@ -14,10 +14,15 @@ export default tseslint.config(
 	{
 		ignores: [
 			"coverage*",
+			"**/*.snap",
 			"lib",
 			"node_modules",
+			"packages/*/lib",
+			"packages/*/tsconfig.tsbuildinfo",
+			"packages/site/.astro",
+			"packages/site/src/env.d.ts",
 			"pnpm-lock.yaml",
-			"**/*.snap",
+			"pnpm-workspace.yaml",
 		],
 	},
 	{
@@ -25,31 +30,29 @@ export default tseslint.config(
 			reportUnusedDisableDirectives: "error",
 		},
 	},
-	eslint.configs.recommended,
-	...jsonc.configs["flat/recommended-with-json"],
 	...markdown.configs.recommended,
-	...yml.configs["flat/recommended"],
-	...yml.configs["flat/prettier"],
 	comments.recommended,
-	jsdoc.configs["flat/recommended-typescript-error"],
-	packageJson,
-	perfectionist.configs["recommended-natural"],
-	regexp.configs["flat/recommended"],
+	...tseslint.config({
+		extends: [packageJson],
+		files: ["**/package.json"],
+		rules: {
+			// https://github.com/JoshuaKGoldberg/eslint-plugin-package-json/issues/252
+			"package-json/valid-repository-directory": "off",
+		},
+	}),
 	...tseslint.config({
 		extends: [
-			...tseslint.configs.strictTypeChecked,
-			...tseslint.configs.stylisticTypeChecked,
+			js.configs.recommended,
+			jsdoc.configs["flat/contents-typescript-error"],
+			jsdoc.configs["flat/logical-typescript-error"],
+			jsdoc.configs["flat/stylistic-typescript-error"],
+			...jsonc.configs["flat/recommended-with-json"],
+			perfectionist.configs["recommended-natural"],
+			regexp.configs["flat/recommended"],
+			...tseslint.configs.strict,
+			...tseslint.configs.stylistic,
 		],
 		files: ["**/*.js", "**/*.ts"],
-		languageOptions: {
-			parserOptions: {
-				projectService: {
-					allowDefaultProject: ["*.*s", "eslint.config.js"],
-					defaultProject: "./tsconfig.json",
-				},
-				tsconfigRootDir: import.meta.dirname,
-			},
-		},
 		rules: {
 			// These off-by-default rules work well for this repo and we like them on.
 			"jsdoc/informative-docs": "error",
@@ -62,14 +65,9 @@ export default tseslint.config(
 
 			// These on-by-default rules don't work well for this repo and we like them off.
 			"jsdoc/lines-before-block": "off",
-			"jsdoc/require-jsdoc": "off",
-			"jsdoc/require-param": "off",
-			"jsdoc/require-property": "off",
-			"jsdoc/require-returns": "off",
 			"no-constant-condition": "off",
 
 			// These on-by-default rules work well for this repo if configured
-			"@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "all" }],
 			"perfectionist/sort-objects": [
 				"error",
 				{
@@ -82,6 +80,27 @@ export default tseslint.config(
 			// Stylistic concerns that don't interfere with Prettier
 			"no-useless-rename": "error",
 			"object-shorthand": "error",
+		},
+	}),
+	...tseslint.config({
+		extends: [
+			...tseslint.configs.strictTypeChecked,
+			...tseslint.configs.stylisticTypeChecked,
+		],
+		files: ["**/*.js", "**/*.ts"],
+		ignores: ["**/*.md/*"],
+		languageOptions: {
+			parserOptions: {
+				projectService: {
+					allowDefaultProject: ["*.*s", "eslint.config.js"],
+					defaultProject: "./tsconfig.json",
+				},
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+		rules: {
+			// These on-by-default rules work well for this repo if configured
+			"@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "all" }],
 		},
 	}),
 	{
@@ -106,7 +125,11 @@ export default tseslint.config(
 			"@typescript-eslint/no-unsafe-call": "off",
 		},
 	},
-	{
+	...tseslint.config({
+		extends: [
+			...yml.configs["flat/recommended"],
+			...yml.configs["flat/prettier"],
+		],
 		files: ["**/*.{yml,yaml}"],
 		rules: {
 			"yml/file-extension": ["error", { extension: "yml" }],
@@ -125,5 +148,5 @@ export default tseslint.config(
 				},
 			],
 		},
-	},
+	}),
 );

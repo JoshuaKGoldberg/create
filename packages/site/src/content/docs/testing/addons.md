@@ -10,8 +10,9 @@ This site is "documentation-driven development": writing the docs first, to help
 Addon options will then be testable with the same mock context utilities as before:
 
 ```ts
-import { createMockAddonContext } from "@create-/testing";
-import { addonESLintPerfectionist } from "./addonESLintPerfectionist.ts";
+import { createMockAddonContext } from "create-testers";
+
+import { addonESLintPerfectionist } from "./addonESLintPerfectionist";
 
 describe("addonESLintPerfectionist", () => {
 	it("includes perfectionist/sort-objects configuration when options.partitionByComment is provided", () => {

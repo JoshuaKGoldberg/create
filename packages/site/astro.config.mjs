@@ -38,8 +38,7 @@ export default defineConfig({
 					items: [
 						{ label: "About", link: "presets/about" },
 						{ label: "Options", link: "presets/options" },
-						{ label: "Documentation", link: "presets/documentation" },
-						{ label: "Templates", link: "presets/templates" },
+						{ label: "Repositories", link: "presets/repositories" },
 					],
 					label: "Presets",
 				},

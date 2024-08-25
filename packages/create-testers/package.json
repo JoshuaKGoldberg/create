@@ -1,11 +1,11 @@
 {
-	"name": "create",
+	"name": "create-testers",
 	"version": "0.0.0",
-	"description": "Composable, testable, type-safe templates. 💝",
+	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
-		"directory": "packages/create"
+		"directory": "packages/create-testers"
 	},
 	"license": "MIT",
 	"author": {
@@ -22,9 +22,6 @@
 	],
 	"scripts": {
 		"build": "tsc"
-	},
-	"dependencies": {
-		"zod": "^3.23.8"
 	},
 	"engines": {
 		"node": ">=18"

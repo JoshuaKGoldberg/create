@@ -21,13 +21,16 @@ Specifically, that means each run of `create` will:
 4. Run delayed portions of blocks in order that required metadata
 5. Run all stored file, network, and shell operations
 
-There may need to be options provided for changing when pieces run. For example, there may be migrations that depend on being run before stored file operations.
+There may need to be options provided for changing when pieces run.
+For example, there may be migrations that depend on being run before stored file operations.
 
 ### `create` Monorepo Support
 
-Adding explicit handling for monorepos is not something I plan for a v1 of `create`. I'll want to have experience maintaining a few more of my own monorepos before seriously investigating what that would look like.
+Adding explicit handling for monorepos is not something I plan for a v1 of `create`.
+I'll want to have experience maintaining a few more of my own monorepos before seriously investigating what that would look like.
 
-This does not block end-users from writing monorepo-tailored blocks or presets. They can always write two versions of their logic for the ones that need it, such as:
+This does not block end-users from writing monorepo-tailored blocks or presets.
+They can always write two versions of their logic for the ones that need it, such as:
 
 - `@example/block-tsc`
 - `@example/block-tsc-references`

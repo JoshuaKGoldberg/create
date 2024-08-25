@@ -7,13 +7,14 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-The `create` ecosystem will include testing utilities that provide mock data to an _input_ under test.
+The `create-testers` package will include testing utilities that provide mock data to an _input_ under test.
 
-For example, testing the previous `inputJSONFile`:
+For example, testing the [previous `inputJSONFile`](../inputs/options):
 
 ```ts
-import { createMockInputContext } from "@create-/testing";
-import { inputJSONFile } from "./inputJSONFile.ts";
+import { createMockInputContext } from "create-testers";
+
+import { inputJSONFile } from "./inputJSONFile";
 
 describe("inputJSONFile", () => {
 	it("returns package data when the file on disk contains valid JSON", () => {

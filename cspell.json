@@ -6,7 +6,18 @@
 		"coverage",
 		"lib",
 		"node_modules",
+		"packages/*/tsconfig.tsbuildinfo",
 		"pnpm-lock.yaml"
 	],
-	"words": ["astrojs", "knip", "konami", "packagejson", "tseslint", "tsup"]
+	"words": [
+		"all-contributorsrc",
+		"astro",
+		"astrojs",
+		"knip",
+		"konami",
+		"packagejson",
+		"tsconfigs",
+		"tseslint",
+		"tsup"
+	]
 }

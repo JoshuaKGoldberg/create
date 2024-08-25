@@ -7,7 +7,8 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-Initializing or updating a repository can be done by running `create` on the CLI. Zod arguments will be automatically converted to Node.js `parseArgs` args.
+Initializing or updating a repository can be done by running `create` on the CLI.
+Zod arguments will be automatically converted to Node.js `parseArgs` args.
 
 Using a preset named `my-create-preset` with a `title: z.string()` option:
 

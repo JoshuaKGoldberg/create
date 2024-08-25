@@ -19,7 +19,7 @@ These may include:
 For example, an input that retrieves the current running time:
 
 ```ts
-import { createInput } from "@create-/input";
+import { createInput } from "create";
 
 export const inputNow = createInput({
 	produce: () => performance.now(),
@@ -29,8 +29,9 @@ export const inputNow = createInput({
 Later on, a block could use that input to retrieve the current running time:
 
 ```ts
-import { createBlock } from "@create-/block";
-import { inputNow } from "./inputNow.ts";
+import { createBlock } from "create";
+
+import { inputNow } from "./inputNow";
 
 export const blockUsingNow = createBlock({
 	produce({ take }) {
@@ -45,4 +46,5 @@ export const blockUsingNow = createBlock({
 });
 ```
 
-Note that code won't be required to use inputs to source data. Doing so just makes that data easier to mock out in tests later on.
+Note that code won't be required to use inputs to source data.
+Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.

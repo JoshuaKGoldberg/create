@@ -13,13 +13,13 @@ This site is "documentation-driven development": writing the docs first, to help
 
 The `create` engine combines the following layers:
 
-1. **[Blocks](./blocks)**: each tooling piece outputting files, network requests, and/or shell commands
+1. **[Blocks](./blocks/about)**: each tooling piece outputting files, network requests, and/or shell commands
    - **[Options](./blocks/options)**: schema-defined configuration settings
    - **[Metadata](./blocks/metadata)**: signals output from the block that can be used in other blocks
    - **[Migrations](./blocks/migrations)**: descriptions of how to clean up from previous versions
-2. **[Inputs](./inputs)**: read in data from the creation context, allowing their own options
-3. **[Addons](./addons)**: added options for a block, with their own inputs and options
-4. **[Presets](./presets)**: configurable groups of blocks and addons, allowing their own options
+2. **[Inputs](./inputs/about)**: read in data from the creation context, allowing their own options
+3. **[Addons](./addons/about)**: added options for a block, with their own inputs and options
+4. **[Presets](./presets/about)**: configurable groups of blocks and addons, allowing their own options
 
 On top of those sits `create`: the end-user runtime that receives all that info and creates or updates a repository.
 
@@ -28,7 +28,7 @@ On top of those sits `create`: the end-user runtime that receives all that info 
 `create` will be a general engine.
 It won't have any specific blocks or _presets_ built-in.
 
-Instead, external packages such as `create-typescript-app` will take on the responsibility of creating their own framework-/library-specific blocks and _presets_.
+Instead, external packages such as [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) will take on the responsibility of creating their own framework-/library-specific blocks and _presets_.
 
 For example, a non-exhaustive list of `create-typescript-app` packages might contain:
 
@@ -88,6 +88,8 @@ For example, a non-exhaustive list of `create-typescript-app` packages might con
 
 </details>
 
-The `create-typescript-app` _presets_ will be configurable with options to swap out pieces as needed for repositories. For example, some repositories will want to swap out the Tsup block for a different builder.
+The `create-typescript-app` _presets_ will be configurable with options to swap out pieces as needed for repositories.
+For example, some repositories will want to swap out the Tsup block for a different builder.
 
-Over time, `@create-typescript` will encompass all common TypeScript package types from repositories I (Josh) use. That will include browser extensions, GitHub actions, and web frameworks such as Astro.
+Over time, `@create-typescript` will encompass all common TypeScript package types from repositories I (Josh) use.
+That will include browser extensions, GitHub actions, and web frameworks such as Astro.

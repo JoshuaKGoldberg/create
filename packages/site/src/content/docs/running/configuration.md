@@ -7,7 +7,8 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-Users will alternately be able to set up the blocks and addons in a file like `create.config.ts`. They will have the user default-export calling a `createConfig` function with an array of blocks.
+Users will alternately be able to set up the blocks and addons in a file like `create.config.ts`.
+They will have the user default-export calling a `createConfig` function with an array of blocks.
 
 For example, a small project that only configures one TypeScript block to have a specific compiler option:
 
@@ -42,4 +43,5 @@ export default createConfig(
 );
 ```
 
-Running a command like `npx create` will detect the `create.config.ts` and re-run `create` for the repository. Any 🧹 migrations will clean up out-of-date files.
+Running a command like `npx create` will detect the `create.config.ts` and re-run `create` for the repository.
+Any migrations will clean up out-of-date files.
