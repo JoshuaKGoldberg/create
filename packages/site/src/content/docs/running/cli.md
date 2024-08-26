@@ -25,7 +25,7 @@ It's common for template builders to include a CLI prompt for options. `create` 
 For example, given a preset that describes its name and other documentation:
 
 ```ts
-import { createPreset } from "@create/preset";
+import { createPreset } from "create";
 
 export const myPreset = createPreset({
 	documentation: {

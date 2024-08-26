@@ -1,9 +1,10 @@
 {
 	"$schema": "https://unpkg.com/knip@latest/schema.json",
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["src/**/*.ts!"],
+	"project": ["packages/*/src/**/*.ts!"],
 	"workspaces": {
 		"packages/create": {
+			"project": ["src/**/*.ts!"],
 			"entry": ["src/index.ts!"]
 		}
 	}

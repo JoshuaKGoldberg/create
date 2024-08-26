@@ -15,7 +15,6 @@ export default defineConfig({
 						{ label: "Options", link: "blocks/options" },
 						{ label: "Inputs", link: "blocks/inputs" },
 						{ label: "Metadata", link: "blocks/metadata" },
-						{ label: "Migrations", link: "blocks/migrations" },
 					],
 					label: "Blocks",
 				},

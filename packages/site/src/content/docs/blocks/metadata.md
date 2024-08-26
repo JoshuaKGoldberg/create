@@ -46,7 +46,7 @@ import { BlockOutput, FileType } from "create";
 
 export function blockTsup(): BlockOutput {
 	return {
-		fs: ({ metadata }) => {
+		files: ({ metadata }) => {
 			return {
 				"tsup.config.ts": `import { defineConfig } from "tsup";
           // ...

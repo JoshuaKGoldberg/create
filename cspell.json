@@ -13,9 +13,11 @@
 		"all-contributorsrc",
 		"astro",
 		"astrojs",
+		"execa",
 		"knip",
 		"konami",
 		"packagejson",
+		"positionals",
 		"tsconfigs",
 		"tseslint",
 		"tsup"

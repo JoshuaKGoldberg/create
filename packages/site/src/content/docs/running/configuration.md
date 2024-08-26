@@ -44,4 +44,3 @@ export default createConfig(
 ```
 
 Running a command like `npx create` will detect the `create.config.ts` and re-run `create` for the repository.
-Any migrations will clean up out-of-date files.

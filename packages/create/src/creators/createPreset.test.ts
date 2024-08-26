@@ -22,7 +22,10 @@ describe("createPreset", () => {
 		});
 
 		const actual = await preset({
+			fetcher: vi.fn(),
+			fs: { readFile: vi.fn(), writeFile: vi.fn() },
 			options: {},
+			runner: vi.fn(),
 			take: vi.fn(),
 		});
 
@@ -51,7 +54,10 @@ describe("createPreset", () => {
 		});
 
 		const actual = await preset({
+			fetcher: vi.fn(),
+			fs: { readFile: vi.fn(), writeFile: vi.fn() },
 			options: { description },
+			runner: vi.fn(),
 			take: vi.fn(),
 		});
 

@@ -1,11 +1,16 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
+import { Creation, TakeInput } from "../shared";
 import { createBlock } from "./createBlock";
 import { createInput } from "./createInput";
-import { Creation, TakeInput } from "./shared";
 
-const take: TakeInput = (input, options) => input({ options, take });
+const fetcher = vi.fn();
+const fs = { readFile: vi.fn(), writeFile: vi.fn() };
+const runner = vi.fn();
+
+const take: TakeInput = (input, options) =>
+	input({ fetcher, fs, options, runner, take });
 
 describe("createBlock", () => {
 	describe("blocks", () => {
@@ -20,7 +25,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await block({
+				fetcher,
+				fs,
 				options: {},
+				runner,
 				take,
 			});
 
@@ -42,7 +50,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await block({
+				fetcher,
+				fs,
 				options: { fileName },
+				runner,
 				take,
 			});
 
@@ -69,7 +80,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await block({
+				fetcher,
+				fs,
 				options: {},
+				runner,
 				take,
 			});
 
@@ -98,7 +112,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await block({
+				fetcher,
+				fs,
 				options: {},
+				runner,
 				take,
 			});
 
@@ -131,7 +148,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await addon({
+				fetcher,
+				fs,
 				options: { index: 1 },
+				runner,
 				take,
 			});
 
@@ -151,7 +171,10 @@ describe("createBlock", () => {
 			});
 
 			const actual = await addon({
+				fetcher,
+				fs,
 				options: { index: 1 },
+				runner,
 				take,
 			});
 

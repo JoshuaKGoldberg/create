@@ -13,7 +13,10 @@ describe("createInput", () => {
 		});
 
 		const actual = input({
+			fetcher: vi.fn(),
+			fs: { readFile: vi.fn(), writeFile: vi.fn() },
 			options: {},
+			runner: vi.fn(),
 			take: vi.fn(),
 		});
 
@@ -31,9 +34,12 @@ describe("createInput", () => {
 		});
 
 		const actual = input({
+			fetcher: vi.fn(),
+			fs: { readFile: vi.fn(), writeFile: vi.fn() },
 			options: {
 				offset: 1000,
 			},
+			runner: vi.fn(),
 			take: vi.fn(),
 		});
 
