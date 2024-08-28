@@ -1,4 +1,4 @@
-import { Creation } from "../shared";
+import { Creation } from "../types/creations";
 import { mergeArrays } from "./mergeArrays";
 import { mergeFiles } from "./mergeFiles";
 import { mergeMetadata } from "./mergeMetadata";

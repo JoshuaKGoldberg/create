@@ -1,4 +1,5 @@
-import { Creation, CreationContext } from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
+import { Creation } from "../types/creations";
 import { runCreationCommands } from "./runCreationCommands";
 import { runCreationFiles } from "./runCreationFiles";
 import { runCreationPackages } from "./runCreationPackages";
@@ -6,7 +7,7 @@ import { runCreationScripts } from "./runCreationScripts";
 
 export async function runCreation(
 	creation: Creation,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	if (creation.commands) {
 		await runCreationCommands(creation.commands, context);

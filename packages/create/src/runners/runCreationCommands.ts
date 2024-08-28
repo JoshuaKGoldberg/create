@@ -1,8 +1,8 @@
-import { CreationContext } from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
 
 export async function runCreationCommands(
 	commands: string[],
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	for (const command of commands) {
 		await context.runner(command);

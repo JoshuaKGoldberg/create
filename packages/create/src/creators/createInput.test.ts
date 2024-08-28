@@ -8,14 +8,12 @@ describe("createInput", () => {
 		const expected = 123;
 
 		const input = createInput({
-			options: {},
 			produce: () => expected,
 		});
 
 		const actual = input({
 			fetcher: vi.fn(),
 			fs: { readFile: vi.fn(), writeFile: vi.fn() },
-			options: {},
 			runner: vi.fn(),
 			take: vi.fn(),
 		});

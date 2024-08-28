@@ -1,6 +1,9 @@
 import * as semver from "semver";
 
-import { CreatedPackages, CreatedPackagesWithVersions } from "../shared";
+import {
+	CreatedPackages,
+	CreatedPackagesWithVersions,
+} from "../types/creations";
 import { removeEmptyEntries } from "./removeEmptyEntries";
 
 export function mergePackages(

@@ -1,17 +1,18 @@
 import path from "node:path";
 
-import { CreatedFiles, CreationContext } from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
+import { CreatedFiles } from "../types/creations";
 
 export async function runCreationFiles(
 	files: CreatedFiles,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	await writeCreationFiles(files, context, "");
 }
 
 async function writeCreationFiles(
 	files: CreatedFiles,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 	directory: string,
 ) {
 	for (const [key, value] of Object.entries(files)) {

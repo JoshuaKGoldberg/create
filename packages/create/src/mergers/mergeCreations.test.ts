@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { FileType } from "../metadata";
-import { Creation } from "../shared";
+import { Creation } from "../types/creations";
 import { mergeCreations } from "./mergeCreations";
 
 describe("mergeCreations", () => {

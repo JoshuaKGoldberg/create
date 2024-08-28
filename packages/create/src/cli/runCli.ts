@@ -1,5 +1,6 @@
-import { isPreset } from "../creators/createPreset";
+import { AnyOptionsSchema } from "../options";
 import { runPreset } from "../runners/runPreset";
+import { Preset } from "../types/presets";
 import { promptForPresetOptions } from "./promptForPresetOptions";
 import { setupContext } from "./setupContext";
 
@@ -24,4 +25,12 @@ export async function runCli(args: string[]) {
 	const context = setupContext();
 
 	await runPreset(preset, options, context);
+}
+
+function isPreset(value: unknown): value is Preset<AnyOptionsSchema> {
+	return (
+		typeof value === "function" &&
+		"documentation" in value &&
+		"repository" in value
+	);
 }

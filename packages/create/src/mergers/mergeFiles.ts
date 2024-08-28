@@ -1,4 +1,4 @@
-import { CreatedFileEntry, CreatedFiles } from "../shared";
+import { CreatedFileEntry, CreatedFiles } from "../types/creations";
 
 export function mergeFiles(
 	first: CreatedFiles | undefined,

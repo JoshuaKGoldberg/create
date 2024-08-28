@@ -1,17 +1,14 @@
 import { mergeCreations } from "../mergers/mergeCreations";
 import { AnyOptionsSchema, InferredSchema } from "../options";
-import {
-	Creation,
-	CreationContext,
-	CreationFirstRound,
-	Preset,
-} from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
+import { Creation, CreationFirstRound } from "../types/creations";
+import { Preset } from "../types/presets";
 import { runCreation } from "./runCreation";
 
 export async function runPreset<PresetOptionsSchema extends AnyOptionsSchema>(
 	preset: Preset<PresetOptionsSchema>,
 	options: InferredSchema<PresetOptionsSchema>,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	// From docs/running/about.md ...
 

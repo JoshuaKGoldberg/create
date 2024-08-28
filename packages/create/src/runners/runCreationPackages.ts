@@ -1,8 +1,9 @@
-import { CreatedPackages, CreationContext } from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
+import { CreatedPackages } from "../types/creations";
 
 export async function runCreationPackages(
 	packages: CreatedPackages,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	for (const [key, suffix] of [
 		["dependencies", ""],

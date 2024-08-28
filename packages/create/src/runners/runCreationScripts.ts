@@ -1,4 +1,5 @@
-import { CreatedScripts, CreationContext } from "../shared";
+import { CreationContextWithoutOptions } from "../types/context";
+import { CreatedScripts } from "../types/creations";
 
 interface PackageData {
 	scripts?: Record<string, string>;
@@ -6,7 +7,7 @@ interface PackageData {
 
 export async function runCreationScripts(
 	scripts: CreatedScripts,
-	context: CreationContext,
+	context: CreationContextWithoutOptions,
 ) {
 	const packageData = JSON.parse(
 		(await context.fs.readFile("package.json")) || "{}",

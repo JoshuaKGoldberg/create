@@ -1,31 +1,69 @@
 import { z } from "zod";
 
-import { AnyOptionsSchema } from "../options";
+import { AnyOptionsSchema, InferredSchema } from "../options";
 import {
-	ContextWithOptions,
-	CreationFirstRound,
-	Preset,
-	PresetDocumentation,
-} from "../shared";
+	CreationContextWithOptions,
+	CreationContextWithoutOptions,
+} from "../types/context";
+import { CreationFirstRound } from "../types/creations";
+import { Preset, PresetDocumentation } from "../types/presets";
 import { PromiseOrSync } from "../utils";
+import { isDefinitionWithOptions } from "./utils";
 
-export interface PresetDefinition<OptionsSchema extends AnyOptionsSchema> {
+export type PresetDefinition<
+	OptionsSchema extends AnyOptionsSchema | undefined = undefined,
+> = OptionsSchema extends object
+	? PresetDefinitionWithOptions<OptionsSchema>
+	: PresetDefinitionWithoutOptions;
+
+export interface PresetDefinitionBase {
 	documentation: PresetDocumentation;
-	options: OptionsSchema;
-	produce: PresetProducer<OptionsSchema>;
 	repository?: string;
 }
 
-export type PresetProducer<OptionsSchema extends AnyOptionsSchema> = (
-	context: ContextWithOptions<OptionsSchema>,
+export interface PresetDefinitionWithoutOptions extends PresetDefinitionBase {
+	produce: PresetProducer;
+}
+
+export interface PresetDefinitionWithOptions<
+	OptionsSchema extends AnyOptionsSchema,
+> extends PresetDefinitionBase {
+	options: OptionsSchema;
+	produce: PresetProducer<InferredSchema<OptionsSchema>>;
+}
+
+export type PresetProducer<Options extends object | undefined = undefined> =
+	Options extends object
+		? PresetProducerWithOptions<Options>
+		: PresetProducerWithoutOptions;
+
+export type PresetProducerWithoutOptions = (
+	context: CreationContextWithoutOptions,
 ) => PromiseOrSync<CreationFirstRound[]>;
 
-export function createPreset<OptionsSchema extends AnyOptionsSchema>(
+export type PresetProducerWithOptions<Options extends object> = (
+	context: CreationContextWithOptions<Options>,
+) => PromiseOrSync<CreationFirstRound[]>;
+
+export function createPreset<
+	OptionsSchema extends AnyOptionsSchema | undefined = undefined,
+>(
 	definition: PresetDefinition<OptionsSchema>,
-): Preset<OptionsSchema> {
+): Preset<InferredSchema<OptionsSchema>> {
+	if (!isDefinitionWithOptions(definition)) {
+		const preset = (context: CreationContextWithoutOptions) => {
+			return definition.produce(context);
+		};
+
+		preset.documentation = definition.documentation;
+		preset.repository = definition.repository;
+
+		return preset as Preset<InferredSchema<OptionsSchema>>;
+	}
+
 	const schema = z.object(definition.options);
 
-	const preset = async (context: ContextWithOptions<OptionsSchema>) => {
+	const preset = async (context: CreationContextWithOptions<OptionsSchema>) => {
 		return await definition.produce({
 			...context,
 			options: schema.parse(context.options),
@@ -35,11 +73,6 @@ export function createPreset<OptionsSchema extends AnyOptionsSchema>(
 	preset.documentation = definition.documentation;
 	preset.options = definition.options;
 	preset.repository = definition.repository;
-	preset.isPreset = true;
 
-	return preset;
-}
-
-export function isPreset(value: unknown): value is Preset<AnyOptionsSchema> {
-	return typeof value === "function" && "isPreset" in value && !!value.isPreset;
+	return preset as Preset<InferredSchema<OptionsSchema>>;
 }

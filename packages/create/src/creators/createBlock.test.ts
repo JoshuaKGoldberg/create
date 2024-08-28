@@ -1,7 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { Creation, TakeInput } from "../shared";
+import { Creation } from "../types/creations";
+import { TakeInput } from "../types/inputs";
 import { createBlock } from "./createBlock";
 import { createInput } from "./createInput";
 
@@ -10,7 +11,7 @@ const fs = { readFile: vi.fn(), writeFile: vi.fn() };
 const runner = vi.fn();
 
 const take: TakeInput = (input, options) =>
-	input({ fetcher, fs, options, runner, take });
+	input({ fetcher, fs, options, runner, take } as Parameters<TakeInput>[0]);
 
 describe("createBlock", () => {
 	describe("blocks", () => {
@@ -20,14 +21,12 @@ describe("createBlock", () => {
 			};
 
 			const block = createBlock({
-				options: {},
 				produce: () => creation,
 			});
 
 			const actual = await block({
 				fetcher,
 				fs,
-				options: {},
 				runner,
 				take,
 			});
@@ -66,12 +65,10 @@ describe("createBlock", () => {
 
 		test("production with option-less input", async () => {
 			const fakeInput = createInput({
-				options: {},
 				produce: () => true,
 			});
 
 			const block = createBlock({
-				options: {},
 				produce: ({ take }) => ({
 					files: {
 						"file.txt": take(fakeInput, {}).toString(),
@@ -82,7 +79,6 @@ describe("createBlock", () => {
 			const actual = await block({
 				fetcher,
 				fs,
-				options: {},
 				runner,
 				take,
 			});
@@ -103,7 +99,6 @@ describe("createBlock", () => {
 			});
 
 			const block = createBlock({
-				options: {},
 				produce: ({ take }) => ({
 					files: {
 						"file.txt": take(fakeInput, { value: true }).toString(),
@@ -114,7 +109,6 @@ describe("createBlock", () => {
 			const actual = await block({
 				fetcher,
 				fs,
-				options: {},
 				runner,
 				take,
 			});
@@ -141,7 +135,6 @@ describe("createBlock", () => {
 
 		test("production without options", async () => {
 			const addon = block.createAddon({
-				options: {},
 				produce: () => ({
 					fileName: "added",
 				}),
@@ -150,7 +143,6 @@ describe("createBlock", () => {
 			const actual = await addon({
 				fetcher,
 				fs,
-				options: { index: 1 },
 				runner,
 				take,
 			});
