@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { CreationContextWithoutOptions } from "../types/context";
-import { CreatedFiles } from "../types/creations";
+import { CreationContextWithoutOptions } from "../types/context.js";
+import { CreatedFiles } from "../types/creations.js";
 
 export async function runCreationFiles(
 	files: CreatedFiles,

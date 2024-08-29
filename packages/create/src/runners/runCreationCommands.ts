@@ -1,4 +1,4 @@
-import { CreationContextWithoutOptions } from "../types/context";
+import { CreationContextWithoutOptions } from "../types/context.js";
 
 export async function runCreationCommands(
 	commands: string[],

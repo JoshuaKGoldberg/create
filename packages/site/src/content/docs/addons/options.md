@@ -24,7 +24,7 @@ export const addonESLintPerfectionist = blockESLint.createAddon({
 		return {
 			options: {
 				configs: [`perfectionist.configs["recommended-natural"]`],
-				imports: `import perfectionist from "eslint-plugin-perfectionist"`,
+				imports: [`import perfectionist from "eslint-plugin-perfectionist"`],
 				rules: options.partitionByComment && {
 					"perfectionist/sort-objects": [
 						"error",

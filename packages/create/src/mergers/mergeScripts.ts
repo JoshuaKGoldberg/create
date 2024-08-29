@@ -1,4 +1,4 @@
-import { CreatedScripts } from "../types/creations";
+import { CreatedScripts } from "../types/creations.js";
 
 export function mergeScripts(
 	first: CreatedScripts | undefined,

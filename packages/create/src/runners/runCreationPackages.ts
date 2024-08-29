@@ -1,5 +1,5 @@
-import { CreationContextWithoutOptions } from "../types/context";
-import { CreatedPackages } from "../types/creations";
+import { CreationContextWithoutOptions } from "../types/context.js";
+import { CreatedPackages } from "../types/creations.js";
 
 export async function runCreationPackages(
 	packages: CreatedPackages,

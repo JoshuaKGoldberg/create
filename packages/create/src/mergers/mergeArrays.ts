@@ -1,4 +1,4 @@
-import { isNotUndefined } from "../utils";
+import { isNotUndefined } from "../utils.js";
 
 export function mergeArrays<T>(
 	...arrays: (T[] | undefined)[]

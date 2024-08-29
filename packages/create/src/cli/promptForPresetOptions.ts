@@ -1,8 +1,8 @@
 import readline from "node:readline/promises";
 import * as z from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options";
-import { promptForSchema } from "./promptForSchema";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
+import { promptForSchema } from "./promptForSchema.js";
 
 export async function promptForPresetOptions(schemas: z.ZodRawShape) {
 	const options: InferredSchema<AnyOptionsSchema> = {};

@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "../types/context";
-import { Input } from "../types/inputs";
-import { isDefinitionWithOptions } from "./utils";
+} from "../types/context.js";
+import { Input } from "../types/inputs.js";
+import { isDefinitionWithOptions } from "./utils.js";
 
 export type InputDefinition<
 	Result,

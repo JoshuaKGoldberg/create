@@ -3,8 +3,8 @@ import * as semver from "semver";
 import {
 	CreatedPackages,
 	CreatedPackagesWithVersions,
-} from "../types/creations";
-import { removeEmptyEntries } from "./removeEmptyEntries";
+} from "../types/creations.js";
+import { removeEmptyEntries } from "./removeEmptyEntries.js";
 
 export function mergePackages(
 	first: CreatedPackages | undefined,

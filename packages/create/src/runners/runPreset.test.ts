@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { createPreset } from "../creators/createPreset";
-import { runPreset } from "./runPreset";
+import { createPreset } from "../creators/createPreset.js";
+import { runPreset } from "./runPreset.js";
 
 const context = {
 	fetcher: vi.fn(),

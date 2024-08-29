@@ -1,5 +1,5 @@
-import { CreationContextWithoutOptions } from "../types/context";
-import { CreatedScripts } from "../types/creations";
+import { CreationContextWithoutOptions } from "../types/context.js";
+import { CreatedScripts } from "../types/creations.js";
 
 interface PackageData {
 	scripts?: Record<string, string>;

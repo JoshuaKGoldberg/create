@@ -1,8 +1,8 @@
 import { execa } from "execa";
 import * as nodeFS from "node:fs/promises";
 
-import { ContextFS, CreationContextWithoutOptions } from "../types/context";
-import { TakeInput } from "../types/inputs";
+import { ContextFS, CreationContextWithoutOptions } from "../types/context.js";
+import { TakeInput } from "../types/inputs.js";
 
 export function setupContext(): CreationContextWithoutOptions {
 	const fetcher = fetch;

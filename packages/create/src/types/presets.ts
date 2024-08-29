@@ -1,11 +1,12 @@
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "./context";
-import { CreationFirstRound } from "./creations";
+} from "./context.js";
+import { CreationFirstRound } from "./creations.js";
+import { DocumentationBase } from "./documentation.js";
 
 export interface PresetBase {
-	documentation: PresetDocumentation;
+	documentation: DocumentationBase;
 	repository?: string;
 }
 
@@ -25,8 +26,4 @@ export interface PresetWithOptions<
 		context: CreationContextWithOptions<OptionsSchema>,
 	): Promise<CreationFirstRound[]>;
 	options: OptionsSchema;
-}
-
-export interface PresetDocumentation {
-	name: string;
 }

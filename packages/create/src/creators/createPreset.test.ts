@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { createPreset } from "./createPreset";
+import { createPreset } from "./createPreset.js";
 
 describe("createPreset", () => {
 	test("production without options", async () => {

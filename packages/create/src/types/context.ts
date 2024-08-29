@@ -1,6 +1,6 @@
 import { execa } from "execa";
 
-import { TakeInput } from "./inputs";
+import { TakeInput } from "./inputs.js";
 
 export interface CreationContextWithoutOptions {
 	fetcher: typeof fetch;

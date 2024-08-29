@@ -1,14 +1,15 @@
 import { z } from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "../types/context";
-import { CreationFirstRound } from "../types/creations";
-import { Preset, PresetDocumentation } from "../types/presets";
-import { PromiseOrSync } from "../utils";
-import { isDefinitionWithOptions } from "./utils";
+} from "../types/context.js";
+import { CreationFirstRound } from "../types/creations.js";
+import { DocumentationBase } from "../types/documentation.js";
+import { Preset } from "../types/presets.js";
+import { PromiseOrSync } from "../utils.js";
+import { isDefinitionWithOptions } from "./utils.js";
 
 export type PresetDefinition<
 	OptionsSchema extends AnyOptionsSchema | undefined = undefined,
@@ -17,7 +18,7 @@ export type PresetDefinition<
 	: PresetDefinitionWithoutOptions;
 
 export interface PresetDefinitionBase {
-	documentation: PresetDocumentation;
+	documentation?: DocumentationBase;
 	repository?: string;
 }
 

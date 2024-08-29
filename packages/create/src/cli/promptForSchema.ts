@@ -1,7 +1,7 @@
 import readline from "node:readline/promises";
 import * as z from "zod";
 
-import { promptForBoolean } from "./promptForBoolean";
+import { promptForBoolean } from "./promptForBoolean.js";
 
 type ZodDef = z.ZodBooleanDef | z.ZodNumberDef | z.ZodStringDef;
 

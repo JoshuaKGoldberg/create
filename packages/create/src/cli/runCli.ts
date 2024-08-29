@@ -1,8 +1,8 @@
-import { AnyOptionsSchema } from "../options";
-import { runPreset } from "../runners/runPreset";
-import { Preset } from "../types/presets";
-import { promptForPresetOptions } from "./promptForPresetOptions";
-import { setupContext } from "./setupContext";
+import { AnyOptionsSchema } from "../options.js";
+import { runPreset } from "../runners/runPreset.js";
+import { Preset } from "../types/presets.js";
+import { promptForPresetOptions } from "./promptForPresetOptions.js";
+import { setupContext } from "./setupContext.js";
 
 export async function runCli(args: string[]) {
 	const presetPath = args[0];

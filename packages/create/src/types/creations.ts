@@ -1,10 +1,14 @@
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+
 // Creations
 
-import { CreatedMetadata } from "../metadata";
+import { CreatedMetadata } from "../metadata.js";
 
 export interface Creation {
 	commands?: string[];
 	files?: CreatedFiles;
+	jobs?: CreatedJob[];
 	metadata?: CreatedMetadata;
 	packages?: CreatedPackages;
 	scripts?: CreatedScripts;
@@ -17,6 +21,13 @@ export type CreationFirstRound = {
 export interface CreatedFiles {
 	[i: string]: CreatedFileEntry | undefined;
 }
+
+export interface CreatedJob {
+	name: string;
+	steps: CreatedJobStep[];
+}
+
+export type CreatedJobStep = { run: string } | { uses: string };
 
 export type CreatedFileEntry = CreatedFiles | false | string;
 

@@ -1,7 +1,7 @@
-import { CreatedMetadata } from "../metadata";
-import { mergeArrays } from "./mergeArrays";
-import { mergeScripts } from "./mergeScripts";
-import { removeEmptyEntries } from "./removeEmptyEntries";
+import { CreatedMetadata } from "../metadata.js";
+import { mergeArrays } from "./mergeArrays.js";
+import { mergeScripts } from "./mergeScripts.js";
+import { removeEmptyEntries } from "./removeEmptyEntries.js";
 
 export function mergeMetadata(
 	first: CreatedMetadata | undefined,

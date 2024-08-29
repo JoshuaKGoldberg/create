@@ -1,9 +1,9 @@
-import { CreationContextWithoutOptions } from "../types/context";
-import { Creation } from "../types/creations";
-import { runCreationCommands } from "./runCreationCommands";
-import { runCreationFiles } from "./runCreationFiles";
-import { runCreationPackages } from "./runCreationPackages";
-import { runCreationScripts } from "./runCreationScripts";
+import { CreationContextWithoutOptions } from "../types/context.js";
+import { Creation } from "../types/creations.js";
+import { runCreationCommands } from "./runCreationCommands.js";
+import { runCreationFiles } from "./runCreationFiles.js";
+import { runCreationPackages } from "./runCreationPackages.js";
+import { runCreationScripts } from "./runCreationScripts.js";
 
 export async function runCreation(
 	creation: Creation,

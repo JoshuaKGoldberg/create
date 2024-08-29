@@ -1,17 +1,22 @@
 import { z } from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
 import {
 	AddonDefinition,
 	Block,
 	BlockProducerWithOptions,
 	BlockProducerWithoutOptions,
-} from "../types/blocks";
+} from "../types/blocks.js";
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "../types/context";
-import { isDefinitionWithOptions } from "./utils";
+} from "../types/context.js";
+import { DocumentationBase } from "../types/documentation.js";
+import { isDefinitionWithOptions } from "./utils.js";
+
+export interface BlockDefinitionBase {
+	documentation?: DocumentationBase;
+}
 
 export type BlockDefinition<
 	BlockOptionsSchema extends AnyOptionsSchema | undefined,
@@ -19,13 +24,13 @@ export type BlockDefinition<
 	? BlockDefinitionWithOptions<BlockOptionsSchema>
 	: BlockDefinitionWithoutOptions;
 
-export interface BlockDefinitionWithoutOptions {
+export interface BlockDefinitionWithoutOptions extends BlockDefinitionBase {
 	produce: BlockProducerWithoutOptions;
 }
 
 export interface BlockDefinitionWithOptions<
 	BlockOptionsSchema extends AnyOptionsSchema,
-> {
+> extends BlockDefinitionBase {
 	options: BlockOptionsSchema;
 	produce: BlockProducerWithOptions<InferredSchema<BlockOptionsSchema>>;
 }

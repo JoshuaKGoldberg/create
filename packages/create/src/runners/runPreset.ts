@@ -1,9 +1,9 @@
-import { mergeCreations } from "../mergers/mergeCreations";
-import { AnyOptionsSchema, InferredSchema } from "../options";
-import { CreationContextWithoutOptions } from "../types/context";
-import { Creation, CreationFirstRound } from "../types/creations";
-import { Preset } from "../types/presets";
-import { runCreation } from "./runCreation";
+import { mergeCreations } from "../mergers/mergeCreations.js";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
+import { CreationContextWithoutOptions } from "../types/context.js";
+import { Creation, CreationFirstRound } from "../types/creations.js";
+import { Preset } from "../types/presets.js";
+import { runCreation } from "./runCreation.js";
 
 export async function runPreset<PresetOptionsSchema extends AnyOptionsSchema>(
 	preset: Preset<PresetOptionsSchema>,

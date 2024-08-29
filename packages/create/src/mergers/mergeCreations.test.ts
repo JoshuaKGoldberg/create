@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { FileType } from "../metadata";
-import { Creation } from "../types/creations";
-import { mergeCreations } from "./mergeCreations";
+import { FileType } from "../metadata.js";
+import { Creation } from "../types/creations.js";
+import { mergeCreations } from "./mergeCreations.js";
 
 describe("mergeCreations", () => {
 	it("returns the creation when given one", () => {

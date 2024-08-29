@@ -1,10 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { Creation } from "../types/creations";
-import { TakeInput } from "../types/inputs";
-import { createBlock } from "./createBlock";
-import { createInput } from "./createInput";
+import { Creation } from "../types/creations.js";
+import { TakeInput } from "../types/inputs.js";
+import { createBlock } from "./createBlock.js";
+import { createInput } from "./createInput.js";
 
 const fetcher = vi.fn();
 const fs = { readFile: vi.fn(), writeFile: vi.fn() };

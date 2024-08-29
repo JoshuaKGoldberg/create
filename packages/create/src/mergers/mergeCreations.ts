@@ -1,10 +1,10 @@
-import { Creation } from "../types/creations";
-import { mergeArrays } from "./mergeArrays";
-import { mergeFiles } from "./mergeFiles";
-import { mergeMetadata } from "./mergeMetadata";
-import { mergePackages } from "./mergePackages";
-import { mergeScripts } from "./mergeScripts";
-import { removeEmptyEntries } from "./removeEmptyEntries";
+import { Creation } from "../types/creations.js";
+import { mergeArrays } from "./mergeArrays.js";
+import { mergeFiles } from "./mergeFiles.js";
+import { mergeMetadata } from "./mergeMetadata.js";
+import { mergePackages } from "./mergePackages.js";
+import { mergeScripts } from "./mergeScripts.js";
+import { removeEmptyEntries } from "./removeEmptyEntries.js";
 
 export function mergeCreations(creations: Creation[]): Creation {
 	let result = creations[0];

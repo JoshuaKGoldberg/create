@@ -1,7 +1,7 @@
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "./context";
+} from "./context.js";
 
 export type Input<
 	Result,

@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { createInput } from "./createInput";
+import { createInput } from "./createInput.js";
 
 describe("createInput", () => {
 	test("production without options", () => {

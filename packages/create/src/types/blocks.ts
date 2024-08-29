@@ -1,30 +1,15 @@
-import { AnyOptionsSchema, InferredSchema } from "../options";
-import { PromiseOrSync } from "../utils";
+import { AnyOptionsSchema, InferredSchema } from "../options.js";
+import { PromiseOrSync } from "../utils.js";
 import {
 	CreationContextWithOptions,
 	CreationContextWithoutOptions,
-} from "./context";
-import { CreationFirstRound } from "./creations";
+} from "./context.js";
+import { CreationFirstRound } from "./creations.js";
+import { DocumentationBase } from "./documentation.js";
 
-// Blocks (Definitions)
-
-export type BlockProducer<
-	BlockOptionsSchema extends AnyOptionsSchema | undefined = undefined,
-> = BlockOptionsSchema extends object
-	? BlockProducerWithOptions<BlockOptionsSchema>
-	: BlockProducerWithoutOptions;
-
-export type BlockProducerWithoutOptions = (
-	context: CreationContextWithoutOptions,
-) => PromiseOrSync<CreationFirstRound>;
-
-export type BlockProducerWithOptions<
-	BlockOptionsSchema extends AnyOptionsSchema,
-> = (
-	context: CreationContextWithOptions<BlockOptionsSchema>,
-) => PromiseOrSync<CreationFirstRound>;
-
-// Blocks (Processed)
+export interface BlockBase {
+	documentation?: DocumentationBase;
+}
 
 export type Block<BlockOptions extends object | undefined = undefined> =
 	BlockOptions extends object
@@ -46,7 +31,21 @@ export interface BlockWithOptions<BlockOptions extends object> {
 	) => Addon<BlockOptions, InferredSchema<AddonOptionsSchema>>;
 }
 
-// Block Addons (Definitions)
+export type BlockProducer<
+	BlockOptionsSchema extends AnyOptionsSchema | undefined = undefined,
+> = BlockOptionsSchema extends object
+	? BlockProducerWithOptions<BlockOptionsSchema>
+	: BlockProducerWithoutOptions;
+
+export type BlockProducerWithoutOptions = (
+	context: CreationContextWithoutOptions,
+) => PromiseOrSync<CreationFirstRound>;
+
+export type BlockProducerWithOptions<
+	BlockOptionsSchema extends AnyOptionsSchema,
+> = (
+	context: CreationContextWithOptions<BlockOptionsSchema>,
+) => PromiseOrSync<CreationFirstRound>;
 
 export type AddonDefinition<
 	BlockOptions extends object,
@@ -84,8 +83,6 @@ export type AddonProducerWithOptions<
 > = (
 	context: CreationContextWithOptions<AddonOptions>,
 ) => PromiseOrSync<BlockOptions>;
-
-// Block Addons (Processed)
 
 export type Addon<
 	BlockOptions extends object,
