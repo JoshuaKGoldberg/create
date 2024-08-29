@@ -25,9 +25,9 @@ On top of those sits `create`: the end-user runtime that receives all that info 
 ## End Vision
 
 `create` will be a general engine.
-It won't have any specific blocks or _presets_ built-in.
+It won't have any specific blocks or presets built-in.
 
-Instead, external packages such as [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) will take on the responsibility of creating their own framework-/library-specific blocks and _presets_.
+Instead, external packages such as [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) will take on the responsibility of creating their own framework-/library-specific blocks and presets.
 
 For example, a non-exhaustive list of `create-typescript-app` packages might contain:
 
@@ -87,7 +87,7 @@ For example, a non-exhaustive list of `create-typescript-app` packages might con
 
 </details>
 
-The `create-typescript-app` _presets_ will be configurable with options to swap out pieces as needed for repositories.
+The `create-typescript-app` presets will be configurable with options to swap out pieces as needed for repositories.
 For example, some repositories will want to swap out the Tsup block for a different builder.
 
 Over time, `@create-typescript` will encompass all common TypeScript package types from repositories I (Josh) use.
