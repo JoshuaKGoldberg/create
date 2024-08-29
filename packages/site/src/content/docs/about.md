@@ -14,8 +14,6 @@ This site is "documentation-driven development": writing the docs first, to help
 The `create` engine combines the following layers:
 
 1. **[Blocks](./blocks/about)**: each tooling piece outputting files, network requests, and/or shell commands
-   - **[Options](./blocks/options)**: schema-defined configuration settings
-   - **[Metadata](./blocks/metadata)**: signals output from the block that can be used in other blocks
 2. **[Inputs](./inputs/about)**: read in data from the creation context, allowing their own options
 3. **[Addons](./addons/about)**: added options for a block, with their own inputs and options
 4. **[Presets](./presets/about)**: configurable groups of blocks and addons, allowing their own options
