@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { FileType } from "../metadata.js";
-import { Creation } from "../types/creations.js";
+import { Creation, MetadataFileType } from "../types/creations.js";
 import { mergeCreations } from "./mergeCreations.js";
 
 describe("mergeCreations", () => {
@@ -23,22 +22,18 @@ describe("mergeCreations", () => {
 				},
 			},
 			{
-				metadata: {
-					documentation: {
-						build: "npm run build",
-					},
+				documentation: {
+					build: "npm run build",
 				},
 			},
 		]);
 
 		expect(actual).toEqual({
+			documentation: {
+				build: "npm run build",
+			},
 			files: {
 				"README.md": "Hello, world!",
-			},
-			metadata: {
-				documentation: {
-					build: "npm run build",
-				},
 			},
 		});
 	});
@@ -47,18 +42,16 @@ describe("mergeCreations", () => {
 		const actual = mergeCreations([
 			{
 				commands: ["run a", "run b"],
+				documentation: {
+					build: "npm run build",
+				},
 				files: {
 					"README.md": "Hello, world!",
 					src: {
 						"index.ts": "",
 					},
 				},
-				metadata: {
-					documentation: {
-						build: "npm run build",
-					},
-					files: [{ glob: "src/**/*.ts", type: FileType.Source }],
-				},
+				metadata: [{ glob: "src/**/*.ts", type: MetadataFileType.Source }],
 				packages: {
 					dependencies: {
 						example: "^1.2.3",
@@ -70,17 +63,15 @@ describe("mergeCreations", () => {
 			},
 			{
 				commands: ["run c", "run d"],
+				documentation: {
+					test: "npm run test",
+				},
 				files: {
 					src: {
 						"second.ts": "// ...",
 					},
 				},
-				metadata: {
-					documentation: {
-						test: "npm run test",
-					},
-					files: [{ glob: "src/**/*.test.ts", type: FileType.Test }],
-				},
+				metadata: [{ glob: "src/**/*.test.ts", type: MetadataFileType.Test }],
 				packages: {
 					dependencies: {
 						example: "^1.2.4",
@@ -95,6 +86,10 @@ describe("mergeCreations", () => {
 
 		expect(actual).toEqual({
 			commands: ["run a", "run b", "run c", "run d"],
+			documentation: {
+				build: "npm run build",
+				test: "npm run test",
+			},
 			files: {
 				"README.md": "Hello, world!",
 				src: {
@@ -102,16 +97,10 @@ describe("mergeCreations", () => {
 					"second.ts": "// ...",
 				},
 			},
-			metadata: {
-				documentation: {
-					build: "npm run build",
-					test: "npm run test",
-				},
-				files: [
-					{ glob: "src/**/*.ts", type: FileType.Source },
-					{ glob: "src/**/*.test.ts", type: FileType.Test },
-				],
-			},
+			metadata: [
+				{ glob: "src/**/*.ts", type: MetadataFileType.Source },
+				{ glob: "src/**/*.test.ts", type: MetadataFileType.Test },
+			],
 			packages: {
 				dependencies: {
 					example: "^1.2.3 || ^1.2.4",

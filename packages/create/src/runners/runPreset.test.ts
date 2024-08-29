@@ -49,20 +49,18 @@ describe("runPreset", () => {
 				options: {},
 				produce: () => [
 					{
-						files: ({ metadata }) => {
+						documentation: {
+							Build: "npm run build",
+							Test: "npm run test",
+						},
+						files: ({ documentation }) => {
 							return {
 								"README.md": `# Hello, world!
 
-${Object.entries(metadata?.documentation ?? {})
+${Object.entries(documentation ?? {})
 	.map(([key, value]) => `## ${key}\n${value}`)
 	.join("\n\n")}`,
 							};
-						},
-						metadata: {
-							documentation: {
-								Build: "npm run build",
-								Test: "npm run test",
-							},
 						},
 					},
 				],
@@ -97,20 +95,18 @@ ${Object.entries(metadata?.documentation ?? {})
 				produce: () => [
 					{
 						commands: () => ["command a"],
-						files: ({ metadata }) => {
+						documentation: {
+							Build: "npm run build",
+							Test: "npm run test",
+						},
+						files: ({ documentation }) => {
 							return {
 								"README.md": `# Hello, world!
 
-		${Object.entries(metadata?.documentation ?? {})
+		${Object.entries(documentation ?? {})
 			.map(([key, value]) => `## ${key}\n${value}`)
 			.join("\n\n")}`,
 							};
-						},
-						metadata: {
-							documentation: {
-								Build: "npm run build",
-								Test: "npm run test",
-							},
 						},
 						packages: {
 							dependencies: {

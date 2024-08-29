@@ -1,15 +1,14 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
-// Creations
-
-import { CreatedMetadata } from "../metadata.js";
-
 export interface Creation {
 	commands?: string[];
+	debuggers?: unknown[];
+	documentation?: Record<string, string>;
+	extensions?: string[];
 	files?: CreatedFiles;
 	jobs?: CreatedJob[];
-	metadata?: CreatedMetadata;
+	metadata?: CreatedMetadata[];
 	packages?: CreatedPackages;
 	scripts?: CreatedScripts;
 }
@@ -30,6 +29,18 @@ export interface CreatedJob {
 export type CreatedJobStep = { run: string } | { uses: string };
 
 export type CreatedFileEntry = CreatedFiles | false | string;
+
+export interface CreatedMetadata {
+	glob: string;
+	type: MetadataFileType;
+}
+
+export enum MetadataFileType {
+	Config,
+	Documentation,
+	Source,
+	Test,
+}
 
 export interface CreatedPackages {
 	dependencies?: CreatedPackagesWithVersions;

@@ -7,7 +7,7 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-Inputs will be small metadata-driven functions that provide any data needed to inform blocks and addons later.
+Inputs will be small functions that provide any data needed to inform blocks and addons later.
 These may include:
 
 - Files on disk, such as raw text or parsed `.json`

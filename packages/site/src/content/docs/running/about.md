@@ -15,8 +15,8 @@ Specifically, that means each run of `create` will:
 1. Initialize shared context: the file system, network fetcher, and shell runner
 2. Run blocks in order with their portions of the context
    - File, network, and shell operations are stored so they can be run later
-   - Any metadata are stored and merged internally
-3. Run delayed portions of blocks that required metadata, in order
+3. Run delayed portions of blocks that read from other blocks, in order
+   - File, network, and shell operations are again stored so they can be run later
 4. Run all stored file, network, and shell operations
 
 There may need to be options provided for changing when pieces run.
