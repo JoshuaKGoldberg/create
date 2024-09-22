@@ -11,15 +11,6 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-The `create` engine combines the following layers:
-
-1. **[Blocks](./blocks/about)**: each tooling piece outputting files, network requests, and/or shell commands
-2. **[Inputs](./inputs/about)**: read in data from the creation context, allowing their own options
-3. **[Addons](./addons/about)**: added options for a block, with their own inputs and options
-4. **[Presets](./presets/about)**: configurable groups of blocks and addons, allowing their own options
-
-On top of those sits `create`: the end-user runtime that receives all that info and creates or updates a repository.
-
 ## End Vision
 
 `create` will be a general engine.

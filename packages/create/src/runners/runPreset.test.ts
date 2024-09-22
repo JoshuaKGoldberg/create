@@ -1,6 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
+import { z } from "zod";
 
 import { createPreset } from "../creators/createPreset.js";
+import { createSchema } from "../creators/createSchema.js";
 import { runPreset } from "./runPreset.js";
 
 const context = {
@@ -10,62 +12,78 @@ const context = {
 	take: vi.fn(),
 };
 
+const schema = createSchema({
+	options: {
+		value: z.string(),
+	},
+});
+
 describe("runPreset", () => {
-	test("files in one round", async () => {
-		await runPreset(
-			createPreset({
-				documentation: {
-					name: "Example",
-				},
-				options: {},
-				produce: () => [
-					{
-						files: {
-							"README.md": "# Hello, world!",
-						},
-					},
-				],
-			}),
-			{},
-			context,
-		);
+	test("files from one block", async () => {
+		const block = schema.createBlock({
+			about: {
+				name: "Example Block",
+			},
+			produce({ options }) {
+				return {
+					files: { "README.md": options.value },
+				};
+			},
+		});
+
+		const preset = createPreset({
+			about: {
+				name: "Example Preset",
+			},
+			blocks: [block()],
+			schema,
+		});
+
+		await runPreset(preset, { value: "Hello, world! " }, context);
 
 		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
 			    "README.md",
-			    "# Hello, world!",
+			    "Hello, world! ",
 			  ],
 			]
 		`);
 	});
 
-	test("files with a second round", async () => {
+	test("files from two blocks in phase order", async () => {
+		const blocks = [
+			schema.createBlock({
+				about: {
+					name: "Example Block 1",
+				},
+				produce({ options }) {
+					return {
+						documentation: { Example: options.value },
+					};
+				},
+			}),
+			schema.createBlock({
+				about: {
+					name: "Example Block 2",
+				},
+				produce({ created }) {
+					return {
+						files: { "README.md": created.documentation.Example },
+					};
+				},
+			}),
+		];
+
 		await runPreset(
 			createPreset({
-				documentation: {
+				about: {
 					name: "Example",
 				},
-				options: {},
-				produce: () => [
-					{
-						documentation: {
-							Build: "npm run build",
-							Test: "npm run test",
-						},
-						files: ({ documentation }) => {
-							return {
-								"README.md": `# Hello, world!
-
-${Object.entries(documentation ?? {})
-	.map(([key, value]) => `## ${key}\n${value}`)
-	.join("\n\n")}`,
-							};
-						},
-					},
-				],
+				blocks: blocks.map((block) => block()),
+				schema,
 			}),
-			{},
+			{ value: "Hello, world!" },
 			context,
 		);
 
@@ -73,87 +91,7 @@ ${Object.entries(documentation ?? {})
 			[
 			  [
 			    "README.md",
-			    "# Hello, world!
-
-			## Build
-			npm run build
-
-			## Test
-			npm run test",
-			  ],
-			]
-		`);
-	});
-
-	test("commands, files, packages, and scripts with a second round", async () => {
-		await runPreset(
-			createPreset({
-				documentation: {
-					name: "Example",
-				},
-				options: {},
-				produce: () => [
-					{
-						commands: () => ["command a"],
-						documentation: {
-							Build: "npm run build",
-							Test: "npm run test",
-						},
-						files: ({ documentation }) => {
-							return {
-								"README.md": `# Hello, world!
-
-		${Object.entries(documentation ?? {})
-			.map(([key, value]) => `## ${key}\n${value}`)
-			.join("\n\n")}`,
-							};
-						},
-						packages: {
-							dependencies: {
-								"package-a": "^1.2.3",
-							},
-						},
-						scripts: {
-							build: "tsc",
-							test: "vitest",
-						},
-					},
-				],
-			}),
-			{},
-			context,
-		);
-
-		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "README.md",
-			    "# Hello, world!
-
-					## Build
-			npm run build
-
-			## Test
-			npm run test",
-			  ],
-			  [
-			    "package.json",
-			    "{
-			  "scripts": {
-			    "build": "tsc",
-			    "test": "vitest"
-			  }
-			}",
-			  ],
-			]
-		`);
-		expect(context.runner.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "command a",
-			  ],
-			  [
-			    "pnpm add package-a@^1.2.3",
+			    "Hello, world!",
 			  ],
 			]
 		`);

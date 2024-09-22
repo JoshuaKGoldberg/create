@@ -1,29 +1,18 @@
-import {
-	CreationContextWithOptions,
-	CreationContextWithoutOptions,
-} from "./context.js";
-import { CreationFirstRound } from "./creations.js";
-import { DocumentationBase } from "./documentation.js";
+import { AnyShape, InferredObject } from "../options.js";
+import { AboutBase } from "./about.js";
+import { Block } from "./blocks.js";
+import { Schema } from "./schemas.js";
 
-export interface PresetBase {
-	documentation: DocumentationBase;
+export interface PresetDefinition<OptionsShape extends AnyShape> {
+	about?: AboutBase;
+	blocks: Block<InferredObject<OptionsShape>>[];
 	repository?: string;
+	schema: Schema<OptionsShape>;
 }
 
-export type Preset<OptionsSchema extends object | undefined = undefined> =
-	OptionsSchema extends object
-		? PresetWithOptions<OptionsSchema>
-		: PresetWithoutOptions;
-
-export interface PresetWithoutOptions extends PresetBase {
-	(context: CreationContextWithoutOptions): Promise<CreationFirstRound[]>;
-}
-
-export interface PresetWithOptions<
-	OptionsSchema extends object | undefined = undefined,
-> extends PresetBase {
-	(
-		context: CreationContextWithOptions<OptionsSchema>,
-	): Promise<CreationFirstRound[]>;
-	options: OptionsSchema;
+export interface Preset<OptionsShape extends AnyShape> {
+	about?: AboutBase;
+	blocks: Block<InferredObject<OptionsShape>>[];
+	repository?: string;
+	schema: Schema<OptionsShape>;
 }

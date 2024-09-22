@@ -1,103 +1,91 @@
-import { AnyOptionsSchema, InferredSchema } from "../options.js";
+import { AnyShape, InferredObject, InputShape } from "../options.js";
 import { PromiseOrSync } from "../utils.js";
-import {
-	CreationContextWithOptions,
-	CreationContextWithoutOptions,
-} from "./context.js";
-import { CreationFirstRound } from "./creations.js";
-import { DocumentationBase } from "./documentation.js";
+import { AboutBase } from "./about.js";
+import { Creation } from "./creations.js";
 
-export interface BlockBase {
-	documentation?: DocumentationBase;
+export enum BlockPhase {
+	Default = 0,
+	Install,
+	Source,
+	Test,
+	Build,
+	Format,
+	Lint,
+	Package,
+	Documentation,
+	Git,
+	Editor,
+	CI,
 }
 
-export type Block<BlockOptions extends object | undefined = undefined> =
-	BlockOptions extends object
-		? BlockWithOptions<BlockOptions>
-		: BlockWithoutOptions;
-
-export type BlockWithoutOptions = (
-	context: CreationContextWithoutOptions,
-) => PromiseOrSync<CreationFirstRound>;
-
-export interface BlockWithOptions<BlockOptions extends object> {
-	(
-		context: CreationContextWithOptions<BlockOptions>,
-	): PromiseOrSync<CreationFirstRound>;
-	createAddon: <
-		AddonOptionsSchema extends AnyOptionsSchema | undefined = undefined,
-	>(
-		addonDefinition: AddonDefinition<BlockOptions, AddonOptionsSchema>,
-	) => Addon<BlockOptions, InferredSchema<AddonOptionsSchema>>;
+export interface BlockDefinitionBase {
+	about?: AboutBase;
+	phase?: BlockPhase;
 }
 
-export type BlockProducer<
-	BlockOptionsSchema extends AnyOptionsSchema | undefined = undefined,
-> = BlockOptionsSchema extends object
-	? BlockProducerWithOptions<BlockOptionsSchema>
-	: BlockProducerWithoutOptions;
+export type BlockDefinition<
+	Options extends object,
+	ArgsShape extends AnyShape | undefined,
+> = ArgsShape extends object
+	? BlockDefinitionWithArgs<Options, ArgsShape>
+	: BlockDefinitionWithoutArgs<Options>;
 
-export type BlockProducerWithoutOptions = (
-	context: CreationContextWithoutOptions,
-) => PromiseOrSync<CreationFirstRound>;
+export interface BlockDefinitionWithArgs<
+	Options extends object,
+	ArgsShape extends AnyShape,
+> extends BlockDefinitionBase {
+	args: ArgsShape;
+	produce: BlockProducerWithArgs<Options, InferredObject<ArgsShape>>;
+}
 
-export type BlockProducerWithOptions<
-	BlockOptionsSchema extends AnyOptionsSchema,
+export interface BlockDefinitionWithoutArgs<Options extends object>
+	extends BlockDefinitionBase {
+	produce: BlockProducerWithoutArgs<Options>;
+}
+
+export interface BlockContext<Options extends object> {
+	created: Creation;
+	options: Options;
+}
+
+export type BlockProducerWithArgs<
+	Options extends object,
+	Args extends object,
 > = (
-	context: CreationContextWithOptions<BlockOptionsSchema>,
-) => PromiseOrSync<CreationFirstRound>;
+	context: ContextWithArgs<Options, Args>,
+) => PromiseOrSync<Partial<Creation>>;
 
-export type AddonDefinition<
-	BlockOptions extends object,
-	AddonOptionsSchema extends AnyOptionsSchema | undefined,
-> = AddonOptionsSchema extends AnyOptionsSchema
-	? AddonDefinitionWithOptions<BlockOptions, AddonOptionsSchema>
-	: AddonDefinitionWithoutOptions<BlockOptions>;
+export type BlockProducerWithoutArgs<Options extends object> = (
+	context: BlockContext<Options>,
+) => PromiseOrSync<Partial<Creation>>;
 
-export interface AddonDefinitionWithoutOptions<BlockOptions extends object> {
-	produce: AddonProducer<BlockOptions>;
+export interface ContextWithArgs<Options extends object, Args extends object>
+	extends BlockContext<Options> {
+	args: Args;
 }
 
-export interface AddonDefinitionWithOptions<
-	BlockOptions extends object,
-	AddonOptionsSchema extends AnyOptionsSchema,
-> {
-	options: AddonOptionsSchema;
-	produce: AddonProducer<BlockOptions, InferredSchema<AddonOptionsSchema>>;
+export type BlockFactory<
+	Options extends object,
+	ArgsShape extends AnyShape | undefined,
+> = ArgsShape extends object
+	? BlockFactoryWithRequiredArgs<Options, InputShape<ArgsShape>>
+	: BlockFactoryWithoutArgs<Options>;
+
+export type BlockFactoryWithRequiredArgs<
+	Options extends object,
+	Args extends object,
+> = (args: Args) => Block<Options>;
+
+export type BlockFactoryWithOptionalArgs<
+	Options extends object,
+	Args extends object,
+> = (args?: Args) => Block<Options>;
+
+export type BlockFactoryWithoutArgs<Options extends object> =
+	() => Block<Options>;
+
+export interface Block<Options extends object> {
+	about?: AboutBase;
+	phase?: BlockPhase;
+	produce: (context: BlockContext<Options>) => Promise<Partial<Creation>>;
 }
-
-export type AddonProducer<
-	BlockOptions extends object,
-	AddonOptions extends object | undefined = undefined,
-> = AddonOptions extends object
-	? AddonProducerWithOptions<BlockOptions, AddonOptions>
-	: AddonProducerWithoutOptions<BlockOptions>;
-
-export type AddonProducerWithoutOptions<BlockOptions extends object> = (
-	context: CreationContextWithoutOptions,
-) => PromiseOrSync<BlockOptions>;
-
-export type AddonProducerWithOptions<
-	BlockOptions extends object,
-	AddonOptions extends object,
-> = (
-	context: CreationContextWithOptions<AddonOptions>,
-) => PromiseOrSync<BlockOptions>;
-
-export type Addon<
-	BlockOptions extends object,
-	AddonOptions extends object | undefined = undefined,
-> = AddonOptions extends object
-	? AddonWithOptions<BlockOptions, AddonOptions>
-	: AddonWithoutOptions<BlockOptions>;
-
-export type AddonWithoutOptions<BlockOptions extends object> = (
-	context: CreationContextWithoutOptions,
-) => PromiseOrSync<BlockOptions>;
-
-export type AddonWithOptions<
-	BlockOptions extends object,
-	AddonOptions extends object,
-> = (
-	context: CreationContextWithOptions<AddonOptions>,
-) => PromiseOrSync<BlockOptions>;

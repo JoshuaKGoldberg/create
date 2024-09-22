@@ -1,38 +1,36 @@
 import * as semver from "semver";
 
 import {
-	CreatedPackages,
+	CreatedPackage,
+	CreatedPackageScripts,
 	CreatedPackagesWithVersions,
 } from "../types/creations.js";
 import { removeEmptyEntries } from "./removeEmptyEntries.js";
 
-export function mergePackages(
-	first: CreatedPackages | undefined,
-	second: CreatedPackages | undefined,
+export function mergePackage(
+	first: CreatedPackage,
+	second: CreatedPackage | undefined,
 ) {
-	if (!first) {
-		return second;
-	}
-
 	if (!second) {
 		return first;
 	}
 
-	const result: CreatedPackages = {};
+	const result: CreatedPackage = {};
 
 	for (const key of [
 		"dependencies",
 		"devDependencies",
 		"peerDependencies",
 	] as const) {
-		result[key] = mergePackageEntries(result, key, first[key], second[key]);
+		result[key] = mergeDependencyEntries(key, first[key], second[key]);
 	}
+
+	result.scripts = mergeScripts(first.scripts, second.scripts);
 
 	return removeEmptyEntries(result);
 }
 
-function mergePackageEntries(
-	result: CreatedPackages,
+function mergeDependencyEntries(
 	key: "dependencies" | "devDependencies" | "peerDependencies",
 	first: CreatedPackagesWithVersions | undefined,
 	second: CreatedPackagesWithVersions | undefined,
@@ -64,4 +62,39 @@ function mergePackageEntries(
 	}
 
 	return entries;
+}
+
+function mergeScripts(
+	first: CreatedPackageScripts | undefined,
+	second: CreatedPackageScripts | undefined,
+) {
+	if (!first) {
+		return second;
+	}
+
+	if (!second) {
+		return first;
+	}
+
+	const scripts: CreatedPackageScripts = {};
+
+	for (const scriptKey in first) {
+		if (!(scriptKey in first)) {
+			scripts[scriptKey] = second[scriptKey];
+			continue;
+		}
+
+		if (!(scriptKey in second)) {
+			scripts[scriptKey] = first[scriptKey];
+			continue;
+		}
+
+		if (first[scriptKey] !== second[scriptKey]) {
+			throw new Error(
+				`Conflicting ${scriptKey} scripts: ${first[scriptKey]} vs. ${second[scriptKey]}.`,
+			);
+		}
+	}
+
+	return scripts;
 }

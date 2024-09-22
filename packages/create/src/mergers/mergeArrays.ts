@@ -1,9 +1,5 @@
 import { isNotUndefined } from "../utils.js";
 
-export function mergeArrays<T>(
-	...arrays: (T[] | undefined)[]
-): T[] | undefined {
-	const result = arrays.filter(isNotUndefined).flat();
-
-	return result.length ? result : undefined;
+export function mergeArrays<T>(...arrays: (T[] | undefined)[]) {
+	return arrays.filter(isNotUndefined).flat();
 }

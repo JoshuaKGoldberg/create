@@ -1,11 +1,14 @@
 import readline from "node:readline/promises";
 import * as z from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options.js";
+import { AnyShape, InferredObject } from "../options.js";
 import { promptForSchema } from "./promptForSchema.js";
 
-export async function promptForPresetOptions(schemas: z.ZodRawShape) {
-	const options: InferredSchema<AnyOptionsSchema> = {};
+export async function promptForPresetOptions(
+	schemas: z.ZodRawShape,
+	existing: Record<string, unknown>,
+) {
+	const options: InferredObject<AnyShape> = {};
 
 	const rl = readline.createInterface({
 		input: process.stdin,
@@ -13,7 +16,7 @@ export async function promptForPresetOptions(schemas: z.ZodRawShape) {
 	});
 
 	for (const [key, schema] of Object.entries(schemas)) {
-		options[key] = await promptForSchema(rl, key, schema);
+		options[key] = existing[key] ?? (await promptForSchema(rl, key, schema));
 	}
 
 	rl.close();

@@ -1,13 +1,13 @@
 import { execa } from "execa";
 import * as nodeFS from "node:fs/promises";
 
-import { ContextFS, CreationContextWithoutOptions } from "../types/context.js";
 import { TakeInput } from "../types/inputs.js";
+import { RunningContext, RunningFileSystem } from "../types/running.js";
 
-export function setupContext(): CreationContextWithoutOptions {
+export function createRunningContext(): RunningContext {
 	const fetcher = fetch;
 
-	const fs: ContextFS = {
+	const fs: RunningFileSystem = {
 		readFile: async (filePath: string) =>
 			(await nodeFS.readFile(filePath)).toString(),
 		writeFile: async (filePath: string, contents: string) => {

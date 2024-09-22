@@ -1,52 +1,46 @@
 import { z } from "zod";
 
-import { AnyOptionsSchema, InferredSchema } from "../options.js";
-import {
-	CreationContextWithOptions,
-	CreationContextWithoutOptions,
-} from "../types/context.js";
-import { Input } from "../types/inputs.js";
-import { isDefinitionWithOptions } from "./utils.js";
+import { AnyShape, InferredObject } from "../options.js";
+import { Input, InputContext, InputContextWithArgs } from "../types/inputs.js";
+import { isDefinitionWithArgs } from "./utils.js";
 
 export type InputDefinition<
 	Result,
-	OptionsSchema extends AnyOptionsSchema | undefined = undefined,
-> = OptionsSchema extends object
-	? InputDefinitionWithOptions<Result, OptionsSchema>
-	: InputDefinitionWithoutOptions<Result>;
+	ArgsSchema extends AnyShape | undefined = undefined,
+> = ArgsSchema extends object
+	? InputDefinitionWithArgs<Result, ArgsSchema>
+	: InputDefinitionWithoutArgs<Result>;
 
-export interface InputDefinitionWithoutOptions<Result> {
+export interface InputDefinitionWithoutArgs<Result> {
 	produce: Input<Result>;
 }
 
-export interface InputDefinitionWithOptions<
+export interface InputDefinitionWithArgs<
 	Result,
-	OptionsSchema extends AnyOptionsSchema | undefined,
+	ArgsSchema extends AnyShape | undefined,
 > {
-	options: OptionsSchema;
-	produce: Input<Result, InferredSchema<OptionsSchema>>;
+	args: ArgsSchema;
+	produce: Input<Result, InferredObject<ArgsSchema>>;
 }
 
 export function createInput<
 	Result,
-	OptionsSchema extends AnyOptionsSchema | undefined = undefined,
+	ArgsSchema extends AnyShape | undefined = undefined,
 >(
-	definition: InputDefinition<Result, OptionsSchema>,
-): Input<Result, InferredSchema<OptionsSchema>> {
-	if (!isDefinitionWithOptions(definition)) {
-		return ((context: CreationContextWithoutOptions) => {
+	definition: InputDefinition<Result, ArgsSchema>,
+): Input<Result, InferredObject<ArgsSchema>> {
+	if (!isDefinitionWithArgs(definition)) {
+		return ((context: InputContext) => {
 			return definition.produce(context);
-		}) as Input<Result, InferredSchema<OptionsSchema>>;
+		}) as Input<Result, InferredObject<ArgsSchema>>;
 	}
 
-	const schema = z.object(definition.options);
+	const schema = z.object(definition.args);
 
-	return ((
-		context: CreationContextWithOptions<InferredSchema<OptionsSchema>>,
-	) => {
+	return ((context: InputContextWithArgs<InferredObject<ArgsSchema>>) => {
 		return definition.produce({
 			...context,
-			options: schema.parse(context.options),
+			args: schema.parse(context.args),
 		});
-	}) as Input<Result, InferredSchema<OptionsSchema>>;
+	}) as Input<Result, InferredObject<ArgsSchema>>;
 }

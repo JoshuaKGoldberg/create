@@ -134,6 +134,9 @@ importers:
       astro:
         specifier: ^4.8.6
         version: 4.13.3(@types/node@22.5.0)(typescript@5.5.4)
+      remark-custom-heading-id:
+        specifier: ^2.0.0
+        version: 2.0.0
       typescript:
         specifier: ^5.4.5
         version: 5.5.4
@@ -2473,6 +2476,9 @@ packages:
     resolution: {integrity: sha512-qwGyuyKwjkEMOJ10XN6OTKNOVYvOIi35RNvDLNxTof5s8UmyGHlCdpngRHoRGNvQVGuxO3BJ7uNSgdeX166WXw==}
     engines: {node: '>=18'}
 
+  mdast-heading-id@2.0.0:
+    resolution: {integrity: sha512-JVh0xKqsI3INPzJEqqCiuq3BGde5x6AlBTQAetLQQr9qTiDjX4dCvFhIiGmyPt1rftiHELQPI5obGphIOTXeWQ==}
+
   mdast-util-definitions@6.0.0:
     resolution: {integrity: sha512-scTllyX6pnYNZH/AIp/0ePz6s4cZtARxImwoPJ7kS42n+MnVsI4XbnG6d4ibehRIldYMWM2LD7ImQblVhUejVQ==}
 
@@ -2605,6 +2611,9 @@ packages:
 
   micromark-factory-whitespace@2.0.0:
     resolution: {integrity: sha512-28kbwaBjc5yAI1XadbdPYHX/eDnqaUFVikLwrO7FDnKG7lpgxnvk/XGRhX/PN0mOZ+dBSZ+LgunHS+6tYQAzhA==}
+
+  micromark-heading-id@2.0.0:
+    resolution: {integrity: sha512-TdR5WCmwuCroK8QrfX0/4w9bjj3ayN0GzatxGV/lWQKmM75kNKVZEmdvKZS4MOskARxWXu1WHdIJjMSVMBegow==}
 
   micromark-util-character@2.1.0:
     resolution: {integrity: sha512-KvOVV+X1yLBfs9dCBSopq/+G1PcgT3lAK07mC4BzXi5E7ahzMAF8oIupDDJ6mievI6F+lAATkbQQlQixJfT3aQ==}
@@ -3008,6 +3017,9 @@ packages:
 
   rehype@13.0.1:
     resolution: {integrity: sha512-AcSLS2mItY+0fYu9xKxOu1LhUZeBZZBx8//5HKzF+0XP+eP8+6a5MXn2+DW2kfXR6Dtp1FEXMVrjyKAcvcU8vg==}
+
+  remark-custom-heading-id@2.0.0:
+    resolution: {integrity: sha512-LpR+c4pmuBGG/zhNbebecDnpKyXU4B7bdNu6tXW83T3QWlkwUpHYyUR8uXQ/BERK9HlI5pXGLu7DjkIS07/iVQ==}
 
   remark-directive@3.0.0:
     resolution: {integrity: sha512-l1UyWJ6Eg1VPU7Hm/9tt0zKtReJQNOA4+iDMAxTyZNWnJnFlbS/7zhiel/rogTLQ2vMYwDzSJa4BiVNqGlqIMA==}
@@ -6413,6 +6425,8 @@ snapshots:
       markdown-it: 14.1.0
       markdownlint-micromark: 0.1.9
 
+  mdast-heading-id@2.0.0: {}
+
   mdast-util-definitions@6.0.0:
     dependencies:
       '@types/mdast': 4.0.4
@@ -6795,6 +6809,10 @@ snapshots:
       micromark-util-character: 2.1.0
       micromark-util-symbol: 2.0.0
       micromark-util-types: 2.0.0
+
+  micromark-heading-id@2.0.0:
+    dependencies:
+      micromark-util-symbol: 2.0.0
 
   micromark-util-character@2.1.0:
     dependencies:
@@ -7264,6 +7282,12 @@ snapshots:
       rehype-parse: 9.0.0
       rehype-stringify: 10.0.0
       unified: 11.0.5
+
+  remark-custom-heading-id@2.0.0:
+    dependencies:
+      mdast-heading-id: 2.0.0
+      micromark-heading-id: 2.0.0
+      unist-util-visit: 5.0.0
 
   remark-directive@3.0.0:
     dependencies:

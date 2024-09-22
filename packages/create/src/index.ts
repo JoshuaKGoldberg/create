@@ -1,6 +1,6 @@
-export * from "./creators/createBlock.js";
 export * from "./creators/createInput.js";
 export * from "./creators/createPreset.js";
+export * from "./creators/createSchema.js";
 export * from "./options.js";
 export * from "./types/blocks.js";
 export * from "./types/context.js";

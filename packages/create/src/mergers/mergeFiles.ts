@@ -4,13 +4,9 @@ export function mergeFiles(
 	first: CreatedFiles | undefined,
 	second: CreatedFiles | undefined,
 	path: string[],
-): CreatedFiles | undefined {
-	if (!first && !second) {
-		return undefined;
-	}
-
+) {
 	if (!first) {
-		return second;
+		return second ?? {};
 	}
 
 	if (!second) {

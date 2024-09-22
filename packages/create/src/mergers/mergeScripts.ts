@@ -1,13 +1,9 @@
-import { CreatedScripts } from "../types/creations.js";
+import { CreatedPackageScripts } from "../types/creations.js";
 
 export function mergeScripts(
-	first: CreatedScripts | undefined,
-	second: CreatedScripts | undefined,
+	first: CreatedPackageScripts,
+	second: CreatedPackageScripts | undefined,
 ) {
-	if (!first) {
-		return second;
-	}
-
 	if (!second) {
 		return first;
 	}

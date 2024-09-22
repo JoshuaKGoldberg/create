@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createInput } from "./createInput.js";
 
 describe("createInput", () => {
-	test("production without options", () => {
+	test("production without args", () => {
 		const expected = 123;
 
 		const input = createInput({
@@ -13,7 +13,7 @@ describe("createInput", () => {
 
 		const actual = input({
 			fetcher: vi.fn(),
-			fs: { readFile: vi.fn(), writeFile: vi.fn() },
+			fs: { readFile: vi.fn() },
 			runner: vi.fn(),
 			take: vi.fn(),
 		});
@@ -21,22 +21,22 @@ describe("createInput", () => {
 		expect(actual).toBe(expected);
 	});
 
-	test("production with options", () => {
+	test("production with args", () => {
 		const expected = 234;
 
 		const input = createInput({
-			options: {
+			args: {
 				offset: z.number(),
 			},
-			produce: ({ options }) => expected + options.offset,
+			produce: ({ args }) => expected + args.offset,
 		});
 
 		const actual = input({
-			fetcher: vi.fn(),
-			fs: { readFile: vi.fn(), writeFile: vi.fn() },
-			options: {
+			args: {
 				offset: 1000,
 			},
+			fetcher: vi.fn(),
+			fs: { readFile: vi.fn() },
 			runner: vi.fn(),
 			take: vi.fn(),
 		});

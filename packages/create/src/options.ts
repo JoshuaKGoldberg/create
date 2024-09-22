@@ -1,8 +1,14 @@
 import { z } from "zod";
 
-export type AnyOptionsSchema = z.ZodRawShape;
+export type AnyShape = z.ZodRawShape;
 
-export type InferredSchema<OptionsSchema extends AnyOptionsSchema | undefined> =
-	OptionsSchema extends AnyOptionsSchema
-		? z.infer<z.ZodObject<OptionsSchema>>
+export type AnyOptionalShape = Record<string, z.ZodOptional<z.ZodTypeAny>>;
+
+export type InferredObject<OptionsShape extends AnyShape | undefined> =
+	OptionsShape extends AnyShape
+		? z.infer<z.ZodObject<OptionsShape>>
 		: undefined;
+
+export type InputShape<OptionsShape extends AnyShape> = z.input<
+	z.ZodObject<OptionsShape>
+>;

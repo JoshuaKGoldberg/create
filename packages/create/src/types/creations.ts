@@ -2,20 +2,31 @@
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
 export interface Creation {
-	commands?: string[];
-	debuggers?: unknown[];
-	documentation?: Record<string, string>;
-	extensions?: string[];
-	files?: CreatedFiles;
-	jobs?: CreatedJob[];
-	metadata?: CreatedMetadata[];
-	packages?: CreatedPackages;
-	scripts?: CreatedScripts;
+	commands: string[];
+	documentation: Record<string, string>;
+	editor: CreatedEditor;
+	files: CreatedFiles;
+	jobs: CreatedJob[];
+	metadata: CreatedMetadata[];
+	package: CreatedPackage;
 }
 
-export type CreationFirstRound = {
-	[K in keyof Creation]: ((creation: Creation) => Creation[K]) | Creation[K];
-};
+export interface CreatedEditor {
+	debuggers?: CreatedEditorDebugger[];
+	extensions?: string[];
+	settings?: Record<string, unknown>;
+	tasks?: CreatedEditorTask[];
+}
+
+export interface CreatedEditorDebugger {
+	[i: string]: unknown;
+	name: string;
+}
+
+export interface CreatedEditorTask {
+	[i: string]: unknown;
+	detail: string;
+}
 
 export interface CreatedFiles {
 	[i: string]: CreatedFileEntry | undefined;
@@ -32,26 +43,34 @@ export type CreatedFileEntry = CreatedFiles | false | string;
 
 export interface CreatedMetadata {
 	glob: string;
+	language?: string;
 	type: MetadataFileType;
 }
 
 export enum MetadataFileType {
+	Built,
 	Config,
 	Documentation,
+	Ignored,
+	License,
+	Snapshot,
 	Source,
 	Test,
 }
 
-export interface CreatedPackages {
+/** @todo Use npm's package.json types? */
+export interface CreatedPackage {
+	[i: string]: unknown;
 	dependencies?: CreatedPackagesWithVersions;
 	devDependencies?: CreatedPackagesWithVersions;
 	peerDependencies?: CreatedPackagesWithVersions;
+	scripts?: CreatedPackageScripts;
 }
 
 export interface CreatedPackagesWithVersions {
 	[i: string]: string;
 }
 
-export interface CreatedScripts {
+export interface CreatedPackageScripts {
 	[i: string]: string;
 }

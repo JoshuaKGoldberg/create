@@ -14,6 +14,7 @@
 		"@astrojs/starlight": "^0.25.0",
 		"@types/node": "^22.1.0",
 		"astro": "^4.8.6",
+		"remark-custom-heading-id": "^2.0.0",
 		"typescript": "^5.4.5"
 	}
 }

@@ -7,7 +7,7 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-Users won't want to manually configure blocks and addons in all of their projects.
+Users won't want to manually configure blocks in all of their projects.
 Presets that configure broadly used or organization-wide configurations will help share setups.
 
 For example, a preset that configures ESLint, README.md with a logo, and blocks with JSDoc and Vitest linting addons:

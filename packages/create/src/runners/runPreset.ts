@@ -1,47 +1,40 @@
 import { mergeCreations } from "../mergers/mergeCreations.js";
-import { AnyOptionsSchema, InferredSchema } from "../options.js";
-import { CreationContextWithoutOptions } from "../types/context.js";
-import { Creation, CreationFirstRound } from "../types/creations.js";
+import { AnyShape, InferredObject } from "../options.js";
+import { BlockPhase } from "../types/blocks.js";
+import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
+import { RunningContext } from "../types/running.js";
 import { runCreation } from "./runCreation.js";
 
-export async function runPreset<PresetOptionsSchema extends AnyOptionsSchema>(
-	preset: Preset<PresetOptionsSchema>,
-	options: InferredSchema<PresetOptionsSchema>,
-	context: CreationContextWithoutOptions,
+export async function runPreset<PresetOptionsShape extends AnyShape>(
+	preset: Preset<PresetOptionsShape>,
+	options: InferredObject<PresetOptionsShape>,
+	context: RunningContext,
 ) {
-	// From docs/running/about.md ...
+	let created: Creation = {
+		commands: [],
+		documentation: {},
+		editor: {},
+		files: {},
+		jobs: [],
+		metadata: [],
+		package: {},
+	};
 
-	// 2. Run blocks in order with their portions of the context
-	const starting = await preset({ ...context, options });
-	const startingCreation = mergeCreations(starting.map(removeFunctionValues));
-
-	// 3. Run delayed portions of blocks that required metadata, in order
-	const creations = starting.map((firstRound) =>
-		firstRoundToCreation(firstRound, startingCreation),
+	const blocksSorted = preset.blocks.sort(
+		(a, b) => (a.phase ?? BlockPhase.Default) - (b.phase ?? BlockPhase.Default),
 	);
-	const creation = mergeCreations(creations);
 
-	// 4. Run all stored file, network, and shell operations
-	await runCreation(creation, context);
-}
+	for (const block of blocksSorted) {
+		created = mergeCreations(
+			created,
+			await block.produce({
+				...context,
+				created,
+				options,
+			}),
+		);
+	}
 
-function removeFunctionValues(firstRound: CreationFirstRound): Creation {
-	return Object.fromEntries(
-		Object.entries(firstRound).filter(
-			([, value]) => typeof value !== "function",
-		),
-	);
-}
-
-function firstRoundToCreation(
-	firstRound: CreationFirstRound,
-	firstRoundsCreation: Creation,
-): Creation {
-	return Object.fromEntries(
-		Object.entries(firstRound).map(([key, value]) => [
-			key,
-			typeof value === "function" ? value(firstRoundsCreation) : value,
-		]),
-	);
+	await runCreation(created, context);
 }
