@@ -1,7 +1,7 @@
 import { AnyShape, InferredObject, InputShape } from "../options.js";
 import { PromiseOrSync } from "../utils.js";
 import { AboutBase } from "./about.js";
-import { Creation } from "./creations.js";
+import { Creation, IndirectCreation } from "./creations.js";
 
 export enum BlockPhase {
 	Default = 0,
@@ -44,7 +44,10 @@ export interface BlockDefinitionWithoutArgs<Options extends object>
 }
 
 export interface BlockContext<Options extends object> {
-	created: Creation;
+	/**
+	 * @todo It would be nice to not provide this to blocks without an explicit phase.
+	 */
+	created: IndirectCreation;
 	options: Options;
 }
 

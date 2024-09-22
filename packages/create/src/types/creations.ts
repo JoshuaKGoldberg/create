@@ -1,15 +1,20 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
-export interface Creation {
+export interface DirectCreation {
 	commands: string[];
-	documentation: Record<string, string>;
-	editor: CreatedEditor;
 	files: CreatedFiles;
-	jobs: CreatedJob[];
-	metadata: CreatedMetadata[];
 	package: CreatedPackage;
 }
+
+export interface IndirectCreation {
+	documentation: Record<string, string>;
+	editor: CreatedEditor;
+	jobs: CreatedJob[];
+	metadata: CreatedMetadata[];
+}
+
+export type Creation = DirectCreation & IndirectCreation;
 
 export interface CreatedEditor {
 	debuggers?: CreatedEditorDebugger[];

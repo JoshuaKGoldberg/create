@@ -60,7 +60,7 @@ Doing so just makes that data easier to [mock out in tests](../testing/inputs) l
 
 ### `created`
 
-In-progress productions from any previously run Blocks.
+In-progress [Indirect Creation properties](./creations#indirect-creations) from any previously run Blocks.
 
 This can be useful if one Block relies on the output of a previous block.
 Blocks may reference the outputs of earlier Blocks to generate their own tooling.

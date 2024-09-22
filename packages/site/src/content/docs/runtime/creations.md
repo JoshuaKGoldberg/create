@@ -1,6 +1,6 @@
 ---
-description: "The pieces of a repository as described by a Block."
-title: Production
+description: "The pieces of a repository as described by Blocks."
+title: Creations
 ---
 
 :::danger
@@ -8,15 +8,15 @@ The `create` engine does not exist yet.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-A Production object is what's returned by each [Block](../about/blocks)'s `produce()` method.
+A Creation object is what's returned by each [Block](../about/blocks)'s `produce()` method.
 It may contain any of the following properties:
 
-- ["Direct" properties](#direct-properties) that always cause changes to the repository:
+- ["Direct" creations](#direct-creations) that always cause changes to the repository:
   - [`commands`](#commands): Terminal commands to run after setup
   - [`files`](#files): Files to create or modify on disk
   - [`package`](#package): Entries to add to the `package.json` file
   - Network requests _(to be added soon)_
-- ["Indirect" properties](#indirect-properties) only made to be used by later blocks:
+- ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`documentation`](#documentation): Descriptions of how users should use the tooling
   - [`editor`](#editor): Settings to configure the user's editor or IDE
   - [`jobs`](#jobs): CI jobs to be run in an environment such as GitHub Actions
@@ -47,9 +47,9 @@ export const blockPnpmDeduplicate = schema.createBlock({
 });
 ```
 
-## Direct Properties
+## Direct Creations
 
-These production properties always cause changes to the output repository.
+These Creation properties always cause changes to the output repository.
 
 ### `commands`
 
@@ -140,9 +140,9 @@ export const blockKnip = schema.createBlock({
 The `create` engine would create a `package.json` file with the `devDependencies` and `scripts` specified by the block.
 It would also install any package dependencies listed in the file.
 
-## Indirect Properties
+## Indirect Creations
 
-These properties produce information meant to be used by subsequent Blocks.
+These Creation properties produce information meant to be used by subsequent Blocks.
 
 - See [Context](./contexts) for how Blocks can read context from previous Blocks.
 - See [Phases](./phases) for the Phases of execution Blocks can specify.

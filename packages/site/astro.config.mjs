@@ -19,7 +19,7 @@ export default defineConfig({
 					items: [
 						{ label: "API", link: "runtime/api" },
 						{ label: "Contexts", link: "runtime/contexts" },
-						{ label: "Production", link: "runtime/production" },
+						{ label: "Creations", link: "runtime/creations" },
 						{ label: "Phases", link: "runtime/phases" },
 					],
 					label: "Runtime",

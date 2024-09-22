@@ -12,7 +12,7 @@ A _Block_ defines the logic to create a portion of a repository.
 It defines a `produce()` method for its core logic:
 
 - It receives one parameter: a [Context](../runtime/contexts) object containing options as well as other utilities.
-- It returns a [Production](../runtime/production) object describing the generated pieces of tooling.
+- It returns a [Creation](../runtime/creation) object describing the generated pieces of tooling.
 
 When `create` scaffolds a repository, it merges together the produced outputs from all Blocks.
 
