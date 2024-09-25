@@ -14,10 +14,11 @@ For example, a preset that takes in keywords and forwards them to a `package.jso
 
 ```ts
 import { blockPackageJson } from "@example/block-package-json";
-import { createPreset } from "create";
 import { z } from "zod";
 
-export const myPreset = createPreset({
+import { schema } from "./schema";
+
+export const myPreset = schema.createPreset({
 	options: {
 		keywords: z.array(z.string()),
 	},

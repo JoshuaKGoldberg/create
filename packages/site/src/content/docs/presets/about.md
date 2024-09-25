@@ -17,9 +17,10 @@ import { blockESLint } from "@example/block-eslint";
 import { blockReadme } from "@example/block-readme";
 import { blockVitest } from "@example/block-vitest";
 import { addonESLintJSDoc, addonESLintVitest } from "@example/my-eslint-addons";
-import { createPreset } from "create";
 
-export const myPreset = createPreset({
+import { schema } from "./schema";
+
+export const myPreset = schema.createPreset({
 	produce() {
 		return [
 			blockESLint({
