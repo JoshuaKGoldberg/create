@@ -17,7 +17,11 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 	const argsOptions: ParseArgsConfig["options"] = {};
 
 	for (const [key, value] of Object.entries(options)) {
-		argsOptions[key] = zodValueToArgsOption(value);
+		const argsOption = zodValueToArgsOption(value);
+
+		if (argsOption) {
+			argsOptions[key] = argsOption;
+		}
 	}
 
 	return parseArgs({
@@ -31,34 +35,49 @@ type ParseArgsOptionsType = ParseArgsOptionsConfig[string]["type"];
 
 function zodValueToArgsOption(
 	zodValue: ZodTypeAny,
-): ParseArgsOptionsConfig[string] {
+): ParseArgsOptionsConfig[string] | undefined {
 	switch (zodValue._def.typeName) {
-		case "ZodArray":
-			return {
-				multiple: true,
-				type: zodValueTypeToArgsOptionType(zodValue._def.type.typeName),
-			};
+		// case "ZodArray":
+		// 	return {
+		// 		multiple: true,
+		// 		type: zodValueTypeToArgsOptionType(zodValue._def),
+		// 	};
 
 		case "ZodBoolean":
+		case "ZodLiteral":
 		case "ZodString":
 			return {
-				type: zodValueTypeToArgsOptionType(zodValue._def.typeName),
+				type: zodValueTypeToArgsOptionType(zodValue._def),
 			};
+
+		case "ZodOptional":
+			return zodValueToArgsOption(zodValue._def.innerType);
+
+		case "ZodUnion":
+			return zodValueToArgsOption(zodValue._def.options[0]);
 	}
 
-	throw new Error(`Unknown zod value type: ${zodValue._def.typeName}`);
+	// throw new Error(`Unknown zod value type: ${zodValue._def.typeName}`);
+	return undefined;
 }
 
-function zodValueTypeToArgsOptionType(
-	zodValueType: string,
-): ParseArgsOptionsType {
-	switch (zodValueType) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function zodValueTypeToArgsOptionType(def: any): ParseArgsOptionsType {
+	switch (def.typeName) {
 		case "ZodBoolean":
 			return "boolean";
+
+		case "ZodLiteral": {
+			const typeofValue = typeof def.value;
+			if (typeofValue === "boolean" || typeofValue === "string") {
+				return typeofValue;
+			}
+			break;
+		}
 
 		case "ZodString":
 			return "string";
 	}
 
-	throw new Error(`Unknown zod value type: ${zodValueType}`);
+	throw new Error(`Unknown zod value type: ${def.typeName}`);
 }

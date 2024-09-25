@@ -1,6 +1,7 @@
 import { AnyShape, InferredObject, InputShape } from "../options.js";
 import { PromiseOrSync } from "../utils.js";
 import { AboutBase } from "./about.js";
+import { ContextBase } from "./context.js";
 import { Creation, IndirectCreation } from "./creations.js";
 
 export enum BlockPhase {
@@ -43,7 +44,7 @@ export interface BlockDefinitionWithoutArgs<Options extends object>
 	produce: BlockProducerWithoutArgs<Options>;
 }
 
-export interface BlockContext<Options extends object> {
+export interface BlockContext<Options extends object> extends ContextBase {
 	/**
 	 * @todo It would be nice to not provide this to blocks without an explicit phase.
 	 */
@@ -51,11 +52,18 @@ export interface BlockContext<Options extends object> {
 	options: Options;
 }
 
+export interface BlockContextWithArgs<
+	Options extends object,
+	Args extends object,
+> extends BlockContext<Options> {
+	args: Args;
+}
+
 export type BlockProducerWithArgs<
 	Options extends object,
 	Args extends object,
 > = (
-	context: ContextWithArgs<Options, Args>,
+	context: BlockContextWithArgs<Options, Args>,
 ) => PromiseOrSync<Partial<Creation>>;
 
 export type BlockProducerWithoutArgs<Options extends object> = (
@@ -89,6 +97,6 @@ export type BlockFactoryWithoutArgs<Options extends object> =
 
 export interface Block<Options extends object> {
 	about?: AboutBase;
-	phase?: BlockPhase;
+	phase: BlockPhase;
 	produce: (context: BlockContext<Options>) => Promise<Partial<Creation>>;
 }

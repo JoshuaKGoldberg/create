@@ -11,23 +11,30 @@ export async function promptForSchema(
 	schema: z.ZodTypeAny,
 ) {
 	const def = schema._def as ZodDef;
+	let value: unknown;
 
-	switch (def.typeName) {
-		case z.ZodFirstPartyTypeKind.ZodBoolean: {
-			return await promptForBoolean(rl, `Enter y or n for ${key}.\n`);
+	while (value === undefined || value === "") {
+		switch (def.typeName) {
+			case z.ZodFirstPartyTypeKind.ZodBoolean: {
+				value = await promptForBoolean(rl, `Enter y or n for ${key}.\n`);
+				break;
+			}
+
+			case z.ZodFirstPartyTypeKind.ZodNumber:
+				value = schema.parse(
+					Number(await rl.question(`Enter a value for ${key}.\n`)),
+				) as unknown;
+				break;
+
+			// TODO: Handle numeric literals, unions, ...
+
+			default:
+				value = schema.parse(
+					await rl.question(`Enter a value for ${key}.\n`),
+				) as unknown;
+				break;
 		}
-
-		case z.ZodFirstPartyTypeKind.ZodNumber:
-			return schema.parse(
-				Number(await rl.question(`Enter a value for ${key}.\n`)),
-			) as unknown;
-
-		case z.ZodFirstPartyTypeKind.ZodString:
-			return schema.parse(
-				await rl.question(`Enter a value for ${key}.\n`),
-			) as unknown;
-
-		default:
-			throw new Error(`Unknown schema for ${key}: ${(def as ZodDef).typeName}`);
 	}
+
+	return value;
 }

@@ -1,13 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { createPreset } from "../creators/createPreset.js";
 import { createSchema } from "../creators/createSchema.js";
 import { runPreset } from "./runPreset.js";
 
 const context = {
 	fetcher: vi.fn(),
-	fs: { readFile: vi.fn(), writeFile: vi.fn() },
+	fs: { readFile: vi.fn(), writeDirectory: vi.fn(), writeFile: vi.fn() },
 	runner: vi.fn(),
 	take: vi.fn(),
 };
@@ -31,24 +30,16 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = createPreset({
+		const preset = schema.createPreset({
 			about: {
 				name: "Example Preset",
 			},
 			blocks: [block()],
-			schema,
 		});
 
 		await runPreset(preset, { value: "Hello, world! " }, context);
 
-		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "README.md",
-			    "Hello, world! ",
-			  ],
-			]
-		`);
+		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
 	});
 
 	test("files from two blocks in phase order", async () => {
@@ -76,24 +67,16 @@ describe("runPreset", () => {
 		];
 
 		await runPreset(
-			createPreset({
+			schema.createPreset({
 				about: {
 					name: "Example",
 				},
 				blocks: blocks.map((block) => block()),
-				schema,
 			}),
 			{ value: "Hello, world!" },
 			context,
 		);
 
-		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "README.md",
-			    "Hello, world!",
-			  ],
-			]
-		`);
+		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
 	});
 });

@@ -1,56 +1,59 @@
-import { AnyShape } from "../options.js";
-import { runPreset } from "../runners/runPreset.js";
-import { Preset } from "../types/presets.js";
-import { awaitCalledProperties } from "./awaitCalledProperties.js";
-import { createRunningContext } from "./createRunningContext.js";
+// import { runCreation } from "../runners/runCreation.js";
+import { producePreset } from "../api/producePreset.js";
+import { createSystemContext } from "../system/createSystemContext.js";
+import { writeToSystem } from "../system/writeToSystem.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
+import { isPreset, isTemplate } from "./utils.js";
 
-export async function runCli(args: string[]) {
-	const presetPath = args[0];
+Error.stackTraceLimit = Infinity;
 
-	// Todo: switch to loading a template, which contains presets
-	const presetModule = (await import(presetPath)) as object;
-	if (!("default" in presetModule)) {
-		throw new Error(`${presetPath} should have a default exported preset.`);
+export async function runCli(argv: string[]) {
+	const [, , templatePath, ...args] = argv;
+
+	const templateModule = (await import(templatePath)) as object;
+	if (!("default" in templateModule)) {
+		throw new Error(`${templatePath} should have a default exported template.`);
 	}
 
-	const preset = presetModule.default;
+	const template = templateModule.default;
+	if (!isTemplate(template)) {
+		throw new Error(`${templatePath}'s default export should be a template.`);
+	}
+
+	const presetName = "everything";
+	const preset = template.presets[presetName];
+
 	if (!isPreset(preset)) {
-		throw new Error(`${presetPath}'s default export should be a preset.`);
+		throw new Error(
+			`${templatePath}'s preset ${presetName} should be a template.`,
+		);
 	}
 
-	const name = preset.about?.name ?? "your preset";
+	const templateDisplay = template.about?.name ?? "your preset";
+	const presetDisplay = preset.about?.name ?? presetName;
 
-	console.log(`Let's ✨ create ✨ a repository for you with ${name}!`);
+	console.log(
+		`Let's ✨ create ✨ a repository for you with the ${templateDisplay} template's ${presetDisplay} preset!`,
+	);
 
-	const context = createRunningContext();
+	const system = createSystemContext();
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
-	const producedOptions =
-		preset.schema.produce &&
-		(await awaitCalledProperties(
-			preset.schema.produce({
-				options: preset.schema.options,
-				take: context.take,
-			}),
-		));
-
-	const options = await promptForPresetOptions(preset.schema.options, {
-		...parsedOptions,
-		...producedOptions,
+	const creation = await producePreset({
+		augmentOptions: async (options) =>
+			promptForPresetOptions(preset.schema.options, options),
+		options: parsedOptions,
+		preset,
+		system,
 	});
 
-	await runPreset(preset, options, context);
+	console.log("I will do something with this creation:", creation.files);
+
+	await writeToSystem(creation.files, system.fs);
+	// await runCreation(creation, context);
 }
 
-function isPreset(value: unknown): value is Preset<AnyShape> {
-	return (
-		!!value &&
-		typeof value === "object" &&
-		"blocks" in value &&
-		Array.isArray(value.blocks) &&
-		"schema" in value &&
-		typeof value.schema === "object"
-	);
-}
+void runCli(process.argv).then(() => {
+	console.log("done.");
+});

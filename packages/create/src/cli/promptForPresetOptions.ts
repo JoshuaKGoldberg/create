@@ -16,7 +16,9 @@ export async function promptForPresetOptions(
 	});
 
 	for (const [key, schema] of Object.entries(schemas)) {
-		options[key] = existing[key] ?? (await promptForSchema(rl, key, schema));
+		if (!schema.isOptional()) {
+			options[key] = existing[key] ?? (await promptForSchema(rl, key, schema));
+		}
 	}
 
 	rl.close();

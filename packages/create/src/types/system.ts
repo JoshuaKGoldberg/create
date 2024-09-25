@@ -8,12 +8,16 @@ export type FileSystemWriteFile = (
 	contents: string,
 ) => Promise<void>;
 
-export interface RunningFileSystem extends InputFileSystem {
+export type FileSystemWriteDirectory = (directoryPath: string) => Promise<void>;
+
+export interface WritingFileSystem extends InputFileSystem {
+	writeDirectory: FileSystemWriteDirectory;
 	writeFile: FileSystemWriteFile;
 }
 
-export interface RunningContext extends ContextBase {
+// todo: don't allow end-users to stub in take
+export interface System extends ContextBase {
 	fetcher: typeof fetch;
-	fs: RunningFileSystem;
+	fs: WritingFileSystem;
 	runner: typeof execa;
 }

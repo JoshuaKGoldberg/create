@@ -12,6 +12,7 @@ import {
 	BlockFactoryWithRequiredArgs,
 } from "./blocks.js";
 import { ContextBase } from "./context.js";
+import { Preset, PresetDefinition } from "./presets.js";
 
 export interface SchemaDefinition<OptionsShape extends AnyShape> {
 	options: OptionsShape;
@@ -20,6 +21,7 @@ export interface SchemaDefinition<OptionsShape extends AnyShape> {
 
 export interface Schema<OptionsShape extends AnyShape> {
 	createBlock: CreateBlockFactory<OptionsShape>;
+	createPreset: CreatePresetFactory<OptionsShape>;
 	options: OptionsShape;
 	produce?: SchemaProducer<InferredObject<OptionsShape>>;
 }
@@ -38,6 +40,7 @@ export type LazyOptionalOptions<Options extends object> = {
 
 export type LazyOptionalOption<T> =
 	| (() => Promise<T | undefined>)
+	| (() => T | undefined)
 	| T
 	| undefined;
 
@@ -66,3 +69,7 @@ export interface CreateBlockFactory<OptionsShape extends AnyShape> {
 		definition: BlockDefinitionWithoutArgs<InferredObject<OptionsShape>>,
 	): BlockFactoryWithoutArgs<InferredObject<OptionsShape>>;
 }
+
+export type CreatePresetFactory<OptionsShape extends AnyShape> = (
+	definition: PresetDefinition<OptionsShape>,
+) => Preset<OptionsShape>;

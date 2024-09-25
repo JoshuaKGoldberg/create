@@ -1,18 +1,15 @@
 import path from "node:path";
 
 import { CreatedFiles } from "../types/creations.js";
-import { RunningContext } from "../types/running.js";
+import { System } from "../types/system.js";
 
-export async function runCreationFiles(
-	files: CreatedFiles,
-	context: RunningContext,
-) {
+export async function runCreationFiles(files: CreatedFiles, context: System) {
 	await writeCreationFiles(files, context, "");
 }
 
 async function writeCreationFiles(
 	files: CreatedFiles,
-	context: RunningContext,
+	context: System,
 	directory: string,
 ) {
 	for (const [key, value] of Object.entries(files)) {

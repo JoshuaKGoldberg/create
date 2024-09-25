@@ -1,15 +1,13 @@
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { BlockPhase } from "../types/blocks.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
-import { RunningContext } from "../types/running.js";
-import { runCreation } from "./runCreation.js";
+import { System } from "../types/system.js";
 
 export async function runPreset<PresetOptionsShape extends AnyShape>(
 	preset: Preset<PresetOptionsShape>,
 	options: InferredObject<PresetOptionsShape>,
-	context: RunningContext,
+	context: System,
 ) {
 	let created: Creation = {
 		commands: [],
@@ -21,9 +19,7 @@ export async function runPreset<PresetOptionsShape extends AnyShape>(
 		package: {},
 	};
 
-	const blocksSorted = preset.blocks.sort(
-		(a, b) => (a.phase ?? BlockPhase.Default) - (b.phase ?? BlockPhase.Default),
-	);
+	const blocksSorted = preset.blocks.sort((a, b) => a.phase - b.phase);
 
 	for (const block of blocksSorted) {
 		created = mergeCreations(
@@ -36,5 +32,5 @@ export async function runPreset<PresetOptionsShape extends AnyShape>(
 		);
 	}
 
-	await runCreation(created, context);
+	return created;
 }

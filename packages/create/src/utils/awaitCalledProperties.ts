@@ -10,19 +10,23 @@ export async function awaitCalledProperties<T extends object>(
 	const result: Record<string, unknown> = {};
 	const tasks: Promise<void>[] = [];
 
-	for (const [key, value] of Object.entries(source)) {
-		if (typeof value !== "function") {
+	for (const [key, creator] of Object.entries(source)) {
+		if (typeof creator !== "function") {
 			continue;
 		}
 
-		const task = (value as () => unknown)();
+		const task = (creator as () => unknown)();
 
 		if (task instanceof Promise) {
 			tasks.push(
 				task.then((awaited) => {
-					result[key] = awaited;
+					if (awaited !== undefined) {
+						result[key] = awaited;
+					}
 				}),
 			);
+		} else if (task !== undefined) {
+			result[key] = task;
 		}
 	}
 

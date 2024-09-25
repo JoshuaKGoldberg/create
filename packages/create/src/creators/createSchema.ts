@@ -7,6 +7,7 @@ import {
 	BlockDefinitionWithoutArgs,
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
+	BlockPhase,
 } from "../types/blocks.js";
 import {
 	CreateBlockFactory,
@@ -42,6 +43,7 @@ export const createSchema = <OptionsShape extends AnyShape>(
 	): BlockFactoryWithoutArgs<InferredObject<OptionsShape>> => {
 		return () => ({
 			about: blockDefinition.about,
+			phase: blockDefinition.phase ?? BlockPhase.Default,
 			produce: async (context) => {
 				return await blockDefinition.produce(context);
 			},
@@ -57,6 +59,7 @@ export const createSchema = <OptionsShape extends AnyShape>(
 		return (args: Partial<InputShape<ArgsShape>> | undefined = {}) => {
 			return {
 				about: blockDefinition.about,
+				phase: blockDefinition.phase ?? BlockPhase.Default,
 				produce: async (context) => {
 					return await blockDefinition.produce({
 						...context,
@@ -67,9 +70,12 @@ export const createSchema = <OptionsShape extends AnyShape>(
 		};
 	};
 
-	return {
+	const schema: Schema<OptionsShape> = {
 		createBlock: createBlock as CreateBlockFactory<OptionsShape>,
+		createPreset: (preset) => ({ ...preset, schema }),
 		options: schemaDefinition.options,
 		produce: schemaDefinition.produce,
 	};
+
+	return schema;
 };
