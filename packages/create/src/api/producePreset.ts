@@ -44,8 +44,6 @@ export async function producePreset<Options extends {}>({
 }:
 	| AugmentingPresetProductionSettings<Options>
 	| FullPresetProductionSettings<Options>): Promise<Creation> {
-	console.log({ providedOptions });
-
 	const producedOptions =
 		preset.schema.produce &&
 		(await awaitCalledProperties(
@@ -54,8 +52,6 @@ export async function producePreset<Options extends {}>({
 				take: system.take,
 			}),
 		));
-
-	console.log({ producedOptions });
 
 	const optionsForAugmentation = {
 		...providedOptions,
