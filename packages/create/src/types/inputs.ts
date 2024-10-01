@@ -1,6 +1,5 @@
-import { execa } from "execa";
-
 import { ContextBase } from "./context.js";
+import { SystemRunner } from "./system.js";
 
 export interface InputFileSystem {
 	readFile: FileSystemReadFile;
@@ -11,7 +10,7 @@ export type FileSystemReadFile = (filePath: string) => Promise<string>;
 export interface InputContext extends ContextBase {
 	fetcher: typeof fetch;
 	fs: InputFileSystem;
-	runner: typeof execa;
+	runner: SystemRunner;
 }
 
 export interface InputContextWithArgs<Args> extends InputContext {

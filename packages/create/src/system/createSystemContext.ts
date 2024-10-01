@@ -1,8 +1,8 @@
-import { execa } from "execa";
+import { execa, parseCommandString } from "execa";
 import * as nodeFS from "node:fs/promises";
 
 import { TakeInput } from "../types/inputs.js";
-import { System, WritingFileSystem } from "../types/system.js";
+import { System, SystemRunner, WritingFileSystem } from "../types/system.js";
 
 export function createSystemContext(): System {
 	const fetcher = fetch;
@@ -17,7 +17,8 @@ export function createSystemContext(): System {
 		},
 	};
 
-	const runner = execa;
+	const runner: SystemRunner = async (command: string) =>
+		await execa`${parseCommandString(command)}`;
 
 	const take: TakeInput = (input, args) =>
 		input({ args, fetcher, fs, runner, take } as Parameters<TakeInput>[0]);

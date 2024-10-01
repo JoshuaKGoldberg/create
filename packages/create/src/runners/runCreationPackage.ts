@@ -3,8 +3,10 @@ import { System } from "../types/system.js";
 
 export async function runCreationPackage(
 	createdPackage: CreatedPackage,
-	context: System,
+	system: System,
 ) {
+	await system.fs.writeFile("package.json", JSON.stringify(createdPackage));
+
 	for (const [key, suffix] of [
 		["dependencies", ""],
 		["devDependencies", " --save-dev"],
@@ -18,6 +20,6 @@ export async function runCreationPackage(
 			.map((pair) => pair.join("@"))
 			.join(" ");
 
-		await context.runner(`pnpm add ${args}${suffix}`);
+		await system.runner(`pnpm add ${args}${suffix}`);
 	}
 }

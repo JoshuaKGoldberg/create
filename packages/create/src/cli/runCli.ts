@@ -1,5 +1,6 @@
 // import { runCreation } from "../runners/runCreation.js";
 import { producePreset } from "../api/producePreset.js";
+import { runCreation } from "../runners/runCreation.js";
 import { createSystemContext } from "../system/createSystemContext.js";
 import { writeToSystem } from "../system/writeToSystem.js";
 import { parseZodArgs } from "./parseZodArgs.js";
@@ -50,8 +51,7 @@ export async function runCli(argv: string[]) {
 
 	console.log("I will do something with this creation:", creation.files);
 
-	await writeToSystem(creation.files, system.fs);
-	// await runCreation(creation, context);
+	await runCreation(creation, system);
 }
 
 void runCli(process.argv).then(() => {
