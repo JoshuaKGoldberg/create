@@ -73,3 +73,8 @@ export interface CreateBlockFactory<OptionsShape extends AnyShape> {
 export type CreatePresetFactory<OptionsShape extends AnyShape> = (
 	definition: PresetDefinition<OptionsShape>,
 ) => Preset<OptionsShape>;
+
+export type SchemaContextFor<TypeofSchema> =
+	TypeofSchema extends SchemaContext<infer OptionsShape>
+		? SchemaContext<OptionsShape>
+		: never;

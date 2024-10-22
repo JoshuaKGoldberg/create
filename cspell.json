@@ -17,6 +17,7 @@
 		"execa",
 		"knip",
 		"konami",
+		"lcov",
 		"packagejson",
 		"positionals",
 		"tsconfigs",

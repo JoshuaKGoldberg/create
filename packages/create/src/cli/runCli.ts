@@ -1,8 +1,6 @@
-// import { runCreation } from "../runners/runCreation.js";
 import { producePreset } from "../api/producePreset.js";
 import { runCreation } from "../runners/runCreation.js";
 import { createSystemContext } from "../system/createSystemContext.js";
-import { writeToSystem } from "../system/writeToSystem.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
 import { isPreset, isTemplate } from "./utils.js";
@@ -53,7 +51,3 @@ export async function runCli(argv: string[]) {
 
 	await runCreation(creation, system);
 }
-
-void runCli(process.argv).then(() => {
-	console.log("done.");
-});
