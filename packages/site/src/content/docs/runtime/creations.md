@@ -164,7 +164,7 @@ export const block = schema.createBlock({
 	produce() {
 		return {
 			documentation: {
-				Debugging: `Here are some steps to debug the app... \n...`,
+				Debugging: `Here are some steps to debug the app...`,
 			},
 		};
 	},

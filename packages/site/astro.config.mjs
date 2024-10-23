@@ -35,6 +35,7 @@ export default defineConfig({
 						{ label: "Schemas", link: "testing/schemas" },
 						{ label: "Blocks", link: "testing/blocks" },
 						{ label: "Inputs", link: "testing/inputs" },
+						{ label: "Presets", link: "testing/presets" },
 					],
 					label: "Testing",
 				},

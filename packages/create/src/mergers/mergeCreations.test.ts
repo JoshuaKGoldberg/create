@@ -38,6 +38,7 @@ describe("mergeCreations", () => {
 			  },
 			  "editor": {
 			    "debuggers": [],
+			    "extensions": [],
 			    "settings": {},
 			    "tasks": [],
 			  },

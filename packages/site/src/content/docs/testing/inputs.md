@@ -7,7 +7,7 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-The `create-testers` package will include testing utilities that provide mock data to an _input_ under test.
+The separate `create-testers` package includes testing utilities that provide mock data to an _input_ under test.
 
 For example, testing the [previous `inputJSONFile`](../inputs/options):
 

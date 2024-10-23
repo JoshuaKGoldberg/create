@@ -1,8 +1,18 @@
-export const createFailingFunction = (name: string) => () =>
-	failingFunction(name);
+export function createFailingFunction(label: string) {
+	return () => failingFunction(label);
+}
 
-export function failingFunction(name: string): never {
+export function failingFunction(label: string): never {
 	throw new Error(
-		`Context property '${name}' was used by a block but not provided.`,
+		`Context property '${label}' was used by a block but not provided.`,
+	);
+}
+
+export function createFailingObject(label: string) {
+	return new Proxy(
+		{},
+		{
+			get: createFailingFunction(label),
+		},
 	);
 }

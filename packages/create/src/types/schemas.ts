@@ -78,3 +78,8 @@ export type SchemaContextFor<TypeofSchema> =
 	TypeofSchema extends SchemaContext<infer OptionsShape>
 		? SchemaContext<OptionsShape>
 		: never;
+
+export type SchemaOptionsFor<TypeofSchema> =
+	TypeofSchema extends Schema<infer OptionsShape>
+		? InferredObject<OptionsShape>
+		: never;

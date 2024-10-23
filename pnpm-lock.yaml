@@ -118,7 +118,11 @@ importers:
         specifier: ^7.5.8
         version: 7.5.8
 
-  packages/create-testers: {}
+  packages/create-testers:
+    devDependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
   packages/site:
     dependencies:

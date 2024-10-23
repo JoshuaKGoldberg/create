@@ -1,6 +1,6 @@
 {
 	"name": "create-testers",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
@@ -22,6 +22,9 @@
 	],
 	"scripts": {
 		"build": "tsc"
+	},
+	"devDependencies": {
+		"zod": "^3.23.8"
 	},
 	"engines": {
 		"node": ">=18"
