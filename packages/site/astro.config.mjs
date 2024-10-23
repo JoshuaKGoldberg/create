@@ -17,12 +17,18 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "API", link: "runtime/api" },
 						{ label: "Contexts", link: "runtime/contexts" },
 						{ label: "Creations", link: "runtime/creations" },
 						{ label: "Phases", link: "runtime/phases" },
 					],
 					label: "Runtime",
+				},
+				{
+					items: [
+						{ label: "produceBlock", link: "api/produce-block" },
+						{ label: "producePreset", link: "api/produce-preset" },
+					],
+					label: "API",
 				},
 				{
 					items: [

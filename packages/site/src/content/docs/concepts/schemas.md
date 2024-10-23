@@ -103,6 +103,9 @@ This may be useful if the logic to produce some options should set defaults base
 For example, this Schema defaults an `author` option to the `owner` option:
 
 ```ts
+import { createSchema } from "create";
+import { z } from "zod";
+
 export const schema = createSchema({
 	options: {
 		author: z.string().optional(),
