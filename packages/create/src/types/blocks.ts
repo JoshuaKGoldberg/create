@@ -76,8 +76,8 @@ export interface ContextWithArgs<Options extends object, Args extends object>
 }
 
 export type BlockFactory<
-	Options extends object,
-	ArgsShape extends AnyShape | undefined,
+	Options extends object = object,
+	ArgsShape extends AnyShape | undefined = undefined,
 > = ArgsShape extends object
 	? BlockFactoryWithRequiredArgs<Options, InputShape<ArgsShape>>
 	: BlockFactoryWithoutArgs<Options>;

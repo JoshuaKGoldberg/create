@@ -17,6 +17,7 @@ Each area's Contexts provides additional properties:
 - Blocks receive [Block Contexts](#block-contexts)
 - Inputs receive [Input Contexts](#input-contexts)
 - Schemas receive [Schema Contexts](#schema-contexts)
+- Production APIs receive [System Contexts](#system-contexts)
 
 ## All Contexts
 
@@ -143,7 +144,7 @@ export const inputFile = createInput({
 
 Unlike that minimal example, Inputs generally use one or more of the following properties to read from the user's file system and/or network.
 
-### `fs`
+### `fs` {#input-fs}
 
 A virtual wrapper around the file system.
 
@@ -167,7 +168,7 @@ export const inputFile = createInput({
 });
 ```
 
-### `fetcher`
+### `fetcher` {#input-fetcher}
 
 The global `fetch` function, to make network calls.
 
@@ -186,7 +187,7 @@ export const inputCatFact = createInput({
 });
 ```
 
-### `runner`
+### `runner` {#input-runner}
 
 An `execa` shell script to run commands.
 
@@ -230,3 +231,32 @@ export const schema = createSchema({
 	},
 });
 ```
+
+## System Contexts
+
+The Context object provided to the [`produceBlock`](../apis/produce-block) and [`producePreset`](../apis/produce-preset) APIs.
+
+### `fs` {#system-fs}
+
+A virtual wrapper around the file system.
+This is an expanded version of [Input Contexts' `fs`](#input-fs).
+
+System `fs` objects include the following properties:
+
+- `readFile`: Given a file path, returns a Promise for its contents as a `string`
+- `writeDirectory`: Given a directory path, returns a Promise for creating a directory there if one doesn't exist
+- `writeFile`: Given a file path and text contents, returns a Promise for writing to the file
+
+### `fetcher` {#system-fetcher}
+
+The global `fetch` function, to make network calls.
+This is an the same as [Input Contexts' `fetcher`](#input-fetcher).
+
+### `options` {#system-options}
+
+Any values as described by the [Schema's `options`](../concepts/schemas#options) for the entity being produced.
+
+### `runner` {#system-runner}
+
+An `execa` shell script to run commands.
+This is an the same as [Input Contexts' `runner`](#input-runner).

@@ -9,7 +9,9 @@ This site is "documentation-driven development": writing the docs first, to help
 :::
 
 A _Block_ defines the logic to create a portion of a repository.
-It defines a `produce()` method for its core logic:
+Blocks are created by calling a _Block Factory_ that can be generated from a [Schema](./schemas).
+
+Block Factories define a `produce()` method for their core logic:
 
 - It receives one parameter: a [Context](../runtime/contexts) object containing options as well as other utilities.
 - It returns a [Creation](../runtime/creation) object describing the generated pieces of tooling.

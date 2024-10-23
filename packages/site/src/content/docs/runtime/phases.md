@@ -1,6 +1,6 @@
 ---
 description: "The pieces of a repository as described by a Block."
-title: Phases (TODO)
+title: Phases
 ---
 
 :::danger

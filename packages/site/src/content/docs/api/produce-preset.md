@@ -7,7 +7,41 @@ The `create` engine is only partially implemented.
 This site is "documentation-driven development": writing the docs first, to help inform implementation.
 :::
 
-Given a [Preset](../concepts/presets) and options, `producePreset` runs the preset and produces a [Creation](../runtime/creations).
+Given a [Preset](../concepts/presets), `producePreset` runs the Preset and produces a [Creation](../runtime/creations).
+
+```ts
+import { producePreset, Schema } from "create";
+import { z } from "zod";
+
+declare const schema: Schema<{ name: z.ZodString }>;
+
+const preset = schema.createPreset({
+	blocks: [
+		// ...
+	],
+});
+
+const creation = await producePreset(preset);
+
+console.log(creation);
+```
+
+## Arguments
+
+1. `preset` (required): a [Preset](../concepts/presets)
+2. `settings` (required): production settings that must provide the Preset's full options
+
+Preset options are generated through three steps:
+
+1. Any options provided by `producePreset`'s second parameter's `options`
+2. Calling the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists
+3. Calling to an optional `optionsAugment` method of `producePreset`'s second parameter
+
+### `options`
+
+Any number of options defined by the Preset's [Schema](../concepts/schemas).
+
+For example, this Preset is run with a `name` option:
 
 ```ts
 import { producePreset } from "create";
@@ -22,46 +56,31 @@ await producePreset(preset, {
 });
 ```
 
-## Arguments
+If some options are missing from `options`, then they must be filled in by [`optionsAugment`](#optionsaugment).
 
-1. `preset` (required): a [Preset](../concepts/presets)
-2. `settings` (required): production settings that must provide the full preset options
+### `optionsAugment`
 
-### Options
+A function that takes in the explicitly provided [`options`](#options) and returns any remaining options.
 
-Preset options are generated through three steps:
+`optionsAugment` runs _after_ the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists.
+This can be useful to prompt for any options not determined by `produce()`.
 
-1. Any options provided by `producePreset`'s second parameter's `options`
-2. Calling the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists
-3. Calling to an optional `augmentOptions` method of `producePreset`'s second parameter
-
-#### `options`
-
-Any number of options defined by the Preset's [Schema](../concepts/schemas).
-If some options are missing from `options`, then they must be filled in by [`augmentOptions`](#augmentOptions).
-
-#### `augmentOptions`
-
-A function in the explicitly provided [`options`](#options) and fills in any remaining options.
-
-`augmentOptions` runs _after_ the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists.
-This
-
-For example, this preset is provided a `first` option explicitly in `options`, generates `middle` by reading from disk, and generates its `last` option using `augmentOptions`:
+For example, this `optionsAugment` uses a Node.js prompt to fill in a `name` option if it can't be inferred from disk:
 
 ```ts
 import { createSchema, producePreset } from "create";
+import readline from "node:readline/promises";
 import { z } from "zod";
+
+import { inputTextFile } from "./inputs/inputTextFile";
 
 const schema = createSchema({
 	options: {
-		first: z.string(),
-		last: z.string(),
-		middle: z.string().optional(),
+		name: z.string(),
 	},
-	produce() {
+	produce({ take }) {
 		return {
-			middle: Math.random() > 0.5 ? "Jr." : undefined,
+			name: await take(inputTextFile, { fileName: "name.txt" }),
 		};
 	},
 });
@@ -72,16 +91,63 @@ const preset = schema.createPreset({
 	],
 });
 
+const rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout,
+});
+
 await producePreset(preset, {
-	augmentOptions({ options }) {
+	optionsAugment({ options }) {
 		return {
-			last: `Mc${options.first}ton`,
+			last: options.last ?? (await rl.question("What is your name?")),
 		};
-	},
-	options: {
-		first: "Name",
 	},
 });
 ```
 
-### Context
+### `system`
+
+An optional [System Context](../runtime/contexts#system-contexts) to use for interfacing with the host operating system.
+
+By default, `system` calls to Node.js methods for file system, network calls, and shell scripts.
+
+You can substitute this out to prevent your Preset from interfacing with them.
+For example, this set of stubs logs what the Preset would do instead of taking those actions:
+
+```ts
+import { producePreset } from "create";
+import { z } from "zod";
+
+declare const preset: Preset<{ name: z.ZodString }>;
+
+function stub(label: string) {
+	return (...args: unknown[]) => {
+		console.log(`[${label}]`, ...args);
+	};
+}
+
+await producePreset(preset, {
+	options: {
+		name: "My Production",
+	},
+	system: {
+		fetcher: stub("fetcher"),
+		fs: {
+			readFile: stub("readFile"),
+			writeDirectory: stub("writeDirectory"),
+			writeFile: stub("writeFile"),
+		},
+		runner: stub("runner"),
+		take: stub("take"),
+	},
+});
+```
+
+:::tip
+See [Testing > Presets](../testing/presets) for how to use `system` in testing presets.
+:::
+
+## Return
+
+`producePreset` returns a Promise for the Preset's [`Creation`](../runtime/creations).
+Both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations) will be present.

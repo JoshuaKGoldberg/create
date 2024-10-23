@@ -1,9 +1,9 @@
 import { CreatedPackage } from "../types/creations.js";
-import { System } from "../types/system.js";
+import { SystemContext } from "../types/system.js";
 
 export async function runCreationPackage(
 	createdPackage: CreatedPackage,
-	system: System,
+	system: SystemContext,
 ) {
 	await system.fs.writeFile("package.json", JSON.stringify(createdPackage));
 

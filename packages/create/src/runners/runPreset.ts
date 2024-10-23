@@ -2,12 +2,12 @@ import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
-import { System } from "../types/system.js";
+import { SystemContext } from "../types/system.js";
 
 export async function runPreset<PresetOptionsShape extends AnyShape>(
 	preset: Preset<PresetOptionsShape>,
 	options: InferredObject<PresetOptionsShape>,
-	context: System,
+	context: SystemContext,
 ) {
 	let created: Creation = {
 		commands: [],

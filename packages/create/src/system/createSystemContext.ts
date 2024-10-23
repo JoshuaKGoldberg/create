@@ -2,9 +2,13 @@ import { execa, parseCommandString } from "execa";
 import * as nodeFS from "node:fs/promises";
 
 import { TakeInput } from "../types/inputs.js";
-import { System, SystemRunner, WritingFileSystem } from "../types/system.js";
+import {
+	SystemContext,
+	SystemRunner,
+	WritingFileSystem,
+} from "../types/system.js";
 
-export function createSystemContext(): System {
+export function createSystemContext(): SystemContext {
 	const fetcher = fetch;
 
 	const fs: WritingFileSystem = {

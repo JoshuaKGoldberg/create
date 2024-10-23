@@ -1,5 +1,9 @@
-import { BlockFactoryWithRequiredArgs } from "../types/blocks.js";
-import { IndirectCreation } from "../types/creations.js";
+import {
+	BlockFactoryWithOptionalArgs,
+	BlockFactoryWithoutArgs,
+	BlockFactoryWithRequiredArgs,
+} from "../types/blocks.js";
+import { Creation, IndirectCreation } from "../types/creations.js";
 
 const createFailingFunction = (name: string) => () => failingFunction(name);
 
@@ -37,12 +41,24 @@ function createBlockProductionContext<
 	};
 }
 
+export async function produceBlock<Options extends object>(
+	blockFactory: BlockFactoryWithoutArgs<Options>,
+	settings: BlockProductionSettings<Options>,
+): Promise<Partial<Creation>>;
 export async function produceBlock<Options extends object, Args extends object>(
-	factory: BlockFactoryWithRequiredArgs<Options, Args>,
+	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
+	settings: BlockProductionSettings<Options, Args>,
+): Promise<Partial<Creation>>;
+export async function produceBlock<Options extends object, Args extends object>(
+	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
+	settings: BlockProductionSettings<Options>,
+): Promise<Partial<Creation>>;
+export async function produceBlock<Options extends object, Args extends object>(
+	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
 	settings: BlockProductionSettings<Options, Args>,
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const block = factory(settings.args!);
+	const block = blockFactory(settings.args!);
 	const context = createBlockProductionContext(settings);
 	return await block.produce(context);
 }

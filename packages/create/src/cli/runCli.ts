@@ -40,13 +40,11 @@ export async function runCli(argv: string[]) {
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
 	const creation = await producePreset(preset, {
-		augmentOptions: async (options) =>
-			promptForPresetOptions(preset.schema.options, options),
 		options: parsedOptions,
+		optionsAugment: async (options) =>
+			promptForPresetOptions(preset.schema.options, options),
 		system,
 	});
-
-	console.log("I will do something with this creation:", creation.files);
 
 	await runCreation(creation, system);
 }

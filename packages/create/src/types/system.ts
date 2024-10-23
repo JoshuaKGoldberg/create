@@ -17,9 +17,7 @@ export interface WritingFileSystem extends InputFileSystem {
 
 export type SystemRunner = (command: string) => Promise<Result>;
 
-// todo: don't allow end-users to stub in take
-// todo: dedupe with InputContext
-export interface System extends ContextBase {
+export interface SystemContext extends ContextBase {
 	fetcher: typeof fetch;
 	fs: WritingFileSystem;
 	runner: SystemRunner;
