@@ -8,13 +8,18 @@ export interface DirectCreation {
 }
 
 export interface IndirectCreation {
-	documentation: Record<string, string>;
+	documentation: Record<string, CreatedDocumentation | string>;
 	editor: CreatedEditor;
 	jobs: CreatedJob[];
 	metadata: CreatedMetadata[];
 }
 
 export type Creation = DirectCreation & IndirectCreation;
+
+export interface CreatedDocumentation {
+	level: 2 | 3 | 4;
+	text: string;
+}
 
 export interface CreatedEditor {
 	debuggers?: CreatedEditorDebugger[];
@@ -77,5 +82,10 @@ export interface CreatedPackagesWithVersions {
 }
 
 export interface CreatedPackageScripts {
-	[i: string]: string;
+	[i: string]: CreatedPackageScript | string;
+}
+
+export interface CreatedPackageScript {
+	description: string;
+	task: string;
 }

@@ -1,3 +1,4 @@
+export * from "./api/produceBlock.js";
 export * from "./api/producePreset.js";
 export * from "./cli/runCli.js";
 export * from "./creators/createInput.js";

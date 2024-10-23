@@ -1,4 +1,4 @@
-import { execa, Result, ResultPromise } from "execa";
+import { Result } from "execa";
 
 import { ContextBase } from "./context.js";
 import { InputFileSystem } from "./inputs.js";

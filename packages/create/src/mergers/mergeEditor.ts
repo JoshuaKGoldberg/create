@@ -12,6 +12,7 @@ export function mergeEditor(
 
 	return removeEmptyEntries({
 		debuggers: mergeArrays(first.debuggers, second.debuggers),
+		extensions: mergeArrays(first.extensions, second.extensions),
 		settings: {
 			...first.settings,
 			...second.settings,

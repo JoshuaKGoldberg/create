@@ -39,11 +39,10 @@ export async function runCli(argv: string[]) {
 	const system = createSystemContext();
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
-	const creation = await producePreset({
+	const creation = await producePreset(preset, {
 		augmentOptions: async (options) =>
 			promptForPresetOptions(preset.schema.options, options),
 		options: parsedOptions,
-		preset,
 		system,
 	});
 

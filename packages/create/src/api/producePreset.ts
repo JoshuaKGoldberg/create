@@ -9,13 +9,12 @@ import { Preset } from "../types/presets.js";
 import { System } from "../types/system.js";
 import { awaitCalledProperties } from "../utils/awaitCalledProperties.js";
 
-export interface ProductionSettingsBase<Options extends {}> {
-	preset: Preset<Options>;
+export interface ProductionSettingsBase {
 	system?: System;
 }
 
 export interface AugmentingPresetProductionSettings<Options extends {}>
-	extends ProductionSettingsBase<Options> {
+	extends ProductionSettingsBase {
 	augmentOptions: (
 		options: Partial<InferredObject<Options>>,
 	) => Promise<InferredObject<Options>>;
@@ -23,7 +22,7 @@ export interface AugmentingPresetProductionSettings<Options extends {}>
 }
 
 export interface FullPresetProductionSettings<Options extends {}>
-	extends ProductionSettingsBase<Options> {
+	extends ProductionSettingsBase {
 	augmentOptions?: (
 		options: InferredObject<Options>,
 	) => Promise<Partial<InferredObject<Options>>>;
@@ -31,19 +30,23 @@ export interface FullPresetProductionSettings<Options extends {}>
 }
 
 export async function producePreset<Options extends {}>(
+	preset: Preset<Options>,
 	settings: AugmentingPresetProductionSettings<Options>,
 ): Promise<Creation>;
 export async function producePreset<Options extends {}>(
+	preset: Preset<Options>,
 	settings: FullPresetProductionSettings<Options>,
 ): Promise<Creation>;
-export async function producePreset<Options extends {}>({
-	augmentOptions,
-	options: providedOptions,
-	preset,
-	system = createSystemContext(),
-}:
-	| AugmentingPresetProductionSettings<Options>
-	| FullPresetProductionSettings<Options>): Promise<Creation> {
+export async function producePreset<Options extends {}>(
+	preset: Preset<Options>,
+	{
+		augmentOptions,
+		options: providedOptions,
+		system = createSystemContext(),
+	}:
+		| AugmentingPresetProductionSettings<Options>
+		| FullPresetProductionSettings<Options>,
+): Promise<Creation> {
 	const producedOptions =
 		preset.schema.produce &&
 		(await awaitCalledProperties(
@@ -54,8 +57,8 @@ export async function producePreset<Options extends {}>({
 		));
 
 	const optionsForAugmentation = {
-		...providedOptions,
 		...producedOptions,
+		...providedOptions,
 	} as InferredObject<Options>;
 
 	const augmentedOptions = await augmentOptions?.(optionsForAugmentation);

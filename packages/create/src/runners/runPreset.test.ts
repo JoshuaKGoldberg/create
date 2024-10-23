@@ -60,7 +60,7 @@ describe("runPreset", () => {
 				},
 				produce({ created }) {
 					return {
-						files: { "README.md": created.documentation.Example },
+						files: { "README.md": created.documentation.Example as string },
 					};
 				},
 			}),

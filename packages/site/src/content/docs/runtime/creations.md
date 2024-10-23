@@ -20,7 +20,7 @@ It may contain any of the following properties:
   - [`documentation`](#documentation): Descriptions of how users should use the tooling
   - [`editor`](#editor): Settings to configure the user's editor or IDE
   - [`jobs`](#jobs): CI jobs to be run in an environment such as GitHub Actions
-  - [`metadata`](#metadata): Descriptions of what files, matched by glob
+  - [`metadata`](#metadata): Descriptions for classifications of files, matched by glob
 
 For example, a block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) as well as add a `package.json` script ([`package`](#package)) used in a CI job ([`jobs`](#jobs)):
 
@@ -153,8 +153,9 @@ Descriptions of how users should use the tooling.
 
 Individual repositories generally put documentation in Markdown files such as their root `README.md` or a `.github/DEVELOPMENT.md`.
 Blocks can suggest text to be added to those docs files.
+Text can be suggested either as a `string` or an object.
 
-For example, a documentation block that includes a repository's suggested steps for debugging:
+For example, a documentation block that includes a repository's suggested steps for debugging as a `string`:
 
 ```ts
 import { schema } from "./schema";
@@ -164,6 +165,32 @@ export const block = schema.createBlock({
 		return {
 			documentation: {
 				Debugging: `Here are some steps to debug the app... \n...`,
+			},
+		};
+	},
+});
+```
+
+#### Documentation Objects
+
+Documentation can have details described in object form:
+
+- `level` (`2 | 3 | 4`): What level to use for the heading
+- `text` (`string`): Markdown text to include underneath the heading
+
+For example, a documentation block that describes a specific kind of linting as an h3:
+
+```ts
+import { schema } from "./schema";
+
+export const block = schema.createBlock({
+	produce() {
+		return {
+			documentation: {
+				"Linting with Knip": {
+					level: 3,
+					text: `[knip](https://github.com/webpro/knip) ...`,
+				},
 			},
 		};
 	},
@@ -227,7 +254,7 @@ export const blockCSpell = schema.createBlock({
 
 ### `metadata`
 
-Descriptions of what files, matched by glob.
+Descriptions for classifications of files, matched by glob.
 
 Metadata can be useful when blocks rely on other blocks.
 Often, earlier blocks will describe the types of files they allow users to add on disk.

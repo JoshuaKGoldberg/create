@@ -17,10 +17,9 @@ import { z } from "zod";
 
 declare const preset: Preset<{ name: z.ZodString }>;
 
-await producePreset({
+await producePreset(preset, {
 	options: {
 		name: "My Production",
 	},
-	preset,
 });
 ```

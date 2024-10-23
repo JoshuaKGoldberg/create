@@ -58,6 +58,8 @@ Doing so just makes that data easier to [mock out in tests](../testing/inputs) l
 
 ## Block Contexts
 
+The Context object provided to the `produce` object of [Blocks](../concepts/blocks).
+
 ### `created`
 
 In-progress [Indirect Creation properties](./creations#indirect-creations) from any previously run Blocks.
@@ -113,6 +115,8 @@ export const schema = createSchema({
 ```
 
 ## Input Contexts
+
+The Context object provided to the `produce` object of [Inputs](../concepts/inputs).
 
 ### `args` {#input-options}
 
@@ -201,6 +205,8 @@ export const inputCatFact = createInput({
 ```
 
 ## Schema Contexts
+
+The Context object provided to the `produce` object of [Schemas](../concepts/schemas).
 
 ### `options` {#schema-options}
 
