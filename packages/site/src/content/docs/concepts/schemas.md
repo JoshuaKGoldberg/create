@@ -4,8 +4,8 @@ title: Schemas
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 A _Schema_ defines an object of option types and default values that will be used to scaffold a repository.

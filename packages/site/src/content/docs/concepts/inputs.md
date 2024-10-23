@@ -4,8 +4,8 @@ title: Inputs
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 An _Input_ defines a standalone function to provide any dynamic data needed to inform [Blocks](./blocks).

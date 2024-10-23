@@ -4,8 +4,8 @@ title: Creations
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 A Creation object is what's returned by each [Block](../about/blocks)'s `produce()` method.

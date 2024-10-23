@@ -3,8 +3,8 @@ title: Testing Inputs
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 The `create-testers` package will include testing utilities that provide mock data to an _input_ under test.

@@ -8,13 +8,13 @@ title: create
 `create` is a new scaffolding engine for describing repository templates.
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 ## About
 
-`create` lets you defining templates for pieces of code.
+`create` lets you define templates for pieces of code.
 It's like a modern version of [Yeoman](https://yeoman.io), but:
 
 - **Composable**: Individual blocks in your templates can be mix-and-matched together

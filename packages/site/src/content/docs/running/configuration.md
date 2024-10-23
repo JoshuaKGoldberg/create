@@ -3,8 +3,8 @@ title: Running from a Configuration File
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 Users will alternately be able to set up the blocks and addons in a file like `create.config.ts`.

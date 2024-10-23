@@ -4,8 +4,8 @@ title: Presets
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 A _Preset_ defines a group of [Blocks](./blocks) that can be put together to form a repository base.

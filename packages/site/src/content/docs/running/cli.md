@@ -3,8 +3,8 @@ title: Running from the CLI
 ---
 
 :::danger
-The `create` engine is only partially implemented.
-This site is "documentation-driven development": writing the docs first, to help inform implementation.
+The `create` engine is very early stage.
+Don't rely on it yet.
 :::
 
 Initializing or updating a repository can be done by running `create` on the CLI.
