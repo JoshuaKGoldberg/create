@@ -167,7 +167,9 @@ const blockReadme = schema.createBlock({
 describe("blockDocs", () => {
 	it("uses options.name for the README.md title", async () => {
 		const actual = await testBlock(blockReadme, {
-			title: "My Project",
+			options: {
+				title: "My Project",
+			},
 		});
 
 		expect(actual).toEqual({
@@ -185,7 +187,44 @@ The [Context `take` function](../runtime/contexts#take) may be provided under `t
 
 This can be useful for simulating the results of [Inputs](../concepts/inputs).
 
-For example,
+For example, this test asserts that a block prints a _"last modified"_ timestamp in a `last-touch.txt`:
+
+```ts
+import { inputNow } from "./inputNow";
+import { schema } from "./schema";
+
+const schema = createSchema({
+	options: {
+		title: z.string(),
+	},
+});
+
+const blockUsingNow = schema.createBlock({
+	produce({ take }) {
+		const now = take(inputNow);
+
+		return {
+			files: {
+				"last-touch.txt": now.toString(),
+			},
+		};
+	},
+});
+
+describe("blockUsingNow", () => {
+	it("uses options.name for the README.md title", async () => {
+		const actual = await testBlock(blockUsingNow, {
+			take: () => 1234567,
+		});
+
+		expect(actual).toEqual({
+			files: {
+				"last-touch": "1234567",
+			},
+		});
+	});
+});
+```
 
 ## Return
 
