@@ -13,55 +13,55 @@ import {
 	failingFunction,
 } from "./utils.js";
 
-export interface BlockContextOverridesWithoutArgs<Options extends object> {
+export interface BlockContextSettingsWithoutArgs<Options extends object> {
 	created?: Partial<IndirectCreation>;
 	options?: Options;
 	take?: TakeInput;
 }
 
-export interface BlockContextOverridesWithRequiredArgs<
+export interface BlockContextSettingsWithRequiredArgs<
 	Options extends object,
 	Args extends object,
-> extends BlockContextOverridesWithoutArgs<Options> {
+> extends BlockContextSettingsWithoutArgs<Options> {
 	args: Args;
 }
 
-export interface BlockContextOverridesWithOptionalArgs<
+export interface BlockContextSettingsWithOptionalArgs<
 	Options extends object,
 	Args extends object,
-> extends BlockContextOverridesWithoutArgs<Options> {
+> extends BlockContextSettingsWithoutArgs<Options> {
 	args?: Args;
 }
 
 export async function testBlock<Options extends object, Args extends object>(
 	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
-	overrides: BlockContextOverridesWithRequiredArgs<Options, Args>,
+	settings: BlockContextSettingsWithRequiredArgs<Options, Args>,
 ): Promise<Partial<Creation>>;
 export async function testBlock<Options extends object>(
 	blockFactory: BlockFactoryWithoutArgs<Options>,
-	overrides?: BlockContextOverridesWithoutArgs<Options>,
+	settings?: BlockContextSettingsWithoutArgs<Options>,
 ): Promise<Partial<Creation>>;
 export async function testBlock<Options extends object, Args extends object>(
 	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
-	overrides?: BlockContextOverridesWithOptionalArgs<Options, Args>,
+	settings?: BlockContextSettingsWithOptionalArgs<Options, Args>,
 ): Promise<Partial<Creation>>;
 export async function testBlock<Options extends object, Args extends object>(
 	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
-	overrides: BlockContextOverridesWithOptionalArgs<Options, Args> = {},
+	settings: BlockContextSettingsWithOptionalArgs<Options, Args> = {},
 ): Promise<Partial<Creation>> {
-	return await blockFactory(overrides.args).produce({
+	return await blockFactory(settings.args).produce({
 		get args() {
-			return failingFunction("args");
+			return failingFunction("args", "a block");
 		},
-		options: createFailingObject("options") as Options,
-		take: createFailingFunction("take"),
-		...overrides,
+		options: createFailingObject("options", "a block") as Options,
+		take: createFailingFunction("take", "a block"),
+		...settings,
 		created: {
 			documentation: {},
 			editor: {},
 			jobs: [],
 			metadata: [],
-			...overrides.created,
+			...settings.created,
 		},
 	});
 }

@@ -74,13 +74,13 @@ export const inputNpmWhoami = createInput({
 
 That Input can then be used by later Blocks and/or Inputs to retrieve the logged-in npm user, if one exists.
 
-## Options
+## Args
 
 Inputs being standalone means they have no access to Schema options.
-Instead, Inputs may define and take in their options.
+Instead, Inputs may define and take in their args.
 
-Inputs describe those options as the properties of a Zod object schema.
-That allows them validate provided values and infer types from an `options` property in their context.
+Inputs describe those args as the properties of a Zod object schema.
+That allows them validate provided values and infer types from an `args` property in their context.
 
 For example, an input that retrieves JSON data from a file on disk using the provided virtual file system:
 
@@ -89,12 +89,12 @@ import { createInput } from "create";
 import { z } from "zod";
 
 export const inputJSONFile = createInput({
-	options: {
+	args: {
 		fileName: z.string(),
 	},
-	async produce({ fs, options }) {
+	async produce({ args, fs }) {
 		try {
-			return JSON.parse((await fs.readFile(options.fileName)).toString());
+			return JSON.parse((await fs.readFile(args.fileName)).toString());
 		} catch {
 			return undefined;
 		}
@@ -102,7 +102,7 @@ export const inputJSONFile = createInput({
 });
 ```
 
-Later on, Blocks that use the input will be able to provide those options.
+Later on, [`take`](../runtime/contexts#take) calls to the Input will be able to provide those args.
 
 ## Composition
 

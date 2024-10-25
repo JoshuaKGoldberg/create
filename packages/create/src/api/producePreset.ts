@@ -1,64 +1,79 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/no-empty-object-type, @typescript-eslint/unified-signatures */
+/* eslint-disable @typescript-eslint/unified-signatures */
 
-import { InferredObject } from "../options.js";
+import { AnyShape, InferredObject } from "../options.js";
 import { runPreset } from "../runners/runPreset.js";
-import { createSystemContext } from "../system/createSystemContext.js";
+import { createNativeSystem } from "../system/createNativeSystem.js";
+import { createTakeInput } from "../system/createTakeInput.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
-import { SystemContext } from "../types/system.js";
-import { awaitCalledProperties } from "../utils/awaitCalledProperties.js";
+import { NativeSystem, SystemContext } from "../types/system.js";
+import { PromiseOrSync } from "../utils.js";
+import { awaitLazyProperties } from "../utils/awaitLazyProperties.js";
 
 export interface ProductionSettingsBase {
-	system?: SystemContext;
+	system?: Partial<SystemContext>;
 }
 
-export interface AugmentingPresetProductionSettings<Options extends {}>
-	extends ProductionSettingsBase {
-	options?: Partial<InferredObject<Options>>;
+export interface AugmentingPresetProductionSettings<
+	OptionsShape extends AnyShape,
+> extends ProductionSettingsBase {
+	options?: Partial<InferredObject<OptionsShape>>;
 	optionsAugment: (
-		options: Partial<InferredObject<Options>>,
-	) => Promise<InferredObject<Options>>;
+		options: Partial<InferredObject<OptionsShape>>,
+	) => PromiseOrSync<InferredObject<OptionsShape>>;
 }
 
-export interface FullPresetProductionSettings<Options extends {}>
+export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
 	extends ProductionSettingsBase {
-	options: InferredObject<Options>;
+	options: InferredObject<OptionsShape>;
 	optionsAugment?: (
-		options: InferredObject<Options>,
-	) => Promise<Partial<InferredObject<Options>>>;
+		options: InferredObject<OptionsShape>,
+	) => Promise<Partial<InferredObject<OptionsShape>>>;
 }
 
-export async function producePreset<Options extends {}>(
-	preset: Preset<Options>,
-	settings: AugmentingPresetProductionSettings<Options>,
+export async function producePreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
+	settings: AugmentingPresetProductionSettings<OptionsShape>,
 ): Promise<Creation>;
-export async function producePreset<Options extends {}>(
-	preset: Preset<Options>,
-	settings: FullPresetProductionSettings<Options>,
+export async function producePreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
+	settings: FullPresetProductionSettings<OptionsShape>,
 ): Promise<Creation>;
-export async function producePreset<Options extends {}>(
-	preset: Preset<Options>,
+export async function producePreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
 	{
 		options,
 		optionsAugment,
-		system = createSystemContext(),
+		system = {},
 	}:
-		| AugmentingPresetProductionSettings<Options>
-		| FullPresetProductionSettings<Options>,
+		| AugmentingPresetProductionSettings<OptionsShape>
+		| FullPresetProductionSettings<OptionsShape>,
 ): Promise<Creation> {
+	let nativeSystem: NativeSystem | undefined;
+	const getNativeSystem = () => (nativeSystem ??= createNativeSystem());
+
+	const productionSystem = {
+		fetcher: system.fetcher ?? getNativeSystem().fetcher,
+		fs: system.fs ?? getNativeSystem().fs,
+		runner: system.runner ?? getNativeSystem().runner,
+	};
+
+	const take = system.take ?? createTakeInput(productionSystem);
+
 	// From api/produce-preset.md,
-	// Preset options are generated through three steps:
+	// Preset options are generated through three steps...
+
 	// 1. Any options provided by producePreset's second parameter's options
 	const providedOptions = options ?? {};
 
 	// 2. Calling the Preset's Schema's produce method, if it exists
 	const producedOptions =
 		preset.schema.produce &&
-		(await awaitCalledProperties(
+		(await awaitLazyProperties(
 			preset.schema.produce({
 				options: providedOptions,
-				take: system.take,
+				take,
 			}),
 		));
 
@@ -66,7 +81,7 @@ export async function producePreset<Options extends {}>(
 	const optionsForAugmentation = {
 		...producedOptions,
 		...providedOptions,
-	} as InferredObject<Options>;
+	} as InferredObject<OptionsShape>;
 	const augmentedOptions = await optionsAugment?.(optionsForAugmentation);
 
 	return await runPreset(
@@ -74,7 +89,10 @@ export async function producePreset<Options extends {}>(
 		{
 			...optionsForAugmentation,
 			...augmentedOptions,
-		} as InferredObject<Options>,
-		system,
+		} as InferredObject<OptionsShape>,
+		{
+			...productionSystem,
+			take,
+		},
 	);
 }

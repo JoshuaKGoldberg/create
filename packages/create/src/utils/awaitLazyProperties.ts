@@ -1,17 +1,18 @@
-export type AwaitedCalledProperty<T> = T extends () => infer R ? Awaited<R> : T;
+export type AwaitedLazyProperty<T> = T extends () => infer R ? Awaited<R> : T;
 
-export type AwaitedCalledProperties<T> = {
-	[K in keyof T]: AwaitedCalledProperty<T[K]>;
+export type AwaitedLazyProperties<T> = {
+	[K in keyof T]: AwaitedLazyProperty<T[K]>;
 };
 
-export async function awaitCalledProperties<T extends object>(
+export async function awaitLazyProperties<T extends object>(
 	source: T,
-): Promise<AwaitedCalledProperties<T>> {
+): Promise<AwaitedLazyProperties<T>> {
 	const result: Record<string, unknown> = {};
 	const tasks: Promise<void>[] = [];
 
 	for (const [key, creator] of Object.entries(source)) {
 		if (typeof creator !== "function") {
+			result[key] = creator;
 			continue;
 		}
 
@@ -20,9 +21,7 @@ export async function awaitCalledProperties<T extends object>(
 		if (task instanceof Promise) {
 			tasks.push(
 				task.then((awaited) => {
-					if (awaited !== undefined) {
-						result[key] = awaited;
-					}
+					result[key] = awaited;
 				}),
 			);
 		} else if (task !== undefined) {
@@ -32,5 +31,5 @@ export async function awaitCalledProperties<T extends object>(
 
 	await Promise.all(tasks);
 
-	return result as AwaitedCalledProperties<T>;
+	return result as AwaitedLazyProperties<T>;
 }

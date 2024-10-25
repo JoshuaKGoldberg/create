@@ -1,6 +1,7 @@
 import { producePreset } from "../api/producePreset.js";
 import { runCreation } from "../runners/runCreation.js";
-import { createSystemContext } from "../system/createSystemContext.js";
+import { createNativeSystem } from "../system/createNativeSystem.js";
+import { createTakeInput } from "../system/createTakeInput.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
 import { isPreset, isTemplate } from "./utils.js";
@@ -36,7 +37,8 @@ export async function runCli(argv: string[]) {
 		`Let's ✨ create ✨ a repository for you with the ${templateDisplay} template's ${presetDisplay} preset!`,
 	);
 
-	const system = createSystemContext();
+	const nativeSystem = createNativeSystem();
+	const system = { ...nativeSystem, take: createTakeInput(nativeSystem) };
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
 	const creation = await producePreset(preset, {

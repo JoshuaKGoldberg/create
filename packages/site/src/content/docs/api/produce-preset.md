@@ -107,18 +107,45 @@ await producePreset(preset, {
 
 ### `system`
 
+:::tip
+See [Testing > Presets](../testing/presets) for how to use `system` in testing presets.
+:::
+
 An optional [System Context](../runtime/contexts#system-contexts) to use for interfacing with the host operating system.
 
-By default, `system` calls to Node.js methods for file system, network calls, and shell scripts.
+Most notably, the `take` property is used to call to [Inputs](../concepts/inputs).
+You can provide a separate `take` property to inspect calls to inputs.
 
-You can substitute this out to prevent your Preset from interfacing with them.
+For example, this stub logs every input call:
+
+```ts
+import { producePreset } from "create";
+
+import { preset } from "./preset";
+
+await producePreset(preset, {
+	options: {
+		name: "My Production",
+	},
+	system: {
+		async take(input, args) {
+			console.log(`[${input.about?.name ?? "Input"}]`, args);
+			return await input(...args);
+		},
+		// TODO: unit test that you can skip substituting others
+	},
+});
+```
+
+Alternately, other `system` properties call to Node.js methods for file system, network calls, and shell scripts.
+You can substitute this out to granularly prevent your Preset from interfacing with them.
+
 For example, this set of stubs logs what the Preset would do instead of taking those actions:
 
 ```ts
 import { producePreset } from "create";
-import { z } from "zod";
 
-declare const preset: Preset<{ name: z.ZodString }>;
+import { preset } from "./preset";
 
 function stub(label: string) {
 	return (...args: unknown[]) => {
@@ -138,7 +165,7 @@ await producePreset(preset, {
 			writeFile: stub("writeFile"),
 		},
 		runner: stub("runner"),
-		take: stub("take"),
+		// TODO: unit test that you can skip substituting take
 	},
 });
 ```

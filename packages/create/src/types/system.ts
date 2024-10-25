@@ -17,8 +17,10 @@ export interface WritingFileSystem extends InputFileSystem {
 
 export type SystemRunner = (command: string) => Promise<Result>;
 
-export interface SystemContext extends ContextBase {
+export interface NativeSystem {
 	fetcher: typeof fetch;
 	fs: WritingFileSystem;
 	runner: SystemRunner;
 }
+
+export type SystemContext = ContextBase & NativeSystem;

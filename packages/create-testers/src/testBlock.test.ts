@@ -10,7 +10,29 @@ const schema = createSchema({
 	},
 });
 
+const blockStandalone = schema.createBlock({
+	produce() {
+		return {
+			files: {
+				"value.txt": "abc",
+			},
+		};
+	},
+});
+
 describe("testBlock", () => {
+	it("doesn't throw an error when settings isn't provided and the block uses no settings", async () => {
+		const actual = await testBlock(blockStandalone);
+
+		expect(actual).toEqual({ files: { "value.txt": "abc" } });
+	});
+
+	it("doesn't throw an error when settings is {} and the block uses no settings", async () => {
+		const actual = await testBlock(blockStandalone, {});
+
+		expect(actual).toEqual({ files: { "value.txt": "abc" } });
+	});
+
 	describe("args", () => {
 		const blockUsingArgs = schema.createBlock({
 			args: {
