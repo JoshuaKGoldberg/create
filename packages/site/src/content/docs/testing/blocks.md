@@ -7,10 +7,10 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-The separate `create-testers` package includes testing utilities that provide mock data to a block under test.
+The separate `create-testers` package includes testing utilities that provide mock data to an entity under test.
 For [Blocks](../concepts/blocks), a `testBlocks` function is exported that is analogous to [`produceBlock`](../api/produce-block).
 
-For example, this test asserts that an nvmrc block creates an `".nvmrc"` file with content `"20.12.2"`:
+For example, this test asserts that an nvmrc Block creates an `".nvmrc"` file with content `"20.12.2"`:
 
 ```ts
 import { testBlock } from "create-testers";
@@ -21,7 +21,9 @@ describe("blockNvmrc", () => {
 	it("returns an .nvmrc", () => {
 		const actual = await testBlock(blockNvmrc);
 
-		expect(actual).toEqual({ ".nvmrc": "20.12.2" });
+		expect(actual).toEqual({
+			files: { ".nvmrc": "20.12.2" },
+		});
 	});
 });
 ```
