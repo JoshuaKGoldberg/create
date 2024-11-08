@@ -9,16 +9,17 @@ Don't rely on it yet.
 :::
 
 A _Block_ defines the logic to create a portion of a repository.
-Blocks are created by calling a _Block Factory_ that can be generated from a [Schema](./schemas).
+Each Block is associated with a parent [Schema](./schemas), which contains a _Block Factory_ for creating Blocks.
+Blocks can then be listed in [Presets](./presets) associated with the same Schema.
 
-Block Factories define a `produce()` method for their core logic:
+## Production
 
-- It receives one parameter: a [Context](../runtime/contexts) object containing options as well as other utilities.
-- It returns a [Creation](../runtime/creation) object describing the generated pieces of tooling.
+Blocks define their logic for created repository portions in a `produce()` function.
+`produce()` returns a [Creation](../runtime/creations) describing any produced output.
 
-When `create` scaffolds a repository, it merges together the produced outputs from all Blocks.
+When `create` scaffolds a repository form a Preset, it merges together the produced outputs from its listed Blocks.
 
-For example, this block describes creating a `.nvmrc` file:
+For example, this Block describes creating a `.nvmrc` file:
 
 ```ts
 import { schema } from "./schema";
@@ -40,7 +41,7 @@ That `blockNvmrc` can then be listed in a [Preset](./presets)'s `blocks` array:
 import { blockNvmrc } from "./blockNvmrc";
 import { schema } from "./schema";
 
-export const presetCreateMyApp = schema.createPreset({
+export const presetVersioned = schema.createPreset({
 	about: {
 		name: "Create My App",
 	},
@@ -51,7 +52,7 @@ export const presetCreateMyApp = schema.createPreset({
 });
 ```
 
-That `presetCreateMyApp` would then produce an `.nvmrc` file with text content `20.12.2` when run.
+That `presetVersioned` would then produce an `.nvmrc` file with text content `20.12.2` when run.
 
 ## Options
 
@@ -76,91 +77,48 @@ export const blockREADME = schema.createBlock({
 ## Args
 
 Blocks may be extended with their own options, referred to as _args_.
-Blocks define args as the properties for a Zod object schema and then receive them in their context.
+Blocks define args as the properties for a [Zod](https://zod.dev) object schema and then receive them in their context.
 
-For example, a Prettier block that optionally allows adding in any plugins:
+Args for a Block are typically specified each time a Block is defined in a [Preset](./presets)'s `blocks` array.
+Each Preset may define instances of the Block with different args.
+
+For example, this Block takes in a string array under a `names` arg, to be printed in a `names.txt` file:
 
 ```ts
 import { z } from "zod";
 
 import { schema } from "./schemas";
 
-export const blockPrettier = schema.createBlock({
+export const blockNames = schema.createBlock({
 	args: {
-		plugins: z.array(z.string()).optional(),
+		names: z.array(z.string()),
 	},
 	async produce({ args }) {
 		return {
 			files: {
-				".prettierrc.json":
-					args.plugins &&
-					JSON.stringify({
-						$schema: "http://json.schemastore.org/prettierrc",
-						plugins: args.plugins,
-					}),
+				"names.txt": args.names.join("\n"),
 			},
 		};
 	},
 });
 ```
 
-That `blockPrettier` can then be listed in a [Preset](./presets)'s `blocks` array:
+The `blockNames` Block would then require `names` be provided when constructed, such as in a Preset:
 
 ```ts
-import { blockPrettier } from "./blockPrettier";
+import { blockNames } from "./blockNames";
 import { schema } from "./schema";
 
-export const presetCreateMyApp = schema.createPreset({
+export const presetFruitNames = schema.createPreset({
 	about: {
 		name: "Create My App",
 	},
 	blocks: [
-		blockPrettier({
-			plugins: [
-				"prettier-plugin-curly",
-				"prettier-plugin-sh",
-				"prettier-plugin-packagejson",
-			],
+		blockNames({
+			names: ["apple", "banana", "cherry"],
 		}),
-		// ...
 	],
 });
 ```
 
-That `presetCreateMyApp` would then produce a `.prettierrc.json` file with those three plugins listed in its JSON contents.
-
-## Inputs
-
-Blocks can take in data from [Inputs](../inputs/about).
-Blocks receive a `take` function in their context that executes an input.
-
-For example, a Blocks that adds all-contributors recognition using a JSON file input:
-
-```ts
-import { inputJSONFile } from "@example/input-json-data";
-
-export const blockAllContributors = createBlock({
-	async produce({ take }) {
-		const existing = await take(inputJSONFile, {
-			fileName: "package.json",
-		});
-
-		return {
-			files: {
-				".all-contributorsrc": JSON.stringify({
-					// ...
-					contributors: existing?.contributors ?? [],
-					// ...
-				}),
-			},
-		};
-	},
-});
-```
-
-`create` will handle lazily evaluating inputs and retrieving user-specified inputs.
-
-:::note
-Blocks aren't required to use Inputs for dynamic data.
-Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.
-:::
+Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text.

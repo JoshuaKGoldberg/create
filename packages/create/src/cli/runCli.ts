@@ -1,10 +1,14 @@
+// TODO: redo templates to be presets
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
 import { producePreset } from "../api/producePreset.js";
 import { runCreation } from "../runners/runCreation.js";
-import { createNativeSystem } from "../system/createNativeSystem.js";
-import { createTakeInput } from "../system/createTakeInput.js";
+import { createNativeSystems } from "../system/createNativeSystems.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
-import { isPreset, isTemplate } from "./utils.js";
+import { isPreset } from "./utils.js";
+
+declare const isTemplate: (value: unknown) => value is any;
 
 Error.stackTraceLimit = Infinity;
 
@@ -37,16 +41,15 @@ export async function runCli(argv: string[]) {
 		`Let's ✨ create ✨ a repository for you with the ${templateDisplay} template's ${presetDisplay} preset!`,
 	);
 
-	const nativeSystem = createNativeSystem();
-	const system = { ...nativeSystem, take: createTakeInput(nativeSystem) };
+	const { system, take } = createNativeSystems();
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
 	const creation = await producePreset(preset, {
 		options: parsedOptions,
 		optionsAugment: async (options) =>
 			promptForPresetOptions(preset.schema.options, options),
-		system,
+		...system,
 	});
 
-	await runCreation(creation, system);
+	await runCreation(creation, { ...system, take });
 }

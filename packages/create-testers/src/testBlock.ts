@@ -51,10 +51,10 @@ export async function testBlock<Options extends object, Args extends object>(
 ): Promise<Partial<Creation>> {
 	return await blockFactory(settings.args).produce({
 		get args() {
-			return failingFunction("args", "a block");
+			return failingFunction("args", "the block");
 		},
-		options: createFailingObject("options", "a block") as Options,
-		take: createFailingFunction("take", "a block"),
+		options: createFailingObject("options", "the block") as Options,
+		take: createFailingFunction("take", "the block"),
 		...settings,
 		created: {
 			documentation: {},

@@ -3,13 +3,6 @@ import { z } from "zod";
 
 import { createInput } from "../creators/createInput.js";
 import { createSchema } from "../creators/createSchema.js";
-import {
-	Input,
-	InputArgsFor,
-	InputContextWithArgs,
-	TakeInput,
-} from "../types/inputs.js";
-import { SystemContext } from "../types/system.js";
 import { producePreset } from "./producePreset.js";
 
 const emptyCreation = {
@@ -156,8 +149,6 @@ describe("producePreset", () => {
 				},
 			});
 
-			type InputArgs = InputArgsFor<typeof inputFetcher>;
-
 			const blockUsingFetcher = schemaWithOption.createBlock({
 				async produce({ options, take }) {
 					return {
@@ -172,36 +163,16 @@ describe("producePreset", () => {
 				blocks: [blockUsingFetcher()],
 			});
 
-			it("uses the provided take when it exists", async () => {
-				const take = vi.fn((_: unknown, args: InputArgs) => {
-					return args.text + "-def";
-				}) as TakeInput;
-
-				const actual = await producePreset(presetUsingFetcher, {
-					options: {
-						value: "abc",
-					},
-					system: { take },
-				});
-
-				expect(actual).toEqual({
-					...emptyCreation,
-					files: {
-						"value.txt": "abc-def",
-					},
-				});
-			});
-
-			it("uses the provided fetcher and default take when only fetcher is provided", async () => {
+			it("uses the fetcher when provided", async () => {
 				const fetcher = vi
 					.fn()
 					.mockResolvedValueOnce({ text: () => Promise.resolve("def") });
 
 				const actual = await producePreset(presetUsingFetcher, {
+					fetcher,
 					options: {
 						value: "abc",
 					},
-					system: { fetcher },
 				});
 
 				expect(actual).toEqual({

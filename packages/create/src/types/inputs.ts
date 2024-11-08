@@ -1,4 +1,3 @@
-import { InferredObject } from "../options.js";
 import { ContextBase } from "./context.js";
 import { SystemRunner } from "./system.js";
 
@@ -31,10 +30,20 @@ export type InputWithArgs<Result, Args> = (
 	context: InputContextWithArgs<Args>,
 ) => Result;
 
-export type TakeInput = <Result, Args extends object | undefined = undefined>(
-	input: Input<Result, Args>,
-	args: Args,
-) => Result;
+export interface TakeInput {
+	<Result, Args extends object | undefined = undefined>(
+		input: InputWithArgs<Result, Args>,
+		args: Args,
+	): Result;
+	<Result>(input: InputWithoutArgs<Result>): Result;
+}
 
-export type InputArgsFor<TypeofSchema> =
-	TypeofSchema extends Input<unknown, infer ArgsShape> ? ArgsShape : never;
+export type InputArgsFor<TypeofInput> =
+	TypeofInput extends Input<unknown, infer ArgsShape> ? ArgsShape : never;
+
+export type InputContextFor<TypeofInput> =
+	TypeofInput extends InputWithArgs<unknown, infer ArgsShape>
+		? InputContextWithArgs<ArgsShape>
+		: TypeofInput extends InputWithoutArgs<unknown>
+			? InputContext
+			: never;

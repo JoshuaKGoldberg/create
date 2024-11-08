@@ -1,7 +1,5 @@
-import { scheduler } from "node:timers/promises";
+import { describe, expect, it } from "vitest";
 
-import { describe, expect, it, test, vi } from "vitest";
-import { z } from "zod";
 import { awaitLazyProperties } from "./awaitLazyProperties.js";
 
 describe("awaitLazyProperties", () => {
@@ -29,7 +27,7 @@ describe("awaitLazyProperties", () => {
 		let iteration = 0;
 
 		async function returnStartIteration() {
-			let current = iteration;
+			const current = iteration;
 			await Promise.resolve();
 			iteration += 1;
 			return current;

@@ -1,44 +1,19 @@
+import { createNativeSystems } from "../system/createNativeSystems.js";
 import {
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
 	BlockFactoryWithRequiredArgs,
 } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
-
-const createFailingFunction = (name: string) => () => failingFunction(name);
-
-function failingFunction(name: string): never {
-	throw new Error(
-		`Context property '${name}' was used by a block but not provided.`,
-	);
-}
+import { NativeSystem } from "../types/system.js";
 
 export interface BlockProductionSettings<
 	Options extends object = object,
 	Args extends object = object,
-> {
+> extends Partial<NativeSystem> {
 	args?: Args;
 	created?: Partial<IndirectCreation>;
 	options?: Options;
-}
-
-function createBlockProductionContext<
-	Options extends object,
-	Args extends object,
->(settings: BlockProductionSettings<Options, Args> = {}) {
-	return {
-		created: {
-			documentation: {},
-			editor: {},
-			jobs: [],
-			metadata: [],
-			...settings.created,
-		},
-		get options() {
-			return settings.options ?? failingFunction("options");
-		},
-		take: createFailingFunction("take"),
-	};
 }
 
 export async function produceBlock<Options extends object>(
@@ -59,6 +34,17 @@ export async function produceBlock<Options extends object, Args extends object>(
 ) {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const block = blockFactory(settings.args!);
-	const context = createBlockProductionContext(settings);
-	return await block.produce(context);
+
+	return await block.produce({
+		created: {
+			documentation: {},
+			editor: {},
+			jobs: [],
+			metadata: [],
+			...settings.created,
+		},
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		options: settings.options!,
+		take: createNativeSystems(settings).take,
+	});
 }

@@ -8,14 +8,21 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-An _Input_ defines a standalone function to provide any dynamic data needed to inform [Blocks](./blocks).
-These may include:
+An _Input_ defines a standalone function to provide any dynamic data needed to inform production.
+Unlike [Blocks](./blocks) and [Presets](./presets), Inputs are not bound to any one [Schema](./schemas).
+Inputs may be shared and used freely within production functions.
+
+The kinds of dynamic data sourced by Inputs often include:
 
 - Files on disk, such as raw text or parsed `.json`
 - Sending network requests
 - Running terminal commands, such as `npm whoami`
 
 `create` will manage providing inputs with a runtime [Context](../runtime/contexts) containing a file system, network fetcher, and shell runner.
+
+## Production
+
+Inputs define their logic for reading data in a `produce()` function.
 
 For example, an input that retrieves the current running time:
 
@@ -51,7 +58,7 @@ export const blockUsingNow = schema.createBlock({
 That block would instruct `create` to create a `last-touch.txt` file with the current `performance.now()` timestamp when run.
 
 :::note
-Blocks aren't required to use Inputs for dynamic data.
+Production functions aren't required to use Inputs for dynamic data.
 Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.
 :::
 
@@ -106,10 +113,10 @@ Later on, [`take`](../runtime/contexts#take) calls to the Input will be able to 
 
 ## Composition
 
-Inputs are composable: meaning each can take data from other inputs.
+Inputs are composable: meaning each can take data from other Inputs.
 As with Blocks, the [Context](../runtime/contexts) provided to Inputs includes a `take` function that calls to another Input.
 
-For example, an input that determines the npm username based on either `npm whoami` or `package.json` inputs:
+For example, an Input that determines the npm username based on either `npm whoami` or `package.json` Inputs:
 
 ```ts
 import { createInput } from "create";

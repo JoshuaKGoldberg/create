@@ -26,6 +26,11 @@ export interface Schema<OptionsShape extends AnyShape> {
 	produce?: SchemaProducer<InferredObject<OptionsShape>>;
 }
 
+export interface SchemaWithProduce<OptionsShape extends AnyShape>
+	extends Schema<OptionsShape> {
+	produce: SchemaProducer<InferredObject<OptionsShape>>;
+}
+
 export interface SchemaContext<Options extends object> extends ContextBase {
 	options: Options;
 }

@@ -1,5 +1,5 @@
 import { AnyShape, InferredObject, InputShape } from "../options.js";
-import { PromiseOrSync } from "../utils.js";
+import { PromiseOrSync } from "../utils/promises.js";
 import { AboutBase } from "./about.js";
 import { ContextBase } from "./context.js";
 import { Creation, IndirectCreation } from "./creations.js";

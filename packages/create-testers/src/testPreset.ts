@@ -9,14 +9,12 @@ import {
 	producePreset,
 	PromiseOrSync,
 	SystemContext,
-	TakeInput,
-	WritingFileSystem,
 } from "create";
 
-import { createFailingFunction } from "./utils.js";
+import { createMockSystems } from "./createMockSystems.js";
 
 export interface TestProductionSettingsBase {
-	system?: Partial<SystemContext>;
+	system?: Omit<Partial<SystemContext>, "take">;
 }
 
 export interface TestAugmentingPresetProductionSettings<
@@ -49,31 +47,10 @@ export async function testPreset<OptionsShape extends AnyShape>(
 		| TestAugmentingPresetProductionSettings<OptionsShape>
 		| TestFullPresetProductionSettings<OptionsShape>,
 ) {
-	const fs: WritingFileSystem = {
-		...settings.system?.fs,
-		readFile: createFailingFunction("fs.readFile", "an input"),
-		writeDirectory: createFailingFunction("fs.writeDirectory", "an input"),
-		writeFile: createFailingFunction("fs.writeFile", "an input"),
-	};
-	const fetcher =
-		settings.system?.fetcher ?? createFailingFunction("fetcher", "an input");
-	const runner =
-		settings.system?.runner ?? createFailingFunction("runner", "an input");
-	const take: TakeInput =
-		settings.system?.take ??
-		((input, args) =>
-			input({ args, fetcher, fs, runner, take } as Parameters<TakeInput>[0]));
-
-	const system: SystemContext = {
-		...settings.system,
-		fetcher,
-		fs,
-		runner,
-		take,
-	};
+	const { system } = createMockSystems(settings.system);
 
 	return await producePreset(preset, {
 		...settings,
-		system,
+		...system,
 	} as FullPresetProductionSettings<OptionsShape>);
 }

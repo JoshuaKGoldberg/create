@@ -60,6 +60,7 @@ Doing so just makes that data easier to [mock out in tests](../testing/inputs) l
 ## Block Contexts
 
 The Context object provided to the `produce` object of [Blocks](../concepts/blocks).
+Includes properties from [All Contexts](#all-contexts).
 
 ### `created`
 
@@ -118,6 +119,7 @@ export const schema = createSchema({
 ## Input Contexts
 
 The Context object provided to the `produce` object of [Inputs](../concepts/inputs).
+Includes properties from [All Contexts](#all-contexts).
 
 ### `args` {#input-options}
 
@@ -144,6 +146,25 @@ export const inputFile = createInput({
 
 Unlike that minimal example, Inputs generally use one or more of the following properties to read from the user's file system and/or network.
 
+### `fetcher` {#input-fetcher}
+
+The global `fetch` function, to make network calls.
+
+For example, an Input that retrieves a random Cat fact:
+
+```ts
+import { createInput } from "create";
+
+export const inputCatFact = createInput({
+	async produce({ fetcher }) {
+		const response = await fetcher("https://catfact.ninja/fact");
+		const data = (await response.json()) as { fact: string };
+
+		return data.fact;
+	},
+});
+```
+
 ### `fs` {#input-fs}
 
 A virtual wrapper around the file system.
@@ -168,25 +189,6 @@ export const inputFile = createInput({
 });
 ```
 
-### `fetcher` {#input-fetcher}
-
-The global `fetch` function, to make network calls.
-
-For example, an Input that retrieves a random Cat fact:
-
-```ts
-import { createInput } from "create";
-
-export const inputCatFact = createInput({
-	async produce({ fetcher }) {
-		const response = await fetcher("https://catfact.ninja/fact");
-		const data = (await response.json()) as { fact: string };
-
-		return data.fact;
-	},
-});
-```
-
 ### `runner` {#input-runner}
 
 An `execa` shell script to run commands.
@@ -198,7 +200,7 @@ For example, an Input that retrieves the current Git user's email:
 ```ts
 import { createInput } from "create";
 
-export const inputCatFact = createInput({
+export const inputGitUserEmail = createInput({
 	async produce({ runner }) {
 		return (await runner("git config user.email")).stdout;
 	},
@@ -208,12 +210,13 @@ export const inputCatFact = createInput({
 ## Schema Contexts
 
 The Context object provided to the `produce` object of [Schemas](../concepts/schemas).
+Includes properties from [All Contexts](#all-contexts).
 
 ### `options` {#schema-options}
 
 Any manually provided values as described by the [Schema's `options`](../concepts/schemas#options).
 
-[Schema `produce()`](../concepts/schemas#produce) methods are designed to fill in any options not manually provided by the user.
+[Schema `produce()`](../concepts/schemas#production) methods are designed to fill in any options not manually provided by the user.
 Options that are manually provided are available under the Schema Context's `options`.
 
 For example, this Schema defaults an `name` option to a kebab-case version of its `title` option:
@@ -234,7 +237,13 @@ export const schema = createSchema({
 
 ## System Contexts
 
-The Context object provided to the [`produceBlock`](../apis/produce-block) and [`producePreset`](../apis/produce-preset) APIs.
+The Context object provided to [producer APIs](../apis/producers).
+Includes properties from [All Contexts](#all-contexts).
+
+### `fetcher` {#system-fetcher}
+
+The global `fetch` function, to make network calls.
+This is an the same as [Input Contexts' `fetcher`](#input-fetcher).
 
 ### `fs` {#system-fs}
 
@@ -246,11 +255,6 @@ System `fs` objects include the following properties:
 - `readFile`: Given a file path, returns a Promise for its contents as a `string`
 - `writeDirectory`: Given a directory path, returns a Promise for creating a directory there if one doesn't exist
 - `writeFile`: Given a file path and text contents, returns a Promise for writing to the file
-
-### `fetcher` {#system-fetcher}
-
-The global `fetch` function, to make network calls.
-This is an the same as [Input Contexts' `fetcher`](#input-fetcher).
 
 ### `options` {#system-options}
 

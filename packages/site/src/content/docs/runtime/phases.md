@@ -29,35 +29,30 @@ Those `BlockPhase` phases are:
 10. `Editor`
 11. `CI`
 
-For example, a `.gitignore` block that adds entries for all previously included metadata files:
+For example, the following Block indicates it should be run during the `Test` phase, presumably to read metadata created by Blocks in earlier phases:
 
 ```ts
 import { BlockPhase, MetadataFileType } from "create";
 
 import { schema } from "../schema.js";
 
-export const blockGitignore = schema.createBlock({
+export const blockTests = schema.createBlock({
 	about: {
-		name: "Gitignore",
+		name: "Tests",
 	},
-	phase: BlockPhase.Git,
+	phase: BlockPhase.Test,
 	produce({ created }) {
 		return {
 			files: {
-				".gitignore": formatIgnoreFile(
-					[
-						"node_modules/",
-						...created.metadata
-							.filter(
-								(value) =>
-									value.type === MetadataFileType.Built ||
-									value.type === MetadataFileType.Ignored,
-							)
-							.map((value) => value.glob),
-					].sort(),
-				),
+				".mocharc.json": JSON.stringify({
+					spec: created.metadata
+						.filter((value) => value.type === MetadataFileType.Source)
+						.map((value) => value.glob),
+				}),
 			},
 		};
 	},
 });
 ```
+
+See [Creations > Indirect Creations](../runtime/creations#indirect-creations) for the values Blocks can read from Blocks run in earlier phases.

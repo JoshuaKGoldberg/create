@@ -4,6 +4,7 @@ export type AwaitedLazyProperties<T> = {
 	[K in keyof T]: AwaitedLazyProperty<T[K]>;
 };
 
+// TODO: move into separate package?
 export async function awaitLazyProperties<T extends object>(
 	source: T,
 ): Promise<AwaitedLazyProperties<T>> {

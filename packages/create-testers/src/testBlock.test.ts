@@ -52,7 +52,7 @@ describe("testBlock", () => {
 				// @ts-expect-error -- Intentionally not allowed by types.
 				async () => await testBlock(blockUsingArgs, {}),
 			).rejects.toMatchInlineSnapshot(
-				`[Error: Context property 'args' was used by a block but not provided.]`,
+				`[Error: Context property 'args' was used by the block but not provided.]`,
 			);
 		});
 
@@ -112,19 +112,15 @@ describe("testBlock", () => {
 
 		it("throws an error when options isn't provided and a block uses options", async () => {
 			await expect(
-				async () =>
-					await testBlock(blockUsingOptions, {
-						take: vi.fn(),
-					}),
+				async () => await testBlock(blockUsingOptions),
 			).rejects.toMatchInlineSnapshot(
-				`[Error: Context property 'options' was used by a block but not provided.]`,
+				`[Error: Context property 'options' was used by the block but not provided.]`,
 			);
 		});
 
 		it("passes options to the block when provided", async () => {
 			const actual = await testBlock(blockUsingOptions, {
 				options: { value: "abc" },
-				take: vi.fn(),
 			});
 
 			expect(actual).toEqual({ files: { "value.txt": "abc" } });
@@ -157,7 +153,7 @@ describe("testBlock", () => {
 					options: { value: "def" },
 				}),
 			).rejects.toMatchInlineSnapshot(
-				`[Error: Context property 'take' was used by a block but not provided.]`,
+				`[Error: Context property 'take' was used by the block but not provided.]`,
 			);
 		});
 

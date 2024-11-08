@@ -10,8 +10,8 @@ export default defineConfig({
 					items: [
 						{ label: "Schemas", link: "concepts/schemas" },
 						{ label: "Blocks", link: "concepts/blocks" },
-						{ label: "Inputs", link: "concepts/inputs" },
 						{ label: "Presets", link: "concepts/presets" },
+						{ label: "Inputs", link: "concepts/inputs" },
 					],
 					label: "Concepts",
 				},
@@ -25,20 +25,14 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "produceBlock", link: "api/produce-block" },
-						{ label: "producePreset", link: "api/produce-preset" },
+						{ label: "Creators", link: "apis/creators" },
+						{ label: "Producers", link: "apis/producers" },
+						{ label: "Testers", link: "apis/testers" },
 					],
-					label: "API",
+					label: "APIs",
 				},
-				{
-					items: [
-						{ label: "Schemas", link: "testing/schemas" },
-						{ label: "Blocks", link: "testing/blocks" },
-						{ label: "Inputs", link: "testing/inputs" },
-						{ label: "Presets", link: "testing/presets" },
-					],
-					label: "Testing",
-				},
+				{ label: "FAQs", link: "faqs" },
+				{ label: "Glossary", link: "glossary" },
 			],
 			social: {
 				github: "https://github.com/JoshuaKGoldberg/create",

@@ -3,21 +3,16 @@
 
 import { AnyShape, InferredObject } from "../options.js";
 import { runPreset } from "../runners/runPreset.js";
-import { createNativeSystem } from "../system/createNativeSystem.js";
-import { createTakeInput } from "../system/createTakeInput.js";
+import { createNativeSystems } from "../system/createNativeSystems.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
-import { NativeSystem, SystemContext } from "../types/system.js";
-import { PromiseOrSync } from "../utils.js";
-import { awaitLazyProperties } from "../utils/awaitLazyProperties.js";
-
-export interface ProductionSettingsBase {
-	system?: Partial<SystemContext>;
-}
+import { NativeSystem } from "../types/system.js";
+import { PromiseOrSync } from "../utils/promises.js";
+import { produceSchema } from "./produceSchema.js";
 
 export interface AugmentingPresetProductionSettings<
 	OptionsShape extends AnyShape,
-> extends ProductionSettingsBase {
+> extends Partial<NativeSystem> {
 	options?: Partial<InferredObject<OptionsShape>>;
 	optionsAugment: (
 		options: Partial<InferredObject<OptionsShape>>,
@@ -25,7 +20,7 @@ export interface AugmentingPresetProductionSettings<
 }
 
 export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
-	extends ProductionSettingsBase {
+	extends Partial<NativeSystem> {
 	options: InferredObject<OptionsShape>;
 	optionsAugment?: (
 		options: InferredObject<OptionsShape>,
@@ -45,21 +40,12 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	{
 		options,
 		optionsAugment,
-		system = {},
+		...providedSystem
 	}:
 		| AugmentingPresetProductionSettings<OptionsShape>
 		| FullPresetProductionSettings<OptionsShape>,
 ): Promise<Creation> {
-	let nativeSystem: NativeSystem | undefined;
-	const getNativeSystem = () => (nativeSystem ??= createNativeSystem());
-
-	const productionSystem = {
-		fetcher: system.fetcher ?? getNativeSystem().fetcher,
-		fs: system.fs ?? getNativeSystem().fs,
-		runner: system.runner ?? getNativeSystem().runner,
-	};
-
-	const take = system.take ?? createTakeInput(productionSystem);
+	const { system, take } = createNativeSystems(providedSystem);
 
 	// From api/produce-preset.md,
 	// Preset options are generated through three steps...
@@ -68,14 +54,10 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	const providedOptions = options ?? {};
 
 	// 2. Calling the Preset's Schema's produce method, if it exists
-	const producedOptions =
-		preset.schema.produce &&
-		(await awaitLazyProperties(
-			preset.schema.produce({
-				options: providedOptions,
-				take,
-			}),
-		));
+	const producedOptions = await produceSchema(preset.schema, {
+		options: providedOptions,
+		...system,
+	});
 
 	// 3. Calling to an optional optionsAugment method of producePreset's second parameter
 	const optionsForAugmentation = {
@@ -91,7 +73,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 			...augmentedOptions,
 		} as InferredObject<OptionsShape>,
 		{
-			...productionSystem,
+			...system,
 			take,
 		},
 	);

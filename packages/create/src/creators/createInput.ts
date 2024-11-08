@@ -1,13 +1,8 @@
 import { z } from "zod";
 
 import { AnyShape, InferredObject } from "../options.js";
-import { AboutBase } from "../types/about.js";
 import { Input, InputContext, InputContextWithArgs } from "../types/inputs.js";
 import { isDefinitionWithArgs } from "./utils.js";
-
-export interface InputDefinitionBase {
-	about?: AboutBase;
-}
 
 export type InputDefinition<
 	Result,

@@ -41,4 +41,4 @@ The portions of `create` allow you to define the inputs to your repository gener
 It is just barely past proof-of-concept stage.
 
 At the moment, it's being developed as an MVP to replace the internals of [create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app).
-See [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181).
+See [FAQs > How do I use `create`?](./faqs#how-do-i-use-create).
