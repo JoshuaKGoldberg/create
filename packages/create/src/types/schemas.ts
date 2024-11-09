@@ -51,7 +51,7 @@ export type LazyOptionalOption<T> =
 
 export interface CreateBlockFactory<OptionsShape extends AnyShape> {
 	<ArgsShape extends AnyOptionalShape>(
-		definition: BlockDefinitionWithArgs<
+		blockDefinition: BlockDefinitionWithArgs<
 			InferredObject<OptionsShape>,
 			ArgsShape
 		>,
@@ -61,7 +61,7 @@ export interface CreateBlockFactory<OptionsShape extends AnyShape> {
 	>;
 
 	<ArgsShape extends AnyShape>(
-		definition: BlockDefinitionWithArgs<
+		blockDefinition: BlockDefinitionWithArgs<
 			InferredObject<OptionsShape>,
 			ArgsShape
 		>,
@@ -71,12 +71,12 @@ export interface CreateBlockFactory<OptionsShape extends AnyShape> {
 	>;
 
 	(
-		definition: BlockDefinitionWithoutArgs<InferredObject<OptionsShape>>,
+		blockDefinition: BlockDefinitionWithoutArgs<InferredObject<OptionsShape>>,
 	): BlockFactoryWithoutArgs<InferredObject<OptionsShape>>;
 }
 
 export type CreatePresetFactory<OptionsShape extends AnyShape> = (
-	definition: PresetDefinition<OptionsShape>,
+	presetDefinition: PresetDefinition<OptionsShape>,
 ) => Preset<OptionsShape>;
 
 export type SchemaContextFor<TypeofSchema> =

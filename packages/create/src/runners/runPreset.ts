@@ -19,7 +19,11 @@ export async function runPreset<PresetOptionsShape extends AnyShape>(
 		package: {},
 	};
 
-	const blocksSorted = preset.blocks.sort((a, b) => a.phase - b.phase);
+	const blocks = Array.isArray(preset.blocks)
+		? preset.blocks
+		: preset.blocks(options);
+
+	const blocksSorted = blocks.sort((a, b) => a.phase - b.phase);
 
 	for (const block of blocksSorted) {
 		created = mergeCreations(

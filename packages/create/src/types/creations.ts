@@ -6,7 +6,6 @@ import { MetadataFileType } from "../enums.js";
 export interface DirectCreation {
 	commands: string[];
 	files: CreatedFiles;
-	package: CreatedPackage;
 }
 
 export interface IndirectCreation {
@@ -14,6 +13,7 @@ export interface IndirectCreation {
 	editor: CreatedEditor;
 	jobs: CreatedJob[];
 	metadata: CreatedMetadata[];
+	package: CreatedPackage;
 }
 
 export type Creation = DirectCreation & IndirectCreation;

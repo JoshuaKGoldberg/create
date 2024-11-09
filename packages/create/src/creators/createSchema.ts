@@ -9,22 +9,7 @@ import {
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
 } from "../types/blocks.js";
-import {
-	CreateBlockFactory,
-	Schema,
-	SchemaDefinition,
-} from "../types/schemas.js";
-
-function isBlockDefinitionWithArgs<
-	Options extends object,
-	ArgsShape extends AnyShape,
->(
-	definition:
-		| BlockDefinitionWithArgs<Options, ArgsShape>
-		| BlockDefinitionWithoutArgs<Options>,
-): definition is BlockDefinitionWithArgs<Options, ArgsShape> {
-	return "args" in definition;
-}
+import { Schema, SchemaDefinition } from "../types/schemas.js";
 
 export const createSchema = <OptionsShape extends AnyShape>(
 	schemaDefinition: SchemaDefinition<OptionsShape>,
@@ -33,7 +18,7 @@ export const createSchema = <OptionsShape extends AnyShape>(
 	const createBlock = <ArgsShape extends AnyShape | undefined>(
 		blockDefinition: BlockDefinition<InferredObject<OptionsShape>, ArgsShape>,
 	) => {
-		return isBlockDefinitionWithArgs(blockDefinition)
+		return "args" in blockDefinition
 			? createBlockWithArgs(blockDefinition)
 			: createBlockWithoutArgs(blockDefinition);
 	};
@@ -71,8 +56,8 @@ export const createSchema = <OptionsShape extends AnyShape>(
 	};
 
 	const schema: Schema<OptionsShape> = {
-		createBlock: createBlock as CreateBlockFactory<OptionsShape>,
-		createPreset: (preset) => ({ ...preset, schema }),
+		createBlock,
+		createPreset: (presetDefinition) => ({ ...presetDefinition, schema }),
 		options: schemaDefinition.options,
 		produce: schemaDefinition.produce,
 	};

@@ -104,42 +104,6 @@ That would instruct the `create` engine to create a `.github/` directory if it d
 Specifying a `files['package.json']` is not permitted, as that file is managed by the [`package`](#package) property.
 :::
 
-### `package`
-
-Entries to add to the `package.json`.
-
-These will be deduplicated based on version ranges by the `create` engine.
-For example, if two blocks specify in a `package.devDependencies` object:
-
-- `"typescript": ">=5`
-- `"typescript": "^5.6.0`
-
-...then `create` will know to stick with `typescript@5.6.0`.
-
-For example, a block that adds Knip as a devDependency and a script:
-
-```ts
-import { schema } from "./schema";
-
-export const blockKnip = schema.createBlock({
-	produce() {
-		return {
-			package: {
-				devDependencies: {
-					knip: "5.27.2",
-				},
-				scripts: {
-					"lint:knip": "knip",
-				},
-			},
-		};
-	},
-});
-```
-
-The `create` engine would create a `package.json` file with the `devDependencies` and `scripts` specified by the block.
-It would also install any package dependencies listed in the file.
-
 ## Indirect Creations
 
 These Creation properties produce information meant to be used by subsequent Blocks.
@@ -286,3 +250,43 @@ export const blockTsup = schema.createBlock({
 	},
 });
 ```
+
+### `package`
+
+Entries to add to the `package.json`.
+
+These will be deduplicated based on version ranges by the `create` engine.
+For example, if two blocks specify in a `package.devDependencies` object:
+
+- `"typescript": ">=5`
+- `"typescript": "^5.6.0`
+
+...then `create` will know to stick with `typescript@5.6.0`.
+
+For example, a block that adds Knip as a devDependency and a script:
+
+```ts
+import { schema } from "./schema";
+
+export const blockKnip = schema.createBlock({
+	produce() {
+		return {
+			package: {
+				devDependencies: {
+					knip: "5.27.2",
+				},
+				scripts: {
+					"lint:knip": "knip",
+				},
+			},
+		};
+	},
+});
+```
+
+:::note
+The `create` engine does not add most entries from `package` to the `package.json` file automatically.
+It only installs package dependencies.
+
+To add other properties to `package.json`, create a [Block](../concepts/blocks) whose [`files`](#files) creation includes a `"package.json"`.
+:::

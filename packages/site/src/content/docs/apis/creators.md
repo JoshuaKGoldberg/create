@@ -325,7 +325,7 @@ schema.createPreset({
 
 ### `blocks` {#createpreset-blocks}
 
-The Blocks that will be run to generate the Preset's [Creations](../runtime/creations) during production.
+The [Blocks](../concepts/blocks) that will be run to generate the Preset's [Creations](../runtime/creations) during production.
 
 Blocks will be evaluated in their [Phase](../runtime/phases) order.
 Blocks with the same Phase will be evaluated by the order they're defined in the Preset.
@@ -343,6 +343,34 @@ schema.createPreset({
 ```
 
 The Blocks provided to a Preset must be created from the same root [Schema](../concepts/schemas).
+
+#### `blocks` Functions
+
+A Preset's `blocks` can be defined as an array of Blocks or a function that takes in Options and returns an array of Blocks.
+This allows Blocks to be given Args based on Options.
+
+For example, this Preset forwards a `name` option as an configuration in an ESLint Block's Args:
+
+```ts
+import { blockESLint } from "./blockESLint";
+import { schema } from "./schema";
+
+schema.createPreset({
+	blocks: (options) => [
+		blockESLint({
+			rules: {
+				files: ["**/*.md/*.ts"],
+				rules: {
+					"n/no-missing-import": [
+						"error",
+						{ allowModules: [options.repository] },
+					],
+				},
+			},
+		}),
+	],
+});
+```
 
 ## `createTemplate`
 

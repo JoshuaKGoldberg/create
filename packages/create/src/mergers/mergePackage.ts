@@ -15,19 +15,46 @@ export function mergePackage(
 		return first;
 	}
 
-	const result: CreatedPackage = {};
+	const result: CreatedPackage = {
+		...first,
+		...second,
+	};
 
-	for (const key of [
-		"dependencies",
-		"devDependencies",
-		"peerDependencies",
-	] as const) {
-		result[key] = mergeDependencyEntries(key, first[key], second[key]);
+	for (const key of new Set([...Object.keys(first), ...Object.keys(second)])) {
+		switch (key) {
+			case "dependencies":
+			case "devDependencies":
+			case "peerDependencies":
+				result[key] = mergeDependencyEntries(key, first[key], second[key]);
+				break;
+
+			case "scripts":
+				result.scripts = mergeScripts(first.scripts, second.scripts);
+				break;
+
+			default:
+				result[key] = mergeArbitraryEntry(key, first[key], second[key]);
+				break;
+		}
 	}
 
-	result.scripts = mergeScripts(first.scripts, second.scripts);
-
 	return removeEmptyEntries(result);
+}
+
+function mergeArbitraryEntry(key: string, first: unknown, second: unknown) {
+	if (first === undefined || second === undefined || first === second) {
+		return first ?? second;
+	}
+
+	// TODO: use deep equality checking
+	if (JSON.stringify(first) !== JSON.stringify(second)) {
+		throw new Error(
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			`Conflicting ${key} entries for ${key}: ${first} vs. ${second}.`,
+		);
+	}
+
+	return first;
 }
 
 function mergeDependencyEntries(
@@ -46,7 +73,10 @@ function mergeDependencyEntries(
 	const entries: CreatedPackagesWithVersions = {};
 
 	for (const packageName in first) {
-		if (!(packageName in second)) {
+		if (
+			!(packageName in second) ||
+			(first[packageName] === "latest" && second[packageName] === "latest")
+		) {
 			entries[packageName] = first[packageName];
 			continue;
 		}
@@ -59,6 +89,10 @@ function mergeDependencyEntries(
 
 		// TODO: Find a way to simplify to highest?
 		entries[packageName] = `${first[packageName]} || ${second[packageName]}`;
+	}
+
+	for (const packageName in second) {
+		entries[packageName] = second[packageName];
 	}
 
 	return entries;
@@ -79,20 +113,19 @@ function mergeScripts(
 	const scripts: CreatedPackageScripts = {};
 
 	for (const scriptKey in first) {
-		if (!(scriptKey in first)) {
-			scripts[scriptKey] = second[scriptKey];
-			continue;
-		}
-
-		if (!(scriptKey in second)) {
-			scripts[scriptKey] = first[scriptKey];
-			continue;
-		}
-
-		if (first[scriptKey] !== second[scriptKey]) {
+		if (scriptKey in second && first[scriptKey] !== second[scriptKey]) {
 			throw new Error(
+				// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
 				`Conflicting ${scriptKey} scripts: ${first[scriptKey]} vs. ${second[scriptKey]}.`,
 			);
+		}
+
+		scripts[scriptKey] = first[scriptKey];
+	}
+
+	for (const scriptKey in second) {
+		if (!(scriptKey in first)) {
+			scripts[scriptKey] = second[scriptKey];
 		}
 	}
 

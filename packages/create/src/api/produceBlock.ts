@@ -60,6 +60,7 @@ export async function produceBlock<Options extends object, Args extends object>(
 			editor: {},
 			jobs: [],
 			metadata: [],
+			package: {},
 			...settings.created,
 		},
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

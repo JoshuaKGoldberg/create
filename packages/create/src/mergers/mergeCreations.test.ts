@@ -133,9 +133,12 @@ describe("mergeCreations", () => {
 			  ],
 			  "package": {
 			    "dependencies": {
-			      "example": "^1.2.3 || ^1.2.4",
+			      "example": "^1.2.4",
 			    },
-			    "scripts": {},
+			    "scripts": {
+			      "build": "tsc",
+			      "test": "vitest",
+			    },
 			  },
 			}
 		`);

@@ -27,18 +27,18 @@ export function createInput<
 	Result,
 	ArgsSchema extends AnyShape | undefined = undefined,
 >(
-	definition: InputDefinition<Result, ArgsSchema>,
+	inputDefinition: InputDefinition<Result, ArgsSchema>,
 ): Input<Result, InferredObject<ArgsSchema>> {
-	if (!isDefinitionWithArgs(definition)) {
+	if (!isDefinitionWithArgs(inputDefinition)) {
 		return ((context: InputContext) => {
-			return definition.produce(context);
+			return inputDefinition.produce(context);
 		}) as Input<Result, InferredObject<ArgsSchema>>;
 	}
 
-	const schema = z.object(definition.args);
+	const schema = z.object(inputDefinition.args);
 
 	return ((context: InputContextWithArgs<InferredObject<ArgsSchema>>) => {
-		return definition.produce({
+		return inputDefinition.produce({
 			...context,
 			args: schema.parse(context.args),
 		});
