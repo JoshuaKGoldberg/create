@@ -327,9 +327,6 @@ schema.createPreset({
 
 The [Blocks](../concepts/blocks) that will be run to generate the Preset's [Creations](../runtime/creations) during production.
 
-Blocks will be evaluated in their [Phase](../runtime/phases) order.
-Blocks with the same Phase will be evaluated by the order they're defined in the Preset.
-
 For example, this Preset includes blocks for building and testing:
 
 ```ts
