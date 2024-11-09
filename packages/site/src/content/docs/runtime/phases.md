@@ -29,7 +29,7 @@ Those `BlockPhase` phases are:
 10. `Editor`
 11. `CI`
 
-For example, the following Block indicates it should be run during the `Test` phase, presumably to read metadata created by Blocks in earlier phases:
+For example, the following `blockTests` Block indicates it should be run during the `Test` phase, so it can read metadata created by Blocks in earlier phases:
 
 ```ts
 import { BlockPhase, MetadataFileType } from "create";

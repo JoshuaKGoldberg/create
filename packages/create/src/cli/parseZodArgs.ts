@@ -27,6 +27,7 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 	return parseArgs({
 		args,
 		options: argsOptions,
+		strict: false,
 	}).values as InferredObject<OptionsShape>;
 }
 

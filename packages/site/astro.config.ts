@@ -11,6 +11,7 @@ export default defineConfig({
 						{ label: "Schemas", link: "concepts/schemas" },
 						{ label: "Blocks", link: "concepts/blocks" },
 						{ label: "Presets", link: "concepts/presets" },
+						{ label: "Templates", link: "concepts/templates" },
 						{ label: "Inputs", link: "concepts/inputs" },
 					],
 					label: "Concepts",

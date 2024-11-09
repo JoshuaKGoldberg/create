@@ -1,6 +1,8 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
+import { MetadataFileType } from "../enums.js";
+
 export interface DirectCreation {
 	commands: string[];
 	files: CreatedFiles;
@@ -55,17 +57,6 @@ export interface CreatedMetadata {
 	glob: string;
 	language?: string;
 	type: MetadataFileType;
-}
-
-export enum MetadataFileType {
-	Built,
-	Config,
-	Documentation,
-	Ignored,
-	License,
-	Snapshot,
-	Source,
-	Test,
 }
 
 /** @todo Use npm's package.json types? */

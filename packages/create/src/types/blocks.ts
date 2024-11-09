@@ -1,23 +1,9 @@
+import { BlockPhase } from "../enums.js";
 import { AnyShape, InferredObject, InputShape } from "../options.js";
 import { PromiseOrSync } from "../utils/promises.js";
 import { AboutBase } from "./about.js";
 import { ContextBase } from "./context.js";
 import { Creation, IndirectCreation } from "./creations.js";
-
-export enum BlockPhase {
-	Default = 0,
-	Install,
-	Source,
-	Test,
-	Build,
-	Format,
-	Lint,
-	Package,
-	Documentation,
-	Git,
-	Editor,
-	CI,
-}
 
 export interface BlockDefinitionBase {
 	about?: AboutBase;

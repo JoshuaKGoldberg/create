@@ -83,10 +83,10 @@ That Input can then be used by later Blocks and/or Inputs to retrieve the logged
 
 ## Args
 
-Inputs being standalone means they have no access to Schema options.
-Instead, Inputs may define and take in their args.
+Inputs being standalone means they have no access to Schema Options.
+Instead, Inputs may define and take in their Args.
 
-Inputs describe those args as the properties of a Zod object schema.
+Inputs describe those Args as the properties of a Zod object schema.
 That allows them validate provided values and infer types from an `args` property in their context.
 
 For example, an input that retrieves JSON data from a file on disk using the provided virtual file system:
@@ -109,7 +109,7 @@ export const inputJSONFile = createInput({
 });
 ```
 
-Later on, [`take`](../runtime/contexts#take) calls to the Input will be able to provide those args.
+Later on, [`take`](../runtime/contexts#take) calls to the Input will be able to provide those Args.
 
 ## Composition
 
@@ -133,3 +133,9 @@ export const inputNpmUsername = createInput({
 	},
 });
 ```
+
+## APIs
+
+- [`createInput`](../apis/creators#createschema): for creating Inputs
+- [`produceInput`](../apis/producers#produceschema): for producing an Input's data
+- [`testInput`](../apis/testers#testinput): for simulating running an Input

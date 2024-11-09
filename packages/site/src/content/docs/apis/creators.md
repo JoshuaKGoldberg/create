@@ -12,6 +12,7 @@ The main driver of `create` is a set of APIs that set up the generators for repo
 - [`createSchema`](#createschema): creates a new [Schema](../concepts/schemas)
   - [`createBlock`](#createblock): creates a new [Block](../concepts/blocks) for the Schema
   - [`createPreset`](#createpreset): creates a new [Preset](../concepts/presets) for the Schema
+- [`createTemplate`](#createtemplate): creates a new [Template](../concepts/templates)
 - [`createInput`](#createinput): creates a new [Input](../concepts/inputs)
 
 ## `createSchema`
@@ -20,10 +21,10 @@ Given a _Schema Definition_, creates a _Schema_.
 
 A Schema Definition is an object containing:
 
-- [`options`](#schema-options) _(required)_: a [Schema options](../concepts/schemas#options) object containing [Zod](https://zod.dev) values
-- [`produce`](#schema-produce) _(optional)_: a [Schema production](../concepts/schemas#production) function to fill in default options
+- [`options`](#createschema-options) _(required)_: a [Schema options](../concepts/schemas#options) object containing [Zod](https://zod.dev) values
+- [`produce`](#createschema-produce) _(optional)_: a [Schema production](../concepts/schemas#production) function to fill in default options
 
-### `options` {#schema-options}
+### `options` {#createschema-options}
 
 The [Zod](https://zod.dev) values for options that will be made available to the Schema and all its [Blocks](../concepts/blocks).
 
@@ -40,7 +41,7 @@ export const schema = createSchema({
 });
 ```
 
-### `produce` {#schema-produce}
+### `produce` {#createschema-produce}
 
 A Schema may define a `produce` method to fill in any values that aren't inferred by the system at runtime.
 
@@ -148,7 +149,7 @@ A Block Definition is an object containing:
 - `phase` _(optional)_: which [Block Phase](../runtime/phases) the block executes during
 - `produce` _(required)_: a [Block production](../concepts/blocks#production) method
 
-### `about` {#block-about}
+### `about` {#createblock-about}
 
 Metadata about the Block that can be used by tooling to describe it.
 
@@ -173,7 +174,7 @@ schema.createBlock({
 });
 ```
 
-### `args` {#block-args}
+### `args` {#createblock-args}
 
 Block Definitions may include an `args` object with defining [Zod](https://zod.dev) values as its properties.
 Whenever a new instance of a Block with args is constructed, those args must be provided to it.
@@ -229,7 +230,7 @@ export const presetFormatted = schema.createPreset({
 
 Creating with that `presetFormatted` Preset would then produce a `.prettierrc.json` file with those three plugins listed in its JSON contents.
 
-### `phase` {#block-phase}
+### `phase` {#createblock-phase}
 
 Controls what [Block Phase](../runtime/phases) the Block executes in.
 This is specified as a value of the exported `BlockPhase` enum.
@@ -262,7 +263,7 @@ export const blockGitignore = schema.createBlock({
 
 See [Creations > Indirect Creations](../runtime/creations#indirect-creations) for the values Blocks can read from Blocks run in earlier Phases.
 
-### `produce` {#block-produce}
+### `produce` {#createblock-produce}
 
 Block Definitions must include a `produce()` method for their core logic.
 
@@ -297,7 +298,7 @@ A Preset Definition is an object containing:
 - `about` _(optional)_: tooling metadata for the Preset
 - `blocks` _(required)_: any number of [Blocks](../concepts/blocks) run by the Preset
 
-### `about` {#preset-about}
+### `about` {#createpreset-about}
 
 Metadata about the Preset that can be used by tooling to describe it.
 
@@ -306,16 +307,15 @@ This is an object containing any of:
 - `description`: a sentence describing what the Preset does
 - `name`: what to refer to the Preset as
 
-For example, this Preset describes itself as setting up a TypeScript monorepo:
+For example, this Preset describes itself as setting up a bare-bones TypeScript monorepo:
 
 ```ts
 import { schema } from "./schema";
 
 schema.createPreset({
 	about: {
-		description:
-			"Building, linting, and other tooling for a type-safe monorepo.",
-		name: "TypeScript Monorepo",
+		description: "The barest of bones tooling for a type-safe monorepo.",
+		name: "Minimal",
 	},
 	blocks: [
 		// ...
@@ -323,7 +323,7 @@ schema.createPreset({
 });
 ```
 
-### `blocks` {#preset-blocks}
+### `blocks` {#createpreset-blocks}
 
 The Blocks that will be run to generate the Preset's [Creations](../runtime/creations) during production.
 
@@ -344,6 +344,93 @@ schema.createPreset({
 
 The Blocks provided to a Preset must be created from the same root [Schema](../concepts/schemas).
 
+## `createTemplate`
+
+Given a _Template Definition_, creates a _Template_.
+
+A Template Definition is an object containing:
+
+- `about` _(optional)_: tooling metadata for the Template
+- `default` _(optional)_: which Preset should be selected by default in CLIs
+- `presets` _(required)_: an array of objects for the Presets available with the Template
+
+### `about` {#createtemplate-about}
+
+Metadata about the Template that can be used by tooling to describe it.
+
+This is an object containing any of:
+
+- `description`: a sentence describing what the Block does
+- `name`: what to refer to the Block as
+
+For example, this Template describes itself as a solution for TypeScript repositories:
+
+```ts
+import { createTemplate } from "create";
+
+createTemplate({
+	about: {
+		description:
+			"One-stop shop for the latest and greatest TypeScript tooling.",
+		name: "Create TypeScript App",
+	},
+	presets: [
+		// ...
+	],
+});
+```
+
+### `default` {#createtemplate-default}
+
+The default Preset to select for users, if not the first in the array.
+
+This should be the same string as one of the `labels` under [`presets`](#presets-createtemplate-presets).
+
+For example, this Template defaults to the `"Common"` Preset:
+
+```ts
+import { createTemplate } from "create";
+
+import { presetCommon } from "./presetCommon";
+import { presetEverything } from "./presetEverything";
+
+export const templateTypeScriptApp = createTemplate({
+	default: "Common",
+	presets: [
+		{ label: "Common", preset: presetCommon },
+		{ label: "Everything", preset: presetEverything },
+	],
+});
+```
+
+### `presets` {#createtemplate-presets}
+
+The Presets users can choose from with the Template, in order of how they should be listed.
+
+Each element in the array is an object containing:
+
+- `label` _(required)_: a brief name for the Preset for text displays
+- `preset` _(required)_: the Preset itself
+
+For example, this Template allows choosing between two Presets for TypeScript apps:
+
+```ts
+import { createTemplate } from "create";
+
+import { presetCommon } from "./presetCommon";
+import { presetEverything } from "./presetEverything";
+
+export const templateTypeScriptApp = createTemplate({
+	about: {
+		name: "TypeScript App",
+	},
+	presets: [
+		{ label: "Common", preset: presetCommon },
+		{ label: "Everything", preset: presetEverything },
+	],
+});
+```
+
 ## `createInput`
 
 Given an _Input Definition_, creates an _Input_.
@@ -353,7 +440,7 @@ An Input Definition is an object containing:
 - `args` _(optional)_: a [Block args](../concepts/blocks#args) object containing [Zod](https://zod.dev) values
 - `produce` _(required)_: an [Input production](../concepts/inputs#production) method
 
-### `args` {#input-args}
+### `args` {#createinput-args}
 
 Input Definitions may include an `args` object with defining [Zod](https://zod.dev) values as its properties.
 Whenever an Input with args is passed to [`take`](../runtime/contexts#take), those args must be provided to it.
@@ -374,7 +461,7 @@ export const inputFile = createInput({
 });
 ```
 
-### `produce` {#input-produce}
+### `produce` {#createinput-produce}
 
 Input Definitions must include a `produce()` method for their core logic.
 

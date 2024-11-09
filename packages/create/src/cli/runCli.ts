@@ -1,55 +1,75 @@
-// TODO: redo templates to be presets
-// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
+import path from "node:path";
+
 import { producePreset } from "../api/producePreset.js";
-import { runCreation } from "../runners/runCreation.js";
-import { createNativeSystems } from "../system/createNativeSystems.js";
+import { parseArgsPreset } from "./parseArgvPreset.js";
+// import { runCreation } from "../runners/runCreation.js";
 import { parseZodArgs } from "./parseZodArgs.js";
+import { promptForPreset } from "./promptForPreset.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
-import { isPreset } from "./utils.js";
+import { isTemplate } from "./utils.js";
 
-declare const isTemplate: (value: unknown) => value is any;
+async function tryImport(source: string) {
+	try {
+		return (await import(source)) as object;
+	} catch (error) {
+		return error as Error;
+	}
+}
 
-Error.stackTraceLimit = Infinity;
+export async function runCli(templateLabel: string, ...args: string[]) {
+	const templateSource = /^[./\\]/.test(templateLabel)
+		? templateLabel
+		: `create-${templateLabel}`;
 
-export async function runCli(argv: string[]) {
-	const [, , templatePath, ...args] = argv;
+	const templateModule = await tryImport(templateSource);
 
-	const templateModule = (await import(templatePath)) as object;
+	if (templateModule instanceof Error) {
+		throw new Error(`Could not import ${templateSource}.`, {
+			cause: templateModule,
+		});
+	}
+
 	if (!("default" in templateModule)) {
-		throw new Error(`${templatePath} should have a default exported template.`);
+		throw new Error(
+			`${templateSource} should have a default exported Template.`,
+		);
 	}
 
 	const template = templateModule.default;
 	if (!isTemplate(template)) {
-		throw new Error(`${templatePath}'s default export should be a template.`);
+		throw new Error(`${templateSource}'s default export should be a Template.`);
 	}
 
-	const presetName = "everything";
-	const preset = template.presets[presetName];
+	console.log(
+		`Let us ✨ create ✨ a repository for the ${templateSource} Template!`,
+	);
 
-	if (!isPreset(preset)) {
+	const presetLabel = await promptForPreset(
+		template.presets.map((preset) => preset.label),
+		parseArgsPreset(args),
+	);
+
+	const presetListing = template.presets.find(
+		(preset) => preset.label === presetLabel,
+	);
+
+	if (!presetListing) {
 		throw new Error(
-			`${templatePath}'s preset ${presetName} should be a template.`,
+			`${templateSource} should have a Preset with label ${presetLabel}.`,
 		);
 	}
 
-	const templateDisplay = template.about?.name ?? "your preset";
-	const presetDisplay = preset.about?.name ?? presetName;
+	const { preset } = presetListing;
 
-	console.log(
-		`Let's ✨ create ✨ a repository for you with the ${templateDisplay} template's ${presetDisplay} preset!`,
-	);
-
-	const { system, take } = createNativeSystems();
 	const parsedOptions = parseZodArgs(args, preset.schema.options);
 
 	const creation = await producePreset(preset, {
 		options: parsedOptions,
 		optionsAugment: async (options) =>
 			promptForPresetOptions(preset.schema.options, options),
-		...system,
 	});
 
-	await runCreation(creation, { ...system, take });
+	console.log(creation.files);
+
+	// await runCreation(creation, { /* ... */ });
 }

@@ -9,7 +9,7 @@ Don't rely on it yet.
 :::
 
 A _Block_ defines the logic to create a portion of a repository.
-Each Block is associated with a parent [Schema](./schemas), which contains a _Block Factory_ for creating Blocks.
+Each Block is associated with a parent [Schema](./schemas).
 Blocks can then be listed in [Presets](./presets) associated with the same Schema.
 
 ## Production
@@ -17,7 +17,7 @@ Blocks can then be listed in [Presets](./presets) associated with the same Schem
 Blocks define their logic for created repository portions in a `produce()` function.
 `produce()` returns a [Creation](../runtime/creations) describing any produced output.
 
-When `create` scaffolds a repository form a Preset, it merges together the produced outputs from its listed Blocks.
+When `create` scaffolds a repository from a Preset, it merges together the produced outputs from its listed Blocks.
 
 For example, this Block describes creating a `.nvmrc` file:
 
@@ -122,3 +122,9 @@ export const presetFruitNames = schema.createPreset({
 ```
 
 Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text.
+
+## APIs
+
+- [`createBlock`](../apis/creators#createblock): for creating Blocks
+- [`produceBlock`](../apis/producers#produceblock): for producing Schema Options
+- [`testBlock`](../apis/testers#testblock): for simulating Block production

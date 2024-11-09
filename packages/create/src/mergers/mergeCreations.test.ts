@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { Creation, MetadataFileType } from "../types/creations.js";
+import { MetadataFileType } from "../enums.js";
+import { Creation } from "../types/creations.js";
 import { mergeCreations } from "./mergeCreations.js";
 
 const stubCreation = {

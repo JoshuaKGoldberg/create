@@ -27,7 +27,7 @@ Executes an [Input](./inputs).
 
 The `take` function is provided to both Blocks and Inputs so that they can run another Input with the same Context they're running in.
 
-For example, this Block uses `take` to run inputs that reads from a local file and run `npm whoami` to make sure the user is listed in an `AUTHORS.md` file:
+For example, this Block uses `take` to run Inputs that reads from a local file and run `npm whoami` to make sure the user is listed in an `AUTHORS.md` file:
 
 ```ts
 import { inputFile } from "./inputFile";
@@ -43,9 +43,9 @@ export const blockFileModified = schema.createBlock({
 
 		return {
 			files: {
-				[fileName]: existingContents.includes(`${existing}\n`)
-					? existingContents
-					: `${existingContents}\n${author}`,
+				[fileName]: existing.includes(`${author}\n`)
+					? existing
+					: `${existing}\n${author}`,
 			},
 		};
 	},

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { BlockPhase } from "../enums.js";
 import { AnyShape, InferredObject, InputShape } from "../options.js";
 import {
 	BlockDefinition,
@@ -7,7 +8,6 @@ import {
 	BlockDefinitionWithoutArgs,
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
-	BlockPhase,
 } from "../types/blocks.js";
 import {
 	CreateBlockFactory,
