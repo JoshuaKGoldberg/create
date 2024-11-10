@@ -74,7 +74,7 @@ However, `create` has several key differences from Plop:
 
 - Plop is built around an imperative "actions" API for adding files, as opposed to `create`'s managing of outputs
 - Plop only supports file creation, not other actions such as setting repository GitHub systems
-- Plop is built on the popular Inquirer.js and Handlebars libraries, but does add type safety when bridging the two -- unlike `create`'s type-safe Zod schema options
+- Plop is built on the popular Inquirer.js and Handlebars libraries, rather than `create`'s more type-safe Zod schema options
 
 In other words, `create` is a more broadly scoped project for full repository generation, whereas Plop is more finely targeted to applying Handlebars templates.
 
