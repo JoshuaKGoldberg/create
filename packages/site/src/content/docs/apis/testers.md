@@ -201,7 +201,7 @@ describe("blockDocs", () => {
 
 The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
 
-This is how to simulate the results of [Inputs](../concepts/inputs).
+This is how to simulate the results of [Inputs](../runtime/inputs).
 
 For example, this test asserts that a block prints a _"last modified"_ timestamp in a `last-touch.txt`:
 
@@ -240,11 +240,11 @@ describe("blockUsingNow", () => {
 
 ## `testInput`
 
-For [Inputs](../concepts/inputs), a `testInput` function is exported that is analogous to [`produceInput`](./producers#produceinput).
+For [Inputs](../runtime/inputs), a `testInput` function is exported that is analogous to [`produceInput`](./producers#produceinput).
 It takes in similar arguments:
 
-1. `input` _(required)_: an [Input](../concepts/inputs)
-2. `settings` _(optional)_: production settings including the Input's [Options](../concepts/inputs#options) and any [Args](../concepts/inputs#args)
+1. `input` _(required)_: an [Input](../runtime/inputs)
+2. `settings` _(optional)_: production settings including the Input's [Options](../runtime/inputs#options) and any [Args](../runtime/inputs#args)
 
 For example, this test asserts that an `inputNow` returns a numeric timestamp:
 
@@ -361,7 +361,7 @@ describe("inputGitUserEmail", () => {
 
 The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
 
-This is how to simulate the results of calling to other [Inputs](../concepts/inputs).
+This is how to simulate the results of calling to other [Inputs](../runtime/inputs).
 
 For example, this test asserts that an `inputNpmUsername` Input uses the result of an `inputNpmWhoami` Input:
 
@@ -593,7 +593,7 @@ describe("schema", () => {
 
 The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
 
-This is how to simulate the results of [Inputs](../concepts/inputs).
+This is how to simulate the results of [Inputs](../runtime/inputs).
 
 For example, this test asserts that a schema defaults its `name` to the property in `package.json`:
 

@@ -97,7 +97,7 @@ await produceBlock(blockFactory, {
 
 ## `produceInput`
 
-Given an [Input](../concepts/inputs), runs its `produce()` with any provided args.
+Given an [Input](../runtime/inputs), runs its `produce()` with any provided args.
 
 `produceInput` takes in up to two arguments:
 
@@ -290,7 +290,7 @@ await produceSchema(schema, {
 
 The properties specific to [System Contexts](../runtime/contexts#system-contexts) can be overridden in production APIs.
 
-This can be useful if you'd like a production's [Inputs](../concepts/inputs) to run in a virtual environment or otherwise augment system interactions.
+This can be useful if you'd like a production's [Inputs](../runtime/inputs) to run in a virtual environment or otherwise augment system interactions.
 
 For example, this Block production adds an authorization header to all network requests:
 

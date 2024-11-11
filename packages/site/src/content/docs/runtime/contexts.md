@@ -8,7 +8,7 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-_Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../concepts/inputs), and [Schemas](../concepts/schemas).
+_Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../runtime/inputs), and [Schemas](../concepts/schemas).
 Each contains shared helper functions and information.
 
 All Contexts include the properties described in [All Contexts](#all-contexts).
@@ -118,7 +118,7 @@ export const schema = createSchema({
 
 ## Input Contexts
 
-The Context object provided to the `produce` object of [Inputs](../concepts/inputs).
+The Context object provided to the `produce` object of [Inputs](../runtime/inputs).
 Includes properties from [All Contexts](#all-contexts).
 
 ### `args` {#input-options}

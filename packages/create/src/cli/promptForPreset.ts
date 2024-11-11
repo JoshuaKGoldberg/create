@@ -17,7 +17,7 @@ export async function promptForPreset(
 
 		// TODO: Eventually, it'd be nice to use Clack or similar...
 		const answer = await rl.question(
-			`Out of (${labels.join(", ")}), which preset would you like?\n`,
+			`Out of (${labels.join(", ")}), Which Preset would you like?\n`,
 		);
 
 		label = allowed.get(answer.toLowerCase());

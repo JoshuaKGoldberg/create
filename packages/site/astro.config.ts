@@ -6,13 +6,13 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			sidebar: [
+				{ label: "CLI", link: "cli" },
 				{
 					items: [
 						{ label: "Schemas", link: "concepts/schemas" },
 						{ label: "Blocks", link: "concepts/blocks" },
 						{ label: "Presets", link: "concepts/presets" },
 						{ label: "Templates", link: "concepts/templates" },
-						{ label: "Inputs", link: "concepts/inputs" },
 					],
 					label: "Concepts",
 				},
@@ -20,6 +20,7 @@ export default defineConfig({
 					items: [
 						{ label: "Contexts", link: "runtime/contexts" },
 						{ label: "Creations", link: "runtime/creations" },
+						{ label: "Inputs", link: "runtime/inputs" },
 						{ label: "Phases", link: "runtime/phases" },
 					],
 					label: "Runtime",

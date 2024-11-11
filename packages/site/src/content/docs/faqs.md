@@ -9,7 +9,7 @@ title: FAQs
 For now, you don't.
 It's still _very_ early stage.
 
-Soon, there will be APIs added and documented that allow providing a [Preset](./concepts/presets) and having the `create` engine _create_ a new repository or _update_ an existing one.
+Soon, there will be APIs added and documented that allow providing a [Preset](./concepts/presets) and having the `create` engine _create_ a new repository or _update_ an existing one based on it.
 
 Having `npx create` _(or something similar)_ will be able to take in a package containing a Preset and run with it.
 For example, using a Preset soon to be provided by [`create-typescript-app`](https://www.npmjs.com/package/create-typescript-app):
@@ -43,7 +43,7 @@ It depends on what APIs the entities under test conceptually use.
 | Entity                        | Mock   | Why                                                                                           |
 | ----------------------------- | ------ | --------------------------------------------------------------------------------------------- |
 | [Blocks](./concepts/blocks)   | `take` | Blocks should go through Inputs to interact with the system.                                  |
-| [Inputs](./concepts/inputs)   | Both   | Inputs receive system pieces, and can also `take` other Inputs.                               |
+| [Inputs](./runtime/inputs)    | Both   | Inputs receive system pieces, and can also `take` other Inputs.                               |
 | [Presets](./concepts/presets) | System | High-level users of Presets should not care about low-level implementation details of Inputs. |
 | [Schemas](./concepts/schemas) | `take` | Schemas should go through Inputs to interact with the system                                  |
 

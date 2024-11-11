@@ -42,9 +42,6 @@ import { blockNvmrc } from "./blockNvmrc";
 import { schema } from "./schema";
 
 export const presetVersioned = schema.createPreset({
-	about: {
-		name: "Create My App",
-	},
 	blocks: [
 		blockNvmrc(),
 		// ...
@@ -122,6 +119,54 @@ export const presetFruitNames = schema.createPreset({
 ```
 
 Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text.
+
+## Composition
+
+:::danger
+**Args composition has not been implemented yet.**
+:::
+
+Blocks can producing Args to be passed to other Blocks.
+These "composed" Args will be merged into the other Blocks' arguments when run.
+
+For example, this Vitest Block composes Args to an ESLint Block to include the Vitest ESLint plugin:
+
+```ts
+import { blockESLint } from "./blockESLint";
+import { schema } from "./schema";
+
+export const blockVitest = schema.createBlock({
+	produce() {
+		return {
+			composed: [
+				blockESLint({
+					extensions: [
+						{
+							extends: ["vitest.configs.recommended"],
+							files: ["**/*.test.*"],
+						},
+					],
+					imports: [{ source: "@vitest/eslint-plugin", specifier: "vitest" }],
+				}),
+			],
+			files: {
+				// ...
+			},
+			// ...
+		};
+	},
+});
+```
+
+:::note
+A Block producing Args compositions does not change the output of the Block.
+Composed Args are only used when a parent [Preset](./presets) is produced.
+:::
+
+:::caution
+A Block's composed Args must only impact Blocks with a later [Phase](../runtime/phases).
+If a Block produces composed Args for a Block that was already run, `create` will throw an error.
+:::
 
 ## APIs
 

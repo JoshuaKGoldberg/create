@@ -4,7 +4,7 @@ title: Glossary
 
 ## Args
 
-Individual arguments passed to a [Block](./concepts/blocks) or [Input](./concepts/inputs).
+Individual arguments passed to a [Block](./concepts/blocks) or [Input](./runtime/inputs).
 These are completely separate from [Options](#options).
 
 ## Block
@@ -51,7 +51,7 @@ Creations describe the contents of a repository, such as files on disk or initia
 
 ## Input
 
-> 👉 See: [Concepts > Inputs](./concepts/inputs).
+> 👉 See: [Concepts > Inputs](./runtime/inputs).
 
 A standalone function that can be used to provide dynamic data by [Blocks](#block) and [Schemas](#schema).
 
@@ -112,3 +112,9 @@ Schemas are created by providing a Schema Definition to the [`createSchema`](./a
 > 👉 See: [Runtime > Contexts > System Contexts](./runtime/contexts#system-contexts).
 
 APIs to interact with the file system, network, and shell.
+
+## Template
+
+> 👉 See: [Concepts > Templates](./concepts/templates).
+
+A group of [Schemas](#schema) that can be chosen between by a user to generate a repository.

@@ -13,7 +13,7 @@ The main driver of `create` is a set of APIs that set up the generators for repo
   - [`createBlock`](#createblock): creates a new [Block](../concepts/blocks) for the Schema
   - [`createPreset`](#createpreset): creates a new [Preset](../concepts/presets) for the Schema
 - [`createTemplate`](#createtemplate): creates a new [Template](../concepts/templates)
-- [`createInput`](#createinput): creates a new [Input](../concepts/inputs)
+- [`createInput`](#createinput): creates a new [Input](../runtime/inputs)
 
 ## `createSchema`
 
@@ -376,7 +376,7 @@ Given a _Template Definition_, creates a _Template_.
 A Template Definition is an object containing:
 
 - `about` _(optional)_: tooling metadata for the Template
-- `default` _(optional)_: which Preset should be selected by default in CLIs
+- `default` _(optional)_: Which Preset should be selected by default in CLIs
 - `presets` _(required)_: an array of objects for the Presets available with the Template
 
 ### `about` {#createtemplate-about}
@@ -463,7 +463,7 @@ Given an _Input Definition_, creates an _Input_.
 An Input Definition is an object containing:
 
 - `args` _(optional)_: a [Block args](../concepts/blocks#args) object containing [Zod](https://zod.dev) values
-- `produce` _(required)_: an [Input production](../concepts/inputs#production) method
+- `produce` _(required)_: an [Input production](../runtime/inputs#production) method
 
 ### `args` {#createinput-args}
 

@@ -23,6 +23,10 @@ It's like a modern version of [Yeoman](https://yeoman.io), but:
 
 `create` also provides easy scaffolding to turn your template into a repository generator akin to a `create-next-app` or `create-typescript-app`.
 
+:::tip[Getting Started]
+See [CLI](./cli) to generate your first repository with the `create` command.
+:::
+
 ## Details
 
 The `create` engine combines the following layers:
@@ -31,7 +35,7 @@ The `create` engine combines the following layers:
 2. **[Blocks](./concepts/blocks)**: Generators for individual portions of a repository
 3. **[Presets](./concepts/presets)**: Groups of Blocks that form a repository base
 4. **[Templates](./concepts/templates)**: Groups of Presets that form a `create-*-app` project
-5. **[Inputs](./concepts/inputs)**: Standalone functions to read in dynamic data
+5. **[Inputs](./runtime/inputs)**: Standalone functions to read in dynamic data
 
 The portions of `create` allow you to define the inputs to your repository generator, the individual pieces of the repository to be generated, and any preset configurations users can choose to start from.
 `create` will then generate an interactive CLI and full documentation website for you.
