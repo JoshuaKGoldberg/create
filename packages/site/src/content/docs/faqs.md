@@ -49,12 +49,19 @@ It depends on what APIs the entities under test conceptually use.
 
 ## Tool Comparisons
 
+`create` is targeting being a fully complete solution for defining _creating_, _migrating_, and/or _updating_ repositories to use flexible templates.
+Those templates are defined in a feature-by-feature ("Block") basis and with configurable "Presets" using `create` APIs.
+`create` templates go beyond just file system copying with network requests, shell commands, and versioned migrations.
+
+Other ecosystem tools exist for part of that feature set.
+None target the full feature set of `create`.
+
 :::danger
-These project comparisons have not yet been vetted by maintainers on the projects.
+Most of these project comparisons have not yet been vetted by maintainers on the projects.
 They might be wildly inaccurate.
 :::
 
-### How does `create` compare to repository templates such as `create-next-app`, `create-react-app`, etc.?
+### `create-next-app`, `create-react-app`, `create-typescript-app`, etc
 
 `create` is an engine that allows you to define repository templates.
 It itself is not a repository template; it instead provides APIs that you can use to build your own repository template.
@@ -65,7 +72,29 @@ In other words, `create` is a lower-level primitive that can be used to create h
 For more history on how `create` came to be, see [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181).
 :::
 
-### How does `create` compare to Plop?
+### degit
+
+[degit](https://github.com/Rich-Harris/degit) is a tool that makes copies Git of repositories.
+It allows for straightforward initialization of files, along with support for post-creation actions.
+
+`create` has several key differences from degit:
+
+- degit is a wrapper around a straightforward `git clone`; `create` allows for changing generated file contents based on provided options
+- degit only supports limited post-clone actions; `create` allows for sending network requests and running shell scripts
+- degit always operates at the scale of a full repository; `create` provides more granular APIs for areas of features (Blocks and Presets)
+
+### GitHub Template Repositories
+
+[GitHub Template Repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository) are a GitHub feature allowing making a new repository as a clone of another.
+Created repositories appear on github.com with a _generated from ..._ notice.
+
+`create` will include treating sources as templates, and additionally adds features:
+
+- Template Repositories are a wrapper around a straightforward `git clone`; `create` allows for changing generated file contents based on provided options
+- Template Repositories don't support post-clone actions; `create` allows for sending network requests and running shell scripts
+- Template Repositories always operate at the scale of a full repository; `create` provides more granular APIs for areas of features (Blocks and Presets)
+
+### Plop
 
 [Plop](https://github.com/plopjs/plop) is another web ecosystem tool for defining repository templates.
 Like `create`, it allows defining templates for generated files.
@@ -78,7 +107,7 @@ However, `create` has several key differences from Plop:
 
 In other words, `create` is a more broadly scoped project for full repository generation, whereas Plop is more finely targeted to applying Handlebars templates.
 
-### How does `create` compare to projen?
+### projen
 
 [projen](https://github.com/projen/projen) is another web ecosystem tool for defining repository templates.
 It is similar to `create` in that it is a flexible underlying engine that allows developers define and manage project configurations through code.
@@ -110,7 +139,7 @@ However, `create` has several large differences from projen:
 For more details on how `create` compares to Projen, see [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision#issuecomment-2428303689](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181#issuecomment-2428303689)
 :::
 
-### How does `create` compare to Yeoman?
+### Yeoman
 
 [Yeoman](https://yeoman.io) is a much older tool in the web ecosystem for templating.
 Its architecture and APIs generally work with older, now-outdated JavaScript practices:
