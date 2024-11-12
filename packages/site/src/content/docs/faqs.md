@@ -56,6 +56,11 @@ Those templates are defined in a feature-by-feature ("Block") basis and with con
 Other ecosystem tools exist for part of that feature set.
 None target the full feature set of `create`.
 
+In general, `create`'s approach is differentiated from previous projects by:
+
+- Producing outputs -including files and more- in a generalized format ([Direct Creations](./runtime/creations#direct-creations))
+- Allowing sub-templates that can be individually swapped individually and add to each other ([Blocks](./concepts/blocks))
+
 :::danger
 Most of these project comparisons have not yet been vetted by maintainers on the projects.
 They might be wildly inaccurate.
@@ -72,14 +77,42 @@ In other words, `create` is a lower-level primitive that can be used to create h
 For more history on how `create` came to be, see [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181).
 :::
 
+### Cookiecutter
+
+[Cookiecutter](https://github.com/cookiecutter/cookiecutter) is a library and CLI app for generating projects from templates.
+It allows taking in directories written as [Jinja](https://palletsprojects.com/projects/jinja) templates and running pre- and post-generation hooks.
+
+`create` has several key differences from what Cookiecutter supports:
+
+- Cookiecutter is a wrapper around a Jinja file templates; `create` allows for full JavaScript logic to generate contents based on provided options
+- Cookiecutter always operates at the scale of one template; `create` provides more granular APIs for areas of features (Blocks and Presets)
+- Cookiecutter supports file changes; `create` additionally supports network calls and arbitrary shell scripts as outputs
+
+Cookiecutter is also written in Python and is installed using tools in the Python ecosystem.
+`create` is written in TypeScript and is set up to work in the web ecosystem.
+
+### copier
+
+[Copier](https://copier.readthedocs.io/en/latest) is a library and CLI app for generating projects from templates.
+It takes in a local path or Git URL and dynamically replaces values in text files.
+
+`create` has several key additions on top of what Copier supports:
+
+- Copier is a wrapper around a straightforward file templates; `create` allows for dynamic logic for generating contents based on provided options
+- Copier only supports file templates; `create` allows for sending network requests and running shell scripts
+- Copier always operates at the scale of one template; `create` provides more granular APIs for areas of features (Blocks and Presets)
+
+Copier is also written in Python and is installed using tools in the Python ecosystem.
+`create` is written in TypeScript and is set up to work in the web ecosystem.
+
 ### degit
 
 [degit](https://github.com/Rich-Harris/degit) is a tool that makes copies Git of repositories.
 It allows for straightforward initialization of files, along with support for post-creation actions.
 
-`create` has several key differences from degit:
+`create` has several key additions on top of what degit supports:
 
-- degit is a wrapper around a straightforward `git clone`; `create` allows for changing generated file contents based on provided options
+- degit is a wrapper around a straightforward `git clone`; `create` allows for dynamic logic for generating contents based on provided options
 - degit only supports limited post-clone actions; `create` allows for sending network requests and running shell scripts
 - degit always operates at the scale of a full repository; `create` provides more granular APIs for areas of features (Blocks and Presets)
 
@@ -94,12 +127,24 @@ Created repositories appear on github.com with a _generated from ..._ notice.
 - Template Repositories don't support post-clone actions; `create` allows for sending network requests and running shell scripts
 - Template Repositories always operate at the scale of a full repository; `create` provides more granular APIs for areas of features (Blocks and Presets)
 
+### Hygen
+
+[Hygen](https://hygen.io) is web ecosystem tool for defining generators to automate common file system tasks.
+It encourages building your own generators that include templates built with the [EJS](https://ejs.co) embedded JavaScript templating engine.
+Hygen templates can have conditional rendering, embedded JavaScript, and injected shell scripts.
+
+`create` takes a different architectural approach than Hygen:
+
+- Hygen templates are imperative descriptions of files and frontmatter; `create` groups areas into blocks
+- Hygen templates heavily build on EJS and do not have type-safe options; `create` has options explicitly defined with Zod schemas
+- `create` Blocks describe their own outputs and additions to other Blocks, allowing them to be individually toggled
+
 ### Plop
 
-[Plop](https://github.com/plopjs/plop) is another web ecosystem tool for defining repository templates.
+[Plop](https://github.com/plopjs/plop) is web ecosystem tool for defining repository templates.
 Like `create`, it allows defining templates for generated files.
 
-However, `create` has several key differences from Plop:
+`create` has several key differences from Plop:
 
 - Plop is built around an imperative "actions" API for adding files, as opposed to `create`'s managing of outputs
 - Plop only supports file creation, not other actions such as setting repository GitHub systems
@@ -109,10 +154,10 @@ In other words, `create` is a more broadly scoped project for full repository ge
 
 ### projen
 
-[projen](https://github.com/projen/projen) is another web ecosystem tool for defining repository templates.
+[projen](https://github.com/projen/projen) is web ecosystem tool for defining repository templates.
 It is similar to `create` in that it is a flexible underlying engine that allows developers define and manage project configurations through code.
 
-However, `create` has several large differences from projen:
+`create` has several large differences from projen:
 
 - `create` is a generalized, tooling-agnostic _generator engine_ that can also keep repositories updated over time
 - projen generally targets tighter integration and management with created projects, including being used in its package scripts
