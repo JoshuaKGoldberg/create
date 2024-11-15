@@ -6,7 +6,6 @@ export * from "./cli/runCli.js";
 export * from "./creators/createInput.js";
 export * from "./creators/createSchema.js";
 export * from "./creators/createTemplate.js";
-export * from "./enums.js";
 export * from "./options.js";
 export * from "./runners/runPreset.js";
 export type * from "./types/about.js";

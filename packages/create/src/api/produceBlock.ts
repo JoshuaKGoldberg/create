@@ -1,70 +1,56 @@
-import { createNativeSystems } from "../system/createNativeSystems.js";
 import {
-	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
 	BlockFactoryWithRequiredArgs,
 } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
-import { NativeSystem } from "../types/system.js";
 
-export interface BlockProductionSettingsWithoutArgs<
-	Options extends object = object,
-> extends Partial<NativeSystem> {
-	created?: Partial<IndirectCreation>;
+export interface BlockProductionSettingsWithoutArgs<Metadata, Options> {
+	created?: Partial<IndirectCreation<Metadata, Options>>;
 	options?: Options;
 }
-
 export interface BlockProductionSettingsWithArgs<
-	Options extends object = object,
-	Args extends object = object,
-> extends BlockProductionSettingsWithoutArgs<Options> {
+	Args extends object,
+	Metadata,
+	Options,
+> extends BlockProductionSettingsWithoutArgs<Metadata, Options> {
 	args: Args;
 }
 
-export interface BlockProductionSettingsWithOptionalArgs<
-	Options extends object = object,
-	Args extends object = object,
-> extends BlockProductionSettingsWithoutArgs<Options> {
-	args?: Args;
-}
-
 export type BlockProductionSettings<
-	Options extends object,
 	Args extends object | undefined,
+	Metadata,
+	Options,
 > = Args extends object
-	? BlockProductionSettingsWithArgs<Options, Args>
-	: BlockProductionSettingsWithoutArgs<Options>;
+	? BlockProductionSettingsWithArgs<Args, Metadata, Options>
+	: BlockProductionSettingsWithoutArgs<Metadata, Options>;
 
-export async function produceBlock<Options extends object>(
-	blockFactory: BlockFactoryWithoutArgs<Options>,
-	settings: BlockProductionSettingsWithoutArgs<Options>,
-): Promise<Partial<Creation>>;
-export async function produceBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
-	settings: BlockProductionSettingsWithArgs<Options, Args>,
-): Promise<Partial<Creation>>;
-export async function produceBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
-	settings: BlockProductionSettingsWithOptionalArgs<Options>,
-): Promise<Partial<Creation>>;
-export async function produceBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
-	settings: BlockProductionSettingsWithOptionalArgs<Options, Args>,
-) {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const block = blockFactory(settings.args!);
+export function produceBlock<Args extends object, Metadata, Options>(
+	blockFactory: BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
+	settings: BlockProductionSettingsWithArgs<Args, Metadata, Options>,
+): Partial<Creation<Metadata, Options>>;
+export function produceBlock<Metadata, Options>(
+	blockFactory: BlockFactoryWithoutArgs<Metadata, Options>,
+	settings: BlockProductionSettingsWithoutArgs<Metadata, Options>,
+): Partial<Creation<Metadata, Options>>;
+export function produceBlock<Args extends object, Metadata, Options>(
+	blockFactory:
+		| BlockFactoryWithoutArgs<Metadata, Options>
+		| BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
+	settings:
+		| BlockProductionSettingsWithArgs<Args, Metadata, Options>
+		| BlockProductionSettingsWithoutArgs<Metadata, Options>,
+): Partial<Creation<Metadata, Options>> {
+	// TODO: Figure out how to remove the unions in the implementation signature
+	type Settings = BlockProductionSettingsWithArgs<Args, Metadata, Options>;
+	const block = blockFactory((settings as Settings).args);
 
-	return await block.produce({
+	return block.produce({
 		created: {
-			documentation: {},
-			editor: {},
-			jobs: [],
-			metadata: [],
-			package: {},
+			addons: [],
+			metadata: {} as Metadata,
 			...settings.created,
 		},
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		options: settings.options!,
-		take: createNativeSystems(settings).take,
 	});
 }

@@ -4,31 +4,33 @@ import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
 
-export async function runPreset<PresetOptionsShape extends AnyShape>(
-	preset: Preset<PresetOptionsShape>,
-	options: InferredObject<PresetOptionsShape>,
+export function runPreset<
+	MetadataShape extends AnyShape,
+	OptionsShape extends AnyShape,
+>(
+	preset: Preset<MetadataShape, OptionsShape>,
+	options: InferredObject<OptionsShape>,
 	context: SystemContext,
 ) {
-	let created: Creation = {
+	type Metadata = InferredObject<MetadataShape>;
+	type Options = InferredObject<OptionsShape>;
+
+	let created: Creation<Metadata, Options> = {
+		addons: [],
 		commands: [],
-		documentation: {},
-		editor: {},
 		files: {},
-		jobs: [],
-		metadata: [],
-		package: {},
+		// TODO: Hook up constraints to not need assertion...
+		// ...or, rather, make sure schemas have a starting metadata object?
+		metadata: {} as Metadata,
 	};
 
-	const blocks = Array.isArray(preset.blocks)
-		? preset.blocks
-		: preset.blocks(options);
-
-	const blocksSorted = blocks.sort((a, b) => a.phase - b.phase);
+	// @ts-expect-error -- TODO: Remove phase altogether, I hope?
+	const blocksSorted = preset.blocks.sort((a, b) => a.phase - b.phase);
 
 	for (const block of blocksSorted) {
 		created = mergeCreations(
 			created,
-			await block.produce({
+			block.produce({
 				...context,
 				created,
 				options,

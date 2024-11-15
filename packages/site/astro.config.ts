@@ -5,33 +5,41 @@ import { remarkHeadingId } from "remark-custom-heading-id";
 export default defineConfig({
 	integrations: [
 		starlight({
+			customCss: ["./src/styles.css"],
 			sidebar: [
 				{ label: "CLI", link: "cli" },
+				{ label: "Configuration", link: "configuration" },
 				{
 					items: [
-						{ label: "Schemas", link: "concepts/schemas" },
-						{ label: "Blocks", link: "concepts/blocks" },
-						{ label: "Presets", link: "concepts/presets" },
-						{ label: "Templates", link: "concepts/templates" },
+						{ label: "About", link: "engine/about" },
+						{
+							items: [
+								{ label: "Schemas", link: "engine/concepts/schemas" },
+								{ label: "Blocks", link: "engine/concepts/blocks" },
+								{ label: "Presets", link: "engine/concepts/presets" },
+								{ label: "Templates", link: "engine/concepts/templates" },
+							],
+							label: "Concepts",
+						},
+						{
+							items: [
+								{ label: "Contexts", link: "engine/runtime/contexts" },
+								{ label: "Creations", link: "engine/runtime/creations" },
+								{ label: "Inputs", link: "engine/runtime/inputs" },
+								{ label: "Merging", link: "engine/runtime/merging" },
+							],
+							label: "Runtime",
+						},
+						{
+							items: [
+								{ label: "Creators", link: "engine/apis/creators" },
+								{ label: "Producers", link: "engine/apis/producers" },
+								{ label: "Testers", link: "engine/apis/testers" },
+							],
+							label: "APIs",
+						},
 					],
-					label: "Concepts",
-				},
-				{
-					items: [
-						{ label: "Contexts", link: "runtime/contexts" },
-						{ label: "Creations", link: "runtime/creations" },
-						{ label: "Inputs", link: "runtime/inputs" },
-						{ label: "Phases", link: "runtime/phases" },
-					],
-					label: "Runtime",
-				},
-				{
-					items: [
-						{ label: "Creators", link: "apis/creators" },
-						{ label: "Producers", link: "apis/producers" },
-						{ label: "Testers", link: "apis/testers" },
-					],
-					label: "APIs",
+					label: "Engine",
 				},
 				{ label: "FAQs", link: "faqs" },
 				{ label: "Glossary", link: "glossary" },

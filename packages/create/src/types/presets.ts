@@ -1,22 +1,23 @@
 import { AnyShape, InferredObject } from "../options.js";
 import { AboutBase } from "./about.js";
-import { Block } from "./blocks.js";
+import { BlockWithArgs, BlockWithoutArgs } from "./blocks.js";
 import { Schema } from "./schemas.js";
 
-type PresetBlock<OptionsShape extends AnyShape> = Block<
-	InferredObject<OptionsShape>
->;
+export type PresetDefinitionBlock<Metadata, Options> =
+	| BlockWithArgs<unknown, Metadata, Options>
+	| BlockWithoutArgs<Metadata, Options>;
 
-export interface PresetDefinition<OptionsShape extends AnyShape = AnyShape> {
+export interface PresetDefinition<Metadata, Options> {
 	about?: AboutBase;
-	blocks: PresetBlocksDefinition<OptionsShape>;
+	blocks: PresetDefinitionBlock<Metadata, Options>[];
 }
 
-export type PresetBlocksDefinition<OptionsShape extends AnyShape> =
-	| ((options: InferredObject<OptionsShape>) => PresetBlock<OptionsShape>[])
-	| PresetBlock<OptionsShape>[];
-
-export interface Preset<OptionsShape extends AnyShape = AnyShape>
-	extends PresetDefinition<OptionsShape> {
-	schema: Schema<OptionsShape>;
+export interface Preset<
+	MetadataShape extends AnyShape,
+	OptionsShape extends AnyShape,
+> extends PresetDefinition<
+		InferredObject<MetadataShape>,
+		InferredObject<OptionsShape>
+	> {
+	schema: Schema<MetadataShape, OptionsShape>;
 }

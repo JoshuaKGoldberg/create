@@ -1,6 +1,6 @@
 import { Result } from "execa";
 
-import { ContextBase } from "./context.js";
+import { TakeContext } from "./context.js";
 import { InputFileSystem } from "./inputs.js";
 
 export type FileSystemWriteFile = (
@@ -23,4 +23,4 @@ export interface NativeSystem {
 	runner: SystemRunner;
 }
 
-export type SystemContext = ContextBase & NativeSystem;
+export type SystemContext = NativeSystem & TakeContext;

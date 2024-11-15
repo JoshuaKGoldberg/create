@@ -1,88 +1,99 @@
-import { BlockPhase } from "../enums.js";
-import { AnyShape, InferredObject, InputShape } from "../options.js";
-import { PromiseOrSync } from "../utils/promises.js";
+import { AnyShape, InferredObject } from "../options.js";
 import { AboutBase } from "./about.js";
-import { ContextBase } from "./context.js";
 import { Creation, IndirectCreation } from "./creations.js";
+
+// TODO: Rename from (BlockFactory -> Block) to (Block -> BlockData)
 
 export interface BlockDefinitionBase {
 	about?: AboutBase;
-	phase?: BlockPhase;
+}
+
+export interface BlockDefinitionWithoutArgs<Metadata, Options>
+	extends BlockDefinitionBase {
+	produce: BlockProducerWithoutArgs<Metadata, Options>;
+}
+
+export interface BlockDefinitionWithArgs<
+	ArgsShape extends AnyShape,
+	Metadata,
+	Options,
+> extends BlockDefinitionBase {
+	args: ArgsShape;
+	produce: BlockProducerWithArgs<InferredObject<ArgsShape>, Metadata, Options>;
 }
 
 export type BlockDefinition<
-	Options extends object,
 	ArgsShape extends AnyShape | undefined,
+	Metadata,
+	Options,
 > = ArgsShape extends object
-	? BlockDefinitionWithArgs<Options, ArgsShape>
-	: BlockDefinitionWithoutArgs<Options>;
+	? BlockDefinitionWithArgs<ArgsShape, Metadata, Options>
+	: BlockDefinitionWithoutArgs<Metadata, Options>;
 
-export interface BlockDefinitionWithArgs<
-	Options extends object,
-	ArgsShape extends AnyShape,
-> extends BlockDefinitionBase {
-	args: ArgsShape;
-	produce: BlockProducerWithArgs<Options, InferredObject<ArgsShape>>;
-}
-
-export interface BlockDefinitionWithoutArgs<Options extends object>
-	extends BlockDefinitionBase {
-	produce: BlockProducerWithoutArgs<Options>;
-}
-
-export interface BlockContext<Options extends object> extends ContextBase {
-	/**
-	 * @todo It would be nice to not provide this to blocks without an explicit phase.
-	 */
-	created: IndirectCreation;
+export interface BlockContextWithoutArgs<Metadata, Options> {
+	created: IndirectCreation<Metadata, Options>;
 	options: Options;
 }
 
-export interface BlockContextWithArgs<
-	Options extends object,
-	Args extends object,
-> extends BlockContext<Options> {
+export interface BlockContextWithArgs<Args, Metadata, Options>
+	extends BlockContextWithoutArgs<Metadata, Options> {
 	args: Args;
+	created: IndirectCreation<Metadata, Options>;
+	options: Options;
 }
 
-export type BlockProducerWithArgs<
-	Options extends object,
-	Args extends object,
-> = (
-	context: BlockContextWithArgs<Options, Args>,
-) => PromiseOrSync<Partial<Creation>>;
-
-export type BlockProducerWithoutArgs<Options extends object> = (
-	context: BlockContext<Options>,
-) => PromiseOrSync<Partial<Creation>>;
-
-export interface ContextWithArgs<Options extends object, Args extends object>
-	extends BlockContext<Options> {
-	args: Args;
+export interface BlockContextWithOptionalArgs<Args, Metadata, Options>
+	extends BlockContextWithoutArgs<Metadata, Options> {
+	args?: Args;
+	created: IndirectCreation<Metadata, Options>;
+	options: Options;
 }
 
-export type BlockFactory<
-	Options extends object = object,
-	ArgsShape extends AnyShape | undefined = undefined,
-> = ArgsShape extends object
-	? BlockFactoryWithRequiredArgs<Options, InputShape<ArgsShape>>
-	: BlockFactoryWithoutArgs<Options>;
+export type BlockProducerWithoutArgs<Metadata, Options> = (
+	context: BlockContextWithoutArgs<Metadata, Options>,
+) => Partial<Creation<Metadata, Options>>;
 
-export type BlockFactoryWithRequiredArgs<
-	Options extends object,
-	Args extends object,
-> = (args: Args) => Block<Options>;
+export type BlockProducerWithArgs<Args, Metadata, Options> = (
+	context: BlockContextWithArgs<Args, Metadata, Options>,
+) => Partial<Creation<Metadata, Options>>;
 
-export type BlockFactoryWithOptionalArgs<
-	Options extends object,
-	Args extends object,
-> = (args?: Args) => Block<Options>;
+export type BlockFactoryWithoutArgs<Metadata, Options> = () => Block<
+	undefined,
+	Metadata,
+	Options
+>;
 
-export type BlockFactoryWithoutArgs<Options extends object> =
-	() => Block<Options>;
+export type BlockFactoryWithRequiredArgs<Args, Metadata, Options> = (
+	args: Args,
+) => BlockWithArgs<Args, Metadata, Options>;
 
-export interface Block<Options extends object> {
+export type BlockFactoryWithOptionalArgs<Args, Metadata, Options> = (
+	args?: Args,
+) => BlockWithOptionalArgs<Args, Metadata, Options>;
+
+export interface BlockWithoutArgs<Metadata, Options> {
 	about?: AboutBase;
-	phase: BlockPhase;
-	produce: (context: BlockContext<Options>) => Promise<Partial<Creation>>;
+	produce: (
+		context: BlockContextWithoutArgs<Metadata, Options>,
+	) => Partial<Creation<Metadata, Options>>;
 }
+
+export interface BlockWithOptionalArgs<Args, Metadata, Options> {
+	about?: AboutBase;
+	args: Args;
+	produce: (
+		context: BlockContextWithoutArgs<Metadata, Options>,
+	) => Partial<Creation<Metadata, Options>>;
+}
+
+export interface BlockWithArgs<Args, Metadata, Options> {
+	about?: AboutBase;
+	args: Args;
+	produce: (
+		context: BlockContextWithoutArgs<Metadata, Options>,
+	) => Partial<Creation<Metadata, Options>>;
+}
+
+export type Block<Args, Metadata, Options> = Args extends object
+	? BlockWithArgs<Args, Metadata, Options>
+	: BlockWithoutArgs<Metadata, Options>;

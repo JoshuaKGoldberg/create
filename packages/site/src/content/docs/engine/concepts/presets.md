@@ -23,8 +23,6 @@ export const presetExampleBlocks = schema.createPreset({
 });
 ```
 
-Once implemented, `create` APIs that build repositories will take in Presets.
-
 ## APIs
 
 - [`createPreset`](../apis/creators#createpreset): for creating Presets

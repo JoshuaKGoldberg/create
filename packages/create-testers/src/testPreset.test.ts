@@ -1,5 +1,5 @@
-import { createInput, createSchema } from "create";
-import { describe, expect, it, vi } from "vitest";
+import { createSchema } from "create";
+import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 import { testPreset } from "./testPreset.js";
@@ -74,108 +74,6 @@ describe("testPreset", () => {
 				...emptyCreation,
 				files: { "value.txt": "abc-def" },
 			});
-		});
-	});
-
-	describe("fetcher", () => {
-		const inputFetcher = createInput({
-			args: {
-				value: z.string(),
-			},
-			async produce({ args, fetcher }) {
-				return (await fetcher(args.value)).text();
-			},
-		});
-
-		const blockUsingFetcher = schema.createBlock({
-			async produce({ options, take }) {
-				return {
-					files: {
-						"value.txt": await take(inputFetcher, { value: options.value }),
-					},
-				};
-			},
-		});
-
-		const presetUsingFetcher = schema.createPreset({
-			blocks: [blockUsingFetcher()],
-		});
-
-		it("throws an error when fetcher isn't provided and a block uses fetcher", async () => {
-			await expect(async () =>
-				testPreset(presetUsingFetcher, {
-					options: { value: "def" },
-				}),
-			).rejects.toMatchInlineSnapshot(
-				`[Error: Context property 'fetcher' was used by an input but not provided.]`,
-			);
-		});
-
-		it("passes fetcher to the block when provided", async () => {
-			const fetcher = vi
-				.fn()
-				.mockResolvedValueOnce({ text: () => Promise.resolve("def") });
-
-			const actual = await testPreset(presetUsingFetcher, {
-				options: { value: "ghi" },
-				system: { fetcher },
-			});
-
-			expect(actual).toEqual({
-				...emptyCreation,
-				files: { "value.txt": "def" },
-			});
-			expect(fetcher).toHaveBeenCalledWith("ghi");
-		});
-	});
-
-	describe("runner", () => {
-		const inputRunner = createInput({
-			args: {
-				value: z.string(),
-			},
-			async produce({ args, runner }) {
-				return (await runner(args.value)).stdout as string;
-			},
-		});
-
-		const blockUsingRunner = schema.createBlock({
-			async produce({ options, take }) {
-				return {
-					files: {
-						"value.txt": await take(inputRunner, { value: options.value }),
-					},
-				};
-			},
-		});
-
-		const presetUsingRunner = schema.createPreset({
-			blocks: [blockUsingRunner()],
-		});
-
-		it("throws an error when runner isn't provided and a block uses runner", async () => {
-			await expect(async () =>
-				testPreset(presetUsingRunner, {
-					options: { value: "def" },
-				}),
-			).rejects.toMatchInlineSnapshot(
-				`[Error: Context property 'runner' was used by an input but not provided.]`,
-			);
-		});
-
-		it("passes runner to the block when provided", async () => {
-			const runner = vi.fn().mockResolvedValueOnce({ stdout: "def" });
-
-			const actual = await testPreset(presetUsingRunner, {
-				options: { value: "ghi" },
-				system: { runner },
-			});
-
-			expect(actual).toEqual({
-				...emptyCreation,
-				files: { "value.txt": "def" },
-			});
-			expect(runner).toHaveBeenCalledWith("ghi");
 		});
 	});
 });

@@ -31,23 +31,13 @@ npx create typescript-app
 
 :::note
 The `create` CLI is just a general runner to pull in information from Templates.
-See the individual
+See the docs for your specific Template for additional arguments.
 :::
 
 ## Arguments
 
 The first argument passed to `create` can be a shorthand [`-f` / `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
 A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
-
-:::tip
-See the documentation for the individual Template you're generating from for additional arguments.
-:::
-
-For example, using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
-
-```shell
-npx create typescript-app
-```
 
 ### `-d` / `--directory`
 

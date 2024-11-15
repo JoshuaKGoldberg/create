@@ -34,9 +34,19 @@ Yes, after the _create_ and _update_ APIs are done.
 
 Yes, after the _create_ and _update_ APIs are done.
 
+## Developing Templates
+
+### When should I use composed Block Args vs. Indirect Creations?
+
+Use [composed Block Args](./concepts/blocks#composition) when one Block should add to a specific other block.
+
+Use [Indirect Creations](./runtime/creations#indirect-creations) when one Block creates something that any arbitrary other Block may need to know about.
+
 ## Testing
 
 ### Why do some testers allow `take` and others the individual system pieces?
+
+> TODO: Update this now that Blocks don't have a `take`.
 
 It depends on what APIs the entities under test conceptually use.
 

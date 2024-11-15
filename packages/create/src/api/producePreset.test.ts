@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { createInput } from "../creators/createInput.js";
 import { createSchema } from "../creators/createSchema.js";
 import { producePreset } from "./producePreset.js";
 
@@ -128,60 +127,6 @@ describe("producePreset", () => {
 					"value-optional.txt": "optional-from-produce",
 					"value-required.txt": "required-from-provided",
 				},
-			});
-		});
-	});
-
-	describe("system", () => {
-		const schemaWithOption = createSchema({
-			options: {
-				value: z.string(),
-			},
-		});
-
-		describe("fetcher", () => {
-			const inputFetcher = createInput({
-				args: {
-					text: z.string(),
-				},
-				async produce({ args, fetcher }) {
-					return (await fetcher(args.text)).text();
-				},
-			});
-
-			const blockUsingFetcher = schemaWithOption.createBlock({
-				async produce({ options, take }) {
-					return {
-						files: {
-							"value.txt": await take(inputFetcher, { text: options.value }),
-						},
-					};
-				},
-			});
-
-			const presetUsingFetcher = schemaWithOption.createPreset({
-				blocks: [blockUsingFetcher()],
-			});
-
-			it("uses the fetcher when provided", async () => {
-				const fetcher = vi
-					.fn()
-					.mockResolvedValueOnce({ text: () => Promise.resolve("def") });
-
-				const actual = await producePreset(presetUsingFetcher, {
-					fetcher,
-					options: {
-						value: "abc",
-					},
-				});
-
-				expect(actual).toEqual({
-					...emptyCreation,
-					files: {
-						"value.txt": "def",
-					},
-				});
-				expect(fetcher).toHaveBeenCalledWith("abc");
 			});
 		});
 	});

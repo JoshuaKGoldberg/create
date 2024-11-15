@@ -1,24 +1,17 @@
 import { Creation } from "../types/creations.js";
+import { mergeAddons } from "./mergeAddons.js";
 import { mergeArrays } from "./mergeArrays.js";
-import { mergeDocumentation } from "./mergeDocumentation.js";
-import { mergeEditor } from "./mergeEditor.js";
 import { mergeFiles } from "./mergeFiles.js";
-import { mergePackage } from "./mergePackage.js";
+import { mergeMetadata } from "./mergeMetadata.js";
 
-export function mergeCreations(
-	first: Creation,
-	second: Partial<Creation>,
-): Creation {
+export function mergeCreations<Metadata, Options>(
+	first: Creation<Metadata, Options>,
+	second: Partial<Creation<Metadata, Options>>,
+): Creation<Metadata, Options> {
 	return {
+		addons: mergeAddons(first.addons, second.addons),
 		commands: mergeArrays(first.commands, second.commands),
-		documentation: mergeDocumentation(
-			first.documentation,
-			second.documentation,
-		),
-		editor: mergeEditor(first.editor, second.editor),
 		files: mergeFiles(first.files, second.files, []),
-		jobs: mergeArrays(first.jobs, second.jobs),
-		metadata: mergeArrays(first.metadata, second.metadata),
-		package: mergePackage(first.package, second.package),
+		metadata: mergeMetadata(first.metadata, second.metadata),
 	};
 }

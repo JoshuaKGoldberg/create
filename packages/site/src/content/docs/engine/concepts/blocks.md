@@ -73,13 +73,13 @@ export const blockREADME = schema.createBlock({
 
 ## Args
 
-Blocks may be extended with their own options, referred to as _args_.
+Blocks may be extended with their own options, referred to as _Args_.
 Blocks define args as the properties for a [Zod](https://zod.dev) object schema and then receive them in their context.
 
 Args for a Block are typically specified each time a Block is defined in a [Preset](./presets)'s `blocks` array.
-Each Preset may define instances of the Block with different args.
+Each Preset may define instances of the Block with different Args.
 
-For example, this Block takes in a string array under a `names` arg, to be printed in a `names.txt` file:
+For example, this Block takes in a string array under a `names` Arg, to be printed in a `names.txt` file:
 
 ```ts
 import { z } from "zod";
@@ -118,16 +118,19 @@ export const presetFruitNames = schema.createPreset({
 });
 ```
 
-Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text.
+Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text:
 
-## Composition
+```plaintext
+// names.txt
+apple
+banana
+cherry
+```
 
-:::danger
-**Args composition has not been implemented yet.**
-:::
+## Addons
 
-Blocks can producing Args to be passed to other Blocks.
-These "composed" Args will be merged into the other Blocks' arguments when run.
+Blocks can produce Args to be passed to other Blocks.
+These "addon" Args will be merged into the other Blocks' arguments when run.
 
 For example, this Vitest Block composes Args to an ESLint Block to include the Vitest ESLint plugin:
 
@@ -138,7 +141,7 @@ import { schema } from "./schema";
 export const blockVitest = schema.createBlock({
 	produce() {
 		return {
-			composed: [
+			addons: [
 				blockESLint({
 					extensions: [
 						{
@@ -157,16 +160,6 @@ export const blockVitest = schema.createBlock({
 	},
 });
 ```
-
-:::note
-A Block producing Args compositions does not change the output of the Block.
-Composed Args are only used when a parent [Preset](./presets) is produced.
-:::
-
-:::caution
-A Block's composed Args must only impact Blocks with a later [Phase](../runtime/phases).
-If a Block produces composed Args for a Block that was already run, `create` will throw an error.
-:::
 
 ## APIs
 

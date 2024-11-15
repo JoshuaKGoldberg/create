@@ -11,56 +11,14 @@ Don't rely on it yet.
 _Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../inputs), and [Schemas](../concepts/schemas).
 Each contains shared helper functions and information.
 
-All Contexts include the properties described in [All Contexts](#all-contexts).
-Each area's Contexts provides additional properties:
-
-- Blocks receive [Block Contexts](#block-contexts)
+- Blocks and Presets receive [Block Contexts](#block-contexts)
 - Inputs receive [Input Contexts](#input-contexts)
 - Schemas receive [Schema Contexts](#schema-contexts)
 - Production APIs receive [System Contexts](#system-contexts)
 
-## All Contexts
-
-### `take`
-
-Executes an [Input](./inputs).
-
-The `take` function is provided to both Blocks and Inputs so that they can run another Input with the same Context they're running in.
-
-For example, this Block uses `take` to run Inputs that reads from a local file and run `npm whoami` to make sure the user is listed in an `AUTHORS.md` file:
-
-```ts
-import { inputFile } from "./inputFile";
-import { inputNpmWhoami } from "./inputNpmWhoami";
-import { schema } from "./schema";
-
-const fileName = "AUTHORS.md";
-
-export const blockFileModified = schema.createBlock({
-	async produce({ take }) {
-		const existing = await take(inputFile, { fileName });
-		const author = await take(inputNpmWhoami);
-
-		return {
-			files: {
-				[fileName]: existing.includes(`${author}\n`)
-					? existing
-					: `${existing}\n${author}`,
-			},
-		};
-	},
-});
-```
-
-:::note
-Blocks and Inputs aren't required to use `take()` for dynamic data.
-Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.
-:::
-
 ## Block Contexts
 
 The Context object provided to the `produce` object of [Blocks](../concepts/blocks).
-Includes properties from [All Contexts](#all-contexts).
 
 ### `created`
 
@@ -72,12 +30,9 @@ Blocks may reference the outputs of earlier Blocks to generate their own tooling
 For example, a Block that generates a `.github/DEVELOPMENT.md` file summarizing previously generated [`documentation`](./production#documentation):
 
 ```ts
-import { BlockPhase } from "create";
-
 import { schema } from "./schema";
 
 export const blockDocs = schema.createBlock({
-	phase: BlockPhase.Documentation,
 	produce({ created }) {
 		return {
 			files: {
@@ -119,7 +74,6 @@ export const schema = createSchema({
 ## Input Contexts
 
 The Context object provided to the `produce` object of [Inputs](../inputs).
-Includes properties from [All Contexts](#all-contexts).
 
 ### `args` {#input-options}
 
@@ -207,10 +161,45 @@ export const inputGitUserEmail = createInput({
 });
 ```
 
+### `take` {#input-take}
+
+Executes an [Input](./inputs).
+
+The `take` function is provided to both Blocks and Inputs so that they can run another Input with the same Context they're running in.
+
+For example, this Block uses `take` to run Inputs that reads from a local file and run `npm whoami` to make sure the user is listed in an `AUTHORS.md` file:
+
+```ts
+import { inputFile } from "./inputFile";
+import { inputNpmWhoami } from "./inputNpmWhoami";
+import { schema } from "./schema";
+
+const fileName = "AUTHORS.md";
+
+export const blockFileModified = schema.createBlock({
+	async produce({ take }) {
+		const existing = await take(inputFile, { fileName });
+		const author = await take(inputNpmWhoami);
+
+		return {
+			files: {
+				[fileName]: existing.includes(`${author}\n`)
+					? existing
+					: `${existing}\n${author}`,
+			},
+		};
+	},
+});
+```
+
+:::note
+Inputs and Schemas aren't required to use `take()` for dynamic data.
+Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.
+:::
+
 ## Schema Contexts
 
 The Context object provided to the `produce` object of [Schemas](../concepts/schemas).
-Includes properties from [All Contexts](#all-contexts).
 
 ### `options` {#schema-options}
 
@@ -235,15 +224,19 @@ export const schema = createSchema({
 });
 ```
 
+### `take` {#schema-take}
+
+Executes an [Input](./inputs).
+This is the same as [Input Contexts' `take`](#input-take).
+
 ## System Contexts
 
 The Context object provided to [producer APIs](../apis/producers).
-Includes properties from [All Contexts](#all-contexts).
 
 ### `fetcher` {#system-fetcher}
 
 The global `fetch` function, to make network calls.
-This is an the same as [Input Contexts' `fetcher`](#input-fetcher).
+This is the same as [Input Contexts' `fetcher`](#input-fetcher).
 
 ### `fs` {#system-fs}
 

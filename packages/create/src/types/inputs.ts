@@ -1,4 +1,4 @@
-import { ContextBase } from "./context.js";
+import { TakeContext } from "./context.js";
 import { SystemRunner } from "./system.js";
 
 export interface InputFileSystem {
@@ -7,7 +7,7 @@ export interface InputFileSystem {
 
 export type FileSystemReadFile = (filePath: string) => Promise<string>;
 
-export interface InputContext extends ContextBase {
+export interface InputContext extends TakeContext {
 	fetcher: typeof fetch;
 	fs: InputFileSystem;
 	runner: SystemRunner;

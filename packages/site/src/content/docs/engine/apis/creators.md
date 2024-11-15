@@ -230,39 +230,6 @@ export const presetFormatted = schema.createPreset({
 
 Creating with that `presetFormatted` Preset would then produce a `.prettierrc.json` file with those three plugins listed in its JSON contents.
 
-### `phase` {#createblock-phase}
-
-Controls what [Block Phase](../runtime/phases) the Block executes in.
-This is specified as a value of the exported `BlockPhase` enum.
-
-`phase` defaults to `BlockPhase.Default`, the first set of run Blocks, if not provided.
-
-For example, this Block adds text for every previously-generated piece of [`documentation`](../runtime/creations#documentation):
-
-```ts
-import { BlockPhase } from "create";
-
-import { schema } from "../schema.js";
-
-export const blockGitignore = schema.createBlock({
-	phase: BlockPhase.Documentation,
-	produce({ created }) {
-		return {
-			files: {
-				"DEVELOPMENT.md": [
-					`# Development`,
-					...Object.fromEntries(created.documentation).map(
-						([title, contents]) => `## ${title}\n\n${contents}`,
-					),
-				].join("\n\n"),
-			},
-		};
-	},
-});
-```
-
-See [Creations > Indirect Creations](../runtime/creations#indirect-creations) for the values Blocks can read from Blocks run in earlier Phases.
-
 ### `produce` {#createblock-produce}
 
 Block Definitions must include a `produce()` method for their core logic.

@@ -11,7 +11,7 @@ Don't rely on it yet.
 A _Template_ defines a group of [Presets](./presets) that can be chosen between by a user.
 
 Templates are the highest level of grouping in `create` projects.
-CLI APIs like `npx create create-*-app` will work by pointing to a Template and asking the user to choose between their presets.
+CLI APIs like `npx create *-app` will work by pointing to a Template and asking the user to choose between their presets.
 
 For example, this Template groups several levels of tooling from a `create-typescript-app`-like generator:
 

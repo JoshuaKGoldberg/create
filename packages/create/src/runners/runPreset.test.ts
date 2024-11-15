@@ -41,42 +41,4 @@ describe("runPreset", () => {
 
 		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
 	});
-
-	test("files from two blocks in phase order", async () => {
-		const blocks = [
-			schema.createBlock({
-				about: {
-					name: "Example Block 1",
-				},
-				produce({ options }) {
-					return {
-						documentation: { Example: options.value },
-					};
-				},
-			}),
-			schema.createBlock({
-				about: {
-					name: "Example Block 2",
-				},
-				produce({ created }) {
-					return {
-						files: { "README.md": created.documentation.Example as string },
-					};
-				},
-			}),
-		];
-
-		await runPreset(
-			schema.createPreset({
-				about: {
-					name: "Example",
-				},
-				blocks: blocks.map((block) => block()),
-			}),
-			{ value: "Hello, world!" },
-			context,
-		);
-
-		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
-	});
 });

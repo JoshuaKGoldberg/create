@@ -1,5 +1,5 @@
 import { TakeInput } from "./inputs.js";
 
-export interface ContextBase {
+export interface TakeContext {
 	take: TakeInput;
 }

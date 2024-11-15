@@ -1,18 +1,9 @@
-import { Preset } from "../types/presets.js";
+import { AnyShape } from "../options.js";
 import { Template } from "../types/templates.js";
 
-export function isPreset(value: unknown): value is Preset {
-	return (
-		!!value &&
-		typeof value === "object" &&
-		"blocks" in value &&
-		Array.isArray(value.blocks) &&
-		"schema" in value &&
-		typeof value.schema === "object"
-	);
-}
-
-export function isTemplate(value: unknown): value is Template {
+export function isTemplate(
+	value: unknown,
+): value is Template<string, AnyShape, AnyShape> {
 	return (
 		!!value &&
 		typeof value === "object" &&

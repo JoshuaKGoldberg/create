@@ -17,7 +17,7 @@ Production APIs can be used to directly run create constructs:
 Each production API takes in up to two arguments:
 
 1. The construct to be produced
-2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts), not including `take`
+2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts)
 
 ## `produceBlock`
 
@@ -26,7 +26,7 @@ Given a [Block](../concepts/blocks), creates a [Creation](../runtime/creations) 
 `produceBlock` takes in up to two arguments:
 
 1. `block` _(required)_: a Block
-2. `settings` _(required)_: at least `options`, as well as any other properties from a [Block Context](../runtime/contexts#block-contexts) other than `take`
+2. `settings` _(required)_: at least `options`, as well as any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
 For example, given this Block that produces the start of a README.md file, `produceBlock` can run its `produce()` with any provided options:
 
@@ -102,7 +102,7 @@ Given an [Input](../runtime/inputs), runs its `produce()` with any provided args
 `produceInput` takes in up to two arguments:
 
 1. `input` _(required)_: an Input
-2. `settings` _(required)_: at least `options`, as well as any other properties from a [Preset Context](../runtime/contexts#input-contexts) other than `take`
+2. `settings` _(required)_: at least `options`, as well as any other properties from an [Input Context](../runtime/contexts#input-contexts) other than `take`
 
 For example, this Input production reads data from an existing `data.json` file on disk:
 
@@ -150,7 +150,7 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
 2. `settings` _(required)_:
    - `options` _(required)_: [Schema](../concepts/schemas) options to run with
    - `optionsAugment` _(optional)_: a function to augment options from the Schema
-   - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts) other than `take`
+   - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
 `producePreset` returns a Promise for the Preset's [`Creation`](../runtime/creations).
 Both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations) will be present.

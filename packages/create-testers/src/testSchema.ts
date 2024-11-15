@@ -14,7 +14,7 @@ export interface SchemaContextSettings<OptionsShape extends AnyShape> {
 }
 
 export async function testSchema<OptionsShape extends AnyShape>(
-	schema: Schema<OptionsShape>,
+	schema: Schema<AnyShape | undefined, OptionsShape>,
 	settings: Partial<SchemaContextSettings<OptionsShape>> = {},
 ) {
 	if (!schema.produce) {

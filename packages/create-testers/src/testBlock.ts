@@ -7,60 +7,51 @@ import {
 	TakeInput,
 } from "create";
 
-import {
-	createFailingFunction,
-	createFailingObject,
-	failingFunction,
-} from "./utils.js";
+import { createFailingObject, failingFunction } from "./utils.js";
 
-export interface BlockContextSettingsWithoutArgs<Options extends object> {
-	created?: Partial<IndirectCreation>;
+export interface BlockContextSettingsWithoutArgs<Metadata, Options> {
+	created?: Partial<IndirectCreation<Metadata, Options>>;
 	options?: Options;
-	take?: TakeInput;
 }
 
-export interface BlockContextSettingsWithRequiredArgs<
-	Options extends object,
-	Args extends object,
-> extends BlockContextSettingsWithoutArgs<Options> {
+export interface BlockContextSettingsWithRequiredArgs<Args, Metadata, Options>
+	extends BlockContextSettingsWithoutArgs<Metadata, Options> {
 	args: Args;
 }
 
-export interface BlockContextSettingsWithOptionalArgs<
-	Options extends object,
-	Args extends object,
-> extends BlockContextSettingsWithoutArgs<Options> {
+export interface BlockContextSettingsWithOptionalArgs<Args, Metadata, Options>
+	extends BlockContextSettingsWithoutArgs<Metadata, Options> {
 	args?: Args;
 }
 
-export async function testBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithRequiredArgs<Options, Args>,
-	settings: BlockContextSettingsWithRequiredArgs<Options, Args>,
-): Promise<Partial<Creation>>;
-export async function testBlock<Options extends object>(
-	blockFactory: BlockFactoryWithoutArgs<Options>,
-	settings?: BlockContextSettingsWithoutArgs<Options>,
-): Promise<Partial<Creation>>;
-export async function testBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
-	settings?: BlockContextSettingsWithOptionalArgs<Options, Args>,
-): Promise<Partial<Creation>>;
-export async function testBlock<Options extends object, Args extends object>(
-	blockFactory: BlockFactoryWithOptionalArgs<Options, Args>,
-	settings: BlockContextSettingsWithOptionalArgs<Options, Args> = {},
-): Promise<Partial<Creation>> {
-	return await blockFactory(settings.args).produce({
+export function testBlock<Args, Metadata, Options>(
+	blockFactory: BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
+	settings: BlockContextSettingsWithRequiredArgs<Args, Metadata, Options>,
+): Partial<Creation<Metadata, Options>>;
+export function testBlock<Metadata, Options>(
+	blockFactory: BlockFactoryWithoutArgs<Metadata, Options>,
+	settings?: BlockContextSettingsWithoutArgs<Metadata, Options>,
+): Partial<Creation<Metadata, Options>>;
+export function testBlock<Args, Metadata, Options>(
+	blockFactory: BlockFactoryWithOptionalArgs<Args, Metadata, Options>,
+	settings?: BlockContextSettingsWithOptionalArgs<Args, Metadata, Options>,
+): Partial<Creation<Metadata, Options>>;
+export function testBlock<Args, Metadata, Options>(
+	blockFactory:
+		| BlockFactoryWithoutArgs<Metadata, Options>
+		| BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
+	settings: BlockContextSettingsWithOptionalArgs<Args, Metadata, Options> = {},
+): Partial<Creation<Metadata, Options>> {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	return blockFactory(settings.args!).produce({
 		get args() {
 			return failingFunction("args", "the block");
 		},
 		options: createFailingObject("options", "the block") as Options,
-		take: createFailingFunction("take", "the block"),
 		...settings,
 		created: {
-			documentation: {},
-			editor: {},
-			jobs: [],
-			metadata: [],
+			addons: [],
+			metadata: {} as Metadata,
 			...settings.created,
 		},
 	});

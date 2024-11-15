@@ -27,16 +27,29 @@ export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
 	) => Promise<Partial<InferredObject<OptionsShape>>>;
 }
 
-export async function producePreset<OptionsShape extends AnyShape>(
-	preset: Preset<OptionsShape>,
+export async function producePreset<
+	MetadataShape extends AnyShape,
+	OptionsShape extends AnyShape,
+>(
+	preset: Preset<MetadataShape, OptionsShape>,
 	settings: AugmentingPresetProductionSettings<OptionsShape>,
-): Promise<Creation>;
-export async function producePreset<OptionsShape extends AnyShape>(
-	preset: Preset<OptionsShape>,
+): Promise<
+	Creation<InferredObject<MetadataShape>, InferredObject<OptionsShape>>
+>;
+export async function producePreset<
+	MetadataShape extends AnyShape,
+	OptionsShape extends AnyShape,
+>(
+	preset: Preset<MetadataShape, OptionsShape>,
 	settings: FullPresetProductionSettings<OptionsShape>,
-): Promise<Creation>;
-export async function producePreset<OptionsShape extends AnyShape>(
-	preset: Preset<OptionsShape>,
+): Promise<
+	Creation<InferredObject<MetadataShape>, InferredObject<OptionsShape>>
+>;
+export async function producePreset<
+	MetadataShape extends AnyShape,
+	OptionsShape extends AnyShape,
+>(
+	preset: Preset<MetadataShape, OptionsShape>,
 	{
 		options,
 		optionsAugment,
@@ -44,7 +57,9 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	}:
 		| AugmentingPresetProductionSettings<OptionsShape>
 		| FullPresetProductionSettings<OptionsShape>,
-): Promise<Creation> {
+): Promise<
+	Creation<InferredObject<MetadataShape>, InferredObject<OptionsShape>>
+> {
 	const { system, take } = createNativeSystems(providedSystem);
 
 	// From api/produce-preset.md,
@@ -66,7 +81,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	} as InferredObject<OptionsShape>;
 	const augmentedOptions = await optionsAugment?.(optionsForAugmentation);
 
-	return await runPreset(
+	return runPreset(
 		preset,
 		{
 			...optionsForAugmentation,
