@@ -4,7 +4,6 @@ import {
 	BlockFactoryWithRequiredArgs,
 	Creation,
 	IndirectCreation,
-	TakeInput,
 } from "create";
 
 import { createFailingObject, failingFunction } from "./utils.js";

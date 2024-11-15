@@ -3,7 +3,7 @@ import { Template } from "../types/templates.js";
 
 export function isTemplate(
 	value: unknown,
-): value is Template<string, AnyShape, AnyShape> {
+): value is Template<string, AnyShape> {
 	return (
 		!!value &&
 		typeof value === "object" &&

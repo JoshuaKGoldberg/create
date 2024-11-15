@@ -5,7 +5,7 @@ import { Creation } from "../types/creations.js";
 import { createSchema } from "./createSchema.js";
 
 const stubContext = {
-	created: {} as Creation<never, { value: string }>,
+	created: {} as Creation<unknown>,
 	fetcher: vi.fn(),
 	fs: {
 		readFile: vi.fn(),
