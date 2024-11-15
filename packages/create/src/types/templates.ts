@@ -4,25 +4,22 @@ import { Preset } from "./presets.js";
 
 export interface TemplatePresetListing<
 	Label extends string,
-	MetadataShape extends AnyShape,
 	OptionsShape extends AnyShape,
 > {
 	label: Label;
-	preset: Preset<MetadataShape, OptionsShape>;
+	preset: Preset<OptionsShape>;
 }
 
 export interface TemplateDefinition<
 	Label extends string,
-	MetadataShape extends AnyShape,
 	OptionsShape extends AnyShape,
 > {
 	about?: AboutBase;
 	default: Label;
-	presets: TemplatePresetListing<Label, MetadataShape, OptionsShape>[];
+	presets: TemplatePresetListing<Label, OptionsShape>[];
 }
 
 export type Template<
 	Label extends string,
-	MetadataShape extends AnyShape,
 	OptionsShape extends AnyShape,
-> = TemplateDefinition<Label, MetadataShape, OptionsShape>;
+> = TemplateDefinition<Label, OptionsShape>;

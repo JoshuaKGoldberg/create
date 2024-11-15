@@ -2,98 +2,90 @@ import { AnyShape, InferredObject } from "../options.js";
 import { AboutBase } from "./about.js";
 import { Creation, IndirectCreation } from "./creations.js";
 
-// TODO: Rename from (BlockFactory -> Block) to (Block -> BlockData)
+// TODO: Rename from (BlockFactory -> Block) to (Block -> BlockData)?
 
 export interface BlockDefinitionBase {
 	about?: AboutBase;
 }
 
-export interface BlockDefinitionWithoutArgs<Metadata, Options>
+export interface BlockDefinitionWithoutArgs<Options>
 	extends BlockDefinitionBase {
-	produce: BlockProducerWithoutArgs<Metadata, Options>;
+	produce: BlockProducerWithoutArgs<Options>;
 }
 
-export interface BlockDefinitionWithArgs<
-	ArgsShape extends AnyShape,
-	Metadata,
-	Options,
-> extends BlockDefinitionBase {
+export interface BlockDefinitionWithArgs<ArgsShape extends AnyShape, Options>
+	extends BlockDefinitionBase {
 	args: ArgsShape;
-	produce: BlockProducerWithArgs<InferredObject<ArgsShape>, Metadata, Options>;
+	produce: BlockProducerWithArgs<InferredObject<ArgsShape>, Options>;
 }
 
 export type BlockDefinition<
 	ArgsShape extends AnyShape | undefined,
-	Metadata,
 	Options,
 > = ArgsShape extends object
-	? BlockDefinitionWithArgs<ArgsShape, Metadata, Options>
-	: BlockDefinitionWithoutArgs<Metadata, Options>;
+	? BlockDefinitionWithArgs<ArgsShape, Options>
+	: BlockDefinitionWithoutArgs<Options>;
 
-export interface BlockContextWithoutArgs<Metadata, Options> {
-	created: IndirectCreation<Metadata, Options>;
+export interface BlockContextWithoutArgs<Options> {
+	created: IndirectCreation<Options>;
 	options: Options;
 }
 
-export interface BlockContextWithArgs<Args, Metadata, Options>
-	extends BlockContextWithoutArgs<Metadata, Options> {
+export interface BlockContextWithArgs<Args, Options>
+	extends BlockContextWithoutArgs<Options> {
 	args: Args;
-	created: IndirectCreation<Metadata, Options>;
+	created: IndirectCreation<Options>;
 	options: Options;
 }
 
-export interface BlockContextWithOptionalArgs<Args, Metadata, Options>
-	extends BlockContextWithoutArgs<Metadata, Options> {
+export interface BlockContextWithOptionalArgs<Args, Options>
+	extends BlockContextWithoutArgs<Options> {
 	args?: Args;
-	created: IndirectCreation<Metadata, Options>;
+	created: IndirectCreation<Options>;
 	options: Options;
 }
 
-export type BlockProducerWithoutArgs<Metadata, Options> = (
-	context: BlockContextWithoutArgs<Metadata, Options>,
-) => Partial<Creation<Metadata, Options>>;
+export type BlockProducerWithoutArgs<Options> = (
+	context: BlockContextWithoutArgs<Options>,
+) => Partial<Creation<Options>>;
 
-export type BlockProducerWithArgs<Args, Metadata, Options> = (
-	context: BlockContextWithArgs<Args, Metadata, Options>,
-) => Partial<Creation<Metadata, Options>>;
+export type BlockProducerWithArgs<Args, Options> = (
+	context: BlockContextWithArgs<Args, Options>,
+) => Partial<Creation<Options>>;
 
-export type BlockFactoryWithoutArgs<Metadata, Options> = () => Block<
-	undefined,
-	Metadata,
-	Options
->;
+export type BlockFactoryWithoutArgs<Options> = () => Block<undefined, Options>;
 
-export type BlockFactoryWithRequiredArgs<Args, Metadata, Options> = (
+export type BlockFactoryWithRequiredArgs<Args, Options> = (
 	args: Args,
-) => BlockWithArgs<Args, Metadata, Options>;
+) => BlockWithArgs<Args, Options>;
 
-export type BlockFactoryWithOptionalArgs<Args, Metadata, Options> = (
+export type BlockFactoryWithOptionalArgs<Args, Options> = (
 	args?: Args,
-) => BlockWithOptionalArgs<Args, Metadata, Options>;
+) => BlockWithOptionalArgs<Args, Options>;
 
-export interface BlockWithoutArgs<Metadata, Options> {
+export interface BlockWithoutArgs<Options> {
 	about?: AboutBase;
 	produce: (
-		context: BlockContextWithoutArgs<Metadata, Options>,
-	) => Partial<Creation<Metadata, Options>>;
+		context: BlockContextWithoutArgs<Options>,
+	) => Partial<Creation<Options>>;
 }
 
-export interface BlockWithOptionalArgs<Args, Metadata, Options> {
-	about?: AboutBase;
-	args: Args;
-	produce: (
-		context: BlockContextWithoutArgs<Metadata, Options>,
-	) => Partial<Creation<Metadata, Options>>;
-}
-
-export interface BlockWithArgs<Args, Metadata, Options> {
+export interface BlockWithOptionalArgs<Args, Options> {
 	about?: AboutBase;
 	args: Args;
 	produce: (
-		context: BlockContextWithoutArgs<Metadata, Options>,
-	) => Partial<Creation<Metadata, Options>>;
+		context: BlockContextWithoutArgs<Options>,
+	) => Partial<Creation<Options>>;
 }
 
-export type Block<Args, Metadata, Options> = Args extends object
-	? BlockWithArgs<Args, Metadata, Options>
-	: BlockWithoutArgs<Metadata, Options>;
+export interface BlockWithArgs<Args, Options> {
+	about?: AboutBase;
+	args: Args;
+	produce: (
+		context: BlockContextWithoutArgs<Options>,
+	) => Partial<Creation<Options>>;
+}
+
+export type Block<Args, Options> = Args extends object
+	? BlockWithArgs<Args, Options>
+	: BlockWithoutArgs<Options>;

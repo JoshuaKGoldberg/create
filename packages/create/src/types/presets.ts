@@ -3,21 +3,16 @@ import { AboutBase } from "./about.js";
 import { BlockWithArgs, BlockWithoutArgs } from "./blocks.js";
 import { Schema } from "./schemas.js";
 
-export type PresetDefinitionBlock<Metadata, Options> =
-	| BlockWithArgs<unknown, Metadata, Options>
-	| BlockWithoutArgs<Metadata, Options>;
+export type PresetDefinitionBlock<Options> =
+	| BlockWithArgs<unknown, Options>
+	| BlockWithoutArgs<Options>;
 
-export interface PresetDefinition<Metadata, Options> {
+export interface PresetDefinition<Options> {
 	about?: AboutBase;
-	blocks: PresetDefinitionBlock<Metadata, Options>[];
+	blocks: PresetDefinitionBlock<Options>[];
 }
 
-export interface Preset<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
-> extends PresetDefinition<
-		InferredObject<MetadataShape>,
-		InferredObject<OptionsShape>
-	> {
-	schema: Schema<MetadataShape, OptionsShape>;
+export interface Preset<OptionsShape extends AnyShape>
+	extends PresetDefinition<InferredObject<OptionsShape>> {
+	schema: Schema<OptionsShape>;
 }

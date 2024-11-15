@@ -10,7 +10,6 @@ const emptyCreation = {
 	editor: {},
 	files: {},
 	jobs: [],
-	metadata: [],
 	package: {},
 };
 

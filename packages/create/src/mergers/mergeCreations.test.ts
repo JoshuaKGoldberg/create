@@ -7,8 +7,7 @@ const stubCreation = {
 	addons: [],
 	commands: [],
 	files: {},
-	metadata: {},
-} satisfies Creation<unknown, unknown>;
+} satisfies Creation<unknown>;
 
 describe("mergeCreations", () => {
 	it("returns a merged creation when given two overlapping ones", () => {

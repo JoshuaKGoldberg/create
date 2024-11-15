@@ -18,10 +18,6 @@ It may contain any of the following properties:
   - Network requests _(to be added soon)_
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`addons`](#addons): Composed Args to merge in for other Blocks, if they exist
-    <!-- - [`documentation`](#documentation): Descriptions of how users should use the tooling -->
-    <!-- - [`editor`](#editor): Settings to configure the user's editor or IDE -->
-    <!-- - [`jobs`](#jobs): CI jobs to be run in an environment such as GitHub Actions -->
-  - [`metadata`](#metadata): Descriptions for classifications of files, matched by glob
 
 For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) as well as add a `package.json` script ([`package`](#package)) used in a GitHub Actions job in [augmented Args](#args) to another Block:
 
@@ -143,7 +139,3 @@ export const blockESLintJSDoc = schema.createBlock({
 	},
 });
 ```
-
-### `metadata`
-
-TODO: Mention generically brought in by schema

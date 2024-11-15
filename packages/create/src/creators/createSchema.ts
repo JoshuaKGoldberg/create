@@ -14,40 +14,24 @@ import {
 	CreateBlockFactory,
 	Schema,
 	SchemaDefinition,
-	SchemaDefinitionWithoutMetadata,
-	SchemaWithMetadata,
-	SchemaWithoutMetadata,
 } from "../types/schemas.js";
 
-export function createSchema<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	schemaDefinition: SchemaDefinition<MetadataShape, OptionsShape>,
-): SchemaWithMetadata<MetadataShape, OptionsShape>;
 export function createSchema<OptionsShape extends AnyShape>(
-	schemaDefinition: SchemaDefinitionWithoutMetadata<OptionsShape>,
-): SchemaWithoutMetadata<OptionsShape>;
-export function createSchema<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	schemaDefinition: SchemaDefinition<MetadataShape, OptionsShape>,
-): Schema<MetadataShape, OptionsShape> {
-	type Metadata = InferredObject<MetadataShape>;
+	schemaDefinition: SchemaDefinition<OptionsShape>,
+): Schema<OptionsShape> {
 	type Options = InferredObject<OptionsShape>;
 
 	const createBlock = (<ArgsShape extends AnyShape | undefined>(
-		blockDefinition: BlockDefinition<ArgsShape, Metadata, Options>,
+		blockDefinition: BlockDefinition<ArgsShape, Options>,
 	) => {
 		return "args" in blockDefinition
 			? createBlockWithArgs(blockDefinition)
 			: createBlockWithoutArgs(blockDefinition);
-	}) as CreateBlockFactory<Metadata, Options>;
+	}) as CreateBlockFactory<Options>;
 
 	const createBlockWithoutArgs = (
-		blockDefinition: BlockDefinitionWithoutArgs<Metadata, Options>,
-	): BlockFactoryWithoutArgs<Metadata, Options> => {
+		blockDefinition: BlockDefinitionWithoutArgs<Options>,
+	): BlockFactoryWithoutArgs<Options> => {
 		return () => ({
 			about: blockDefinition.about,
 			produce: blockDefinition.produce,
@@ -55,16 +39,12 @@ export function createSchema<
 	};
 
 	const createBlockWithArgs = <ArgsShape extends AnyShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Metadata, Options>,
-	): BlockFactoryWithRequiredArgs<
-		InferredObject<ArgsShape>,
-		Metadata,
-		Options
-	> => {
+		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
+	): BlockFactoryWithRequiredArgs<InferredObject<ArgsShape>, Options> => {
 		type Args = InferredObject<ArgsShape>;
 		const argsSchema = z.object(blockDefinition.args);
 
-		return (argsRaw: Args): BlockWithArgs<Args, Metadata, Options> => {
+		return (argsRaw: Args): BlockWithArgs<Args, Options> => {
 			const argsParsed = argsSchema.parse(argsRaw) as Args;
 			return {
 				about: blockDefinition.about,
@@ -82,9 +62,10 @@ export function createSchema<
 	const schema = {
 		...schemaDefinition,
 		createBlock,
-		createPreset: (
-			presetDefinition: PresetDefinition<MetadataShape, OptionsShape>,
-		) => ({ ...presetDefinition, schema }),
+		createPreset: (presetDefinition: PresetDefinition<OptionsShape>) => ({
+			...presetDefinition,
+			schema,
+		}),
 	};
 
 	// @ts-expect-error -- TODO: I can't figure this out...

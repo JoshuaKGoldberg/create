@@ -10,54 +10,17 @@ import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
 import { Preset, PresetDefinition } from "./presets.js";
 
-export interface SchemaDefinitionWithoutMetadata<
-	OptionsShape extends AnyShape,
-> {
+export interface SchemaDefinition<OptionsShape extends AnyShape> {
 	options: OptionsShape;
 	produce?: SchemaProducer<InferredObject<OptionsShape>>;
 }
 
-export interface SchemaDefinitionWithMetadata<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
-> extends SchemaDefinitionWithoutMetadata<OptionsShape> {
-	metadata: MetadataShape;
-}
-
-export type SchemaDefinition<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
-> = MetadataShape extends object
-	? SchemaDefinitionWithMetadata<MetadataShape, OptionsShape>
-	: SchemaDefinitionWithoutMetadata<OptionsShape>;
-
-export interface SchemaWithoutMetadata<OptionsShape extends AnyShape> {
-	createBlock: CreateBlockFactory<never, InferredObject<OptionsShape>>;
-	createPreset: CreatePresetFactory<never, OptionsShape>;
+export interface Schema<OptionsShape extends AnyShape> {
+	createBlock: CreateBlockFactory<InferredObject<OptionsShape>>;
+	createPreset: CreatePresetFactory<OptionsShape>;
 	options: OptionsShape;
 	produce?: SchemaProducer<InferredObject<OptionsShape>>;
 }
-
-export interface SchemaWithMetadata<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
-> {
-	createBlock: CreateBlockFactory<
-		InferredObject<MetadataShape>,
-		InferredObject<OptionsShape>
-	>;
-	createPreset: CreatePresetFactory<MetadataShape, OptionsShape>;
-	metadata: MetadataShape;
-	options: OptionsShape;
-	produce?: SchemaProducer<InferredObject<OptionsShape>>;
-}
-
-export type Schema<
-	MetadataShape extends AnyShape | undefined,
-	OptionsShape extends AnyShape,
-> = MetadataShape extends object
-	? SchemaWithMetadata<MetadataShape, OptionsShape>
-	: SchemaWithoutMetadata<OptionsShape>;
 
 export interface SchemaContext<Options> extends TakeContext {
 	options: Options;
@@ -78,29 +41,23 @@ export type LazyOptionalOption<T> =
 	| T
 	| undefined;
 
-export interface CreateBlockFactory<Metadata, Options> {
+export interface CreateBlockFactory<Options> {
 	<ArgsShape extends AnyOptionalShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Metadata, Options>,
-	): BlockFactoryWithOptionalArgs<InferredObject<ArgsShape>, Metadata, Options>;
+		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
+	): BlockFactoryWithOptionalArgs<InferredObject<ArgsShape>, Options>;
 
 	<ArgsShape extends AnyShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Metadata, Options>,
-	): BlockFactoryWithRequiredArgs<InferredObject<ArgsShape>, Metadata, Options>;
+		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
+	): BlockFactoryWithRequiredArgs<InferredObject<ArgsShape>, Options>;
 
 	(
-		blockDefinition: BlockDefinitionWithoutArgs<Metadata, Options>,
-	): BlockFactoryWithoutArgs<Metadata, Options>;
+		blockDefinition: BlockDefinitionWithoutArgs<Options>,
+	): BlockFactoryWithoutArgs<Options>;
 }
 
-export type CreatePresetFactory<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
-> = (
-	presetDefinition: PresetDefinition<
-		InferredObject<MetadataShape>,
-		InferredObject<OptionsShape>
-	>,
-) => Preset<MetadataShape, OptionsShape>;
+export type CreatePresetFactory<OptionsShape extends AnyShape> = (
+	presetDefinition: PresetDefinition<InferredObject<OptionsShape>>,
+) => Preset<OptionsShape>;
 
 export type SchemaOptionsFor<TypeofSchema> = TypeofSchema extends {
 	options: infer OptionsShape extends AnyShape;

@@ -32,32 +32,19 @@ export interface TestFullPresetProductionSettings<OptionsShape extends AnyShape>
 	) => Promise<Partial<InferredObject<OptionsShape>>>;
 }
 
-export async function testPreset<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	preset: Preset<MetadataShape, OptionsShape>,
+export async function testPreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
 	settings: TestAugmentingPresetProductionSettings<OptionsShape>,
-): Promise<
-	Creation<InferredObject<MetadataShape>, InferredObject<OptionsShape>>
->;
-export async function testPreset<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	preset: Preset<MetadataShape, OptionsShape>,
+): Promise<Creation<InferredObject<OptionsShape>>>;
+export async function testPreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
 	// TODO: When removing this, optionsAugment's options param is implicitly any.
 	// Is that a TS bug? Bug in typescript-eslint? To be investigated.
 	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	settings: TestFullPresetProductionSettings<OptionsShape>,
-): Promise<
-	Creation<InferredObject<MetadataShape>, InferredObject<OptionsShape>>
->;
-export async function testPreset<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	preset: Preset<MetadataShape, OptionsShape>,
+): Promise<Creation<InferredObject<OptionsShape>>>;
+export async function testPreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
 	settings:
 		| TestAugmentingPresetProductionSettings<OptionsShape>
 		| TestFullPresetProductionSettings<OptionsShape>,

@@ -4,50 +4,45 @@ import {
 } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
 
-export interface BlockProductionSettingsWithoutArgs<Metadata, Options> {
-	created?: Partial<IndirectCreation<Metadata, Options>>;
+export interface BlockProductionSettingsWithoutArgs<Options> {
+	created?: Partial<IndirectCreation<Options>>;
 	options?: Options;
 }
-export interface BlockProductionSettingsWithArgs<
-	Args extends object,
-	Metadata,
-	Options,
-> extends BlockProductionSettingsWithoutArgs<Metadata, Options> {
+export interface BlockProductionSettingsWithArgs<Args extends object, Options>
+	extends BlockProductionSettingsWithoutArgs<Options> {
 	args: Args;
 }
 
 export type BlockProductionSettings<
 	Args extends object | undefined,
-	Metadata,
 	Options,
 > = Args extends object
-	? BlockProductionSettingsWithArgs<Args, Metadata, Options>
-	: BlockProductionSettingsWithoutArgs<Metadata, Options>;
+	? BlockProductionSettingsWithArgs<Args, Options>
+	: BlockProductionSettingsWithoutArgs<Options>;
 
-export function produceBlock<Args extends object, Metadata, Options>(
-	blockFactory: BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
-	settings: BlockProductionSettingsWithArgs<Args, Metadata, Options>,
-): Partial<Creation<Metadata, Options>>;
-export function produceBlock<Metadata, Options>(
-	blockFactory: BlockFactoryWithoutArgs<Metadata, Options>,
-	settings: BlockProductionSettingsWithoutArgs<Metadata, Options>,
-): Partial<Creation<Metadata, Options>>;
-export function produceBlock<Args extends object, Metadata, Options>(
+export function produceBlock<Args extends object, Options>(
+	blockFactory: BlockFactoryWithRequiredArgs<Args, Options>,
+	settings: BlockProductionSettingsWithArgs<Args, Options>,
+): Partial<Creation<Options>>;
+export function produceBlock<Options>(
+	blockFactory: BlockFactoryWithoutArgs<Options>,
+	settings: BlockProductionSettingsWithoutArgs<Options>,
+): Partial<Creation<Options>>;
+export function produceBlock<Args extends object, Options>(
 	blockFactory:
-		| BlockFactoryWithoutArgs<Metadata, Options>
-		| BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
+		| BlockFactoryWithoutArgs<Options>
+		| BlockFactoryWithRequiredArgs<Args, Options>,
 	settings:
-		| BlockProductionSettingsWithArgs<Args, Metadata, Options>
-		| BlockProductionSettingsWithoutArgs<Metadata, Options>,
-): Partial<Creation<Metadata, Options>> {
+		| BlockProductionSettingsWithArgs<Args, Options>
+		| BlockProductionSettingsWithoutArgs<Options>,
+): Partial<Creation<Options>> {
 	// TODO: Figure out how to remove the unions in the implementation signature
-	type Settings = BlockProductionSettingsWithArgs<Args, Metadata, Options>;
+	type Settings = BlockProductionSettingsWithArgs<Args, Options>;
 	const block = blockFactory((settings as Settings).args);
 
 	return block.produce({
 		created: {
 			addons: [],
-			metadata: {} as Metadata,
 			...settings.created,
 		},
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

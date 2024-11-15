@@ -9,39 +9,39 @@ import {
 
 import { createFailingObject, failingFunction } from "./utils.js";
 
-export interface BlockContextSettingsWithoutArgs<Metadata, Options> {
-	created?: Partial<IndirectCreation<Metadata, Options>>;
+export interface BlockContextSettingsWithoutArgs<Options> {
+	created?: Partial<IndirectCreation<Options>>;
 	options?: Options;
 }
 
-export interface BlockContextSettingsWithRequiredArgs<Args, Metadata, Options>
-	extends BlockContextSettingsWithoutArgs<Metadata, Options> {
+export interface BlockContextSettingsWithRequiredArgs<Args, Options>
+	extends BlockContextSettingsWithoutArgs<Options> {
 	args: Args;
 }
 
-export interface BlockContextSettingsWithOptionalArgs<Args, Metadata, Options>
-	extends BlockContextSettingsWithoutArgs<Metadata, Options> {
+export interface BlockContextSettingsWithOptionalArgs<Args, Options>
+	extends BlockContextSettingsWithoutArgs<Options> {
 	args?: Args;
 }
 
-export function testBlock<Args, Metadata, Options>(
-	blockFactory: BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
-	settings: BlockContextSettingsWithRequiredArgs<Args, Metadata, Options>,
-): Partial<Creation<Metadata, Options>>;
-export function testBlock<Metadata, Options>(
-	blockFactory: BlockFactoryWithoutArgs<Metadata, Options>,
-	settings?: BlockContextSettingsWithoutArgs<Metadata, Options>,
-): Partial<Creation<Metadata, Options>>;
-export function testBlock<Args, Metadata, Options>(
-	blockFactory: BlockFactoryWithOptionalArgs<Args, Metadata, Options>,
-	settings?: BlockContextSettingsWithOptionalArgs<Args, Metadata, Options>,
-): Partial<Creation<Metadata, Options>>;
-export function testBlock<Args, Metadata, Options>(
+export function testBlock<Args, Options>(
+	blockFactory: BlockFactoryWithRequiredArgs<Args, Options>,
+	settings: BlockContextSettingsWithRequiredArgs<Args, Options>,
+): Partial<Creation<Options>>;
+export function testBlock<Options>(
+	blockFactory: BlockFactoryWithoutArgs<Options>,
+	settings?: BlockContextSettingsWithoutArgs<Options>,
+): Partial<Creation<Options>>;
+export function testBlock<Args, Options>(
+	blockFactory: BlockFactoryWithOptionalArgs<Args, Options>,
+	settings?: BlockContextSettingsWithOptionalArgs<Args, Options>,
+): Partial<Creation<Options>>;
+export function testBlock<Args, Options>(
 	blockFactory:
-		| BlockFactoryWithoutArgs<Metadata, Options>
-		| BlockFactoryWithRequiredArgs<Args, Metadata, Options>,
-	settings: BlockContextSettingsWithOptionalArgs<Args, Metadata, Options> = {},
-): Partial<Creation<Metadata, Options>> {
+		| BlockFactoryWithoutArgs<Options>
+		| BlockFactoryWithRequiredArgs<Args, Options>,
+	settings: BlockContextSettingsWithOptionalArgs<Args, Options> = {},
+): Partial<Creation<Options>> {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	return blockFactory(settings.args!).produce({
 		get args() {
@@ -51,7 +51,6 @@ export function testBlock<Args, Metadata, Options>(
 		...settings,
 		created: {
 			addons: [],
-			metadata: {} as Metadata,
 			...settings.created,
 		},
 	});

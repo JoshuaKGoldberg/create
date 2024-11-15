@@ -4,30 +4,20 @@ import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
 
-export function runPreset<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	preset: Preset<MetadataShape, OptionsShape>,
+export function runPreset<OptionsShape extends AnyShape>(
+	preset: Preset<OptionsShape>,
 	options: InferredObject<OptionsShape>,
 	context: SystemContext,
 ) {
-	type Metadata = InferredObject<MetadataShape>;
-	type Options = InferredObject<OptionsShape>;
-
-	let created: Creation<Metadata, Options> = {
+	let created: Creation<InferredObject<OptionsShape>> = {
 		addons: [],
 		commands: [],
 		files: {},
-		// TODO: Hook up constraints to not need assertion...
-		// ...or, rather, make sure schemas have a starting metadata object?
-		metadata: {} as Metadata,
 	};
 
-	// @ts-expect-error -- TODO: Remove phase altogether, I hope?
-	const blocksSorted = preset.blocks.sort((a, b) => a.phase - b.phase);
+	// TODO (BIG TODO): Implement the continuous merging algorithm!
 
-	for (const block of blocksSorted) {
+	for (const block of preset.blocks) {
 		created = mergeCreations(
 			created,
 			block.produce({

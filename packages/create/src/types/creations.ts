@@ -9,19 +9,13 @@ export interface DirectCreation {
 	// TODO: Network calls
 }
 
-export type AnyBlockWithArgs<Metadata, Options> = Block<
-	object,
-	Metadata,
-	Options
->;
+export type AnyBlockWithArgs<Options> = Block<object, Options>;
 
-export interface IndirectCreation<Metadata, Options> {
-	addons: AnyBlockWithArgs<Metadata, Options>[];
-	metadata: Metadata;
+export interface IndirectCreation<Options> {
+	addons: AnyBlockWithArgs<Options>[];
 }
 
-export type Creation<Metadata, Options> = DirectCreation &
-	IndirectCreation<Metadata, Options>;
+export type Creation<Options> = DirectCreation & IndirectCreation<Options>;
 
 export interface CreatedCommand {
 	phase: number; // TODO: Make an enum?

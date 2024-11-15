@@ -1,11 +1,6 @@
 import { AnyShape, InferredObject } from "../options.js";
 import { createNativeSystems } from "../system/createNativeSystems.js";
-import {
-	LazyOptionalOptions,
-	Schema,
-	SchemaWithMetadata,
-	SchemaWithoutMetadata,
-} from "../types/schemas.js";
+import { LazyOptionalOptions, Schema } from "../types/schemas.js";
 import { NativeSystem } from "../types/system.js";
 import {
 	AwaitedLazyProperties,
@@ -21,21 +16,7 @@ export type SchemaProduction<OptionsShape extends AnyShape> =
 	AwaitedLazyProperties<LazyOptionalOptions<InferredObject<OptionsShape>>>;
 
 export async function produceSchema<OptionsShape extends AnyShape>(
-	schema: SchemaWithoutMetadata<OptionsShape>,
-	settings: SchemaProductionSettings<OptionsShape>,
-): Promise<Partial<SchemaProduction<OptionsShape>> | undefined>;
-export async function produceSchema<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	schema: SchemaWithMetadata<MetadataShape, OptionsShape>,
-	settings: SchemaProductionSettings<OptionsShape>,
-): Promise<Partial<SchemaProduction<OptionsShape>> | undefined>;
-export async function produceSchema<
-	MetadataShape extends AnyShape,
-	OptionsShape extends AnyShape,
->(
-	schema: Schema<MetadataShape, OptionsShape>,
+	schema: Schema<OptionsShape>,
 	settings: SchemaProductionSettings<OptionsShape>,
 ): Promise<Partial<SchemaProduction<OptionsShape>> | undefined> {
 	if (!schema.produce) {

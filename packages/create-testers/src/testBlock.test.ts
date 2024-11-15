@@ -77,7 +77,6 @@ describe("testBlock", () => {
 
 			expect(actual).toEqual({
 				documentation: {},
-				metadata: [],
 			});
 		});
 	});
