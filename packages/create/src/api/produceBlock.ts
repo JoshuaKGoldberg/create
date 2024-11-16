@@ -41,10 +41,6 @@ export function produceBlock<Args extends object, Options>(
 	const block = blockFactory((settings as Settings).args);
 
 	return block.produce({
-		created: {
-			addons: [],
-			...settings.created,
-		},
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		options: settings.options!,
 	});

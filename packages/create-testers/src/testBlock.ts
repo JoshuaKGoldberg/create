@@ -1,5 +1,4 @@
 import {
-	AnyBlockWithArgs,
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
 	BlockFactoryWithRequiredArgs,
@@ -56,10 +55,6 @@ export function testBlock<Args, Options>(
 		},
 		options: createFailingObject("options", "the block") as Options,
 		...settings,
-		created: {
-			addons: [],
-			...settings.created,
-		},
 	});
 
 	return {

@@ -146,7 +146,6 @@ A Block Definition is an object containing:
 
 - `about` _(optional)_: tooling metadata for the Block
 - `args` _(optional)_: a [Block args](../concepts/blocks#args) object containing [Zod](https://zod.dev) values
-- `phase` _(optional)_: which [Block Phase](../runtime/phases) the block executes during
 - `produce` _(required)_: a [Block production](../concepts/blocks#production) method
 
 ### `about` {#createblock-about}
@@ -237,7 +236,7 @@ Block Definitions must include a `produce()` method for their core logic.
 - It receives one parameter: a [Context](../runtime/contexts) object containing options as well as other utilities.
 - It returns a [Creation](../runtime/creation) object describing the generated pieces of tooling.
 
-For example, this Block defines a [`package` Creation](../runtime/creations#package) for a test script to run Vitest:
+For example, this Block defines a [`files` Creation](../runtime/creations#package) for a `knip.json`:
 
 ```ts
 import { base } from "./base";
@@ -245,10 +244,10 @@ import { base } from "./base";
 export const blockKnip = base.createBlock({
 	produce() {
 		return {
-			package: {
-				scripts: {
-					test: "vitest",
-				},
+			files: {
+				"knip.json": JSON.stringify({
+					$schema: "https://unpkg.com/knip@latest/schema.json",
+				}),
 			},
 		};
 	},

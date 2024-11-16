@@ -82,8 +82,6 @@ ${Object.entries(created.documentation)
 });
 ```
 
-See [Phases](./phases) for how blocks can request an order to run in.
-
 ### `options` {#block-options}
 
 User-provided values as described by the parent [Base](./bases).

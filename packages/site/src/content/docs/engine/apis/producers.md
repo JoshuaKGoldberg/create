@@ -109,9 +109,6 @@ const blockReadme = base.createBlock({
 await produceBlock(blockReadme, { options: { title: "My App" } });
 ```
 
-Blocks will be evaluated in their [Phase](../runtime/phases) order.
-Blocks with the same Phase will be evaluated by the order they're defined in the Preset.
-
 ### `args` {#produceblock-args}
 
 Any number of [Args](../concepts/blocks#args) defined by the Block.

@@ -11,7 +11,7 @@ It's still _very_ early stage.
 
 Soon, there will be APIs added and documented that allow providing a [Preset](./concepts/presets) and having the `create` engine _create_ a new repository or _update_ an existing one based on it.
 
-Having `npx create` _(or something similar)_ will be able to take in a package containing a Preset and run with it.
+`npx create` _(or something similar)_ will be able to take in a package containing a Preset and run with it.
 For example, using a Preset soon to be provided by [`create-typescript-app`](https://www.npmjs.com/package/create-typescript-app):
 
 ```shell
@@ -20,9 +20,9 @@ npx create typescript-app
 
 Later, there will be higher-level scaffolding utilities that will allow packages such as `create-typescript-app` to:
 
-- Be run on their own (i.e. `npx create-typescript-app`)
 - Generate full documentation websites to describe their Blocks and Presets
 - Manage and keep updated sample repositories for their presets
+- Migrate repositories from external tools and/or older Preset or Template versions
 
 See [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181) for more history.
 
@@ -34,25 +34,15 @@ Yes, after the _create_ and _update_ APIs are done.
 
 Yes, after the _create_ and _update_ APIs are done.
 
-## Developing Templates
-
-### When should I use composed Block Args vs. Indirect Creations?
-
-Use [composed Block Args](./concepts/blocks#composition) when one Block should add to a specific other block.
-
-Use [Indirect Creations](./runtime/creations#indirect-creations) when one Block creates something that any arbitrary other Block may need to know about.
-
 ## Testing
 
 ### Why do some testers allow `take` and others the individual system pieces?
-
-> TODO: Update this now that Blocks don't have a `take`.
 
 It depends on what APIs the entities under test conceptually use.
 
 | Entity                        | Mock    | Why                                                                                           |
 | ----------------------------- | ------- | --------------------------------------------------------------------------------------------- |
-| [Bases](./concepts/bases)     | `take`  | Schemas should go through Inputs to interact with the system.                                 |
+| [Bases](./concepts/bases)     | `take`  | Bases should go through Inputs to interact with the system.                                   |
 | [Blocks](./concepts/blocks)   | Neither | Blocks should be synchronous and take any input values from their Base Options.               |
 | [Inputs](./runtime/inputs)    | Both    | Inputs receive system pieces, and can also `take` other Inputs.                               |
 | [Presets](./concepts/presets) | System  | High-level users of Presets should not care about low-level implementation details of Inputs. |

@@ -202,56 +202,6 @@ describe("blockPrettier", () => {
 });
 ```
 
-### `created` {#testblock-created}
-
-[Indirection Creations](../runtime/creations#indirect-creations) from previous Blocks may be simulated by passing in a `created` option.
-
-For example, this test simulates previously created [`documentation`](../runtime/creations#documentation) for a Block that generates [`files`](../runtime/creations#files) based on them:
-
-```ts
-import { testBlock } from "create-testers";
-import { describe, expect, it } from "vitest";
-
-import { base } from "./base";
-
-const blockDocs = base.createBlock({
-	produce({ created }) {
-		return {
-			files: {
-				"DEVELOPMENT.md": [
-					"# Development",
-					...Object.entries(created.documentation).flatMap(
-						([heading, text]) => [`## ${heading}`, text],
-					),
-				].join("\n\n"),
-			},
-		};
-	},
-});
-
-describe("blockDocs", () => {
-	it("includes all documentation sections in DEVELOPMENT.md", async () => {
-		const actual = await testBlock(blockDocs, {
-			created: {
-				documentation: {
-					Debugging: `Here are some steps to debug the app...`,
-				},
-			},
-		});
-
-		expect(actual).toEqual({
-			files: {
-				"DEVELOPMENT.md": `# Development
-
-## Debugging
-
-Here are some steps to debug the app...`,
-			},
-		});
-	});
-});
-```
-
 ### `options` {#testblock-options}
 
 [Base Options](../concepts/bases#options) may be provided under `options`.
@@ -285,47 +235,6 @@ describe("blockDocs", () => {
 		expect(actual).toEqual({
 			files: {
 				"README.md": `# My Project`,
-			},
-		});
-	});
-});
-```
-
-### `take` {#testblock-take}
-
-The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
-
-This is how to simulate the results of [Inputs](../runtime/inputs).
-
-For example, this test asserts that a block prints a _"last modified"_ timestamp in a `last-touch.txt`:
-
-```ts
-import { describe, expect, it } from "vitest";
-
-import { base } from "./base";
-import { inputNow } from "./inputNow";
-
-const blockUsingNow = base.createBlock({
-	produce({ take }) {
-		const now = take(inputNow);
-
-		return {
-			files: {
-				"last-touch.txt": now.toString(),
-			},
-		};
-	},
-});
-
-describe("blockUsingNow", () => {
-	it("uses options.name for the README.md title", async () => {
-		const actual = await testBlock(blockUsingNow, {
-			take: () => 1234567,
-		});
-
-		expect(actual).toEqual({
-			files: {
-				"last-touch": "1234567",
 			},
 		});
 	});

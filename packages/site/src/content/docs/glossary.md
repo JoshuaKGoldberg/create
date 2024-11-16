@@ -95,12 +95,6 @@ The shared set of values defined by a [Base](#base) and used
 
 These are completely separate from any individual [Args](#args).
 
-## Phase
-
-> 👉 See: [Runtime > Phases](./runtime/phases).
-
-The order that [Blocks](#block) should be run in during production.
-
 ## Preset
 
 > 👉 See: [Concepts > Presets](./concepts/presets).

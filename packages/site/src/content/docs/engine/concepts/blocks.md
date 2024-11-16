@@ -51,6 +51,10 @@ export const presetVersioned = base.createPreset({
 
 That `presetVersioned` would then produce an `.nvmrc` file with text content `20.12.2` when run.
 
+```yml title=".nvmrc"
+20.12.2
+```
+
 ## Options
 
 Each Block runs with the options defined by its parent [Base](./bases).
@@ -69,6 +73,12 @@ export const blockREADME = base.createBlock({
 		};
 	},
 });
+```
+
+If `create` is run with `--name My Repository`, a `README.md` would be generated with that as its heading:
+
+```md title="README.md"
+# My Repository
 ```
 
 ## Args
@@ -130,7 +140,7 @@ cherry
 ## Addons
 
 Blocks can produce Args to be passed to other Blocks.
-These "addon" Args will be merged into the other Blocks' arguments when run.
+These "addon" Args will be merged into the other Blocks' Args when run.
 
 For example, this Vitest Block composes Args to an ESLint Block to include the Vitest ESLint plugin:
 
@@ -160,6 +170,8 @@ export const blockVitest = base.createBlock({
 	},
 });
 ```
+
+If `blockESLint` is included in the same Preset, it will receive those additional `extensions` and `imports` merged in with its own Args.
 
 ## APIs
 

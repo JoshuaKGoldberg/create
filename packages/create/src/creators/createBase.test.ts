@@ -1,11 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
-import { Creation } from "../types/creations.js";
 import { createBase } from "./createBase.js";
 
 const stubContext = {
-	created: {} as Creation<unknown>,
 	fetcher: vi.fn(),
 	fs: {
 		readFile: vi.fn(),

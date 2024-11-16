@@ -10,7 +10,6 @@ const emptyCreation = {
 	editor: {},
 	files: {},
 	jobs: [],
-	package: {},
 };
 
 const base = createBase({

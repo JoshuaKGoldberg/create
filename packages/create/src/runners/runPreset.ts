@@ -22,7 +22,6 @@ export function runPreset<OptionsShape extends AnyShape>(
 			created,
 			block.produce({
 				...context,
-				created,
 				options,
 			}),
 		);

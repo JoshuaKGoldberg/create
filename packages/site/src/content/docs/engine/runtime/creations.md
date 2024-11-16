@@ -14,12 +14,11 @@ It may contain any of the following properties:
 - ["Direct" creations](#direct-creations) that always cause changes to the repository:
   - [`commands`](#commands): Terminal commands to run after setup
   - [`files`](#files): Files to create or modify on disk
-  - [`package`](#package): Entries to add to the `package.json` file
   - Network requests _(to be added soon)_
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`addons`](#addons): Composed Args to merge in for other Blocks, if they exist
 
-For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) as well as add a `package.json` script ([`package`](#package)) used in a GitHub Actions job in [augmented Args](#args) to another Block:
+For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) used in a GitHub Actions job in [addon Args](#addons) to another Block:
 
 ```ts
 import { base } from "./base";
@@ -38,11 +37,6 @@ export const blockPnpmDeduplicate = base.createBlock({
 				}),
 			],
 			commands: ["pnpm dedupe"],
-			package: {
-				scripts: {
-					"lint:packages": "pnpm dedupe --check",
-				},
-			},
 		};
 	},
 });
@@ -101,16 +95,11 @@ export const blockContributorCovenant = base.createBlock({
 
 That would instruct the `create` engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
 
-:::note
-Specifying a `files['package.json']` is not permitted, as that file is managed by the [`package`](#package) property.
-:::
-
 ## Indirect Creations
 
 These Creation properties produce information meant to be used by subsequent Blocks.
 
-- See [Context](./contexts) for how Blocks can read context from previous Blocks.
-- See [Phases](./phases) for the Phases of execution Blocks can specify.
+See [Context](./contexts) for how Blocks can read context from previous Blocks.
 
 ### `addons`
 
@@ -119,14 +108,13 @@ Additional [Args](../concepts/blocks#args) to merge in for other Blocks, if thos
 Blocks may specify additions to other, "downstream" Blocks.
 If the downstream Block is included in the running Preset, then the augmenting Args will be merged into what that downstream Block receives.
 
-For example, this `blockESLintJSDoc` Block Factory explicitly indicates it should run before `blockESLint`, so that it may provide Args to `blockESLint`:
+For example, this `blockESLintJSDoc` Block Factory tells `blockESLint` about using the ESLint plugin for JSONC files:
 
 ```ts
-import { blockESLint } from "./blockESLint";
 import { base } from "./base";
+import { blockESLint } from "./blockESLint";
 
 export const blockESLintJSDoc = base.createBlock({
-	phase: blockESLint,
 	produce() {
 		return {
 			args: [
@@ -139,3 +127,5 @@ export const blockESLintJSDoc = base.createBlock({
 	},
 });
 ```
+
+If `blockESLint` is run in the same Preset, then it will receive those additional Args.

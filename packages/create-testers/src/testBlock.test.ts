@@ -65,22 +65,6 @@ describe("testBlock", () => {
 		});
 	});
 
-	describe("created", () => {
-		const blockReturningCreated = base.createBlock({
-			produce({ created }) {
-				return created;
-			},
-		});
-
-		it("fills in defaults when created is not provided", () => {
-			const actual = testBlock(blockReturningCreated);
-
-			expect(actual).toEqual({
-				documentation: {},
-			});
-		});
-	});
-
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
 			produce({ options }) {

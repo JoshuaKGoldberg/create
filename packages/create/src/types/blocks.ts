@@ -27,21 +27,18 @@ export type BlockDefinition<
 	: BlockDefinitionWithoutArgs<Options>;
 
 export interface BlockContextWithoutArgs<Options> {
-	created: IndirectCreation<Options>;
 	options: Options;
 }
 
 export interface BlockContextWithArgs<Args, Options>
 	extends BlockContextWithoutArgs<Options> {
 	args: Args;
-	created: IndirectCreation<Options>;
 	options: Options;
 }
 
 export interface BlockContextWithOptionalArgs<Args, Options>
 	extends BlockContextWithoutArgs<Options> {
 	args?: Args;
-	created: IndirectCreation<Options>;
 	options: Options;
 }
 
