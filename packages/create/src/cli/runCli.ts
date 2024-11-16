@@ -61,12 +61,12 @@ export async function runCli(templateLabel: string, ...args: string[]) {
 
 	const { preset } = presetListing;
 
-	const parsedOptions = parseZodArgs(args, preset.schema.options);
+	const parsedOptions = parseZodArgs(args, preset.base.options);
 
 	const creation = await producePreset(preset, {
 		options: parsedOptions,
 		optionsAugment: async (options) =>
-			promptForPresetOptions(preset.schema.options, options),
+			promptForPresetOptions(preset.base.options, options),
 	});
 
 	console.log(creation.files);

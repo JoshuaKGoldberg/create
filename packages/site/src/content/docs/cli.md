@@ -123,23 +123,23 @@ Detection is done by [precinct](https://www.npmjs.com/package/precinct).
 If your file changes aren't statically detectable, you can always manually save the "from" file.
 :::
 
-### Schema Arguments
+### Base Arguments
 
-The Template being generated from will add in additional arguments based on its [Schema](./concepts/schemas).
-Arguments defined in a Template's Schema can be provided to `create` after a `--`.
+The Template being generated from will add in additional arguments based on its [Base](./concepts/bases).
+Arguments defined in a Template's Base can be provided to `create` after a `--`.
 Their name will be the lowercase name of the defined option.
 
-For example, if a Template's Schema defines a `title: z.string()` option, `--title` will be type `string`:
+For example, if a Template's Base defines a `title: z.string()` option, `--title` will be type `string`:
 
 ```shell
 npx create typescript-app --preset everything -- --title "My New App"
 ```
 
-Any required Schema arguments that are not provided will be prompted for by the `create` CLI.
+Any required Base arguments that are not provided will be prompted for by the `create` CLI.
 
 ### Skipping Blocks
 
-Most of the time, you shouldn't need to customize a Template beyond the options defined by its [Schema](./concepts/schemas).
+Most of the time, you shouldn't need to customize a Template beyond the options defined by its [Base](./concepts/bases).
 However, it can sometimes be desirable to skip producing some pieces of tooling for individual projects.
 
 The `create` CLI automatically adds in boolean `--skip-*` arguments that can omit specific named [Blocks](./concepts/blocks).

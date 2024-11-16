@@ -10,25 +10,25 @@ import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
 import { Preset, PresetDefinition } from "./presets.js";
 
-export interface SchemaDefinition<OptionsShape extends AnyShape> {
+export interface BaseDefinition<OptionsShape extends AnyShape> {
 	options: OptionsShape;
-	produce?: SchemaProducer<InferredObject<OptionsShape>>;
+	produce?: BaseProducer<InferredObject<OptionsShape>>;
 }
 
-export interface Schema<OptionsShape extends AnyShape> {
+export interface Base<OptionsShape extends AnyShape> {
 	createBlock: CreateBlockFactory<InferredObject<OptionsShape>>;
 	createPreset: CreatePresetFactory<OptionsShape>;
 	options: OptionsShape;
-	produce?: SchemaProducer<InferredObject<OptionsShape>>;
+	produce?: BaseProducer<InferredObject<OptionsShape>>;
 }
 
-export interface SchemaContext<Options> extends TakeContext {
+export interface BaseContext<Options> extends TakeContext {
 	options: Options;
 	take: TakeInput;
 }
 
-export type SchemaProducer<Options> = (
-	context: SchemaContext<Partial<Options>>,
+export type BaseProducer<Options> = (
+	context: BaseContext<Partial<Options>>,
 ) => LazyOptionalOptions<Partial<Options>>;
 
 export type LazyOptionalOptions<Options> = {
@@ -59,7 +59,7 @@ export type CreatePresetFactory<OptionsShape extends AnyShape> = (
 	presetDefinition: PresetDefinition<InferredObject<OptionsShape>>,
 ) => Preset<OptionsShape>;
 
-export type SchemaOptionsFor<TypeofSchema> = TypeofSchema extends {
+export type BaseOptionsFor<TypeOfBase> = TypeOfBase extends {
 	options: infer OptionsShape extends AnyShape;
 }
 	? InferredObject<OptionsShape>

@@ -1,16 +1,16 @@
-import { createSchema } from "create";
+import { createBase } from "create";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 import { testBlock } from "./testBlock.js";
 
-const schema = createSchema({
+const base = createBase({
 	options: {
 		value: z.string(),
 	},
 });
 
-const blockStandalone = schema.createBlock({
+const blockStandalone = base.createBlock({
 	produce() {
 		return {
 			files: {
@@ -34,7 +34,7 @@ describe("testBlock", () => {
 	});
 
 	describe("args", () => {
-		const blockUsingArgs = schema.createBlock({
+		const blockUsingArgs = base.createBlock({
 			args: {
 				value: z.string(),
 			},
@@ -66,7 +66,7 @@ describe("testBlock", () => {
 	});
 
 	describe("created", () => {
-		const blockReturningCreated = schema.createBlock({
+		const blockReturningCreated = base.createBlock({
 			produce({ created }) {
 				return created;
 			},
@@ -82,7 +82,7 @@ describe("testBlock", () => {
 	});
 
 	describe("options", () => {
-		const blockUsingOptions = schema.createBlock({
+		const blockUsingOptions = base.createBlock({
 			produce({ options }) {
 				return {
 					files: {

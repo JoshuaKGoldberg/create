@@ -9,8 +9,8 @@ Don't rely on it yet.
 :::
 
 A _Block_ defines the logic to create a portion of a repository.
-Each Block is associated with a parent [Schema](./schemas).
-Blocks can then be listed in [Presets](./presets) associated with the same Schema.
+Each Block is associated with a parent [Base](./bases).
+Blocks can then be listed in [Presets](./presets) associated with the same base.
 
 ## Production
 
@@ -22,9 +22,9 @@ When `create` scaffolds a repository from a Preset, it merges together the produ
 For example, this Block describes creating a `.nvmrc` file:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockNvmrc = schema.createBlock({
+export const blockNvmrc = base.createBlock({
 	produce() {
 		return {
 			files: {
@@ -38,10 +38,10 @@ export const blockNvmrc = schema.createBlock({
 That `blockNvmrc` can then be listed in a [Preset](./presets)'s `blocks` array:
 
 ```ts
+import { base } from "./base";
 import { blockNvmrc } from "./blockNvmrc";
-import { schema } from "./schema";
 
-export const presetVersioned = schema.createPreset({
+export const presetVersioned = base.createPreset({
 	blocks: [
 		blockNvmrc(),
 		// ...
@@ -53,14 +53,14 @@ That `presetVersioned` would then produce an `.nvmrc` file with text content `20
 
 ## Options
 
-Each Block runs with the options defined by its parent [Schema](./schemas).
+Each Block runs with the options defined by its parent [Base](./bases).
 
-For example, a Schema with a `name` option could create a Block that generates part of a README.md file:
+For example, a Base with a `name` option could create a Block that generates part of a README.md file:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockREADME = schema.createBlock({
+export const blockREADME = base.createBlock({
 	produce({ options }) {
 		return {
 			files: {
@@ -84,9 +84,9 @@ For example, this Block takes in a string array under a `names` Arg, to be print
 ```ts
 import { z } from "zod";
 
-import { schema } from "./schemas";
+import { base } from "./base";
 
-export const blockNames = schema.createBlock({
+export const blockNames = base.createBlock({
 	args: {
 		names: z.array(z.string()),
 	},
@@ -103,10 +103,10 @@ export const blockNames = schema.createBlock({
 The `blockNames` Block would then require `names` be provided when constructed, such as in a Preset:
 
 ```ts
+import { base } from "./base";
 import { blockNames } from "./blockNames";
-import { schema } from "./schema";
 
-export const presetFruitNames = schema.createPreset({
+export const presetFruitNames = base.createPreset({
 	about: {
 		name: "Create My App",
 	},
@@ -135,10 +135,10 @@ These "addon" Args will be merged into the other Blocks' arguments when run.
 For example, this Vitest Block composes Args to an ESLint Block to include the Vitest ESLint plugin:
 
 ```ts
+import { base } from "./base";
 import { blockESLint } from "./blockESLint";
-import { schema } from "./schema";
 
-export const blockVitest = schema.createBlock({
+export const blockVitest = base.createBlock({
 	produce() {
 		return {
 			addons: [
@@ -164,5 +164,5 @@ export const blockVitest = schema.createBlock({
 ## APIs
 
 - [`createBlock`](../apis/creators#createblock): for creating Blocks
-- [`produceBlock`](../apis/producers#produceblock): for producing Schema Options
+- [`produceBlock`](../apis/producers#produceblock): for producing Block outputs
 - [`testBlock`](../apis/testers#testblock): for simulating Block production

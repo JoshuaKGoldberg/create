@@ -7,19 +7,41 @@ title: Glossary
 Individual arguments passed to a [Block](./concepts/blocks) or [Input](./runtime/inputs).
 These are completely separate from [Options](#options).
 
+## Base
+
+> 👉 See: [Concepts > Bases](./concepts/bases).
+
+A listing of option types and how to generate their default values.
+
+Bases are used to create child [Blocks](#block) and [Presets](#preset).
+
+## Base Context
+
+> 👉 See: [Runtime > Contexts > Base Contexts](./runtime/contexts#base-contexts).
+
+The shared helper functions and information provided to [Bases](#bases).
+
+These include user-provided [Options](#options), if they exist.
+
+## Base Definition
+
+A description of a [Base](#base).
+
+Bases are created by providing a Base Definition to the [`createBase`](./apis/creators#createbase) function provided by `create`.
+
 ## Block
 
 > 👉 See: [Concepts > Blocks](./concepts/blocks).
 
 A Block defines the logic to create a portion of a repository.
 
-Each Block is associated with a parent [Schema](#schema), which defines the [Options](#options) the Block may access during production.
+Each Block is associated with a parent [Base](#base), which defines the [Options](#options) the Block may access during production.
 
 ## Block Definition
 
 A description of a [Block](#block).
 
-[Schemas](#schema) create Blocks with a [`createBlock()`](./apis/creators#createblock) method, which takes in a Block Definition and returns a Block Factory.
+[Bases](#base) create Blocks with a [`createBlock()`](./apis/creators#createblock) method, which takes in a Block Definition and returns a Block Factory.
 
 ## Block Context
 
@@ -27,19 +49,19 @@ A description of a [Block](#block).
 
 The shared helper functions and information provided to [Blocks](#block).
 
-These include [Options](#options) as defined by the parent [Schema](#schema) as well as any [Args](#args) defined by the Block.
+These include [Options](#options) as defined by the parent [Base](#base) as well as any [Args](#args) defined by the Block.
 
 ## Block Factory
 
 A function that, when called, creates a new [Block](#block).
 
-Block Factories are created by passing a [Block Definition](#block-definition) to the [`createBlock()`](./apis/creators#createblock) method of a [Schema](#schema).
+Block Factories are created by passing a [Block Definition](#block-definition) to the [`createBlock()`](./apis/creators#createblock) method of a [Base](#base).
 
 ## Context
 
 > 👉 See: [Runtime > Contexts](./runtime/contexts).
 
-Helper functions and information provided to [Blocks](#block), [Inputs](#input), and [Schemas](#schema).
+Helper functions and information provided to [Blocks](#block), [Inputs](#input), and [Bases](#base).
 
 ## Creation
 
@@ -53,7 +75,7 @@ Creations describe the contents of a repository, such as files on disk or initia
 
 > 👉 See: [Concepts > Inputs](./runtime/inputs).
 
-A standalone function that can be used to provide dynamic data by [Blocks](#block) and [Schemas](#schema).
+A standalone function that can be used to provide dynamic data by [Blocks](#block) and [Bases](#base).
 
 ## Input Context
 
@@ -61,7 +83,7 @@ A standalone function that can be used to provide dynamic data by [Blocks](#bloc
 
 The shared helper functions and information provided to [Inputs](#input).
 
-These include [Options](#options) as defined by the parent [Schema](#schema) as well as any [Args](#args) defined by the Input.
+These include [Options](#options) as defined by the parent [Base](#base) as well as any [Args](#args) defined by the Input.
 
 ## Input Definition
 
@@ -69,7 +91,7 @@ An object describing how to create an [Input](#input).
 
 ## Options
 
-The shared set of values defined by a [Schema](#schema) and used
+The shared set of values defined by a [Base](#base) and used
 
 These are completely separate from any individual [Args](#args).
 
@@ -83,29 +105,7 @@ The order that [Blocks](#block) should be run in during production.
 
 > 👉 See: [Concepts > Presets](./concepts/presets).
 
-A group of [Blocks](#block) associated with the same parent [Schema](#schema).
-
-## Schema
-
-> 👉 See: [Concepts > Schemas](./concepts/schemas).
-
-A listing of option types and how to generate their default values.
-
-Schemas are used to create child [Blocks](#block) and [Presets](#preset).
-
-## Schema Context
-
-> 👉 See: [Runtime > Contexts > Schema Contexts](./runtime/contexts#schema-contexts).
-
-The shared helper functions and information provided to [Schemas](#schemas).
-
-These include user-provided [Options](#options), if they exist.
-
-## Schema Definition
-
-A description of a [Schema](#schema).
-
-Schemas are created by providing a Schema Definition to the [`createSchema`](./apis/creators#createschema) function provided by `create`.
+A group of [Blocks](#block) associated with the same parent [Base](#base).
 
 ## System
 
@@ -117,4 +117,4 @@ APIs to interact with the file system, network, and shell.
 
 > 👉 See: [Concepts > Templates](./concepts/templates).
 
-A group of [Schemas](#schema) that can be chosen between by a user to generate a repository.
+A group of [Bases](#base) that can be chosen between by a user to generate a repository.

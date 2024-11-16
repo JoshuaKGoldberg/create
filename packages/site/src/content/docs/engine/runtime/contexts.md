@@ -8,13 +8,45 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-_Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../inputs), and [Schemas](../concepts/schemas).
+_Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../inputs), and [Bases](../concepts/bases).
 Each contains shared helper functions and information.
 
+- Bases receive [Base Contexts](#base-contexts)
 - Blocks and Presets receive [Block Contexts](#block-contexts)
 - Inputs receive [Input Contexts](#input-contexts)
-- Schemas receive [Schema Contexts](#schema-contexts)
 - Production APIs receive [System Contexts](#system-contexts)
+
+## Base Contexts
+
+The Context object provided to the `produce` object of [Bases](../concepts/bases).
+
+### `options` {#base-options}
+
+Any manually provided values as described by the [Base's `options`](../concepts/bases#options).
+
+[Base `produce()`](../concepts/bases#production) methods are designed to fill in any options not manually provided by the user.
+Options that are manually provided are available under the Base Context's `options`.
+
+For example, this Base defaults an `name` option to a kebab-case version of its `title` option:
+
+```ts
+export const base = createBase({
+	options: {
+		name: z.string().optional(),
+		title: z.string(),
+	},
+	produce({ options }) {
+		return {
+			name: options.title.toLowerCase().replaceAll(" ", "-"),
+		};
+	},
+});
+```
+
+### `take` {#base-take}
+
+Executes an [Input](./inputs).
+This is the same as [Input Contexts' `take`](#input-take).
 
 ## Block Contexts
 
@@ -30,9 +62,9 @@ Blocks may reference the outputs of earlier Blocks to generate their own tooling
 For example, a Block that generates a `.github/DEVELOPMENT.md` file summarizing previously generated [`documentation`](./production#documentation):
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockDocs = schema.createBlock({
+export const blockDocs = base.createBlock({
 	produce({ created }) {
 		return {
 			files: {
@@ -54,17 +86,17 @@ See [Phases](./phases) for how blocks can request an order to run in.
 
 ### `options` {#block-options}
 
-User-provided values as described by the parent [Schema](./schemas).
+User-provided values as described by the parent [Base](./bases).
 
-Schemas fill in option values before running Blocks.
-Each Block created by a Schema will run with the same set of options.
+Bases fill in option values before running Blocks.
+Each Block created by a Base will run with the same set of options.
 
-For example, this Schema defines a `title` option, which is then used by a Block to print a `README.md` heading:
+For example, this Base defines a `title` option, which is then used by a Block to print a `README.md` heading:
 
 ```ts
-import { createSchema } from "create";
+import { createBase } from "create";
 
-export const schema = createSchema({
+export const base = createBase({
 	options: {
 		name: z.string(),
 	},
@@ -170,13 +202,13 @@ The `take` function is provided to both Blocks and Inputs so that they can run a
 For example, this Block uses `take` to run Inputs that reads from a local file and run `npm whoami` to make sure the user is listed in an `AUTHORS.md` file:
 
 ```ts
+import { base } from "./base";
 import { inputFile } from "./inputFile";
 import { inputNpmWhoami } from "./inputNpmWhoami";
-import { schema } from "./schema";
 
 const fileName = "AUTHORS.md";
 
-export const blockFileModified = schema.createBlock({
+export const blockFileModified = base.createBlock({
 	async produce({ take }) {
 		const existing = await take(inputFile, { fileName });
 		const author = await take(inputNpmWhoami);
@@ -193,41 +225,9 @@ export const blockFileModified = schema.createBlock({
 ```
 
 :::note
-Inputs and Schemas aren't required to use `take()` for dynamic data.
+Bases and Inputs aren't required to use `take()` for dynamic data.
 Doing so just makes that data easier to [mock out in tests](../testing/inputs) later on.
 :::
-
-## Schema Contexts
-
-The Context object provided to the `produce` object of [Schemas](../concepts/schemas).
-
-### `options` {#schema-options}
-
-Any manually provided values as described by the [Schema's `options`](../concepts/schemas#options).
-
-[Schema `produce()`](../concepts/schemas#production) methods are designed to fill in any options not manually provided by the user.
-Options that are manually provided are available under the Schema Context's `options`.
-
-For example, this Schema defaults an `name` option to a kebab-case version of its `title` option:
-
-```ts
-export const schema = createSchema({
-	options: {
-		name: z.string().optional(),
-		title: z.string(),
-	},
-	produce({ options }) {
-		return {
-			name: options.title.toLowerCase().replaceAll(" ", "-"),
-		};
-	},
-});
-```
-
-### `take` {#schema-take}
-
-Executes an [Input](./inputs).
-This is the same as [Input Contexts' `take`](#input-take).
 
 ## System Contexts
 
@@ -251,7 +251,7 @@ System `fs` objects include the following properties:
 
 ### `options` {#system-options}
 
-Any values as described by the [Schema's `options`](../concepts/schemas#options) for the entity being produced.
+Any values as described by the [Base's `options`](../concepts/bases#options) for the entity being produced.
 
 ### `runner` {#system-runner}
 

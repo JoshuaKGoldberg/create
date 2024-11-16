@@ -50,6 +50,6 @@ $ npx create typescript-app
 ```
 
 :::note
-The Presets used in a Template don't need to all be from the same shared [Schema](./schemas).
+The Presets used in a Template don't need to all be from the same shared [Base](./bases).
 This allows more comprehensive Presets to come with a larger set of required Options.
 :::

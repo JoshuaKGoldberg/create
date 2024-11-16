@@ -35,12 +35,12 @@ export function createInput<
 		}) as Input<Result, InferredObject<ArgsSchema>>;
 	}
 
-	const schema = z.object(inputDefinition.args);
+	const base = z.object(inputDefinition.args);
 
 	return ((context: InputContextWithArgs<InferredObject<ArgsSchema>>) => {
 		return inputDefinition.produce({
 			...context,
-			args: schema.parse(context.args),
+			args: base.parse(context.args),
 		});
 	}) as Input<Result, InferredObject<ArgsSchema>>;
 }

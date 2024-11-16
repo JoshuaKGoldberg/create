@@ -1,5 +1,5 @@
 {
-	"$schema": "https://unpkg.com/knip@latest/schema.json",
+	"$schema": "https://unpkg.com/knip@latest/base.json",
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
 	"project": ["packages/*/src/**/*.ts!"],
 	"workspaces": {

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { Creation } from "../types/creations.js";
-import { createSchema } from "./createSchema.js";
+import { createBase } from "./createBase.js";
 
 const stubContext = {
 	created: {} as Creation<unknown>,
@@ -15,17 +15,17 @@ const stubContext = {
 	take: vi.fn(),
 };
 
-describe("createSchema", () => {
+describe("createBase", () => {
 	describe("createBlock", () => {
 		describe("args", () => {
 			it("allows passing no args when all are optional", () => {
-				const schema = createSchema({
+				const base = createBase({
 					options: {
 						value: z.string(),
 					},
 				});
 
-				const block = schema.createBlock({
+				const block = base.createBlock({
 					about: { name: "Example" },
 					args: {
 						unnecessary: z.string().optional(),
@@ -56,13 +56,13 @@ describe("createSchema", () => {
 			});
 
 			it("creates a block with a single arg", () => {
-				const schema = createSchema({
+				const base = createBase({
 					options: {
 						value: z.string(),
 					},
 				});
 
-				const block = schema.createBlock({
+				const block = base.createBlock({
 					about: { name: "Example" },
 					args: {
 						fileName: z.string(),
@@ -95,13 +95,13 @@ describe("createSchema", () => {
 			});
 
 			it("creates a block with multiple merged args", () => {
-				const schema = createSchema({
+				const base = createBase({
 					options: {
 						value: z.string(),
 					},
 				});
 
-				const block = schema.createBlock({
+				const block = base.createBlock({
 					about: { name: "Example" },
 					args: {
 						fileName: z.string(),

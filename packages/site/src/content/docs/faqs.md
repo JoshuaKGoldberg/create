@@ -50,12 +50,12 @@ Use [Indirect Creations](./runtime/creations#indirect-creations) when one Block 
 
 It depends on what APIs the entities under test conceptually use.
 
-| Entity                        | Mock   | Why                                                                                           |
-| ----------------------------- | ------ | --------------------------------------------------------------------------------------------- |
-| [Blocks](./concepts/blocks)   | `take` | Blocks should go through Inputs to interact with the system.                                  |
-| [Inputs](./runtime/inputs)    | Both   | Inputs receive system pieces, and can also `take` other Inputs.                               |
-| [Presets](./concepts/presets) | System | High-level users of Presets should not care about low-level implementation details of Inputs. |
-| [Schemas](./concepts/schemas) | `take` | Schemas should go through Inputs to interact with the system                                  |
+| Entity                        | Mock    | Why                                                                                           |
+| ----------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| [Bases](./concepts/bases)     | `take`  | Schemas should go through Inputs to interact with the system.                                 |
+| [Blocks](./concepts/blocks)   | Neither | Blocks should be synchronous and take any input values from their Base Options.               |
+| [Inputs](./runtime/inputs)    | Both    | Inputs receive system pieces, and can also `take` other Inputs.                               |
+| [Presets](./concepts/presets) | System  | High-level users of Presets should not care about low-level implementation details of Inputs. |
 
 ## Tool Comparisons
 

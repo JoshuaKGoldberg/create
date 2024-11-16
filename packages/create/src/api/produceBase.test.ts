@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { createSchema } from "../creators/createSchema.js";
-import { produceSchema } from "./produceSchema.js";
+import { createBase } from "../creators/createBase.js";
+import { produceBase } from "./produceBase.js";
 
 describe("producePreset", () => {
-	const schemaWithOptionalOption = createSchema({
+	const baseWithOptionalOption = createBase({
 		options: {
 			value: z.string().optional(),
 		},
@@ -17,7 +17,7 @@ describe("producePreset", () => {
 	});
 
 	it("uses an option value from produce when settings do not have the options value", async () => {
-		const actual = await produceSchema(schemaWithOptionalOption, {
+		const actual = await produceBase(baseWithOptionalOption, {
 			options: {},
 		});
 
@@ -27,7 +27,7 @@ describe("producePreset", () => {
 	});
 
 	it("uses an option value from settings when settings have the options value", async () => {
-		const actual = await produceSchema(schemaWithOptionalOption, {
+		const actual = await produceBase(baseWithOptionalOption, {
 			options: {
 				value: "override",
 			},

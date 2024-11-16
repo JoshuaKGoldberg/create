@@ -1,27 +1,27 @@
 import { describe, test } from "vitest";
 import { z } from "zod";
 
-import { createSchema } from "./createSchema.js";
+import { createBase } from "./createBase.js";
 import { createTemplate } from "./createTemplate.js";
 
-const schema = createSchema({
+const base = createBase({
 	options: {
 		value: z.string(),
 	},
 });
 
-const presetFirst = schema.createPreset({
+const presetFirst = base.createPreset({
 	blocks: [],
 });
 
-const presetSecond = schema.createPreset({
+const presetSecond = base.createPreset({
 	blocks: [],
 });
 
 describe("createTemplate", () => {
 	// We're just testing types, since the template definition === the template
 	// eslint-disable-next-line vitest/expect-expect
-	test("production with the same schema", () => {
+	test("production with the same Base", () => {
 		createTemplate({
 			about: {
 				name: "TypeScript App",

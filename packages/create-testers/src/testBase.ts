@@ -2,32 +2,32 @@ import {
 	AnyShape,
 	awaitLazyProperties,
 	InferredObject,
-	Schema,
+	Base,
 	TakeInput,
 } from "create";
 
 import { createFailingFunction, createFailingObject } from "./utils.js";
 
-export interface SchemaContextSettings<OptionsShape extends AnyShape> {
+export interface BaseContextSettings<OptionsShape extends AnyShape> {
 	options?: InferredObject<OptionsShape>;
 	take?: TakeInput;
 }
 
-export async function testSchema<OptionsShape extends AnyShape>(
-	schema: Schema<OptionsShape>,
-	settings: Partial<SchemaContextSettings<OptionsShape>> = {},
+export async function testBase<OptionsShape extends AnyShape>(
+	base: Base<OptionsShape>,
+	settings: Partial<BaseContextSettings<OptionsShape>> = {},
 ) {
-	if (!schema.produce) {
+	if (!base.produce) {
 		return settings.options;
 	}
 
 	return await awaitLazyProperties(
-		schema.produce({
+		base.produce({
 			options: createFailingObject(
 				"options",
-				"the schema",
+				"the base",
 			) as InferredObject<OptionsShape>,
-			take: createFailingFunction("take", "the schema"),
+			take: createFailingFunction("take", "the base"),
 			...settings,
 		}),
 	);

@@ -8,7 +8,7 @@ import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { PromiseOrSync } from "../utils/promises.js";
-import { produceSchema } from "./produceSchema.js";
+import { produceBase } from "./produceBase.js";
 
 export interface AugmentingPresetProductionSettings<
 	OptionsShape extends AnyShape,
@@ -53,8 +53,8 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	// 1. Any options provided by producePreset's second parameter's options
 	const providedOptions = options ?? {};
 
-	// 2. Calling the Preset's Schema's produce method, if it exists
-	const producedOptions = await produceSchema(preset.schema, {
+	// 2. Calling the Preset's Base's produce method, if it exists
+	const producedOptions = await produceBase(preset.base, {
 		options: providedOptions,
 		...system,
 	});

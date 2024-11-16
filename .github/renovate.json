@@ -1,5 +1,5 @@
 {
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"$schema": "https://docs.renovatebot.com/renovate-base.json",
 	"automerge": true,
 	"extends": ["config:best-practices", "replacements:all"],
 	"ignoreDeps": ["codecov/codecov-action"],

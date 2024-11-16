@@ -5,7 +5,7 @@ import { AnyShape, InferredObject } from "../options.js";
 import { promptForSchema } from "./promptForSchema.js";
 
 export async function promptForPresetOptions(
-	schemas: z.ZodRawShape,
+	bases: z.ZodRawShape,
 	existing: Record<string, unknown>,
 ) {
 	const options: InferredObject<AnyShape> = {};
@@ -15,9 +15,9 @@ export async function promptForPresetOptions(
 		output: process.stdout,
 	});
 
-	for (const [key, schema] of Object.entries(schemas)) {
-		if (!schema.isOptional()) {
-			options[key] = existing[key] ?? (await promptForSchema(rl, key, schema));
+	for (const [key, base] of Object.entries(bases)) {
+		if (!base.isOptional()) {
+			options[key] = existing[key] ?? (await promptForSchema(rl, key, base));
 		}
 	}
 

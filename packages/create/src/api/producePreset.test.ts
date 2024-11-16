@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { createSchema } from "../creators/createSchema.js";
+import { createBase } from "../creators/createBase.js";
 import { producePreset } from "./producePreset.js";
 
 const emptyCreation = {
@@ -15,13 +15,13 @@ const emptyCreation = {
 
 describe("producePreset", () => {
 	describe("passed options", () => {
-		const schemaWithOption = createSchema({
+		const baseWithOption = createBase({
 			options: {
 				value: z.string(),
 			},
 		});
 
-		const blockUsingOption = schemaWithOption.createBlock({
+		const blockUsingOption = baseWithOption.createBlock({
 			produce({ options }) {
 				return {
 					files: {
@@ -31,7 +31,7 @@ describe("producePreset", () => {
 			},
 		});
 
-		const presetUsingOption = schemaWithOption.createPreset({
+		const presetUsingOption = baseWithOption.createPreset({
 			blocks: [blockUsingOption()],
 		});
 
@@ -85,7 +85,7 @@ describe("producePreset", () => {
 	});
 
 	describe("directly produced options", () => {
-		const schemaWithProduce = createSchema({
+		const baseWithProduce = createBase({
 			options: {
 				optional: z.string().optional(),
 				required: z.string(),
@@ -98,7 +98,7 @@ describe("producePreset", () => {
 			},
 		});
 
-		const blockUsingOption = schemaWithProduce.createBlock({
+		const blockUsingOption = baseWithProduce.createBlock({
 			produce({ options }) {
 				return {
 					files: {
@@ -109,11 +109,11 @@ describe("producePreset", () => {
 			},
 		});
 
-		const presetUsingOption = schemaWithProduce.createPreset({
+		const presetUsingOption = baseWithProduce.createPreset({
 			blocks: [blockUsingOption()],
 		});
 
-		it("prioritizes provided options over schema produced options", async () => {
+		it("prioritizes provided options over Base produced options", async () => {
 			const actual = await producePreset(presetUsingOption, {
 				options: {
 					required: "required-from-provided",

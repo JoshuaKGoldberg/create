@@ -1,4 +1,4 @@
-import { createSchema } from "create";
+import { createBase } from "create";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -13,7 +13,7 @@ const emptyCreation = {
 	package: {},
 };
 
-const schema = createSchema({
+const base = createBase({
 	options: {
 		value: z.string(),
 	},
@@ -25,7 +25,7 @@ describe("testPreset", () => {
 	// However, the Object spreads in producePreset wipe Proxy `get`s... 🤷
 
 	describe("options", () => {
-		const blockUsingOptions = schema.createBlock({
+		const blockUsingOptions = base.createBlock({
 			produce({ options }) {
 				return {
 					files: {
@@ -35,7 +35,7 @@ describe("testPreset", () => {
 			},
 		});
 
-		const presetUsingOptions = schema.createPreset({
+		const presetUsingOptions = base.createPreset({
 			blocks: [blockUsingOptions()],
 		});
 

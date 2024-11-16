@@ -1,8 +1,10 @@
 import {
+	AnyBlockWithArgs,
 	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
 	BlockFactoryWithRequiredArgs,
-	Creation,
+	CreatedCommand,
+	CreatedFiles,
 	IndirectCreation,
 } from "create";
 
@@ -23,26 +25,32 @@ export interface BlockContextSettingsWithOptionalArgs<Args, Options>
 	args?: Args;
 }
 
+export interface TestBlockCreation<Options> {
+	addons: [BlockFactoryWithRequiredArgs<object, Options>, object][];
+	commands: (CreatedCommand | string)[];
+	files: CreatedFiles;
+}
+
 export function testBlock<Args, Options>(
 	blockFactory: BlockFactoryWithRequiredArgs<Args, Options>,
 	settings: BlockContextSettingsWithRequiredArgs<Args, Options>,
-): Partial<Creation<Options>>;
+): Partial<TestBlockCreation<Options>>;
 export function testBlock<Options>(
 	blockFactory: BlockFactoryWithoutArgs<Options>,
 	settings?: BlockContextSettingsWithoutArgs<Options>,
-): Partial<Creation<Options>>;
+): Partial<TestBlockCreation<Options>>;
 export function testBlock<Args, Options>(
 	blockFactory: BlockFactoryWithOptionalArgs<Args, Options>,
 	settings?: BlockContextSettingsWithOptionalArgs<Args, Options>,
-): Partial<Creation<Options>>;
+): Partial<TestBlockCreation<Options>>;
 export function testBlock<Args, Options>(
 	blockFactory:
 		| BlockFactoryWithoutArgs<Options>
 		| BlockFactoryWithRequiredArgs<Args, Options>,
 	settings: BlockContextSettingsWithOptionalArgs<Args, Options> = {},
-): Partial<Creation<Options>> {
+): Partial<TestBlockCreation<Options>> {
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	return blockFactory(settings.args!).produce({
+	const production = blockFactory(settings.args!).produce({
 		get args() {
 			return failingFunction("args", "the block");
 		},
@@ -53,4 +61,9 @@ export function testBlock<Args, Options>(
 			...settings.created,
 		},
 	});
+
+	return {
+		...production,
+		addons: production.addons?.map((addon) => [addon.factory, addon.args]),
+	};
 }

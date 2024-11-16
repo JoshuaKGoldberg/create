@@ -9,15 +9,75 @@ Don't rely on it yet.
 
 Production APIs can be used to directly run create constructs:
 
+- [`produceBase`](#producebase): generates [Base](../concepts/bases) options
 - [`produceBlock`](#produceblock): runs a [Block](../concepts/blocks) production
-- [`produceInput`](#produceinput): runs an [Input](../concepts/schema)
+- [`produceInput`](#produceinput): runs an [Input](../concepts/inputs)
 - [`producePreset`](#producepreset): runs a [Preset](../concepts/presets) production
-- [`produceSchema`](#produceschema): generates [Schema](../concepts/schema) options
 
 Each production API takes in up to two arguments:
 
 1. The construct to be produced
 2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts)
+
+## `produceBase`
+
+Given a [Base](../concepts/bases), creates an options object by running its [`produce()`](../concepts/bases#production).
+
+`produceBase` takes in up to two argument:
+
+1. `base` _(required)_: a Base
+2. `settings` _(optional)_: any properties from a [Base Context](../runtime/contexts#base-contexts), except for `take`
+
+For example, given this Base that declares an optional `value` option that defaults to `"default"`, `produceBase` can run its `produce()` with any provided options:
+
+```ts
+import { createBase, produceBase } from "create";
+import { z } from "zod";
+
+const base = createBase({
+	options: {
+		value: z.string().optional(),
+	},
+	produce(options) {
+		return {
+			value: options.value ?? "default",
+		};
+	},
+});
+
+// { value: "default" }
+await produceBase(base);
+
+// { value: "override" }
+await produceBase(base, {
+	options: {
+		value: "override",
+	},
+});
+```
+
+:::tip
+If the Base does not define a `produce()`, then `settings.options` is returned.
+:::
+
+### `options` {#producebase-options}
+
+Any number of options defined by the base.
+
+For example, this Base is run with a `name` option:
+
+```ts
+import { Base } from "create";
+import { z } from "zod";
+
+declare const base: Base<{ name: z.ZodString }>;
+
+await produceBase(base, {
+	options: {
+		name: "My Production",
+	},
+});
+```
 
 ## `produceBlock`
 
@@ -33,9 +93,9 @@ For example, given this Block that produces the start of a README.md file, `prod
 ```ts
 import { produceBlock } from "create";
 
-import { schema } from "./schema";
+import { base } from "./base";
 
-const blockReadme = schema.createBlock({
+const blockReadme = base.createBlock({
 	produce(options) {
 		return {
 			files: {
@@ -79,7 +139,7 @@ Any [Creations](../runtime/contexts#created) to simulate having been made from p
 
 ### `options` {#produceblock-options}
 
-Any number of options defined by the Block's [Schema](../concepts/schemas).
+Any number of options defined by the Block's [Base](../concepts/bases).
 
 For example, this Block is run with a `name` option:
 
@@ -148,8 +208,8 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
 
 1. `preset` _(required)_: a Preset
 2. `settings` _(required)_:
-   - `options` _(required)_: [Schema](../concepts/schemas) options to run with
-   - `optionsAugment` _(optional)_: a function to augment options from the Schema
+   - `options` _(required)_: [Base](../concepts/bases) options to run with
+   - `optionsAugment` _(optional)_: a function to augment options from the Base
    - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
 `producePreset` returns a Promise for the Preset's [`Creation`](../runtime/creations).
@@ -160,10 +220,10 @@ For example, given this Preset that includes the block from [`produceBlock`](#pr
 ```ts
 import { producePreset } from "create";
 
+import { base } from "./base";
 import { blockReadme } from "./blockReadme";
-import { schema } from "./schema";
 
-const preset = schema.createPreset({
+const preset = base.createPreset({
 	blocks: [blockReadme()],
 });
 
@@ -173,7 +233,7 @@ await producePreset(preset, { options: { title: "My App" } });
 
 ### `options` {#preset-options}
 
-Any number of options defined by the Preset's [Schema](../concepts/schemas).
+Any number of options defined by the Preset's [Base](../concepts/bases).
 
 For example, this Preset is run with a `name` option:
 
@@ -197,10 +257,10 @@ A function that takes in the explicitly provided options and returns any remaini
 Preset options are generated through three steps:
 
 1. Any options provided by `producePreset`'s second parameter's `options`
-2. Calling the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists
+2. Calling the Preset's [Base](../concepts/bases)'s `produce` method, if it exists
 3. Calling to an optional `optionsAugment` method of `producePreset`'s second parameter
 
-In other words, `optionsAugment` runs _after_ the Preset's [Schema](../concepts/schemas)'s `produce` method, if it exists.
+In other words, `optionsAugment` runs _after_ the Preset's [Base](../concepts/bases)'s `produce` method, if it exists.
 This can be useful to prompt for any options not determined by `produce()`.
 
 For example, this `optionsAugment` uses a Node.js prompt to fill in a `name` option if it isn't provided:
@@ -222,66 +282,6 @@ await producePreset(preset, {
 		return {
 			name: options.name ?? (await rl.question("What is your name?")),
 		};
-	},
-});
-```
-
-## `produceSchema`
-
-Given a [Schema](../concepts/schemas), creates an options object by running its [`produce()`](../concepts/schemas#production).
-
-`produceSchema` takes in up to two argument:
-
-1. `schema` _(required)_: a Schema
-2. `settings` _(optional)_: any properties from a [Schema Context](../runtime/contexts#schema-contexts), except for `take`
-
-For example, given this Schema that declares an optional `value` option that defaults to `"default"`, `produceSchema` can run its `produce()` with any provided options:
-
-```ts
-import { createSchema, produceSchema } from "create";
-import { z } from "zod";
-
-const schema = createSchema({
-	options: {
-		value: z.string().optional(),
-	},
-	produce(options) {
-		return {
-			value: options.value ?? "default",
-		};
-	},
-});
-
-// { value: "default" }
-await produceSchema(schema);
-
-// { value: "override" }
-await produceSchema(schema, {
-	options: {
-		value: "override",
-	},
-});
-```
-
-:::tip
-If the Schema does not define a `produce()`, then `settings.options` is returned.
-:::
-
-### `options` {#produceschema-options}
-
-Any number of options defined by the Schema.
-
-For example, this Schema is run with a `name` option:
-
-```ts
-import { Schema } from "create";
-import { z } from "zod";
-
-declare const schema: Schema<{ name: z.ZodString }>;
-
-await produceSchema(schema, {
-	options: {
-		name: "My Production",
 	},
 });
 ```

@@ -5,20 +5,16 @@ import {
 	BlockDefinition,
 	BlockDefinitionWithArgs,
 	BlockDefinitionWithoutArgs,
+	BlockFactoryWithOptionalArgs,
 	BlockFactoryWithoutArgs,
-	BlockFactoryWithRequiredArgs,
-	BlockWithArgs,
+	BlockWithOptionalArgs,
 } from "../types/blocks.js";
+import { CreateBlockFactory, Base, BaseDefinition } from "../types/bases.js";
 import { PresetDefinition } from "../types/presets.js";
-import {
-	CreateBlockFactory,
-	Schema,
-	SchemaDefinition,
-} from "../types/schemas.js";
 
-export function createSchema<OptionsShape extends AnyShape>(
-	schemaDefinition: SchemaDefinition<OptionsShape>,
-): Schema<OptionsShape> {
+export function createBase<OptionsShape extends AnyShape>(
+	baseDefinition: BaseDefinition<OptionsShape>,
+): Base<OptionsShape> {
 	type Options = InferredObject<OptionsShape>;
 
 	const createBlock = (<ArgsShape extends AnyShape | undefined>(
@@ -32,23 +28,29 @@ export function createSchema<OptionsShape extends AnyShape>(
 	const createBlockWithoutArgs = (
 		blockDefinition: BlockDefinitionWithoutArgs<Options>,
 	): BlockFactoryWithoutArgs<Options> => {
-		return () => ({
-			about: blockDefinition.about,
-			produce: blockDefinition.produce,
-		});
+		return function factory() {
+			return {
+				about: blockDefinition.about,
+				factory,
+				produce: blockDefinition.produce,
+			};
+		};
 	};
 
 	const createBlockWithArgs = <ArgsShape extends AnyShape>(
 		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockFactoryWithRequiredArgs<InferredObject<ArgsShape>, Options> => {
+	): BlockFactoryWithOptionalArgs<InferredObject<ArgsShape>, Options> => {
 		type Args = InferredObject<ArgsShape>;
 		const argsSchema = z.object(blockDefinition.args);
 
-		return (argsRaw: Args): BlockWithArgs<Args, Options> => {
-			const argsParsed = argsSchema.parse(argsRaw) as Args;
+		return function factory(
+			argsRaw?: Args,
+		): BlockWithOptionalArgs<Args, Options> {
+			const argsParsed = argsSchema.parse(argsRaw ?? {}) as Args;
 			return {
 				about: blockDefinition.about,
 				args: argsParsed,
+				factory,
 				produce: (context) => {
 					return blockDefinition.produce({
 						...context,
@@ -59,15 +61,15 @@ export function createSchema<OptionsShape extends AnyShape>(
 		};
 	};
 
-	const schema = {
-		...schemaDefinition,
+	const base = {
+		...baseDefinition,
 		createBlock,
 		createPreset: (presetDefinition: PresetDefinition<OptionsShape>) => ({
 			...presetDefinition,
-			schema,
+			base,
 		}),
 	};
 
 	// @ts-expect-error -- TODO: I can't figure this out...
-	return schema;
+	return base;
 }

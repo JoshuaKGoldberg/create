@@ -9,31 +9,31 @@ Don't rely on it yet.
 
 The main driver of `create` is a set of APIs that set up the generators for repositories:
 
-- [`createSchema`](#createschema): creates a new [Schema](../concepts/schemas)
-  - [`createBlock`](#createblock): creates a new [Block](../concepts/blocks) for the Schema
-  - [`createPreset`](#createpreset): creates a new [Preset](../concepts/presets) for the Schema
+- [`createBase`](#createbase): creates a new [Base](../concepts/bases)
+  - [`createBlock`](#createblock): creates a new [Block](../concepts/blocks) for the Base
+  - [`createPreset`](#createpreset): creates a new [Preset](../concepts/presets) for the Base
 - [`createTemplate`](#createtemplate): creates a new [Template](../concepts/templates)
 - [`createInput`](#createinput): creates a new [Input](../runtime/inputs)
 
-## `createSchema`
+## `createBase`
 
-Given a _Schema Definition_, creates a _Schema_.
+Given a _Base Definition_, creates a _Base_.
 
-A Schema Definition is an object containing:
+A Base Definition is an object containing:
 
-- [`options`](#createschema-options) _(required)_: a [Schema options](../concepts/schemas#options) object containing [Zod](https://zod.dev) values
-- [`produce`](#createschema-produce) _(optional)_: a [Schema production](../concepts/schemas#production) function to fill in default options
+- [`options`](#createbase-options) _(required)_: a [Base Options](../concepts/bases#options) object containing [Zod](https://zod.dev) values
+- [`produce`](#createbase-produce) _(optional)_: a [Base production](../concepts/bases#production) function to fill in default options
 
-### `options` {#createschema-options}
+### `options` {#createbase-options}
 
-The [Zod](https://zod.dev) values for options that will be made available to the Schema and all its [Blocks](../concepts/blocks).
+The [Zod](https://zod.dev) values for options that will be made available to the Base and all its [Blocks](../concepts/blocks).
 
-For example, this Schema defines a required `name` string and optional `value` number:
+For example, this Base defines a required `name` string and optional `value` number:
 
 ```ts
-import { createSchema } from "create";
+import { createBase } from "create";
 
-export const schema = createSchema({
+export const base = createBase({
 	options: {
 		name: z.string(),
 		value: z.number().optional(),
@@ -41,23 +41,23 @@ export const schema = createSchema({
 });
 ```
 
-### `produce` {#createschema-produce}
+### `produce` {#createbase-produce}
 
-A Schema may define a `produce` method to fill in any values that aren't inferred by the system at runtime.
+A Base may define a `produce` method to fill in any values that aren't inferred by the system at runtime.
 
-`produce()` methods receive a [Schema Context](../runtime/contexts#schema-contexts) parameter.
+`produce()` methods receive a [Base Context](../runtime/contexts#base-contexts) parameter.
 They must return an object whose properties fill in any options that can be inferred from the system.
 Each property may either be a value or an asynchronous function to retrieve that value.
 
-For example, this schema allows defaulting a required `name` option to that property of its `package.json` using an [Input](./input):
+For example, this Base allows defaulting a required `name` option to that property of its `package.json` using an [Input](./input):
 
 ```ts
-import { createSchema } from "create";
+import { createBase } from "create";
 import { z } from "zod";
 
 import { inputJsonFile } from "./inputJsonFile";
 
-export const schema = createSchema({
+export const base = createBase({
 	options: {
 		name: z.string(),
 	},
@@ -71,7 +71,7 @@ export const schema = createSchema({
 ```
 
 :::tip
-Schema options aren't guaranteed to be inferrable in an existing repository.
+Base Options aren't guaranteed to be inferrable in an existing repository.
 Productions can also be run in a blank directory.
 :::
 
@@ -81,16 +81,16 @@ Note that `produce()` is itself not an async function.
 This is to encourage options to be lazy: they should only be evaluated if needed.
 The [`lazy-value`](https://www.npmjs.com/package/lazy-value) package can be used to create chained lazy properties.
 
-For example, this Schema retrieves both a `description` and a `name` from a `package.json` on disk lazily:
+For example, this Base retrieves both a `description` and a `name` from a `package.json` on disk lazily:
 
 ```ts
-import { createSchema } from "create";
+import { createBase } from "create";
 import lazyValue from "lazy-value";
 import { z } from "zod";
 
 import { inputJsonFile } from "./inputJsonFile";
 
-export const schema = createSchema({
+export const base = createBase({
 	options: {
 		description: z.string(),
 		name: z.string(),
@@ -115,13 +115,13 @@ That `produce()` will only read and parse the `package.json` file if either of `
 `produce()`'s Context parameter contains an `options` property with any options explicitly provided by the user.
 This may be useful if the logic to produce some options should set defaults based on other options.
 
-For example, this Schema defaults an optional `author` option to its required `owner` option:
+For example, this Base defaults an optional `author` option to its required `owner` option:
 
 ```ts
-import { createSchema } from "create";
+import { createBase } from "create";
 import { z } from "zod";
 
-export const schema = createSchema({
+export const base = createBase({
 	options: {
 		author: z.string().optional(),
 		owner: z.string(),
@@ -134,12 +134,12 @@ export const schema = createSchema({
 });
 ```
 
-When the Schema's Presets are run, if the user provides an `author`, then they'll use that.
+When the Base's Presets are run, if the user provides an `author`, then they'll use that.
 Otherwise, they'll default the `author` to whatever `owner` the user provided.
 
 ## `createBlock`
 
-[Blocks](../concepts/blocks) can be created by the `createBlock()` _"Block Factory"_ method of a [Schema](../concepts/schemas).
+[Blocks](../concepts/blocks) can be created by the `createBlock()` _"Block Factory"_ method of a [Base](../concepts/bases).
 `createBlock()` takes in a _Block Definition_ and returns a _Block_.
 
 A Block Definition is an object containing:
@@ -161,9 +161,9 @@ This is an object containing any of:
 For example, this Block describes itself as setting up monorepo TypeScript building:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-schema.createBlock({
+base.createBlock({
 	about: {
 		description: "TSConfigs and build tasks for a monorepo.",
 		name: "TypeScript Builds",
@@ -187,9 +187,9 @@ For example, this Prettier block optionally allows adding in any plugins with a 
 ```ts
 import { z } from "zod";
 
-import { schema } from "./schemas";
+import { Base } from "./bases";
 
-export const blockPrettier = schema.createBlock({
+export const blockPrettier = base.createBlock({
 	args: {
 		plugins: z.array(z.string()).optional(),
 	},
@@ -211,10 +211,10 @@ export const blockPrettier = schema.createBlock({
 Presets can then specify the `blockPrettier` Block with `plugins` arg set to an array:
 
 ```ts
+import { base } from "./base";
 import { blockPrettier } from "./blockPrettier";
-import { schema } from "./schema";
 
-export const presetFormatted = schema.createPreset({
+export const presetFormatted = base.createPreset({
 	blocks: [
 		blockPrettier({
 			plugins: [
@@ -240,9 +240,9 @@ Block Definitions must include a `produce()` method for their core logic.
 For example, this Block defines a [`package` Creation](../runtime/creations#package) for a test script to run Vitest:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockKnip = schema.createBlock({
+export const blockKnip = base.createBlock({
 	produce() {
 		return {
 			package: {
@@ -257,7 +257,7 @@ export const blockKnip = schema.createBlock({
 
 ## `createPreset`
 
-[Presets](../concepts/presets) can be created by the `createPreset()` _"Preset Factory"_ method of a [Schema](../concepts/schemas).
+[Presets](../concepts/presets) can be created by the `createPreset()` _"Preset Factory"_ method of a [Base](../concepts/bases).
 `createPreset()` takes in a _Preset Definition_ and returns a _Preset_.
 
 A Preset Definition is an object containing:
@@ -277,9 +277,9 @@ This is an object containing any of:
 For example, this Preset describes itself as setting up a bare-bones TypeScript monorepo:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-schema.createPreset({
+base.createPreset({
 	about: {
 		description: "The barest of bones tooling for a type-safe monorepo.",
 		name: "Minimal",
@@ -297,16 +297,16 @@ The [Blocks](../concepts/blocks) that will be run to generate the Preset's [Crea
 For example, this Preset includes blocks for building and testing:
 
 ```ts
+import { base } from "./base";
 import { blockBuilds } from "./blockBuilds";
 import { blockTests } from "./blockTests";
-import { schema } from "./schema";
 
-schema.createPreset({
+base.createPreset({
 	blocks: [blockBuilds(), blockTests()],
 });
 ```
 
-The Blocks provided to a Preset must be created from the same root [Schema](../concepts/schemas).
+The Blocks provided to a Preset must be created from the same root [Base](../concepts/bases).
 
 #### `blocks` Functions
 
@@ -316,10 +316,10 @@ This allows Blocks to be given Args based on Options.
 For example, this Preset forwards a `name` option as an configuration in an ESLint Block's Args:
 
 ```ts
+import { base } from "./base";
 import { blockESLint } from "./blockESLint";
-import { schema } from "./schema";
 
-schema.createPreset({
+base.createPreset({
 	blocks: (options) => [
 		blockESLint({
 			rules: {

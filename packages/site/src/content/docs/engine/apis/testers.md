@@ -19,6 +19,100 @@ npm i create-testers -D
 You can use it with any typical testing framework, including [Jest](https://jestjs.io) and [Vitest](https://vitest.dev).
 :::
 
+## `testBase`
+
+For [Bases](../concepts/bases), a `testBase` function is exported that is analogous to [`produceBase`](./producers#producebase).
+It takes in similar arguments:
+
+1. `base` _(required)_: a [Base](../concepts/bases)
+2. `settings` _(optional)_: production settings including simulated user-provided [Options](../concepts/blocks#options)
+
+For example, this test asserts that a Base defaults its `value` option to `"default"` when not provided:
+
+```ts
+import { testBase } from "create-testers";
+import { describe, expect, it } from "vitest";
+
+import { base } from "./base";
+
+describe("base", () => {
+	describe("value", () => {
+		it("defaults to 'default' when not provided", async () => {
+			const actual = await testBase(base);
+
+			expect(actual).toEqual({
+				value: "default",
+			});
+		});
+	});
+});
+```
+
+As with [`produceBase`](./producers#producebase), `testBase` returns a Promise for the Base's Options.
+
+`settings` and all its properties are optional.
+However, some properties will cause `testBase` to throw an error if they're not provided and the Base attempts to use them:
+
+- [`options`](#testbase-options): each property throws an error if accessed at all
+- [`take`](#testbase-take): by default, throws an error if called as a function
+
+### `options` {#testbase-options}
+
+Simulated user-provided [Base Options](../producers#producebase-options) may be provided under `options`.
+
+For example, this test asserts that a Base uses a `value` if provided:
+
+```ts
+import { testBase } from "create-testers";
+import { describe, expect, it } from "vitest";
+
+import { base } from "./base";
+
+describe("base", () => {
+	describe("value", () => {
+		it("uses a provided value when it exists", async () => {
+			const value = "override";
+
+			const actual = await testBase(base, {
+				options: { value },
+			});
+
+			expect(actual).toEqual({ value });
+		});
+	});
+});
+```
+
+### `take` {#testbase-take}
+
+The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
+
+This is how to simulate the results of [Inputs](../runtime/inputs).
+
+For example, this test asserts that a Base defaults its `name` to the property in `package.json`:
+
+```ts
+import { testBase } from "create-testers";
+import { describe, expect, it, vi } from "vitest";
+
+import { base } from "./base";
+import { inputJsonFile } from "./inputJsonFile";
+
+describe("base", () => {
+	describe("name", () => {
+		it("uses the package.json name if it exists", async () => {
+			const name = "create-create-app";
+			const take = vi.fn().mockResolvedValue({ name });
+
+			const actual = await testBase(base, { take });
+
+			expect(actual).toEqual({ name });
+			expect(take).toHaveBeenCalledWith(inputJsonFile, "package.json");
+		});
+	});
+});
+```
+
 ## `testBlock`
 
 For [Blocks](../concepts/blocks), a `testBlocks` function is exported that is analogous to [`produceBlock`](./producers#produceblock).
@@ -68,9 +162,9 @@ import { testBlock } from "create-testers";
 import { describe, expect, expect, it } from "vitest";
 import { z } from "zod";
 
-import { schema } from "./schema";
+import { base } from "./base";
 
-const blockPrettier = schema.createBlock({
+const blockPrettier = base.createBlock({
 	args: {
 		useTabs: z.boolean(),
 	},
@@ -118,9 +212,9 @@ For example, this test simulates previously created [`documentation`](../runtime
 import { testBlock } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { schema } from "./schema";
+import { base } from "./base";
 
-const blockDocs = schema.createBlock({
+const blockDocs = base.createBlock({
 	produce({ created }) {
 		return {
 			files: {
@@ -160,7 +254,7 @@ Here are some steps to debug the app...`,
 
 ### `options` {#testblock-options}
 
-[Schema Options](../concepts/schemas#options) may be provided under `options`.
+[Base Options](../concepts/bases#options) may be provided under `options`.
 
 For example, this test asserts that a README.md uses the `title` defined under `options`:
 
@@ -168,9 +262,9 @@ For example, this test asserts that a README.md uses the `title` defined under `
 import { testBlock } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { schema } from "./schema";
+import { base } from "./base";
 
-const blockReadme = schema.createBlock({
+const blockReadme = base.createBlock({
 	produce({ options }) {
 		return {
 			files: {
@@ -208,10 +302,10 @@ For example, this test asserts that a block prints a _"last modified"_ timestamp
 ```ts
 import { describe, expect, it } from "vitest";
 
+import { base } from "./base";
 import { inputNow } from "./inputNow";
-import { schema } from "./schema";
 
-const blockUsingNow = schema.createBlock({
+const blockUsingNow = base.createBlock({
 	produce({ take }) {
 		const now = take(inputNow);
 
@@ -521,100 +615,6 @@ describe("presetAuthorship", () => {
 			},
 		});
 		expect(runner).toHaveBeenCalledWith("git config user.email");
-	});
-});
-```
-
-## `testSchema`
-
-For [Schemas](../concepts/schemas), a `testSchema` function is exported that is analogous to [`produceSchema`](./producers#produceschema).
-It takes in similar arguments:
-
-1. `schema` _(required)_: a [Schema](../concepts/schemas)
-2. `settings` _(optional)_: production settings including simulated user-provided [Options](../concepts/blocks#options)
-
-For example, this test asserts that a Schema defaults its `value` option to `"default"` when not provided:
-
-```ts
-import { testSchema } from "create-testers";
-import { describe, expect, it } from "vitest";
-
-import { schema } from "./schema";
-
-describe("schema", () => {
-	describe("value", () => {
-		it("defaults to 'default' when not provided", async () => {
-			const actual = await testSchema(schema);
-
-			expect(actual).toEqual({
-				value: "default",
-			});
-		});
-	});
-});
-```
-
-As with [`produceSchema`](./producers#produceschema), `testSchema` returns a Promise for the Schema's Options.
-
-`settings` and all its properties are optional.
-However, some properties will cause `testSchema` to throw an error if they're not provided and the Schema attempts to use them:
-
-- [`options`](#testschema-options): each property throws an error if accessed at all
-- [`take`](#testschema-take): by default, throws an error if called as a function
-
-### `options` {#testschema-options}
-
-Simulated user-provided [Schema Options](../producers#produceschema-options) may be provided under `options`.
-
-For example, this test asserts that a schema uses the a `value` if provided:
-
-```ts
-import { testSchema } from "create-testers";
-import { describe, expect, it } from "vitest";
-
-import { schema } from "./schema";
-
-describe("schema", () => {
-	describe("value", () => {
-		it("uses a provided value when it exists", async () => {
-			const value = "override";
-
-			const actual = await testSchema(schema, {
-				options: { value },
-			});
-
-			expect(actual).toEqual({ value });
-		});
-	});
-});
-```
-
-### `take` {#testschema-take}
-
-The [Context `take` function](../runtime/contexts#take) may be provided under `take`.
-
-This is how to simulate the results of [Inputs](../runtime/inputs).
-
-For example, this test asserts that a schema defaults its `name` to the property in `package.json`:
-
-```ts
-import { testSchema } from "create-testers";
-import { describe, expect, it, vi } from "vitest";
-
-import { inputJsonFile } from "./inputJsonFile";
-import { schema } from "./schema";
-
-describe("schema", () => {
-	describe("name", () => {
-		it("uses the package.json name if it exists", async () => {
-			const name = "create-create-app";
-			const take = vi.fn().mockResolvedValue({ name });
-
-			const actual = await testSchema(schema, { take });
-
-			expect(actual).toEqual({ name });
-			expect(take).toHaveBeenCalledWith(inputJsonFile, "package.json");
-		});
 	});
 });
 ```

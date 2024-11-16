@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { createSchema } from "../creators/createSchema.js";
+import { createBase } from "../creators/createBase.js";
 import { runPreset } from "./runPreset.js";
 
 const context = {
@@ -11,7 +11,7 @@ const context = {
 	take: vi.fn(),
 };
 
-const schema = createSchema({
+const base = createBase({
 	options: {
 		value: z.string(),
 	},
@@ -19,7 +19,7 @@ const schema = createSchema({
 
 describe("runPreset", () => {
 	test("files from one block", async () => {
-		const block = schema.createBlock({
+		const block = base.createBlock({
 			about: {
 				name: "Example Block",
 			},
@@ -30,7 +30,7 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = schema.createPreset({
+		const preset = base.createPreset({
 			about: {
 				name: "Example Preset",
 			},

@@ -14,7 +14,7 @@ export default defineConfig({
 						{ label: "About", link: "engine/about" },
 						{
 							items: [
-								{ label: "Schemas", link: "engine/concepts/schemas" },
+								{ label: "Bases", link: "engine/concepts/bases" },
 								{ label: "Blocks", link: "engine/concepts/blocks" },
 								{ label: "Presets", link: "engine/concepts/presets" },
 								{ label: "Templates", link: "engine/concepts/templates" },

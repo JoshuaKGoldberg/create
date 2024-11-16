@@ -63,24 +63,29 @@ export type BlockFactoryWithOptionalArgs<Args, Options> = (
 	args?: Args,
 ) => BlockWithOptionalArgs<Args, Options>;
 
-export interface BlockWithoutArgs<Options> {
+export interface BlockBase {
 	about?: AboutBase;
+}
+
+export interface BlockWithoutArgs<Options> extends BlockBase {
+	factory: BlockFactoryWithoutArgs<Options>;
 	produce: (
 		context: BlockContextWithoutArgs<Options>,
 	) => Partial<Creation<Options>>;
 }
 
-export interface BlockWithOptionalArgs<Args, Options> {
+export interface BlockWithOptionalArgs<Args, Options> extends BlockBase {
 	about?: AboutBase;
 	args: Args;
+	factory: BlockFactoryWithOptionalArgs<Args, Options>;
 	produce: (
 		context: BlockContextWithoutArgs<Options>,
 	) => Partial<Creation<Options>>;
 }
 
-export interface BlockWithArgs<Args, Options> {
-	about?: AboutBase;
+export interface BlockWithArgs<Args, Options> extends BlockBase {
 	args: Args;
+	factory: BlockFactoryWithRequiredArgs<Args, Options>;
 	produce: (
 		context: BlockContextWithoutArgs<Options>,
 	) => Partial<Creation<Options>>;

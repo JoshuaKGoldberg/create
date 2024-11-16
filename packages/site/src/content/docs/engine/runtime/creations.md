@@ -22,9 +22,9 @@ It may contain any of the following properties:
 For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) as well as add a `package.json` script ([`package`](#package)) used in a GitHub Actions job in [augmented Args](#args) to another Block:
 
 ```ts
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockPnpmDeduplicate = schema.createBlock({
+export const blockPnpmDeduplicate = base.createBlock({
 	async produce() {
 		return {
 			args: [
@@ -61,9 +61,9 @@ This can be useful when commands are necessary to initialize a repository after 
 For example, an AllContributors block that runs a hydration command:
 
 ```ts
-import { schema } from "../schema";
+import { base } from "../base";
 
-export const blockKnip = schema.createBlock({
+export const blockKnip = base.createBlock({
 	produce() {
 		return {
 			commands: ["npx all-contributors-cli generate"],
@@ -84,9 +84,9 @@ Properties whose values are objects represent a directory.
 For example, a block that generates a `.github/CODE_OF_CONDUCT.md` file:
 
 ```ts
-import { schema } from "../schema";
+import { base } from "../base";
 
-export const blockContributorCovenant = schema.createBlock({
+export const blockContributorCovenant = base.createBlock({
 	produce() {
 		return {
 			files: {
@@ -123,9 +123,9 @@ For example, this `blockESLintJSDoc` Block Factory explicitly indicates it shoul
 
 ```ts
 import { blockESLint } from "./blockESLint";
-import { schema } from "./schema";
+import { base } from "./base";
 
-export const blockESLintJSDoc = schema.createBlock({
+export const blockESLintJSDoc = base.createBlock({
 	phase: blockESLint,
 	produce() {
 		return {
