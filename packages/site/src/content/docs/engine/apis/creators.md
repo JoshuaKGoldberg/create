@@ -139,7 +139,7 @@ Otherwise, they'll default the `author` to whatever `owner` the user provided.
 
 ## `createBlock`
 
-[Blocks](../concepts/blocks) can be created by the `createBlock()` _"Block Factory"_ method of a [Base](../concepts/bases).
+[Blocks](../concepts/blocks) can be created by the `createBlock()` method of a [Base](../concepts/bases).
 `createBlock()` takes in a _Block Definition_ and returns a _Block_.
 
 A Block Definition is an object containing:
@@ -186,7 +186,7 @@ For example, this Prettier block optionally allows adding in any plugins with a 
 ```ts
 import { z } from "zod";
 
-import { Base } from "./bases";
+import { base } from "./base";
 
 export const blockPrettier = base.createBlock({
 	args: {
@@ -256,7 +256,7 @@ export const blockKnip = base.createBlock({
 
 ## `createPreset`
 
-[Presets](../concepts/presets) can be created by the `createPreset()` _"Preset Factory"_ method of a [Base](../concepts/bases).
+[Presets](../concepts/presets) can be created by the `createPreset()` method of a [Base](../concepts/bases).
 `createPreset()` takes in a _Preset Definition_ and returns a _Preset_.
 
 A Preset Definition is an object containing:

@@ -8,3 +8,7 @@ export type InferredObject<OptionsShape extends AnyShape | undefined> =
 	OptionsShape extends AnyShape
 		? z.infer<z.ZodObject<OptionsShape>>
 		: undefined;
+
+export type HasOnlyRequiredProperties<T> = T extends { [K in keyof T]-?: T[K] }
+	? true
+	: false;

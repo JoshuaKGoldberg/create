@@ -1,8 +1,5 @@
-import path from "node:path";
-
 import { producePreset } from "../api/producePreset.js";
 import { parseArgsPreset } from "./parseArgvPreset.js";
-// import { runCreation } from "../runners/runCreation.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPreset } from "./promptForPreset.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";

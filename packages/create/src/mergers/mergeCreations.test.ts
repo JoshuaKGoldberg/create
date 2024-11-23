@@ -34,32 +34,18 @@ describe("mergeCreations", () => {
 
 		expect(actual).toMatchInlineSnapshot(`
 			{
+			  "addons": [],
 			  "commands": [
 			    "run a",
 			    "run b",
 			    "run c",
 			    "run d",
 			  ],
-			  "documentation": {
-			    "build": "npm run build",
-			    "test": "npm run test",
-			  },
-			  "editor": {},
 			  "files": {
 			    "README.md": "Hello, world!",
 			    "src": {
 			      "index.ts": "",
 			      "second.ts": "// ...",
-			    },
-			  },
-			  "jobs": [],
-			  "package": {
-			    "dependencies": {
-			      "example": "^1.2.4",
-			    },
-			    "scripts": {
-			      "build": "tsc",
-			      "test": "vitest",
 			    },
 			  },
 			}

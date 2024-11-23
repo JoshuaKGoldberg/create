@@ -13,7 +13,7 @@ Bases are used to generate [Blocks](./blocks) and [Presets](./presets.md) that r
 
 ## Options
 
-Each Base is associated with a set of _Options_ represented by [Zod](https://zod.dev) values.
+Each Base is associated with a set of _Options_ represented by [Zod](https://zod.dev) schemas.
 Each property of those Options represents a configurable value that can be provided by a user.
 Those Options carry through to Blocks and Presets associated with the base.
 

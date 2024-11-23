@@ -118,7 +118,7 @@ describe("base", () => {
 For [Blocks](../concepts/blocks), a `testBlocks` function is exported that is analogous to [`produceBlock`](./producers#produceblock).
 It takes in similar arguments:
 
-1. `blockFactory` _(required)_: a [Block Factory](../concepts/blocks)
+1. `block` _(required)_: a [Block](../concepts/blocks)
 2. `settings` _(optional)_: production settings including the Block's [Options](../concepts/blocks#options) and any [Args](../concepts/blocks#args)
 
 For example, this test asserts that an nvmrc Block creates an `".nvmrc"` file with content `"20.12.2"`:

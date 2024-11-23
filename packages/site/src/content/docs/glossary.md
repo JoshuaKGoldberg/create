@@ -41,7 +41,7 @@ Each Block is associated with a parent [Base](#base), which defines the [Options
 
 A description of a [Block](#block).
 
-[Bases](#base) create Blocks with a [`createBlock()`](./apis/creators#createblock) method, which takes in a Block Definition and returns a Block Factory.
+[Bases](#base) create Blocks with a [`createBlock()`](./apis/creators#createblock) method, which takes in a Block Definition and returns a Block.
 
 ## Block Context
 
@@ -51,11 +51,17 @@ The shared helper functions and information provided to [Blocks](#block).
 
 These include [Options](#options) as defined by the parent [Base](#base) as well as any [Args](#args) defined by the Block.
 
-## Block Factory
+## Block Data
 
-A function that, when called, creates a new [Block](#block).
+TODO
 
-Block Factories are created by passing a [Block Definition](#block-definition) to the [`createBlock()`](./apis/creators#createblock) method of a [Base](#base).
+```ts
+// 1. Block Definition: the object passed to createBlock
+// 2. Block: the callable function used in:
+//     * Preset definitions: passed to base.createPreset
+//     * Addons: returned by Blocks and processed in runPreset
+// 3. BlockData: from calling a Block
+```
 
 ## Context
 

@@ -1,8 +1,8 @@
 import {
 	AnyShape,
 	awaitLazyProperties,
-	InferredObject,
 	Base,
+	InferredObject,
 	TakeInput,
 } from "create";
 
@@ -25,9 +25,9 @@ export async function testBase<OptionsShape extends AnyShape>(
 		base.produce({
 			options: createFailingObject(
 				"options",
-				"the base",
+				"the Base",
 			) as InferredObject<OptionsShape>,
-			take: createFailingFunction("take", "the base"),
+			take: createFailingFunction("take", "the Base"),
 			...settings,
 		}),
 	);

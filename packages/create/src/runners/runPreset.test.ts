@@ -18,7 +18,7 @@ const base = createBase({
 });
 
 describe("runPreset", () => {
-	test("files from one block", async () => {
+	test("files from one block", () => {
 		const block = base.createBlock({
 			about: {
 				name: "Example Block",
@@ -37,7 +37,7 @@ describe("runPreset", () => {
 			blocks: [block()],
 		});
 
-		await runPreset(preset, { value: "Hello, world! " }, context);
+		runPreset(preset, { value: "Hello, world! " }, context);
 
 		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
 	});

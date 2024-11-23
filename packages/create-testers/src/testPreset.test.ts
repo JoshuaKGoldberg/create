@@ -5,11 +5,9 @@ import { z } from "zod";
 import { testPreset } from "./testPreset.js";
 
 const emptyCreation = {
+	addons: [],
 	commands: [],
-	documentation: {},
-	editor: {},
 	files: {},
-	jobs: [],
 };
 
 const base = createBase({

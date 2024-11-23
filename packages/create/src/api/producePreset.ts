@@ -47,7 +47,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 ): Promise<Creation<InferredObject<OptionsShape>>> {
 	const { system, take } = createNativeSystems(providedSystem);
 
-	// From api/produce-preset.md,
+	// From engine/apis/producers.md > `optionsAugment`,
 	// Preset options are generated through three steps...
 
 	// 1. Any options provided by producePreset's second parameter's options

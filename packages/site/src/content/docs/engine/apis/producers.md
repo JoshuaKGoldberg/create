@@ -113,19 +113,19 @@ await produceBlock(blockReadme, { options: { title: "My App" } });
 
 Any number of [Args](../concepts/blocks#args) defined by the Block.
 
-For example, given this Block with a `prefix` arg, it can be specified in `produceBlock`:
+For example, given this Block with a `prefix` Arg and a `name` Option, both can be specified in `produceBlock`:
 
 ```ts
-import { BlockFactory } from "create";
+import { Block } from "create";
 
-declare const blockFactory: BlockFactory<{ name: string }, { prefix: string }>;
+declare const block: Block<{ prefix: string }, { name: string }>;
 
-await produceBlock(blockFactory, {
+await produceBlock(block, {
 	args: {
 		prefix: "The",
 	},
 	options: {
-		name: "My Production",
+		name: "Production",
 	},
 });
 ```
@@ -138,14 +138,14 @@ Any [Creations](../runtime/contexts#created) to simulate having been made from p
 
 Any number of options defined by the Block's [Base](../concepts/bases).
 
-For example, this Block is run with a `name` option:
+For example, this Block is run with no Args and one `name` Option:
 
 ```ts
-import { BlockFactory } from "create";
+import { Block } from "create";
 
-declare const blockFactory: BlockFactory<{ name: string }>;
+declare const block: Block<never, { name: string }>;
 
-await produceBlock(blockFactory, {
+await produceBlock(block, {
 	options: {
 		name: "My Production",
 	},

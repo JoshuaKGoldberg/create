@@ -1,8 +1,8 @@
-import { BlockWithArgs } from "../types/blocks.js";
+import { BlockDataWithArgs } from "../types/blocks.js";
 
 export function mergeAddons<Args, Options>(
-	first: BlockWithArgs<Args, Options>[] | undefined,
-	second: BlockWithArgs<Args, Options>[] | undefined,
+	first: BlockDataWithArgs<Args, Options>[] | undefined,
+	second: BlockDataWithArgs<Args, Options>[] | undefined,
 ) {
 	// ...TODO: actually merge
 	return [...(first ?? []), ...(second ?? [])];

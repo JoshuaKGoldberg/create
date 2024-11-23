@@ -1,7 +1,7 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
-import { BlockWithArgs } from "./blocks.js";
+import { BlockDataWithArgs } from "./blocks.js";
 
 export interface DirectCreation {
 	commands: (CreatedCommand | string)[];
@@ -9,10 +9,8 @@ export interface DirectCreation {
 	// TODO: Network calls
 }
 
-export type AnyBlockWithArgs<Options> = BlockWithArgs<object, Options>;
-
 export interface IndirectCreation<Options> {
-	addons: AnyBlockWithArgs<Options>[];
+	addons: BlockDataWithArgs<object, Options>[];
 }
 
 export type Creation<Options> = DirectCreation & IndirectCreation<Options>;

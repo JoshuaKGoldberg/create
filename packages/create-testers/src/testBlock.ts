@@ -1,9 +1,8 @@
 import {
-	BlockFactoryWithOptionalArgs,
-	BlockFactoryWithoutArgs,
-	BlockFactoryWithRequiredArgs,
-	CreatedCommand,
-	CreatedFiles,
+	BlockWithOptionalArgs,
+	BlockWithoutArgs,
+	BlockWithRequiredArgs,
+	Creation,
 	IndirectCreation,
 } from "create";
 
@@ -24,41 +23,29 @@ export interface BlockContextSettingsWithOptionalArgs<Args, Options>
 	args?: Args;
 }
 
-export interface TestBlockCreation<Options> {
-	addons: [BlockFactoryWithRequiredArgs<object, Options>, object][];
-	commands: (CreatedCommand | string)[];
-	files: CreatedFiles;
-}
-
 export function testBlock<Args, Options>(
-	blockFactory: BlockFactoryWithRequiredArgs<Args, Options>,
+	block: BlockWithRequiredArgs<Args, Options>,
 	settings: BlockContextSettingsWithRequiredArgs<Args, Options>,
-): Partial<TestBlockCreation<Options>>;
+): Partial<Creation<Options>>;
 export function testBlock<Options>(
-	blockFactory: BlockFactoryWithoutArgs<Options>,
+	block: BlockWithoutArgs<Options>,
 	settings?: BlockContextSettingsWithoutArgs<Options>,
-): Partial<TestBlockCreation<Options>>;
+): Partial<Creation<Options>>;
 export function testBlock<Args, Options>(
-	blockFactory: BlockFactoryWithOptionalArgs<Args, Options>,
+	block: BlockWithOptionalArgs<Args, Options>,
 	settings?: BlockContextSettingsWithOptionalArgs<Args, Options>,
-): Partial<TestBlockCreation<Options>>;
+): Partial<Creation<Options>>;
 export function testBlock<Args, Options>(
-	blockFactory:
-		| BlockFactoryWithoutArgs<Options>
-		| BlockFactoryWithRequiredArgs<Args, Options>,
+	block: BlockWithoutArgs<Options> | BlockWithRequiredArgs<Args, Options>,
 	settings: BlockContextSettingsWithOptionalArgs<Args, Options> = {},
-): Partial<TestBlockCreation<Options>> {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const production = blockFactory(settings.args!).produce({
+): Partial<Creation<Options>> {
+	const data = (block as BlockWithOptionalArgs<Args, Options>)(settings.args);
+
+	return data.produce({
 		get args() {
-			return failingFunction("args", "the block");
+			return failingFunction("args", "the Block");
 		},
-		options: createFailingObject("options", "the block") as Options,
+		options: createFailingObject("options", "the Block") as Options,
 		...settings,
 	});
-
-	return {
-		...production,
-		addons: production.addons?.map((addon) => [addon.factory, addon.args]),
-	};
 }

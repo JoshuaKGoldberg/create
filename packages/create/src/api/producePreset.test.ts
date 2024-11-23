@@ -5,11 +5,9 @@ import { createBase } from "../creators/createBase.js";
 import { producePreset } from "./producePreset.js";
 
 const emptyCreation = {
+	addons: [],
 	commands: [],
-	documentation: {},
-	editor: {},
 	files: {},
-	jobs: [],
 };
 
 describe("producePreset", () => {

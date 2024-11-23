@@ -1,5 +1,5 @@
 ---
-description: "Groups of blocks that form a repository base."
+description: "Groups of blocks that form a repository starter."
 title: Presets
 ---
 

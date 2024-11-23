@@ -52,7 +52,7 @@ describe("testBlock", () => {
 				// @ts-expect-error -- Intentionally not allowed by types.
 				() => testBlock(blockUsingArgs, {}),
 			).toThrowErrorMatchingInlineSnapshot(
-				`[Error: Context property 'args' was used by the block but not provided.]`,
+				`[Error: Context property 'args' was used by the Block but not provided.]`,
 			);
 		});
 
@@ -80,7 +80,7 @@ describe("testBlock", () => {
 			expect(() =>
 				testBlock(blockUsingOptions),
 			).toThrowErrorMatchingInlineSnapshot(
-				`[Error: Context property 'options' was used by the block but not provided.]`,
+				`[Error: Context property 'options' was used by the Block but not provided.]`,
 			);
 		});
 

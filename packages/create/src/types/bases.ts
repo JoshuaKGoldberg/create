@@ -2,9 +2,9 @@ import { AnyOptionalShape, AnyShape, InferredObject } from "../options.js";
 import {
 	BlockDefinitionWithArgs,
 	BlockDefinitionWithoutArgs,
-	BlockFactoryWithOptionalArgs,
-	BlockFactoryWithoutArgs,
-	BlockFactoryWithRequiredArgs,
+	BlockWithOptionalArgs,
+	BlockWithoutArgs,
+	BlockWithRequiredArgs,
 } from "./blocks.js";
 import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
@@ -16,8 +16,8 @@ export interface BaseDefinition<OptionsShape extends AnyShape> {
 }
 
 export interface Base<OptionsShape extends AnyShape> {
-	createBlock: CreateBlockFactory<InferredObject<OptionsShape>>;
-	createPreset: CreatePresetFactory<OptionsShape>;
+	createBlock: CreateBlock<InferredObject<OptionsShape>>;
+	createPreset: CreatePreset<OptionsShape>;
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
 }
@@ -41,21 +41,21 @@ export type LazyOptionalOption<T> =
 	| T
 	| undefined;
 
-export interface CreateBlockFactory<Options> {
+export interface CreateBlock<Options> {
 	<ArgsShape extends AnyOptionalShape>(
 		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockFactoryWithOptionalArgs<InferredObject<ArgsShape>, Options>;
+	): BlockWithOptionalArgs<InferredObject<ArgsShape>, Options>;
 
 	<ArgsShape extends AnyShape>(
 		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockFactoryWithRequiredArgs<InferredObject<ArgsShape>, Options>;
+	): BlockWithRequiredArgs<InferredObject<ArgsShape>, Options>;
 
 	(
 		blockDefinition: BlockDefinitionWithoutArgs<Options>,
-	): BlockFactoryWithoutArgs<Options>;
+	): BlockWithoutArgs<Options>;
 }
 
-export type CreatePresetFactory<OptionsShape extends AnyShape> = (
+export type CreatePreset<OptionsShape extends AnyShape> = (
 	presetDefinition: PresetDefinition<InferredObject<OptionsShape>>,
 ) => Preset<OptionsShape>;
 

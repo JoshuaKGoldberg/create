@@ -1,6 +1,8 @@
+import { HasOnlyRequiredProperties } from "../options.js";
 import {
-	BlockFactoryWithoutArgs,
-	BlockFactoryWithRequiredArgs,
+	BlockWithOptionalArgs,
+	BlockWithoutArgs,
+	BlockWithRequiredArgs,
 } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
 
@@ -8,39 +10,50 @@ export interface BlockProductionSettingsWithoutArgs<Options> {
 	created?: Partial<IndirectCreation<Options>>;
 	options?: Options;
 }
-export interface BlockProductionSettingsWithArgs<Args extends object, Options>
-	extends BlockProductionSettingsWithoutArgs<Options> {
+
+export interface BlockProductionSettingsWithRequiredArgs<
+	Args extends object,
+	Options,
+> extends BlockProductionSettingsWithoutArgs<Options> {
 	args: Args;
+}
+
+export interface BlockProductionSettingsWithOptionalArgs<
+	Args extends object,
+	Options,
+> extends BlockProductionSettingsWithoutArgs<Options> {
+	args?: Args;
 }
 
 export type BlockProductionSettings<
 	Args extends object | undefined,
 	Options,
 > = Args extends object
-	? BlockProductionSettingsWithArgs<Args, Options>
+	? HasOnlyRequiredProperties<Args> extends true
+		? BlockProductionSettingsWithRequiredArgs<Args, Options>
+		: BlockProductionSettingsWithOptionalArgs<Args, Options>
 	: BlockProductionSettingsWithoutArgs<Options>;
 
 export function produceBlock<Args extends object, Options>(
-	blockFactory: BlockFactoryWithRequiredArgs<Args, Options>,
-	settings: BlockProductionSettingsWithArgs<Args, Options>,
+	block: BlockWithRequiredArgs<Args, Options>,
+	settings: BlockProductionSettingsWithRequiredArgs<Args, Options>,
+): Partial<Creation<Options>>;
+export function produceBlock<Args extends object, Options>(
+	block: BlockWithOptionalArgs<Args, Options>,
+	settings: BlockProductionSettingsWithOptionalArgs<Args, Options>,
 ): Partial<Creation<Options>>;
 export function produceBlock<Options>(
-	blockFactory: BlockFactoryWithoutArgs<Options>,
+	block: BlockWithoutArgs<Options>,
 	settings: BlockProductionSettingsWithoutArgs<Options>,
 ): Partial<Creation<Options>>;
 export function produceBlock<Args extends object, Options>(
-	blockFactory:
-		| BlockFactoryWithoutArgs<Options>
-		| BlockFactoryWithRequiredArgs<Args, Options>,
-	settings:
-		| BlockProductionSettingsWithArgs<Args, Options>
-		| BlockProductionSettingsWithoutArgs<Options>,
+	block: BlockWithOptionalArgs<Args, Options> | BlockWithoutArgs<Options>,
+	settings: BlockProductionSettingsWithOptionalArgs<Args, Options>,
 ): Partial<Creation<Options>> {
-	// TODO: Figure out how to remove the unions in the implementation signature
-	type Settings = BlockProductionSettingsWithArgs<Args, Options>;
-	const block = blockFactory((settings as Settings).args);
+	const blockData = block(settings.args);
 
-	return block.produce({
+	return blockData.produce({
+		...("args" in blockData && { args: blockData.args }),
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		options: settings.options!,
 	});

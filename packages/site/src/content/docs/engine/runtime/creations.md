@@ -108,7 +108,7 @@ Additional [Args](../concepts/blocks#args) to merge in for other Blocks, if thos
 Blocks may specify additions to other, "downstream" Blocks.
 If the downstream Block is included in the running Preset, then the augmenting Args will be merged into what that downstream Block receives.
 
-For example, this `blockESLintJSDoc` Block Factory tells `blockESLint` about using the ESLint plugin for JSONC files:
+For example, this `blockESLintJSDoc` Block tells `blockESLint` about using the ESLint plugin for JSONC files:
 
 ```ts
 import { base } from "./base";
