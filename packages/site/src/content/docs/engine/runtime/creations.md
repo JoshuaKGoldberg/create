@@ -16,9 +16,9 @@ It may contain any of the following properties:
   - [`files`](#files): Files to create or modify on disk
   - Network requests _(to be added soon)_
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
-  - [`addons`](#addons): Composed Args to merge in for other Blocks, if they exist
+  - [`addons`](#addons): Composed Addons to merge in for other Blocks, if they exist
 
-For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) used in a GitHub Actions job in [addon Args](#addons) to another Block:
+For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) used in a GitHub Actions job in [addon Addons](#addons) to another Block:
 
 ```ts
 import { base } from "./base";
@@ -26,7 +26,7 @@ import { base } from "./base";
 export const blockPnpmDeduplicate = base.createBlock({
 	async produce() {
 		return {
-			args: [
+			addons: [
 				blockGitHubActions({
 					jobs: [
 						{
@@ -103,10 +103,10 @@ See [Context](./contexts) for how Blocks can read context from previous Blocks.
 
 ### `addons`
 
-Additional [Args](../concepts/blocks#args) to merge in for other Blocks, if those Blocks exist.
+Additional [Addons](../concepts/blocks#addons) to merge in for other Blocks, if those Blocks exist.
 
 Blocks may specify additions to other, "downstream" Blocks.
-If the downstream Block is included in the running Preset, then the augmenting Args will be merged into what that downstream Block receives.
+If the downstream Block is included in the running Preset, then the augmenting Addons will be merged into what that downstream Block receives.
 
 For example, this `blockESLintJSDoc` Block tells `blockESLint` about using the ESLint plugin for JSONC files:
 
@@ -117,7 +117,7 @@ import { blockESLint } from "./blockESLint";
 export const blockESLintJSDoc = base.createBlock({
 	produce() {
 		return {
-			args: [
+			addons: [
 				blockESLint({
 					extensions: ['...jsonc.configs["flat/recommended-with-json"]'],
 					imports: [{ source: "eslint-plugin-jsonc", specifier: "jsonc" }],
@@ -128,4 +128,4 @@ export const blockESLintJSDoc = base.createBlock({
 });
 ```
 
-If `blockESLint` is run in the same Preset, then it will receive those additional Args.
+If `blockESLint` is run in the same Preset, then it will receive those additional Addons.

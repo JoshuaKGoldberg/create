@@ -1,10 +1,10 @@
-export function mergeArgsIfUpdated<T extends object>(
-	existingArgs: T,
-	newArgs: T,
+export function mergeAddonsIfUpdated<T extends object>(
+	existingAddons: T,
+	newAddons: T,
 ): Error | T | undefined {
-	const newEntries = Object.entries(newArgs) as [keyof T, unknown][];
-	const result = { ...existingArgs };
-	let updated = newEntries.length !== Object.keys(existingArgs).length;
+	const newEntries = Object.entries(newAddons) as [keyof T, unknown][];
+	const result = { ...existingAddons };
+	let updated = newEntries.length !== Object.keys(existingAddons).length;
 
 	for (const [key, value] of newEntries) {
 		if (!(key in result) || result[key] == null) {
@@ -19,7 +19,7 @@ export function mergeArgsIfUpdated<T extends object>(
 
 		if (Array.isArray(result[key])) {
 			if (!Array.isArray(value)) {
-				return new Error("Mismatched merging args (Array.isArray).");
+				return new Error("Mismatched merging addons (Array.isArray).");
 			}
 
 			const existingElementKeys = new Set(result[key].map(createKey));
@@ -38,10 +38,10 @@ export function mergeArgsIfUpdated<T extends object>(
 
 		if (typeof result[key] === "object") {
 			if (typeof value !== "object") {
-				return new Error("Mismatched merging args (typeof object).");
+				return new Error("Mismatched merging addons (typeof object).");
 			}
 
-			const nestedMerge = mergeArgsIfUpdated(result[key], value);
+			const nestedMerge = mergeAddonsIfUpdated(result[key], value);
 			if (nestedMerge) {
 				if (nestedMerge instanceof Error) {
 					return nestedMerge;
@@ -56,7 +56,7 @@ export function mergeArgsIfUpdated<T extends object>(
 
 		if (result[key] !== value) {
 			return new Error(
-				`Mismatched merging args (${result[key] as string} vs. ${value as string}).`,
+				`Mismatched merging addons (${result[key] as string} vs. ${value as string}).`,
 			);
 		}
 	}

@@ -33,32 +33,32 @@ describe("testBlock", () => {
 		expect(actual).toEqual({ files: { "value.txt": "abc" } });
 	});
 
-	describe("args", () => {
-		const blockUsingArgs = base.createBlock({
-			args: {
-				value: z.string(),
+	describe("addons", () => {
+		const blockUsingAddons = base.createBlock({
+			addons: {
+				value: z.string().optional(),
 			},
-			produce({ args }) {
+			produce({ addons }) {
 				return {
 					files: {
-						"value.txt": args.value,
+						"value.txt": addons.value,
 					},
 				};
 			},
 		});
 
-		it("throws an error when args isn't provided and a block uses args", () => {
+		it("throws an error when addons isn't provided and a block uses addons", () => {
 			expect(
 				// @ts-expect-error -- Intentionally not allowed by types.
-				() => testBlock(blockUsingArgs, {}),
+				() => testBlock(blockUsingAddons, {}),
 			).toThrowErrorMatchingInlineSnapshot(
-				`[Error: Context property 'args' was used by the Block but not provided.]`,
+				`[Error: Context property 'addons' was used by the Block but not provided.]`,
 			);
 		});
 
-		it("passes args to the block when provided", () => {
-			const actual = testBlock(blockUsingArgs, {
-				args: { value: "abc" },
+		it("passes addons to the block when provided", () => {
+			const actual = testBlock(blockUsingAddons, {
+				addons: { value: "abc" },
 			});
 
 			expect(actual).toEqual({ files: { "value.txt": "abc" } });

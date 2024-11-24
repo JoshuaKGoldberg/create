@@ -13,7 +13,8 @@ export interface InputContext extends TakeContext {
 	runner: SystemRunner;
 }
 
-export interface InputContextWithArgs<Args> extends InputContext {
+export interface InputContextWithArgs<Args extends object>
+	extends InputContext {
 	args: Args;
 }
 
@@ -26,12 +27,12 @@ export type Input<
 
 export type InputWithoutArgs<Result> = (context: InputContext) => Result;
 
-export type InputWithArgs<Result, Args> = (
+export type InputWithArgs<Result, Args extends object> = (
 	context: InputContextWithArgs<Args>,
 ) => Result;
 
 export interface TakeInput {
-	<Result, Args extends object | undefined = undefined>(
+	<Result, Args extends object>(
 		input: InputWithArgs<Result, Args>,
 		args: Args,
 	): Result;

@@ -221,7 +221,7 @@ import { base } from "./base";
 import { blockReadme } from "./blockReadme";
 
 const preset = base.createPreset({
-	blocks: [blockReadme()],
+	blocks: [blockReadme],
 });
 
 // { files: { "README.md": `# My App` }}

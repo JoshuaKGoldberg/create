@@ -52,30 +52,21 @@ This is the same as [Input Contexts' `take`](#input-take).
 
 The Context object provided to the `produce` object of [Blocks](../concepts/blocks).
 
-### `created`
+### `addons`
 
-In-progress [Indirect Creation properties](./creations#indirect-creations) from any previously run Blocks.
+Any [Block Addons](../concepts/blocks#addons) that have been provided by other Blocks.
 
-This can be useful if one Block relies on the output of a previous block.
-Blocks may reference the outputs of earlier Blocks to generate their own tooling.
-
-For example, a Block that generates a `.github/DEVELOPMENT.md` file summarizing previously generated [`documentation`](./production#documentation):
+For example, this Gitignore Block defines an `ignores` Addon that other Blocks can use to add to its created `.gitignore` file:
 
 ```ts
-import { base } from "./base";
-
-export const blockDocs = base.createBlock({
-	produce({ created }) {
+export const blockGitignore = base.createBlock({
+	addons: {
+		ignores: z.array(z.string()).default([]),
+	},
+	produce({ addons }) {
 		return {
 			files: {
-				".github": {
-					"DEVELOPMENT.md": `# Development
-
-${Object.entries(created.documentation)
-	.flatMap(([heading, content]) => [`## ${heading}`, content])
-	.join("\n\n")}
-`,
-				},
+				".gitignore": ["/node_modules", ...addons.ignores].join("\n"),
 			},
 		};
 	},

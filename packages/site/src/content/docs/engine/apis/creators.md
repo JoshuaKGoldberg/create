@@ -301,7 +301,7 @@ import { blockBuilds } from "./blockBuilds";
 import { blockTests } from "./blockTests";
 
 base.createPreset({
-	blocks: [blockBuilds(), blockTests()],
+	blocks: [blockBuilds, blockTests],
 });
 ```
 

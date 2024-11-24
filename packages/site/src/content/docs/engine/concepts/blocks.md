@@ -43,7 +43,7 @@ import { blockNvmrc } from "./blockNvmrc";
 
 export const presetVersioned = base.createPreset({
 	blocks: [
-		blockNvmrc(),
+		blockNvmrc,
 		// ...
 	],
 });
@@ -81,15 +81,12 @@ If `create` is run with `--name My Repository`, a `README.md` would be generated
 # My Repository
 ```
 
-## Args
+## Addons
 
-Blocks may be extended with their own options, referred to as _Args_.
-Blocks define args as the properties for a [Zod](https://zod.dev) object schema and then receive them in their context.
+Blocks can define additional optional data called _"Addons"_ that they can be receive from other Blocks.
+Blocks define Addons as the properties for a [Zod](https://zod.dev) object schema and then receive them in their context.
 
-Args for a Block are typically specified each time a Block is defined in a [Preset](./presets)'s `blocks` array.
-Each Preset may define instances of the Block with different Args.
-
-For example, this Block takes in a string array under a `names` Arg, to be printed in a `names.txt` file:
+For example, this Block takes in a string array under a `names` Addon, to be printed in a `names.txt` file:
 
 ```ts
 import { z } from "zod";
@@ -97,38 +94,41 @@ import { z } from "zod";
 import { base } from "./base";
 
 export const blockNames = base.createBlock({
-	args: {
-		names: z.array(z.string()),
+	addons: {
+		names: z.array(z.string()).default([]),
 	},
-	async produce({ args }) {
+	async produce({ addons }) {
 		return {
 			files: {
-				"names.txt": args.names.join("\n"),
+				"names.txt": addons.names.join("\n"),
 			},
 		};
 	},
 });
 ```
 
-The `blockNames` Block would then require `names` be provided when constructed, such as in a Preset:
+Other Blocks may produce Addons to be given to any other Blocks.
+These Addons will be merged together when a Preset containing the Blocks is run.
+
+For example, this FruitNames Block composes Addons to the Names Block:
 
 ```ts
 import { base } from "./base";
-import { blockNames } from "./blockNames";
 
-export const presetFruitNames = base.createPreset({
-	about: {
-		name: "Create My App",
+export const blockNames = base.createBlock({
+	async produce() {
+		return {
+			addons: [
+				blockNames({
+					names: ["apple", "banana", "cherry"],
+				}),
+			],
+		};
 	},
-	blocks: [
-		blockNames({
-			names: ["apple", "banana", "cherry"],
-		}),
-	],
 });
 ```
 
-Creating with that `presetFruitNames` Preset would then produce a `names.txt` file with those three names as lines in its text:
+A Preset containing both Blocks would then produce a `names.txt` file with those three names as lines in its text:
 
 ```plaintext
 // names.txt
@@ -136,42 +136,6 @@ apple
 banana
 cherry
 ```
-
-## Addons
-
-Blocks can produce Args to be passed to other Blocks.
-These "addon" Args will be merged into the other Blocks' Args when run.
-
-For example, this Vitest Block composes Args to an ESLint Block to include the Vitest ESLint plugin:
-
-```ts
-import { base } from "./base";
-import { blockESLint } from "./blockESLint";
-
-export const blockVitest = base.createBlock({
-	produce() {
-		return {
-			addons: [
-				blockESLint({
-					extensions: [
-						{
-							extends: ["vitest.configs.recommended"],
-							files: ["**/*.test.*"],
-						},
-					],
-					imports: [{ source: "@vitest/eslint-plugin", specifier: "vitest" }],
-				}),
-			],
-			files: {
-				// ...
-			},
-			// ...
-		};
-	},
-});
-```
-
-If `blockESLint` is included in the same Preset, it will receive those additional `extensions` and `imports` merged in with its own Args.
 
 ## APIs
 

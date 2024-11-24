@@ -1,97 +1,93 @@
-import {
-	AnyShape,
-	HasOnlyRequiredProperties,
-	InferredObject,
-} from "../options.js";
+import { AnyOptionalShape, InferredObject } from "../options.js";
 import { AboutBase } from "./about.js";
-import { Creation } from "./creations.js";
+import { CreatedBlockAddons, Creation } from "./creations.js";
 
 export interface BlockDefinitionBase {
 	about?: AboutBase;
 }
 
-export interface BlockDefinitionWithoutArgs<Options>
+export interface BlockDefinitionWithoutAddons<Options extends object>
 	extends BlockDefinitionBase {
-	produce: BlockDefinitionProducerWithoutArgs<Options>;
+	produce: BlockDefinitionProducerWithoutAddons<Options>;
 }
 
-export interface BlockDefinitionWithArgs<ArgsShape extends AnyShape, Options>
-	extends BlockDefinitionBase {
-	args: ArgsShape;
-	produce: BlockDefinitionProducerWithArgs<InferredObject<ArgsShape>, Options>;
+export interface BlockDefinitionWithAddons<
+	AddonsShape extends AnyOptionalShape,
+	Options extends object,
+> extends BlockDefinitionBase {
+	addons: AddonsShape;
+	produce: BlockDefinitionProducerWithAddons<
+		InferredObject<AddonsShape>,
+		Options
+	>;
 }
 
 export type BlockDefinition<
-	ArgsShape extends AnyShape | undefined,
-	Options,
-> = ArgsShape extends object
-	? BlockDefinitionWithArgs<ArgsShape, Options>
-	: BlockDefinitionWithoutArgs<Options>;
+	AddonsShape extends AnyOptionalShape | undefined,
+	Options extends object,
+> = AddonsShape extends object
+	? BlockDefinitionWithAddons<AddonsShape, Options>
+	: BlockDefinitionWithoutAddons<Options>;
 
-export type BlockDefinitionProducerWithoutArgs<Options> = (
-	context: BlockContextWithoutArgs<Options>,
+export type BlockDefinitionProducerWithoutAddons<Options extends object> = (
+	context: BlockContextWithoutAddons<Options>,
 ) => Partial<Creation<Options>>;
 
-export type BlockDefinitionProducerWithArgs<Args, Options> = (
-	context: BlockContextWithArgs<Args, Options>,
+export type BlockDefinitionProducerWithAddons<
+	Addons extends object,
+	Options extends object,
+> = (
+	context: BlockContextWithAddons<Addons, Options>,
 ) => Partial<Creation<Options>>;
 
-export interface BlockContextWithoutArgs<Options> {
+export interface BlockContextWithoutAddons<Options extends object> {
 	options: Options;
 }
 
-export interface BlockContextWithArgs<Args, Options>
-	extends BlockContextWithoutArgs<Options> {
-	args: Args;
+export interface BlockContextWithAddons<
+	Addons extends object,
+	Options extends object,
+> extends BlockContextWithoutAddons<Options> {
+	addons: Addons;
 	options: Options;
 }
 
-export interface BlockContextWithOptionalArgs<Args, Options>
-	extends BlockContextWithoutArgs<Options> {
-	args?: Args;
+export interface BlockContextWithOptionalAddons<
+	Addons extends object,
+	Options extends object,
+> extends BlockContextWithoutAddons<Options> {
+	addons?: Addons;
 	options: Options;
 }
 
-export type BlockWithoutArgs<Options> = () => BlockDataWithoutArgs<Options>;
-
-export type BlockWithRequiredArgs<Args, Options> = (
-	args: Args,
-) => BlockDataWithArgs<Args, Options>;
-
-export type BlockWithOptionalArgs<Args, Options> = (
-	args?: Args,
-) => BlockDataWithArgs<Args, Options>;
-
-export type BlockWithArgs<Args, Options> =
-	HasOnlyRequiredProperties<Args> extends true
-		? BlockWithRequiredArgs<Args, Options>
-		: BlockWithOptionalArgs<Args, Options>;
-
-export type Block<Args, Options> = Args extends object
-	? HasOnlyRequiredProperties<Args> extends true
-		? BlockWithRequiredArgs<Args, Options>
-		: BlockWithOptionalArgs<Args, Options>
-	: BlockWithoutArgs<Options>;
-
-export interface BlockDataWithArgs<Args, Options> {
-	args: Args;
-	block: BlockWithArgs<Args, Options>;
-	produce: BlockDataProducerWithOptionalArgs<Args, Options>;
+export interface BlockBase {
+	about?: AboutBase;
 }
 
-export interface BlockDataWithoutArgs<Options> {
-	block: BlockWithoutArgs<Options>;
-	produce: BlockDataProducerWithoutArgs<Options>;
+export interface BlockWithoutAddons<Options extends object> extends BlockBase {
+	produce: BlockProducerWithoutAddons<Options>;
 }
 
-export type BlockData<Options> =
-	| BlockDataWithArgs<object, Options>
-	| BlockDataWithoutArgs<Options>;
+export interface BlockWithAddons<Addons extends object, Options extends object>
+	extends BlockBase {
+	produce: BlockProducerWithAddons<Addons, Options>;
+	(addons: Partial<Addons>): CreatedBlockAddons<Addons, Options>;
+}
 
-export type BlockDataProducerWithOptionalArgs<Args, Options> = (
-	context: BlockContextWithOptionalArgs<Args, Options>,
+export type Block<
+	Addons extends object | undefined,
+	Options extends object,
+> = Addons extends object
+	? BlockWithAddons<Addons, Options>
+	: BlockWithoutAddons<Options>;
+
+export type BlockProducerWithAddons<
+	Addons extends object,
+	Options extends object,
+> = (
+	context: BlockContextWithAddons<Addons, Options>,
 ) => Partial<Creation<Options>>;
 
-export type BlockDataProducerWithoutArgs<Options> = (
-	context: BlockContextWithoutArgs<Options>,
+export type BlockProducerWithoutAddons<Options extends object> = (
+	context: BlockContextWithoutAddons<Options>,
 ) => Partial<Creation<Options>>;

@@ -34,7 +34,26 @@ Yes, after the _create_ and _update_ APIs are done.
 
 Yes, after the _create_ and _update_ APIs are done.
 
-## Testing
+## Development
+
+### Why can't we define Args for Blocks in Presets?
+
+In other words, you might be wondering why the API doesn't allow something like this:
+
+```js
+export const presetExample = base.createPreset({
+	blocks: [
+		myBlock({
+			someArg: "...",
+		}),
+	],
+});
+```
+
+This is because Blocks shouldn't need to be configured.
+Users should be able to turn them off and on at will without any configuration.
+
+Passing Args to a Block in a Preset means users will have no way to override or remove those Args.
 
 ### Why do some testers allow `take` and others the individual system pieces?
 

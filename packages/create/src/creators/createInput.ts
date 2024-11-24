@@ -37,7 +37,9 @@ export function createInput<
 
 	const base = z.object(inputDefinition.args);
 
-	return ((context: InputContextWithArgs<InferredObject<ArgsSchema>>) => {
+	return ((
+		context: InputContextWithArgs<InferredObject<NonNullable<ArgsSchema>>>,
+	) => {
 		return inputDefinition.produce({
 			...context,
 			args: base.parse(context.args),

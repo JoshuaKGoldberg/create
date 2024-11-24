@@ -1,19 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { Creation } from "../types/creations.js";
 import { mergeCreations } from "./mergeCreations.js";
 
-const stubCreation = {
+const emptyCreation = {
 	addons: [],
 	commands: [],
 	files: {},
-} satisfies Creation<unknown>;
+};
 
 describe("mergeCreations", () => {
 	it("returns a merged creation when given two overlapping ones", () => {
 		const actual = mergeCreations(
 			{
-				...stubCreation,
+				...emptyCreation,
 				commands: ["run a", "run b"],
 				files: {
 					"README.md": "Hello, world!",
@@ -56,7 +55,7 @@ describe("mergeCreations", () => {
 		expect(() =>
 			mergeCreations(
 				{
-					...stubCreation,
+					...emptyCreation,
 					files: {
 						src: {
 							"index.ts": "a",
@@ -64,7 +63,7 @@ describe("mergeCreations", () => {
 					},
 				},
 				{
-					...stubCreation,
+					...emptyCreation,
 					files: {
 						src: {
 							"index.ts": "b",

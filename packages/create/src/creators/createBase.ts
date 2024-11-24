@@ -1,51 +1,64 @@
 import { AnyOptionalShape, AnyShape, InferredObject } from "../options.js";
 import { Base, BaseDefinition } from "../types/bases.js";
 import {
-	BlockDefinitionWithArgs,
-	BlockDefinitionWithoutArgs,
-	BlockWithOptionalArgs,
-	BlockWithoutArgs,
-	BlockWithRequiredArgs,
+	BlockContextWithAddons,
+	BlockDefinitionWithAddons,
+	BlockDefinitionWithoutAddons,
+	BlockWithAddons,
+	BlockWithoutAddons,
 } from "../types/blocks.js";
 import { Preset, PresetDefinition } from "../types/presets.js";
+import { assertNoDuplicateBlocks } from "./assertNoDuplicateBlocks.js";
+import { applyZodDefaults, isDefinitionWithAddons } from "./utils.js";
 
 export function createBase<OptionsShape extends AnyShape>(
 	baseDefinition: BaseDefinition<OptionsShape>,
 ): Base<OptionsShape> {
 	type Options = InferredObject<OptionsShape>;
 
-	function createBlock<ArgsShape extends AnyOptionalShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockWithOptionalArgs<InferredObject<ArgsShape>, Options>;
-	function createBlock<ArgsShape extends AnyShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockWithRequiredArgs<InferredObject<ArgsShape>, Options>;
+	function createBlock<AddonsShape extends AnyOptionalShape>(
+		blockDefinition: BlockDefinitionWithAddons<AddonsShape, Options>,
+	): BlockWithAddons<InferredObject<AddonsShape>, Options>;
 	function createBlock(
-		blockDefinition: BlockDefinitionWithoutArgs<Options>,
-	): BlockWithoutArgs<Options>;
-	function createBlock<ArgsShape extends AnyShape>(
+		blockDefinition: BlockDefinitionWithoutAddons<Options>,
+	): BlockWithoutAddons<Options>;
+	function createBlock<AddonsShape extends AnyOptionalShape>(
 		blockDefinition:
-			| BlockDefinitionWithArgs<ArgsShape, Options>
-			| BlockDefinitionWithoutArgs<Options>,
+			| BlockDefinitionWithAddons<AddonsShape, Options>
+			| BlockDefinitionWithoutAddons<Options>,
 	) {
-		type Args = InferredObject<ArgsShape>;
+		// Blocks without Addons can't be called as functions.
+		if (!isDefinitionWithAddons(blockDefinition)) {
+			return blockDefinition;
+		}
 
-		const block = (args: Args) => {
-			return {
-				...blockDefinition,
-				args,
-				block,
-			};
+		const addonsSchema = blockDefinition.addons;
+
+		type Addons = InferredObject<AddonsShape>;
+
+		// Blocks with Addons do need to be callable as functions...
+		function block(addons: Addons) {
+			return { addons, block };
+		}
+
+		// ...and also still have the Block Definition properties.
+		Object.assign(block, blockDefinition);
+
+		block.produce = (context: BlockContextWithAddons<Addons, Options>) => {
+			return blockDefinition.produce({
+				...context,
+				addons: applyZodDefaults(addonsSchema, context.addons),
+			});
 		};
 
-		return block as
-			| BlockWithoutArgs<Options>
-			| BlockWithRequiredArgs<Args, Options>;
+		return block as BlockWithAddons<Addons, Options>;
 	}
 
 	function createPreset(
 		presetDefinition: PresetDefinition<Options>,
 	): Preset<OptionsShape> {
+		assertNoDuplicateBlocks(presetDefinition);
+
 		return {
 			...presetDefinition,
 			base,

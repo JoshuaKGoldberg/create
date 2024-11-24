@@ -1,4 +1,7 @@
-import { getUpdatedBlockAddons } from "../mergers/getUpdatedBlockAddons.js";
+import {
+	BlockProduction,
+	getUpdatedBlockAddons,
+} from "../mergers/getUpdatedBlockAddons.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Block } from "../types/blocks.js";
@@ -13,53 +16,63 @@ export function runPreset<OptionsShape extends AnyShape>(
 ) {
 	type Options = InferredObject<OptionsShape>;
 
-	const blockDataToBeRun = new Set(preset.blocks);
-	const blockAddons = new Map(
-		preset.blocks
-			.filter((data) => "args" in data)
-			.map((data) => [data.block, data.args]),
-	);
-	const blockCreations = new Map<
-		Block<object, Options>,
-		Partial<Creation<Options>>
-	>();
-
-	// From (TODO).md:
+	// From engine/runtime/merging.md:
 	// This engine continuously re-runs Blocks until no new Args are provided.
-	while (blockDataToBeRun.size) {
-		// For each Block to be run:
-		for (const currentBlockData of blockDataToBeRun) {
-			blockDataToBeRun.delete(currentBlockData);
 
-			const currentBlock = currentBlockData.block as Block<object, Options>;
+	const blockProductions = new Map<
+		Block<object | undefined, Options>,
+		BlockProduction<object, Options>
+	>();
+	// const blockAddons = new Map<Block<object | undefined, Options>, object>();
+	// const blockCreations = new Map<
+	// 	Block<object | undefined, Options>,
+	// 	Partial<Creation<Options>>
+	// >();
 
-			// 1. Get the Creation from the Block, passing any current known Args
-			const currentArgs = blockAddons.get(currentBlock) ?? {};
-			const blockCreation = currentBlockData.produce({
+	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
+	const blocksToBeRun = new Set(preset.blocks);
+
+	// 2. For each Block in the queue:
+	while (blocksToBeRun.size) {
+		for (const currentBlock of blocksToBeRun) {
+			blocksToBeRun.delete(currentBlock);
+
+			// 2.1. Get the Creation from the Block, passing any current known Args
+			const previousProduction = blockProductions.get(currentBlock);
+			const previousAddons = previousProduction?.addons ?? {};
+			const blockCreation = currentBlock.produce({
 				...presetContext,
-				args: currentArgs,
+				addons: previousAddons,
 				options,
 			});
 
-			// 2. Store that Block's Creation for future use
-			blockCreations.set(currentBlock, blockCreation);
+			// 2.2. Store that Block's Creation
+			blockProductions.set(currentBlock, {
+				addons: previousAddons,
+				creation: blockCreation,
+			});
 
-			// 3. If the Block specified new addons for any other Blocks...
+			// 2.3. If the Block specified new addons for any other Blocks:
 			const updatedBlockAddons = getUpdatedBlockAddons(
-				blockAddons,
+				blockProductions,
 				blockCreation.addons,
 			);
 
-			// ...then we add them in to the queue of Blocks to re-run
-			for (const [addedBlock, addedBlockArgs] of updatedBlockAddons) {
-				blockAddons.set(addedBlock, addedBlockArgs);
-				blockDataToBeRun.add(addedBlock(addedBlockArgs));
+			// 2.3.1: Add those Blocks to the queue to re-run
+			for (const [updatedBlock, updatedAddons] of updatedBlockAddons) {
+				const addedBlockPreviousProduction = blockProductions.get(updatedBlock);
+				blockProductions.set(updatedBlock, {
+					...addedBlockPreviousProduction,
+					addons: updatedAddons,
+				});
+				blocksToBeRun.add(updatedBlock);
 			}
 		}
 	}
 
-	return Array.from(blockCreations.values()).reduce<Creation<Options>>(
-		(created, next) => mergeCreations(created, next),
+	// 3. Merge all Block Creations together
+	return Array.from(blockProductions.values()).reduce<Creation<Options>>(
+		(created, next) => mergeCreations(created, next.creation ?? {}),
 		{
 			addons: [],
 			commands: [],

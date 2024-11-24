@@ -1,22 +1,37 @@
-import { Block, BlockDataWithArgs, BlockWithArgs } from "../types/blocks.js";
-import { mergeArgsIfUpdated } from "./mergeArgsIfUpdated.js";
+import { Block, BlockWithAddons } from "../types/blocks.js";
+import { CreatedBlockAddons, Creation } from "../types/creations.js";
+import { mergeAddonsIfUpdated } from "./mergeAddonsIfUpdated.js";
 
-export function getUpdatedBlockAddons<Options>(
-	existingBlockArgs: Map<Block<object, Options>, object>,
-	newBlockAddons: BlockDataWithArgs<object, Options>[] = [],
+export interface BlockProduction<
+	Addons extends object | undefined,
+	Options extends object,
+> {
+	addons: Addons;
+	creation?: Partial<Creation<Options>>;
+}
+
+export function getUpdatedBlockAddons<Options extends object>(
+	blockProductions: Map<
+		Block<object | undefined, Options>,
+		BlockProduction<object, Options>
+	>,
+	newBlockAddons: CreatedBlockAddons<object, Options>[] = [],
 ) {
-	const updated: [BlockWithArgs<object, Options>, object][] = [];
+	const updated: [BlockWithAddons<object, Options>, object][] = [];
 
 	for (const newAddons of newBlockAddons) {
-		const existingArgs = existingBlockArgs.get(newAddons.block);
-		if (!existingArgs) {
-			updated.push([newAddons.block, newAddons.args]);
+		const existingProduction = blockProductions.get(newAddons.block);
+		if (!existingProduction) {
+			updated.push([newAddons.block, newAddons.addons]);
 			continue;
 		}
 
-		const updatedArgs = mergeArgsIfUpdated(existingArgs, newAddons.args);
-		if (updatedArgs) {
-			updated.push([newAddons.block, updatedArgs]);
+		const updatedAddons = mergeAddonsIfUpdated(
+			existingProduction.addons,
+			newAddons.addons,
+		);
+		if (updatedAddons) {
+			updated.push([newAddons.block, updatedAddons]);
 		}
 	}
 

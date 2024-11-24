@@ -33,7 +33,7 @@ describe("testPreset", () => {
 		});
 
 		const presetUsingOptions = base.createPreset({
-			blocks: [blockUsingOptions()],
+			blocks: [blockUsingOptions],
 		});
 
 		it("passes options to the block when provided via options", async () => {

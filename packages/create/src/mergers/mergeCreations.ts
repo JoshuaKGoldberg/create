@@ -3,7 +3,7 @@ import { mergeAddons } from "./mergeAddons.js";
 import { mergeArrays } from "./mergeArrays.js";
 import { mergeFiles } from "./mergeFiles.js";
 
-export function mergeCreations<Options>(
+export function mergeCreations<Options extends object>(
 	first: Creation<Options>,
 	second: Partial<Creation<Options>>,
 ): Creation<Options> {

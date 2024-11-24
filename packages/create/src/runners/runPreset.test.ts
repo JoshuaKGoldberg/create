@@ -34,7 +34,7 @@ describe("runPreset", () => {
 			about: {
 				name: "Example Preset",
 			},
-			blocks: [block()],
+			blocks: [block],
 		});
 
 		runPreset(preset, { value: "Hello, world! " }, context);

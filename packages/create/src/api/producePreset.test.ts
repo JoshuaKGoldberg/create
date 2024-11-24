@@ -29,7 +29,7 @@ describe("producePreset", () => {
 		});
 
 		const presetUsingOption = baseWithOption.createPreset({
-			blocks: [blockUsingOption()],
+			blocks: [blockUsingOption],
 		});
 
 		it("passes options to the preset when provided via options", async () => {
@@ -107,7 +107,7 @@ describe("producePreset", () => {
 		});
 
 		const presetUsingOption = baseWithProduce.createPreset({
-			blocks: [blockUsingOption()],
+			blocks: [blockUsingOption],
 		});
 
 		it("prioritizes provided options over Base produced options", async () => {

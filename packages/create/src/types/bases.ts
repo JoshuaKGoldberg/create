@@ -1,10 +1,9 @@
 import { AnyOptionalShape, AnyShape, InferredObject } from "../options.js";
 import {
-	BlockDefinitionWithArgs,
-	BlockDefinitionWithoutArgs,
-	BlockWithOptionalArgs,
-	BlockWithoutArgs,
-	BlockWithRequiredArgs,
+	BlockDefinitionWithAddons,
+	BlockDefinitionWithoutAddons,
+	BlockWithAddons,
+	BlockWithoutAddons,
 } from "./blocks.js";
 import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
@@ -41,18 +40,14 @@ export type LazyOptionalOption<T> =
 	| T
 	| undefined;
 
-export interface CreateBlock<Options> {
-	<ArgsShape extends AnyOptionalShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockWithOptionalArgs<InferredObject<ArgsShape>, Options>;
-
-	<ArgsShape extends AnyShape>(
-		blockDefinition: BlockDefinitionWithArgs<ArgsShape, Options>,
-	): BlockWithRequiredArgs<InferredObject<ArgsShape>, Options>;
+export interface CreateBlock<Options extends object> {
+	<AddonsShape extends AnyOptionalShape>(
+		blockDefinition: BlockDefinitionWithAddons<AddonsShape, Options>,
+	): BlockWithAddons<InferredObject<AddonsShape>, Options>;
 
 	(
-		blockDefinition: BlockDefinitionWithoutArgs<Options>,
-	): BlockWithoutArgs<Options>;
+		blockDefinition: BlockDefinitionWithoutAddons<Options>,
+	): BlockWithoutAddons<Options>;
 }
 
 export type CreatePreset<OptionsShape extends AnyShape> = (

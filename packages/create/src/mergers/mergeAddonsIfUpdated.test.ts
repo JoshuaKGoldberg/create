@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { mergeArgsIfUpdated } from "./mergeArgsIfUpdated.js";
+import { mergeAddonsIfUpdated } from "./mergeAddonsIfUpdated.js";
 
 describe("mergeArgsIfUpdated", () => {
 	it.each([
 		[{}, {}, undefined],
 		[{ a: true }, {}, { a: true }],
+		[{ a: true }, { a: true }, undefined],
+		[
+			{ a: true },
+			{ a: false },
+			new Error("Mismatched merging addons (true vs. false)."),
+		],
 		[{ a: true }, { b: true }, { a: true, b: true }],
 		[{}, { b: true }, { b: true }],
 		[{ a: [] }, {}, { a: [] }],
@@ -18,7 +24,7 @@ describe("mergeArgsIfUpdated", () => {
 		[
 			{ a: { a1: true } },
 			{ a: { a1: false } },
-			new Error("Mismatched merging args (true vs. false)."),
+			new Error("Mismatched merging addons (true vs. false)."),
 		],
 		[{ a: { a1: ["a2"] } }, { a: { a1: ["a2"] } }, undefined],
 		[{ a: { a1: ["a2"] } }, { a: { a1: ["a3"] } }, { a: { a1: ["a2", "a3"] } }],
@@ -29,7 +35,7 @@ describe("mergeArgsIfUpdated", () => {
 			undefined,
 		],
 	])("when given %j and %j, produces %j", (existingArgs, newArgs, expected) => {
-		const actual = mergeArgsIfUpdated(existingArgs, newArgs);
+		const actual = mergeAddonsIfUpdated(existingArgs, newArgs);
 
 		expect(actual).toEqual(expected);
 	});
