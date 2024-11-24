@@ -35,7 +35,7 @@ export const templateTypeScriptApp = createTemplate({
 });
 ```
 
-A [CLI](../cli) like `npx create` can then work with that Template to prompt the user for choosing a Preset:
+A [CLI](../../cli) like `npx create` can then work with that Template to prompt the user for choosing a Preset:
 
 ```bash
 $ npx create typescript-app
