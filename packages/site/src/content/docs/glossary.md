@@ -117,4 +117,4 @@ APIs to interact with the file system, network, and shell.
 
 > 👉 See: [Concepts > Templates](./engine/concepts/templates).
 
-A group of [Presets](#presets) that can be chosen between by a user to generate a repository.
+A group of [Presets](#preset) that can be chosen between by a user to generate a repository.
