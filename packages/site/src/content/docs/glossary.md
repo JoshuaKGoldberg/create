@@ -4,12 +4,12 @@ title: Glossary
 
 ## Args
 
-Individual arguments passed to a [Block](./concepts/blocks) or [Input](./runtime/inputs).
+Individual arguments passed to a [Block](./engine/concepts/blocks) or [Input](./runtime/inputs).
 These are completely separate from [Options](#options).
 
 ## Base
 
-> 👉 See: [Concepts > Bases](./concepts/bases).
+> 👉 See: [Concepts > Bases](./engine/concepts/bases).
 
 A listing of option types and how to generate their default values.
 
@@ -31,7 +31,7 @@ Bases are created by providing a Base Definition to the [`createBase`](./apis/cr
 
 ## Block
 
-> 👉 See: [Concepts > Blocks](./concepts/blocks).
+> 👉 See: [Concepts > Blocks](./engine/concepts/blocks).
 
 A Block defines the logic to create a portion of a repository.
 
@@ -103,7 +103,7 @@ These are completely separate from any individual [Args](#args).
 
 ## Preset
 
-> 👉 See: [Concepts > Presets](./concepts/presets).
+> 👉 See: [Concepts > Presets](./engine/concepts/presets).
 
 A group of [Blocks](#block) associated with the same parent [Base](#base).
 
@@ -115,6 +115,6 @@ APIs to interact with the file system, network, and shell.
 
 ## Template
 
-> 👉 See: [Concepts > Templates](./concepts/templates).
+> 👉 See: [Concepts > Templates](./engine/concepts/templates).
 
-A group of [Bases](#base) that can be chosen between by a user to generate a repository.
+A group of [Presets](#presets) that can be chosen between by a user to generate a repository.
