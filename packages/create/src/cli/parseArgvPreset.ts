@@ -8,7 +8,8 @@ export function parseArgsPreset(args: string[]) {
 				type: "string",
 			},
 		},
+		strict: false,
 	});
 
-	return values.preset;
+	return values.preset as string | undefined;
 }

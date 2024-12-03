@@ -23,11 +23,6 @@ export function runPreset<OptionsShape extends AnyShape>(
 		Block<object | undefined, Options>,
 		BlockProduction<object, Options>
 	>();
-	// const blockAddons = new Map<Block<object | undefined, Options>, object>();
-	// const blockCreations = new Map<
-	// 	Block<object | undefined, Options>,
-	// 	Partial<Creation<Options>>
-	// >();
 
 	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
 	const blocksToBeRun = new Set(preset.blocks);

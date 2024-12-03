@@ -1,4 +1,5 @@
 import { producePreset } from "../api/producePreset.js";
+import { applyCreation } from "./applying/applyCreation.js";
 import { parseArgsPreset } from "./parseArgvPreset.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPreset } from "./promptForPreset.js";
@@ -66,7 +67,5 @@ export async function runCli(templateLabel: string, ...args: string[]) {
 			promptForPresetOptions(preset.base.options, options),
 	});
 
-	console.log(creation.files);
-
-	// await runCreation(creation, { /* ... */ });
+	await applyCreation(creation, "cta-josh");
 }
