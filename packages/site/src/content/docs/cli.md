@@ -7,7 +7,7 @@ title: CLI
 The `create` engine is very early stage.
 Don't rely on it yet.
 
-**This CLI has not been implemented yet.**
+**This CLI is only partially implemented so far.**
 :::
 
 The `create` CLI is what you run to generate a new repository.
