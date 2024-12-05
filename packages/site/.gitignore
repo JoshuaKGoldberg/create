@@ -1,1 +1,3 @@
 .astro
+src/content/config.js
+src/content/config.d.ts
