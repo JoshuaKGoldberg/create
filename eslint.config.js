@@ -13,8 +13,8 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
 	{
 		ignores: [
-			"coverage*",
 			"**/*.snap",
+			"coverage",
 			"lib",
 			"node_modules",
 			"packages/*/lib",
@@ -25,75 +25,56 @@ export default tseslint.config(
 			"pnpm-workspace.yaml",
 		],
 	},
-	{
-		linterOptions: {
-			reportUnusedDisableDirectives: "error",
-		},
-	},
-	...markdown.configs.recommended,
+	{ linterOptions: { reportUnusedDisableDirectives: "error" } },
+	js.configs.recommended,
+	// https://github.com/eslint-community/eslint-plugin-eslint-comments/issues/214
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 	comments.recommended,
-	...tseslint.config({
+	jsdoc.configs["flat/contents-typescript-error"],
+	jsdoc.configs["flat/logical-typescript-error"],
+	jsdoc.configs["flat/stylistic-typescript-error"],
+	...jsonc.configs["flat/recommended-with-json"],
+	...markdown.configs.recommended,
+	perfectionist.configs["recommended-natural"],
+	regexp.configs["flat/recommended"],
+	{
 		extends: [packageJson],
 		files: ["**/package.json"],
-		rules: {
-			// https://github.com/JoshuaKGoldberg/eslint-plugin-package-json/issues/252
-			"package-json/valid-repository-directory": "off",
-		},
-	}),
-	...tseslint.config({
-		extends: [
-			js.configs.recommended,
-			jsdoc.configs["flat/contents-typescript-error"],
-			jsdoc.configs["flat/logical-typescript-error"],
-			jsdoc.configs["flat/stylistic-typescript-error"],
-			...jsonc.configs["flat/recommended-with-json"],
-			perfectionist.configs["recommended-natural"],
-			regexp.configs["flat/recommended"],
-			...tseslint.configs.strict,
-			...tseslint.configs.stylistic,
-		],
+	},
+	{
+		extends: [...tseslint.configs.strict, ...tseslint.configs.stylistic],
 		files: ["**/*.js", "**/*.ts"],
 		rules: {
 			// These off-by-default rules work well for this repo and we like them on.
 			"jsdoc/informative-docs": "error",
+
+			// Stylistic concerns that don't interfere with Prettier
 			"logical-assignment-operators": [
 				"error",
 				"always",
 				{ enforceForIfStatements: true },
 			],
-			"operator-assignment": "error",
-
-			// These on-by-default rules don't work well for this repo and we like them off.
-			"jsdoc/lines-before-block": "off",
-			"no-constant-condition": "off",
-
-			// These on-by-default rules work well for this repo if configured
-			"perfectionist/sort-objects": [
-				"error",
-				{
-					order: "asc",
-					partitionByComment: true,
-					type: "natural",
-				},
-			],
-
-			// Stylistic concerns that don't interfere with Prettier
 			"no-useless-rename": "error",
 			"object-shorthand": "error",
+			"operator-assignment": "error",
 		},
-	}),
-	...tseslint.config({
+		settings: { perfectionist: { partitionByComment: true, type: "natural" } },
+	},
+	{
 		extends: [
 			...tseslint.configs.strictTypeChecked,
 			...tseslint.configs.stylisticTypeChecked,
 		],
 		files: ["**/*.js", "**/*.ts"],
-		ignores: ["**/*.md/*"],
+		ignores: [
+			"**/*.md/*",
+			// TODO: I don't know why these aren't getting included properly...
+			"packages/*/bin/*.js",
+			"packages/*/*.config.*",
+		],
 		languageOptions: {
 			parserOptions: {
-				projectService: {
-					allowDefaultProject: ["*.config.*s", "packages/*/*.config.*s"],
-				},
+				projectService: true,
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
@@ -101,7 +82,7 @@ export default tseslint.config(
 			// These on-by-default rules work well for this repo if configured
 			"@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "all" }],
 		},
-	}),
+	},
 	{
 		files: ["*.jsonc"],
 		rules: {
@@ -111,20 +92,13 @@ export default tseslint.config(
 		},
 	},
 	{
+		extends: [vitest.configs.recommended],
 		files: ["**/*.test.*"],
-		languageOptions: {
-			globals: vitest.environments.env.globals,
-		},
-		plugins: { vitest },
 		rules: {
-			...vitest.configs.recommended.rules,
-
-			// These on-by-default rules aren't useful in test files.
 			"@typescript-eslint/no-unsafe-assignment": "off",
-			"@typescript-eslint/no-unsafe-call": "off",
 		},
 	},
-	...tseslint.config({
+	{
 		extends: [
 			...yml.configs["flat/recommended"],
 			...yml.configs["flat/prettier"],
@@ -147,5 +121,5 @@ export default tseslint.config(
 				},
 			],
 		},
-	}),
+	},
 );

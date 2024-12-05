@@ -21,7 +21,7 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "tsc -b",
+		"build": "tsc -b -p tsconfig.build.json",
 		"format": "prettier .",
 		"lint": "eslint . --max-warnings 0",
 		"lint:knip": "knip",
@@ -35,7 +35,7 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "^4.4.0",
+		"@eslint-community/eslint-plugin-eslint-comments": "^4.4.1",
 		"@eslint/js": "^9.9.1",
 		"@types/eslint-plugin-markdown": "^2.0.2",
 		"@types/eslint__js": "^8.42.3",
