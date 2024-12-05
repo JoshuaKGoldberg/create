@@ -10,6 +10,9 @@ export interface DirectCreation {
 }
 
 export interface IndirectCreation<Options extends object> {
+	// TODO: Figure out how to replace this with ... never? object?
+	// Note it needs to pass tsc both in this repo and in create-typescript-app.
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	addons: CreatedBlockAddons<any, Options>[];
 }
 

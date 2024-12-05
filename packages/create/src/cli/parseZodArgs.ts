@@ -1,12 +1,18 @@
 // TODO: Split out into standalone package
 /* eslint-disable @eslint-community/eslint-comments/disable-enable-pair */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 // TODO: Add fancy TS types to convert from Zod to parseArgs
 
 import { parseArgs, ParseArgsConfig } from "util";
-import { ZodTypeAny } from "zod";
+import {
+	ZodBooleanDef,
+	ZodFirstPartyTypeKind,
+	ZodLiteralDef,
+	ZodStringDef,
+	ZodTypeAny,
+} from "zod";
 
 import { AnyShape, InferredObject } from "../options.js";
 
@@ -62,13 +68,14 @@ function zodValueToArgsOption(
 	return undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function zodValueTypeToArgsOptionType(def: any): ParseArgsOptionsType {
+function zodValueTypeToArgsOptionType(
+	def: ZodBooleanDef | ZodLiteralDef | ZodStringDef,
+): ParseArgsOptionsType {
 	switch (def.typeName) {
-		case "ZodBoolean":
+		case ZodFirstPartyTypeKind.ZodBoolean:
 			return "boolean";
 
-		case "ZodLiteral": {
+		case ZodFirstPartyTypeKind.ZodLiteral: {
 			const typeofValue = typeof def.value;
 			if (typeofValue === "boolean" || typeofValue === "string") {
 				return typeofValue;
@@ -76,7 +83,7 @@ function zodValueTypeToArgsOptionType(def: any): ParseArgsOptionsType {
 			break;
 		}
 
-		case "ZodString":
+		case ZodFirstPartyTypeKind.ZodString:
 			return "string";
 	}
 
