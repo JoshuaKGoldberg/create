@@ -5,7 +5,6 @@
 	},
 	"extends": "./tsconfig.base.json",
 	"files": [],
-	"include": ["*.config.*"],
 	"references": [
 		{ "path": "./packages/create" },
 		{ "path": "./packages/create-testers" },
