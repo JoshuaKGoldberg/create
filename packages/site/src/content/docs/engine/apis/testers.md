@@ -168,7 +168,7 @@ const blockPrettier = base.createBlock({
 	args: {
 		useTabs: z.boolean(),
 	},
-	produce({ args }) {
+	build({ args }) {
 		return {
 			files: {
 				".prettierrc.json": JSON.stringify({
@@ -215,7 +215,7 @@ import { describe, expect, it } from "vitest";
 import { base } from "./base";
 
 const blockReadme = base.createBlock({
-	produce({ options }) {
+	build({ options }) {
 		return {
 			files: {
 				"README.md": `# ${options.title}`,

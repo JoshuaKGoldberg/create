@@ -8,7 +8,7 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-A Creation object is what's returned by each [Block](../about/blocks)'s `produce()` method.
+A Creation object is what's returned by each [Block](../about/blocks)'s `build()` method.
 It may contain any of the following properties:
 
 - ["Direct" creations](#direct-creations) that always cause changes to the repository:
@@ -24,7 +24,7 @@ For example, a Block that adds pnpm package deduplication might choose to both r
 import { base } from "./base";
 
 export const blockPnpmDeduplicate = base.createBlock({
-	async produce() {
+	async build() {
 		return {
 			addons: [
 				blockGitHubActions({
@@ -58,7 +58,7 @@ For example, an AllContributors block that runs a hydration command:
 import { base } from "../base";
 
 export const blockKnip = base.createBlock({
-	produce() {
+	build() {
 		return {
 			commands: ["npx all-contributors-cli generate"],
 		};
@@ -81,7 +81,7 @@ For example, a block that generates a `.github/CODE_OF_CONDUCT.md` file:
 import { base } from "../base";
 
 export const blockContributorCovenant = base.createBlock({
-	produce() {
+	build() {
 		return {
 			files: {
 				".github": {
@@ -115,7 +115,7 @@ import { base } from "./base";
 import { blockESLint } from "./blockESLint";
 
 export const blockESLintJSDoc = base.createBlock({
-	produce() {
+	build() {
 		return {
 			addons: [
 				blockESLint({

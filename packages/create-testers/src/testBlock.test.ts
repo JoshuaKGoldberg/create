@@ -11,7 +11,7 @@ const base = createBase({
 });
 
 const blockStandalone = base.createBlock({
-	produce() {
+	build() {
 		return {
 			files: {
 				"value.txt": "abc",
@@ -38,7 +38,7 @@ describe("testBlock", () => {
 			addons: {
 				value: z.string().optional(),
 			},
-			produce({ addons }) {
+			build({ addons }) {
 				return {
 					files: {
 						"value.txt": addons.value,
@@ -67,7 +67,7 @@ describe("testBlock", () => {
 
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
-			produce({ options }) {
+			build({ options }) {
 				return {
 					files: {
 						"value.txt": options.value,

@@ -22,7 +22,7 @@ Given a _Base Definition_, creates a _Base_.
 A Base Definition is an object containing:
 
 - [`options`](#createbase-options) _(required)_: a [Base Options](../concepts/bases#options) object containing [Zod](https://zod.dev) values
-- [`produce`](#createbase-produce) _(optional)_: a [Base production](../concepts/bases#production) function to fill in default options
+- [`read`](#createbase-read) _(optional)_: a [Base production](../concepts/bases#production) function to fill in default options
 
 ### `options` {#createbase-options}
 
@@ -41,11 +41,11 @@ export const base = createBase({
 });
 ```
 
-### `produce` {#createbase-produce}
+### `read` {#createbase-read}
 
-A Base may define a `produce` method to fill in any values that aren't inferred by the system at runtime.
+A Base may define a `read` method to fill in any values that aren't inferred by the system at runtime.
 
-`produce()` methods receive a [Base Context](../runtime/contexts#base-contexts) parameter.
+`read()` methods receive a [Base Context](../runtime/contexts#base-contexts) parameter.
 They must return an object whose properties fill in any options that can be inferred from the system.
 Each property may either be a value or an asynchronous function to retrieve that value.
 
@@ -61,7 +61,7 @@ export const base = createBase({
 	options: {
 		name: z.string(),
 	},
-	produce({ take }) {
+	read({ take }) {
 		return {
 			name: async () =>
 				(await take(inputJsonFile, { fileName: "package.json" })).name,
@@ -77,7 +77,7 @@ Productions can also be run in a blank directory.
 
 #### Lazy Production
 
-Note that `produce()` is itself not an async function.
+Note that `read()` is itself not an async function.
 This is to encourage options to be lazy: they should only be evaluated if needed.
 The [`lazy-value`](https://www.npmjs.com/package/lazy-value) package can be used to create chained lazy properties.
 
@@ -95,7 +95,7 @@ export const base = createBase({
 		description: z.string(),
 		name: z.string(),
 	},
-	produce({ take }) {
+	read({ take }) {
 		const packageData = lazyValue(async () =>
 			take(inputJsonFile({ fileName: "package.json" })),
 		);
@@ -108,11 +108,11 @@ export const base = createBase({
 });
 ```
 
-That `produce()` will only read and parse the `package.json` file if either of `description` and/or `name` are not provided by the user.
+That `read()` will only read and parse the `package.json` file if either of `description` and/or `name` are not provided by the user.
 
 #### Production Options
 
-`produce()`'s Context parameter contains an `options` property with any options explicitly provided by the user.
+`read()`'s Context parameter contains an `options` property with any options explicitly provided by the user.
 This may be useful if the logic to produce some options should set defaults based on other options.
 
 For example, this Base defaults an optional `author` option to its required `owner` option:
@@ -126,7 +126,7 @@ export const base = createBase({
 		author: z.string().optional(),
 		owner: z.string(),
 	},
-	produce({ options }) {
+	read({ options }) {
 		return {
 			author: options.owner,
 		};
@@ -146,7 +146,7 @@ A Block Definition is an object containing:
 
 - `about` _(optional)_: tooling metadata for the Block
 - `args` _(optional)_: a [Block args](../concepts/blocks#args) object containing [Zod](https://zod.dev) values
-- `produce` _(required)_: a [Block production](../concepts/blocks#production) method
+- `build` _(required)_: a [Block production](../concepts/blocks#production) method
 
 ### `about` {#createblock-about}
 
@@ -167,7 +167,7 @@ base.createBlock({
 		description: "TSConfigs and build tasks for a monorepo.",
 		name: "TypeScript Builds",
 	},
-	produce() {
+	read() {
 		// ...
 	},
 });
@@ -192,7 +192,7 @@ export const blockPrettier = base.createBlock({
 	args: {
 		plugins: z.array(z.string()).optional(),
 	},
-	async produce({ args }) {
+	async read({ args }) {
 		return {
 			files: {
 				".prettierrc.json":
@@ -229,9 +229,9 @@ export const presetFormatted = base.createPreset({
 
 Creating with that `presetFormatted` Preset would then produce a `.prettierrc.json` file with those three plugins listed in its JSON contents.
 
-### `produce` {#createblock-produce}
+### `build` {#createblock-build}
 
-Block Definitions must include a `produce()` method for their core logic.
+Block Definitions must include a `build()` method for their core logic.
 
 - It receives one parameter: a [Context](../runtime/contexts) object containing options as well as other utilities.
 - It returns a [Creation](../runtime/creation) object describing the generated pieces of tooling.
@@ -242,7 +242,7 @@ For example, this Block defines a [`files` Creation](../runtime/creations#packag
 import { base } from "./base";
 
 export const blockKnip = base.createBlock({
-	produce() {
+	build() {
 		return {
 			files: {
 				"knip.json": JSON.stringify({
@@ -253,6 +253,64 @@ export const blockKnip = base.createBlock({
 	},
 });
 ```
+
+### `finalize` {#createblock-finalize}
+
+Block Definitions may optionally include a `finalize()` method to run after their core logic.
+
+Block `finalize()` methods run exactly once during Production, after all `build()`s have finished running.
+Finalization can be used to augment the Block's output based on the final outputs from all other Blocks.
+
+- It receives one parameter: a [Finalization Context](../runtime/contexts#finalization-context) object containing the preliminary [Direct Creation](../runtime/creation) and Options
+- It returns a Direct Creation
+
+For example, this Block adds all unknown words from a Creation into a CSpell dictionary:
+
+```ts
+import { validateText } from "cspell-lib";
+import { getObjectStringsDeep } from "object-strings-deep";
+
+import { base } from "./base";
+
+const cspellSettings = {
+	dictionaries: ["npm", "node", "typescript"],
+	ignorePaths: ["CHANGELOG.md", "lib", "node_modules", "pnpm-lock.yaml"],
+};
+
+function createCSpellConfig(words: string[]) {
+	return JSON.stringify({
+		...cspellSettings,
+		...(words.length && { words: words.sort() }),
+	});
+}
+
+export const blockCSpell = base.createBlock({
+	build() {
+		return {
+			files: {
+				"cspell.json": createCSpellConfig(),
+			},
+		};
+	},
+	async finalize({ created }) {
+		return {
+			files: {
+				"cspell.json": createCSpellConfig({
+					words: validateText(getObjectStringsDeep(created), cspellSettings)
+						.filter((word) => !word.isFound)
+						.map((word) => word.text)
+						.sort(),
+				}),
+			},
+		};
+	},
+});
+```
+
+:::note
+Block finalization should only be used for operations that truly require the entirety of the near-final creation.
+`finalize()` methods are only called once and may not provide Addons for other Blocks.
+:::
 
 ## `createPreset`
 
@@ -429,7 +487,7 @@ Given an _Input Definition_, creates an _Input_.
 An Input Definition is an object containing:
 
 - `args` _(optional)_: a [Block args](../concepts/blocks#args) object containing [Zod](https://zod.dev) values
-- `produce` _(required)_: an [Input production](../runtime/inputs#production) method
+- `read` _(required)_: an [Input production](../runtime/inputs#production) method
 
 ### `args` {#createinput-args}
 
@@ -446,15 +504,15 @@ export const inputFile = createInput({
 	args: {
 		path: z.string(),
 	},
-	async produce({ args, fs }) {
+	async read({ args, fs }) {
 		return await fs.readFile(args.path);
 	},
 });
 ```
 
-### `produce` {#createinput-produce}
+### `read` {#createinput-run}
 
-Input Definitions must include a `produce()` method for their core logic.
+Input Definitions must include a `read()` method for their core logic.
 
 - It receives one parameter: a [Context](../runtime/contexts#input-contexts) object
 - It can return any kind of data.
@@ -465,7 +523,7 @@ For example, this Input fetches text from a URL:
 import { createInput } from "create";
 
 export const inputNow = createInput({
-	async produce({ fetcher }) {
+	async read({ fetcher }) {
 		return await (await fetcher("https://example.com")).text();
 	},
 });

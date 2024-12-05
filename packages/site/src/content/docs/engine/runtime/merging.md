@@ -19,4 +19,5 @@ The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
    2. Store that Block's Creation
    3. If the Block specified new addons for any other Blocks:
       1. Add those Blocks to the queue of Blocks to re-run
-3. Merge all Block Creations together
+3. Merge all Block Creations together for a preliminary result
+4. Run Block finalization functions on that result, overriding instead of merging

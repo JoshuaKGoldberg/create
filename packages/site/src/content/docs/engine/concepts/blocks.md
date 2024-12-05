@@ -14,8 +14,8 @@ Blocks can then be listed in [Presets](./presets) associated with the same base.
 
 ## Production
 
-Blocks define their logic for created repository portions in a `produce()` function.
-`produce()` returns a [Creation](../runtime/creations) describing any produced output.
+Blocks define their logic for created repository portions in a `build()` function.
+`build()` returns a [Creation](../runtime/creations) describing any produced output.
 
 When `create` scaffolds a repository from a Preset, it merges together the produced outputs from its listed Blocks.
 
@@ -25,7 +25,7 @@ For example, this Block describes creating a `.nvmrc` file:
 import { base } from "./base";
 
 export const blockNvmrc = base.createBlock({
-	produce() {
+	build() {
 		return {
 			files: {
 				".nvmrc": "20.12.2",
@@ -65,7 +65,7 @@ For example, a Base with a `name` option could create a Block that generates par
 import { base } from "./base";
 
 export const blockREADME = base.createBlock({
-	produce({ options }) {
+	build({ options }) {
 		return {
 			files: {
 				"README.md": `# ${options.name}`,
@@ -97,7 +97,7 @@ export const blockNames = base.createBlock({
 	addons: {
 		names: z.array(z.string()).default([]),
 	},
-	async produce({ addons }) {
+	async build({ addons }) {
 		return {
 			files: {
 				"names.txt": addons.names.join("\n"),
@@ -116,7 +116,7 @@ For example, this FruitNames Block composes Addons to the Names Block:
 import { base } from "./base";
 
 export const blockNames = base.createBlock({
-	async produce() {
+	async build() {
 		return {
 			addons: [
 				blockNames({

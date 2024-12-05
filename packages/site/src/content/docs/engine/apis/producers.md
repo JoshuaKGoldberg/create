@@ -21,14 +21,14 @@ Each production API takes in up to two arguments:
 
 ## `produceBase`
 
-Given a [Base](../concepts/bases), creates an options object by running its [`produce()`](../concepts/bases#production).
+Given a [Base](../concepts/bases), creates an options object by running its [`read()`](../concepts/bases#production).
 
 `produceBase` takes in up to two argument:
 
 1. `base` _(required)_: a Base
 2. `settings` _(optional)_: any properties from a [Base Context](../runtime/contexts#base-contexts), except for `take`
 
-For example, given this Base that declares an optional `value` option that defaults to `"default"`, `produceBase` can run its `produce()` with any provided options:
+For example, given this Base that declares an optional `value` option that defaults to `"default"`, `produceBase` can run its `read()` with any provided options:
 
 ```ts
 import { createBase, produceBase } from "create";
@@ -38,7 +38,7 @@ const base = createBase({
 	options: {
 		value: z.string().optional(),
 	},
-	produce(options) {
+	read(options) {
 		return {
 			value: options.value ?? "default",
 		};
@@ -57,7 +57,7 @@ await produceBase(base, {
 ```
 
 :::tip
-If the Base does not define a `produce()`, then `settings.options` is returned.
+If the Base does not define a `read()`, then `settings.options` is returned.
 :::
 
 ### `options` {#producebase-options}
@@ -81,14 +81,14 @@ await produceBase(base, {
 
 ## `produceBlock`
 
-Given a [Block](../concepts/blocks), creates a [Creation](../runtime/creations) output by running its [`produce()`](../concepts/blocks#production).
+Given a [Block](../concepts/blocks), creates a [Creation](../runtime/creations) output by running its [`build()`](../concepts/blocks#production).
 
 `produceBlock` takes in up to two arguments:
 
 1. `block` _(required)_: a Block
 2. `settings` _(required)_: at least `options`, as well as any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
-For example, given this Block that produces the start of a README.md file, `produceBlock` can run its `produce()` with any provided options:
+For example, given this Block that produces the start of a README.md file, `produceBlock` can run its `build()` with any provided options:
 
 ```ts
 import { produceBlock } from "create";
@@ -96,7 +96,7 @@ import { produceBlock } from "create";
 import { base } from "./base";
 
 const blockReadme = base.createBlock({
-	produce(options) {
+	build(options) {
 		return {
 			files: {
 				"README.md": `# ${options.title}`,
@@ -154,7 +154,7 @@ await produceBlock(block, {
 
 ## `produceInput`
 
-Given an [Input](../runtime/inputs), runs its `produce()` with any provided args.
+Given an [Input](../runtime/inputs), runs its `run()` with any provided args.
 
 `produceInput` takes in up to two arguments:
 
@@ -167,7 +167,7 @@ For example, this Input production reads data from an existing `data.json` file 
 import { createInput, produceInput } from "create";
 
 const inputDataJson = createInput({
-	async produce({ fs }) {
+	async run({ fs }) {
 		return await JSON.parse(await fs.readFile("data.json"));
 	},
 });
@@ -187,7 +187,7 @@ const inputJsonFile = createInput({
 	args: {
 		path: z.string(),
 	},
-	async produce({ args, fs }) {
+	async run({ args, fs }) {
 		return await JSON.parse(await fs.readFile(args.path));
 	},
 });
@@ -199,7 +199,7 @@ await produceInput(inputJsonFile, {
 
 ## `producePreset`
 
-Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations) output by running each of its Blocks [`produce()`](../concepts/blocks#production).
+Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations) output by running each of its Blocks [`build()`](../concepts/blocks#production).
 
 `producePreset` takes in up to two arguments:
 
@@ -212,7 +212,7 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
 `producePreset` returns a Promise for the Preset's [`Creation`](../runtime/creations).
 Both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations) will be present.
 
-For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `producePreset` can run its `produce()` with any provided options:
+For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `producePreset` can run the Block's `build()` with any provided options:
 
 ```ts
 import { producePreset } from "create";
@@ -254,11 +254,11 @@ A function that takes in the explicitly provided options and returns any remaini
 Preset options are generated through three steps:
 
 1. Any options provided by `producePreset`'s second parameter's `options`
-2. Calling the Preset's [Base](../concepts/bases)'s `produce` method, if it exists
+2. Calling the Preset's [Base](../concepts/bases)'s `read` method, if it exists
 3. Calling to an optional `optionsAugment` method of `producePreset`'s second parameter
 
-In other words, `optionsAugment` runs _after_ the Preset's [Base](../concepts/bases)'s `produce` method, if it exists.
-This can be useful to prompt for any options not determined by `produce()`.
+In other words, `optionsAugment` runs _after_ the Preset's [Base](../concepts/bases)'s `read` method, if it exists.
+This can be useful to prompt for any options not determined by `read()`.
 
 For example, this `optionsAugment` uses a Node.js prompt to fill in a `name` option if it isn't provided:
 

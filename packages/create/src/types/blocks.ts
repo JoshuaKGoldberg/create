@@ -1,6 +1,7 @@
 import { AnyOptionalShape, InferredObject } from "../options.js";
+import { PromiseOrSync } from "../utils/promises.js";
 import { AboutBase } from "./about.js";
-import { CreatedBlockAddons, Creation } from "./creations.js";
+import { CreatedBlockAddons, Creation, DirectCreation } from "./creations.js";
 
 export interface BlockDefinitionBase {
 	about?: AboutBase;
@@ -8,7 +9,8 @@ export interface BlockDefinitionBase {
 
 export interface BlockDefinitionWithoutAddons<Options extends object>
 	extends BlockDefinitionBase {
-	produce: BlockDefinitionProducerWithoutAddons<Options>;
+	build: BlockDefinitionBuildWithoutAddons<Options>;
+	finalize?: BlockDefinitionFinalizeWithoutAddons<Options>;
 }
 
 export interface BlockDefinitionWithAddons<
@@ -16,7 +18,8 @@ export interface BlockDefinitionWithAddons<
 	Options extends object,
 > extends BlockDefinitionBase {
 	addons: AddonsShape;
-	produce: BlockDefinitionProducerWithAddons<
+	build: BlockDefinitionBuildWithAddons<InferredObject<AddonsShape>, Options>;
+	finalize?: BlockDefinitionFinalizeWithAddons<
 		InferredObject<AddonsShape>,
 		Options
 	>;
@@ -29,19 +32,35 @@ export type BlockDefinition<
 	? BlockDefinitionWithAddons<AddonsShape, Options>
 	: BlockDefinitionWithoutAddons<Options>;
 
-export type BlockDefinitionProducerWithoutAddons<Options extends object> = (
+export type BlockDefinitionBuildWithoutAddons<Options extends object> = (
 	context: BlockContextWithoutAddons<Options>,
 ) => Partial<Creation<Options>>;
 
-export type BlockDefinitionProducerWithAddons<
+export type BlockDefinitionFinalizeWithoutAddons<Options extends object> = (
+	context: FinalizationContextWithoutAddons<Options>,
+) => PromiseOrSync<Partial<DirectCreation>>;
+
+export type BlockDefinitionBuildWithAddons<
 	Addons extends object,
 	Options extends object,
 > = (
 	context: BlockContextWithAddons<Addons, Options>,
 ) => Partial<Creation<Options>>;
 
+export type BlockDefinitionFinalizeWithAddons<
+	Addons extends object,
+	Options extends object,
+> = (
+	context: FinalizationContextWithAddons<Addons, Options>,
+) => PromiseOrSync<Partial<DirectCreation>>;
+
 export interface BlockContextWithoutAddons<Options extends object> {
 	options: Options;
+}
+
+export interface FinalizationContextWithoutAddons<Options extends object>
+	extends BlockContextWithoutAddons<Options> {
+	created: DirectCreation;
 }
 
 export interface BlockContextWithAddons<
@@ -52,6 +71,13 @@ export interface BlockContextWithAddons<
 	options: Options;
 }
 
+export interface FinalizationContextWithAddons<
+	Addons extends object,
+	Options extends object,
+> extends BlockContextWithAddons<Addons, Options> {
+	created: DirectCreation;
+}
+
 export interface BlockContextWithOptionalAddons<
 	Addons extends object,
 	Options extends object,
@@ -60,17 +86,26 @@ export interface BlockContextWithOptionalAddons<
 	options: Options;
 }
 
+export interface FinalizationContextWithOptionalAddons<
+	Addons extends object,
+	Options extends object,
+> extends BlockContextWithOptionalAddons<Addons, Options> {
+	created: DirectCreation;
+}
+
 export interface BlockBase {
 	about?: AboutBase;
 }
 
 export interface BlockWithoutAddons<Options extends object> extends BlockBase {
-	produce: BlockProducerWithoutAddons<Options>;
+	build: BlockBuildWithoutAddons<Options>;
+	finalize?: BlockFinalizeWithoutAddons<Options>;
 }
 
 export interface BlockWithAddons<Addons extends object, Options extends object>
 	extends BlockBase {
-	produce: BlockProducerWithAddons<Addons, Options>;
+	build: BlockBuildWithAddons<Addons, Options>;
+	finalize?: BlockFinalizeWithAddons<Addons, Options>;
 	(addons: Partial<Addons>): CreatedBlockAddons<Addons, Options>;
 }
 
@@ -81,13 +116,24 @@ export type Block<
 	? BlockWithAddons<Addons, Options>
 	: BlockWithoutAddons<Options>;
 
-export type BlockProducerWithAddons<
+export type BlockBuildWithAddons<
 	Addons extends object,
 	Options extends object,
 > = (
 	context: BlockContextWithAddons<Addons, Options>,
 ) => Partial<Creation<Options>>;
 
-export type BlockProducerWithoutAddons<Options extends object> = (
+export type BlockFinalizeWithAddons<
+	Addons extends object,
+	Options extends object,
+> = (
+	context: FinalizationContextWithAddons<Addons, Options>,
+) => PromiseOrSync<Partial<DirectCreation>>;
+
+export type BlockBuildWithoutAddons<Options extends object> = (
 	context: BlockContextWithoutAddons<Options>,
 ) => Partial<Creation<Options>>;
+
+export type BlockFinalizeWithoutAddons<Options extends object> = (
+	context: FinalizationContextWithoutAddons<Options>,
+) => PromiseOrSync<Partial<DirectCreation>>;

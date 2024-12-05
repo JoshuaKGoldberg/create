@@ -12,7 +12,7 @@ describe("createBase", () => {
 		describe("without Addons", () => {
 			it("produces without Addons", () => {
 				const block = base.createBlock({
-					produce({ options }) {
+					build({ options }) {
 						return {
 							files: {
 								"name.txt": options.name,
@@ -21,7 +21,7 @@ describe("createBase", () => {
 					},
 				});
 
-				const production = block.produce({ options: { name: "abc" } });
+				const production = block.build({ options: { name: "abc" } });
 
 				expect(production).toEqual({
 					files: {
@@ -37,7 +37,7 @@ describe("createBase", () => {
 					addons: {
 						names: z.array(z.string()).default([]),
 					},
-					produce({ addons, options }) {
+					build({ addons, options }) {
 						const { names } = addons;
 
 						return {
@@ -48,7 +48,7 @@ describe("createBase", () => {
 					},
 				});
 
-				const production = block.produce({
+				const production = block.build({
 					addons: { names: ["def"] },
 					options: { name: "abc" },
 				});

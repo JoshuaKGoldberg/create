@@ -19,14 +19,14 @@ export async function produceBase<OptionsShape extends AnyShape>(
 	base: Base<OptionsShape>,
 	settings: BaseProductionSettings<OptionsShape>,
 ): Promise<Partial<BaseProduction<OptionsShape>> | undefined> {
-	if (!base.produce) {
+	if (!base.read) {
 		return settings.options;
 	}
 
 	const { system, take } = createNativeSystems(settings);
 
 	return await awaitLazyProperties(
-		base.produce({
+		base.read({
 			options: settings.options ?? {},
 			...system,
 			take,

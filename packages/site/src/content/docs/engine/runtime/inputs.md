@@ -22,7 +22,7 @@ The kinds of dynamic data sourced by Inputs often include:
 
 ## Production
 
-Inputs define their logic for reading data in a `produce()` function.
+Inputs define their logic for reading data in a `run()` function.
 
 For example, an input that retrieves the current running time:
 
@@ -30,7 +30,7 @@ For example, an input that retrieves the current running time:
 import { createInput } from "create";
 
 export const inputNow = createInput({
-	produce() {
+	run() {
 		return performance.now();
 	},
 });
@@ -43,7 +43,7 @@ import { base } from "./base";
 import { inputNow } from "./inputNow";
 
 export const blockUsingNow = base.createBlock({
-	produce({ take }) {
+	run({ take }) {
 		const now = take(inputNow);
 
 		return {
@@ -73,7 +73,7 @@ For example, a block that uses the [Context's `runner`](../runtime/context#runne
 import { createInput } from "create";
 
 export const inputNpmWhoami = createInput({
-	produce({ runner }) {
+	run({ runner }) {
 		return (await runner("npm whoami")).stdout;
 	},
 });
@@ -89,7 +89,7 @@ Instead, Inputs may define and take in their own Args.
 Inputs describe those Args as the properties of a Zod object base.
 That allows them validate provided values and infer types from an `args` property in their context.
 
-For example, an input that retrieves JSON data from a file on disk using the provided virtual file system:
+For example, this input retrieves JSON data from a file on disk using the provided virtual file system:
 
 ```ts
 import { createInput } from "create";
@@ -99,7 +99,7 @@ export const inputJSONFile = createInput({
 	args: {
 		fileName: z.string(),
 	},
-	async produce({ args, fs }) {
+	async run({ args, fs }) {
 		try {
 			return JSON.parse((await fs.readFile(args.fileName)).toString());
 		} catch {
@@ -116,7 +116,7 @@ Later on, [`take`](../runtime/contexts#take) calls to the Input will be able to 
 Inputs are composable: meaning each can take data from other Inputs.
 As with Blocks, the [Context](../runtime/contexts) provided to Inputs includes a `take` function that calls to another Input.
 
-For example, an Input that determines the npm username based on either `npm whoami` or `package.json` Inputs:
+For example, this Input determines the npm username based on either `npm whoami` or `package.json` Inputs:
 
 ```ts
 import { createInput } from "create";
@@ -125,7 +125,7 @@ import { inputJSONFile } from "./inputJsonData";
 import { inputNpmWhoami } from "./inputNpmWhoami";
 
 export const inputNpmUsername = createInput({
-	async produce({ take }) {
+	async run({ take }) {
 		return (
 			(await take(inputNpmWhoami)) ??
 			(await take(inputJSONFile, { fileName: "package.json" })).author

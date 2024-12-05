@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { testBase } from "./testBase.js";
 
-const baseWithNoProduce = createBase({
+const baseWithNoRead = createBase({
 	options: {
 		value: z.string(),
 	},
@@ -14,7 +14,7 @@ const baseWithValueHardcoded = createBase({
 	options: {
 		value: z.string(),
 	},
-	produce() {
+	read() {
 		return {
 			value: "hardcoded",
 		};
@@ -22,25 +22,25 @@ const baseWithValueHardcoded = createBase({
 });
 
 describe("testBase", () => {
-	it("doesn't throw an error when the Base has no produce and settings isn't provided", async () => {
-		const actual = await testBase(baseWithNoProduce);
+	it("doesn't throw an error when the Base has no read and settings isn't provided", async () => {
+		const actual = await testBase(baseWithNoRead);
 
 		expect(actual).toEqual(undefined);
 	});
 
-	it("doesn't throw an error when the Base has no produce and settings is {}", async () => {
-		const actual = await testBase(baseWithNoProduce, {});
+	it("doesn't throw an error when the Base has no read and settings is {}", async () => {
+		const actual = await testBase(baseWithNoRead, {});
 
 		expect(actual).toEqual(undefined);
 	});
 
-	it("doesn't throw an error when the Base has a produce that does not use settings and settings isn't provided", async () => {
+	it("doesn't throw an error when the Base has a read that does not use settings and settings isn't provided", async () => {
 		const actual = await testBase(baseWithValueHardcoded);
 
 		expect(actual).toEqual({ value: "hardcoded" });
 	});
 
-	it("doesn't throw an error when the Base has a produce that does not use settings and settings is {}", async () => {
+	it("doesn't throw an error when the Base has a read that does not use settings and settings is {}", async () => {
 		const actual = await testBase(baseWithValueHardcoded, {});
 
 		expect(actual).toEqual({ value: "hardcoded" });
@@ -51,22 +51,22 @@ describe("testBase", () => {
 			options: {
 				value: z.string(),
 			},
-			produce({ options }) {
+			read({ options }) {
 				return {
 					value: options.value ?? "default",
 				};
 			},
 		});
 
-		it("returns the options directly when the Base has no produce", async () => {
-			const actual = await testBase(baseWithNoProduce, {
+		it("returns the options directly when the Base has no read", async () => {
+			const actual = await testBase(baseWithNoRead, {
 				options: { value: "direct" },
 			});
 
 			expect(actual).toEqual({ value: "direct" });
 		});
 
-		it("throws an error when the Base produce uses options and settings does not contain options", async () => {
+		it("throws an error when the Base read uses options and settings does not contain options", async () => {
 			await expect(
 				async () => await testBase(baseWithValueFromOptions, {}),
 			).rejects.toMatchInlineSnapshot(
@@ -74,7 +74,7 @@ describe("testBase", () => {
 			);
 		});
 
-		it("uses options when the Base produce uses options and settings contains options", async () => {
+		it("uses options when the Base read uses options and settings contains options", async () => {
 			const actual = await testBase(baseWithValueFromOptions, {
 				options: { value: "override" },
 			});
@@ -86,21 +86,21 @@ describe("testBase", () => {
 	describe("take", () => {
 		const constant = "abc123";
 		const inputConstant = createInput({
-			produce: () => constant,
+			run: () => constant,
 		});
 
 		const baseWithValueFromInput = createBase({
 			options: {
 				value: z.string(),
 			},
-			produce({ take }) {
+			read({ take }) {
 				return {
 					value: () => take(inputConstant),
 				};
 			},
 		});
 
-		it("throws an error when the Base produce uses take and settings does not include take", async () => {
+		it("throws an error when the Base read uses take and settings does not include take", async () => {
 			await expect(async () =>
 				testBase(baseWithValueFromInput, { options: { value: "unused" } }),
 			).rejects.toMatchInlineSnapshot(
@@ -108,7 +108,7 @@ describe("testBase", () => {
 			);
 		});
 
-		it("uses the provide take when the Base produce uses take and settings includes take", async () => {
+		it("uses the provide take when the Base read uses take and settings includes take", async () => {
 			const take = vi.fn().mockReturnValueOnce("taken");
 
 			const actual = await testBase(baseWithValueFromInput, { take });

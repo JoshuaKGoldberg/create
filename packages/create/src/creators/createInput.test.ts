@@ -8,7 +8,7 @@ describe("createInput", () => {
 		const expected = 123;
 
 		const input = createInput({
-			produce: () => expected,
+			run: () => expected,
 		});
 
 		const actual = input({
@@ -28,7 +28,7 @@ describe("createInput", () => {
 			args: {
 				offset: z.number(),
 			},
-			produce: ({ args }) => expected + args.offset,
+			run: ({ args }) => expected + args.offset,
 		});
 
 		const actual = input({

@@ -6,6 +6,7 @@ import {
 	BlockDefinitionWithoutAddons,
 	BlockWithAddons,
 	BlockWithoutAddons,
+	FinalizationContextWithAddons,
 } from "../types/blocks.js";
 import { Preset, PresetDefinition } from "../types/presets.js";
 import { assertNoDuplicateBlocks } from "./assertNoDuplicateBlocks.js";
@@ -44,12 +45,24 @@ export function createBase<OptionsShape extends AnyShape>(
 		// ...and also still have the Block Definition properties.
 		Object.assign(block, blockDefinition);
 
-		block.produce = (context: BlockContextWithAddons<Addons, Options>) => {
-			return blockDefinition.produce({
+		// Both build() and finalize() for Blocks with Addons apply defaults to their values
+		const { build, finalize } = blockDefinition;
+
+		block.build = (context: BlockContextWithAddons<Addons, Options>) => {
+			return build({
 				...context,
 				addons: applyZodDefaults(addonsSchema, context.addons),
 			});
 		};
+
+		block.finalize =
+			finalize &&
+			((context: FinalizationContextWithAddons<Addons, Options>) => {
+				return finalize({
+					...context,
+					addons: applyZodDefaults(addonsSchema, context.addons),
+				});
+			});
 
 		return block as BlockWithAddons<Addons, Options>;
 	}

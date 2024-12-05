@@ -18,13 +18,13 @@ Each contains shared helper functions and information.
 
 ## Base Contexts
 
-The Context object provided to the `produce` object of [Bases](../concepts/bases).
+The Context object provided to the `read` object of [Bases](../concepts/bases).
 
 ### `options` {#base-options}
 
 Any manually provided values as described by the [Base's `options`](../concepts/bases#options).
 
-[Base `produce()`](../concepts/bases#production) methods are designed to fill in any options not manually provided by the user.
+[Base `read()`](../concepts/bases#production) methods are designed to fill in any options not manually provided by the user.
 Options that are manually provided are available under the Base Context's `options`.
 
 For example, this Base defaults an `name` option to a kebab-case version of its `title` option:
@@ -35,7 +35,7 @@ export const base = createBase({
 		name: z.string().optional(),
 		title: z.string(),
 	},
-	produce({ options }) {
+	read({ options }) {
 		return {
 			name: options.title.toLowerCase().replaceAll(" ", "-"),
 		};
@@ -50,7 +50,7 @@ This is the same as [Input Contexts' `take`](#input-take).
 
 ## Block Contexts
 
-The Context object provided to the `produce` object of [Blocks](../concepts/blocks).
+The Context object provided to the `build()` method of [Blocks](../concepts/blocks).
 
 ### `addons`
 
@@ -63,7 +63,7 @@ export const blockGitignore = base.createBlock({
 	addons: {
 		ignores: z.array(z.string()).default([]),
 	},
-	produce({ addons }) {
+	build({ addons }) {
 		return {
 			files: {
 				".gitignore": ["/node_modules", ...addons.ignores].join("\n"),
@@ -92,9 +92,18 @@ export const base = createBase({
 });
 ```
 
+### Finalization Contexts {#block-finalization-contexts}
+
+An expanded version of a Block Context provided to the [`finalize()` method](../apis/creators#createblock-finalize) of a Block.
+Finalization Contexts include all the properties of Block Contexts, as well as:
+
+#### `created`
+
+The [Direct Creations](../concepts/creations#direct-creations) produced by other Blocks.
+
 ## Input Contexts
 
-The Context object provided to the `produce` object of [Inputs](../inputs).
+The Context object provided to the `run` object of [Inputs](../inputs).
 
 ### `args` {#input-options}
 
@@ -113,7 +122,7 @@ export const inputFile = createInput({
 		a: z.number(),
 		b: z.number(),
 	},
-	async produce({ args }) {
+	async run({ args }) {
 		return args.a + args.b;
 	},
 });
@@ -131,7 +140,7 @@ For example, an Input that retrieves a random Cat fact:
 import { createInput } from "create";
 
 export const inputCatFact = createInput({
-	async produce({ fetcher }) {
+	async run({ fetcher }) {
 		const response = await fetcher("https://catfact.ninja/fact");
 		const data = (await response.json()) as { fact: string };
 
@@ -158,7 +167,7 @@ export const inputFile = createInput({
 	args: {
 		fileName: z.string(),
 	},
-	async produce({ args, fs }) {
+	async run({ args, fs }) {
 		return (await fs.readFile(args.fileName)).toString();
 	},
 });
@@ -176,7 +185,7 @@ For example, an Input that retrieves the current Git user's email:
 import { createInput } from "create";
 
 export const inputGitUserEmail = createInput({
-	async produce({ runner }) {
+	async run({ runner }) {
 		return (await runner("git config user.email")).stdout;
 	},
 });
@@ -198,7 +207,7 @@ import { inputNpmWhoami } from "./inputNpmWhoami";
 const fileName = "AUTHORS.md";
 
 export const blockFileModified = base.createBlock({
-	async produce({ take }) {
+	async run({ take }) {
 		const existing = await take(inputFile, { fileName });
 		const author = await take(inputNpmWhoami);
 

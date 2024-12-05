@@ -38,7 +38,7 @@ export function testBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockContextSettingsWithOptionalAddons<Addons, Options> = {},
 ): Partial<Creation<Options>> {
-	return block.produce({
+	return block.build({
 		get addons() {
 			return failingFunction("addons", "the Block");
 		},

@@ -4,12 +4,12 @@ import { z } from "zod";
 import { createBase } from "../creators/createBase.js";
 import { produceBase } from "./produceBase.js";
 
-describe("producePreset", () => {
+describe("produceBase", () => {
 	const baseWithOptionalOption = createBase({
 		options: {
 			value: z.string().optional(),
 		},
-		produce({ options }) {
+		read({ options }) {
 			return {
 				value: options.value ?? "default",
 			};

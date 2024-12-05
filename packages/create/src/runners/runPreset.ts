@@ -1,19 +1,20 @@
 import {
 	BlockProduction,
 	getUpdatedBlockAddons,
-} from "../mergers/getUpdatedBlockAddons.js";
-import { mergeCreations } from "../mergers/mergeCreations.js";
+} from "../joins/getUpdatedBlockAddons.js";
+import { mergeCreations } from "../joins/mergeCreations.js";
+import { overrideCreations } from "../joins/overrideCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Block } from "../types/blocks.js";
-import { Creation } from "../types/creations.js";
+import { Creation, DirectCreation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
 
-export function runPreset<OptionsShape extends AnyShape>(
+export async function runPreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	options: InferredObject<OptionsShape>,
 	presetContext: SystemContext,
-) {
+): Promise<DirectCreation> {
 	type Options = InferredObject<OptionsShape>;
 
 	// From engine/runtime/merging.md:
@@ -35,7 +36,7 @@ export function runPreset<OptionsShape extends AnyShape>(
 			// 2.1. Get the Creation from the Block, passing any current known Args
 			const previousProduction = blockProductions.get(currentBlock);
 			const previousAddons = previousProduction?.addons ?? {};
-			const blockCreation = currentBlock.produce({
+			const blockCreation = currentBlock.build({
 				...presetContext,
 				addons: previousAddons,
 				options,
@@ -66,7 +67,7 @@ export function runPreset<OptionsShape extends AnyShape>(
 	}
 
 	// 3. Merge all Block Creations together
-	return Array.from(blockProductions.values()).reduce<Creation<Options>>(
+	let created = Array.from(blockProductions.values()).reduce<Creation<Options>>(
 		(created, next) => mergeCreations(created, next.creation ?? {}),
 		{
 			addons: [],
@@ -74,4 +75,26 @@ export function runPreset<OptionsShape extends AnyShape>(
 			files: {},
 		},
 	);
+
+	//	4. Run Block finalization functions on that result, overriding instead of merging
+	for (const block of preset.blocks) {
+		if (block.finalize) {
+			created = overrideCreations(
+				created,
+				await block.finalize({
+					// If the Block has addons, they would have been in the Map by now
+					// (Block is typed as *WithAddons, but should be *WithAddons | *WithoutAddons)
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+					addons: blockProductions.get(block)?.addons!,
+					created,
+					options,
+				}),
+			);
+		}
+	}
+
+	return {
+		commands: created.commands,
+		files: created.files,
+	};
 }

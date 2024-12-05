@@ -23,7 +23,7 @@ describe("runPreset", () => {
 			about: {
 				name: "Example Block",
 			},
-			produce({ options }) {
+			build({ options }) {
 				return {
 					files: { "README.md": options.value },
 				};

@@ -12,7 +12,7 @@ export type InputDefinition<
 	: InputDefinitionWithoutArgs<Result>;
 
 export interface InputDefinitionWithoutArgs<Result> {
-	produce: Input<Result>;
+	run: Input<Result>;
 }
 
 export interface InputDefinitionWithArgs<
@@ -20,7 +20,7 @@ export interface InputDefinitionWithArgs<
 	ArgsSchema extends AnyShape | undefined,
 > {
 	args: ArgsSchema;
-	produce: Input<Result, InferredObject<ArgsSchema>>;
+	run: Input<Result, InferredObject<ArgsSchema>>;
 }
 
 export function createInput<
@@ -31,7 +31,7 @@ export function createInput<
 ): Input<Result, InferredObject<ArgsSchema>> {
 	if (!isDefinitionWithArgs(inputDefinition)) {
 		return ((context: InputContext) => {
-			return inputDefinition.produce(context);
+			return inputDefinition.run(context);
 		}) as Input<Result, InferredObject<ArgsSchema>>;
 	}
 
@@ -40,7 +40,7 @@ export function createInput<
 	return ((
 		context: InputContextWithArgs<InferredObject<NonNullable<ArgsSchema>>>,
 	) => {
-		return inputDefinition.produce({
+		return inputDefinition.run({
 			...context,
 			args: base.parse(context.args),
 		});

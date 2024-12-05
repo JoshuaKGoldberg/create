@@ -5,7 +5,6 @@ import { z } from "zod";
 import { testPreset } from "./testPreset.js";
 
 const emptyCreation = {
-	addons: [],
 	commands: [],
 	files: {},
 };
@@ -23,7 +22,7 @@ describe("testPreset", () => {
 
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
-			produce({ options }) {
+			build({ options }) {
 				return {
 					files: {
 						"value.txt": options.value,

@@ -11,14 +11,14 @@ import { Preset, PresetDefinition } from "./presets.js";
 
 export interface BaseDefinition<OptionsShape extends AnyShape> {
 	options: OptionsShape;
-	produce?: BaseProducer<InferredObject<OptionsShape>>;
+	read?: BaseReader<InferredObject<OptionsShape>>;
 }
 
 export interface Base<OptionsShape extends AnyShape> {
 	createBlock: CreateBlock<InferredObject<OptionsShape>>;
 	createPreset: CreatePreset<OptionsShape>;
 	options: OptionsShape;
-	produce?: BaseProducer<InferredObject<OptionsShape>>;
+	read?: BaseReader<InferredObject<OptionsShape>>;
 }
 
 export interface BaseContext<Options> extends TakeContext {
@@ -26,7 +26,7 @@ export interface BaseContext<Options> extends TakeContext {
 	take: TakeInput;
 }
 
-export type BaseProducer<Options> = (
+export type BaseReader<Options> = (
 	context: BaseContext<Partial<Options>>,
 ) => LazyOptionalOptions<Partial<Options>>;
 
