@@ -119,6 +119,10 @@ importers:
         version: 7.5.8
 
   packages/create-testers:
+    dependencies:
+      create:
+        specifier: workspace:*
+        version: link:../create
     devDependencies:
       zod:
         specifier: ^3.23.8

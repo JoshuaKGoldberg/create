@@ -26,6 +26,9 @@
 	"devDependencies": {
 		"zod": "^3.23.8"
 	},
+	"peerDependencies": {
+		"create": "workspace:*"
+	},
 	"engines": {
 		"node": ">=18"
 	},
