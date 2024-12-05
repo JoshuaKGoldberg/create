@@ -57,7 +57,10 @@ jobs:
       - uses: ./.github/actions/prepare
       - run: pnpm run build
       - run: pnpm run test --coverage
-      - uses: codecov/codecov-action@v3
+      - if: always()
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v3
   type_check:
     name: Type Check
     runs-on: ubuntu-latest
