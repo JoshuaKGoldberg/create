@@ -21,7 +21,7 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "tsc -b -p tsconfig.build.json",
+		"build": "tsc -b tsconfig.build.json",
 		"format": "prettier .",
 		"lint": "eslint . --max-warnings 0",
 		"lint:knip": "knip",
