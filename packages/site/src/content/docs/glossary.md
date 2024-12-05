@@ -19,7 +19,7 @@ Bases are used to create child [Blocks](#block) and [Presets](#preset).
 
 > 👉 See: [Runtime > Contexts > Base Contexts](./runtime/contexts#base-contexts).
 
-The shared helper functions and information provided to [Bases](#bases).
+The shared helper functions and information provided to [Bases](#base).
 
 These include user-provided [Options](#options), if they exist.
 

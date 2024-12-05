@@ -194,8 +194,10 @@ It is similar to `create` in that it is a flexible underlying engine that allows
   - `create` does not hardcode types of tasks or the tools used for them.
   - projen bundles its own understanding of ecosystem tools such as package managers and linters, and provides APIs for projects to choose from its preferred tools.
 - _Low-level code design principles:_
-  - `create` uses lean functions. Output file structures are defined with raw objects and strings.
-  - projen leans into classes in its architecture. It heavily uses [jsii](https://github.com/aws/jsii) and defines output files with classes.
+  - `create` uses lean functions.
+    Output file structures are defined with raw objects and strings.
+  - projen leans into classes in its architecture.
+    It heavily uses [jsii](https://github.com/aws/jsii) and defines output files with classes.
 
 </details>
 
