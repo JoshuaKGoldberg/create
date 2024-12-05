@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
+      - run: pnpm build
       - run: pnpm lint
   lint_knip:
     name: Lint Knip

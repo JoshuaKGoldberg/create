@@ -2,11 +2,13 @@
 	"dictionaries": ["typescript"],
 	"ignorePaths": [
 		".github",
+		"*.tsbuildinfo",
 		"CHANGELOG.md",
 		"coverage",
 		"lib",
 		"node_modules",
 		"packages/*/tsconfig.tsbuildinfo",
+		"packages/site/src/content",
 		"pnpm-lock.yaml"
 	],
 	"words": [

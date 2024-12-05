@@ -1,11 +1,17 @@
 {
 	"$schema": "https://unpkg.com/knip@latest/schema.json",
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["packages/*/src/**/*.ts!"],
 	"workspaces": {
 		"packages/create": {
 			"project": ["src/**/*.ts!"],
 			"entry": ["src/index.ts!"]
+		},
+		"packages/create-testers": {
+			"project": ["src/**/*.ts!"],
+			"entry": ["src/index.ts!"]
+		},
+		"packages/site": {
+			"entry": ["astro.config.ts"]
 		}
 	}
 }

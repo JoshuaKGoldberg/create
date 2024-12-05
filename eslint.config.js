@@ -20,6 +20,7 @@ export default tseslint.config(
 			"packages/*/lib",
 			"packages/*/tsconfig.tsbuildinfo",
 			"packages/site/.astro",
+			"packages/site/src/content",
 			"packages/site/src/env.d.ts",
 			"pnpm-lock.yaml",
 			"pnpm-workspace.yaml",
