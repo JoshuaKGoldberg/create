@@ -1,14 +1,8 @@
-import {
-	BlockWithAddons,
-	BlockWithoutAddons,
-	Creation,
-	IndirectCreation,
-} from "create";
+import { BlockWithAddons, BlockWithoutAddons, Creation } from "create";
 
 import { createFailingObject, failingFunction } from "./utils.js";
 
 export interface BlockContextSettingsWithoutAddons<Options extends object> {
-	created?: Partial<IndirectCreation<Options>>;
 	options?: Options;
 }
 

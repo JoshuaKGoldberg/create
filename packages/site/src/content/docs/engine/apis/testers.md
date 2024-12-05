@@ -147,9 +147,7 @@ Both [Direct Creations](../runtime/creations#direct-creations) and [Indirect Cre
 However, some properties will cause `testBlock` to throw an error if they're not provided and the Block attempts to use them:
 
 - [`args`](#testblock-args): throws an error if accessed at all
-- [`created`](#testblock-created): by default, set to an object with empty `{}` and `[]`s for each property
 - [`options`](#testblock-options): each property throws an error if accessed at all
-- [`take`](#testblock-take): by default, throws an error if called as a function
 
 ### `args` {#testblock-args}
 
