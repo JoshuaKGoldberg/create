@@ -46,7 +46,7 @@ export type CreatedFileEntry =
 export interface CreatedFileOptions {
 	/**
 	 * File mode (permission and sticky bits) per chmod().
-	 * @example 755 for an executable file.
+	 * @example 0o777 for an executable file.
 	 */
 	mode?: string;
 }
