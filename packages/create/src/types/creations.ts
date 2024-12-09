@@ -48,5 +48,5 @@ export interface CreatedFileOptions {
 	 * File mode (permission and sticky bits) per chmod().
 	 * @example 0o777 for an executable file.
 	 */
-	mode?: string;
+	mode?: number;
 }

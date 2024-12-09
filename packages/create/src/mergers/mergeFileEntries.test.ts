@@ -26,13 +26,13 @@ describe("mergeFileEntries", () => {
 		[["a", {}], ["a", {}], "a"],
 		[["a", {}], ["a", {}], "a"],
 		[
-			["a", { mode: "446" }],
-			["a", { mode: "446" }],
-			["a", { mode: "446" }],
+			["a", { mode: 0o123 }],
+			["a", { mode: 0o123 }],
+			["a", { mode: 0o123 }],
 		],
 		[
-			["a", { mode: "446" }],
-			["a", { mode: "557" }],
+			["a", { mode: 0o123 }],
+			["a", { mode: 0o456 }],
 			new Error(`Conflicting created file modes at path: 'test/path'.`),
 		],
 		["a", "b", new Error("Conflicting created files at path: 'test/path'.")],

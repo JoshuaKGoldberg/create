@@ -10,6 +10,6 @@ export function mergeCreations<Options extends object>(
 	return {
 		addons: mergeAddons(first.addons, second.addons),
 		commands: mergeArrays(first.commands, second.commands),
-		files: mergeFileCreations(first.files, second.files, []),
+		files: mergeFileCreations(first.files, second.files, []) ?? {},
 	};
 }
