@@ -49,6 +49,9 @@ export default tseslint.config(
 			// These off-by-default rules work well for this repo and we like them on.
 			"jsdoc/informative-docs": "error",
 
+			// https://github.com/gajus/eslint-plugin-jsdoc/issues/1343
+			"jsdoc/lines-before-block": "off",
+
 			// Stylistic concerns that don't interfere with Prettier
 			"logical-assignment-operators": [
 				"error",

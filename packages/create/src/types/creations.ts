@@ -36,4 +36,17 @@ export interface CreatedFiles {
 	[i: string]: CreatedFileEntry | undefined;
 }
 
-export type CreatedFileEntry = CreatedFiles | false | string;
+export type CreatedFileEntry =
+	| [string, CreatedFileOptions]
+	| [string]
+	| CreatedFiles
+	| false
+	| string;
+
+export interface CreatedFileOptions {
+	/**
+	 * File mode (permission and sticky bits) per chmod().
+	 * @example 0o777 for an executable file.
+	 */
+	mode?: number;
+}

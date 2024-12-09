@@ -1,7 +1,7 @@
 import { Creation } from "../types/creations.js";
 import { mergeAddons } from "./mergeAddons.js";
 import { mergeArrays } from "./mergeArrays.js";
-import { mergeFiles } from "./mergeFiles.js";
+import { mergeFileCreations } from "./mergeFileCreations.js";
 
 export function mergeCreations<Options extends object>(
 	first: Creation<Options>,
@@ -10,6 +10,6 @@ export function mergeCreations<Options extends object>(
 	return {
 		addons: mergeAddons(first.addons, second.addons),
 		commands: mergeArrays(first.commands, second.commands),
-		files: mergeFiles(first.files, second.files, []),
+		files: mergeFileCreations(first.files, second.files, []) ?? {},
 	};
 }

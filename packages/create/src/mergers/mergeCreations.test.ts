@@ -72,7 +72,7 @@ describe("mergeCreations", () => {
 				},
 			),
 		).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Duplicate created file: 'src > index.ts'.]`,
+			`[Error: Conflicting created files at path: 'src/index.ts'.]`,
 		);
 	});
 });

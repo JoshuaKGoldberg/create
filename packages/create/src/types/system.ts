@@ -3,9 +3,14 @@ import { Result } from "execa";
 import { TakeContext } from "./context.js";
 import { InputFileSystem } from "./inputs.js";
 
+export interface FileSystemWriteFileOptions {
+	mode?: number;
+}
+
 export type FileSystemWriteFile = (
 	filePath: string,
 	contents: string,
+	options?: FileSystemWriteFileOptions,
 ) => Promise<void>;
 
 export type FileSystemWriteDirectory = (directoryPath: string) => Promise<void>;

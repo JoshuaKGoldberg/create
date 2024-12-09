@@ -75,7 +75,7 @@ Each object under `files` describes a folder of files.
 Properties whose values are strings are written as files on disk.
 Properties whose values are objects represent a directory.
 
-For example, a block that generates a `.github/CODE_OF_CONDUCT.md` file:
+For example, this Block that generates a `.github/CODE_OF_CONDUCT.md` file:
 
 ```ts
 import { base } from "../base";
@@ -93,7 +93,33 @@ export const blockContributorCovenant = base.createBlock({
 });
 ```
 
+#### File Creations
+
+Each property in a `files` object may be one of the following:
+
+- `false` or `undefined`: Ignored
+- `object`: A directory, whose properties recursively are file creations
+- `string`: A file to be created
+- `[string, CreatedFileOptions]`: A file to be created with [`fsPromises.writeFile` options](https://nodejs.org/api/fs.html#fspromiseswritefilefile-data-options):
+  - `mode`: Integer mode, such as `0o777` to make executable
+
 That would instruct the `create` engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
+
+For example, this Block generates an executable `.husky/pre-commit` file:
+
+```ts
+import { base } from "../base";
+
+export const blockPreCommit = base.createBlock({
+	produce() {
+		return {
+			".husky": {
+				"pre-commit": ["npx lint-staged\n", { mode: 0o777 }],
+			},
+		};
+	},
+});
+```
 
 ## Indirect Creations
 
