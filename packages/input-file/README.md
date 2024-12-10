@@ -15,9 +15,13 @@ npm i input-file
 ```
 
 ```ts
-import { inputFile } from "./inputs/inputFile.js";
+import { inputFile } from "input-file";
 
 await take(inputFile, { filePath: "data.txt" });
 ```
+
+## Options
+
+`inputFile` takes a single argument, `filePath`, of type `string`.
 
 See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.
