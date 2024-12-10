@@ -20,4 +20,4 @@ import { inputJSONFile } from "./inputs/inputJSONFile.js";
 await take(inputJSONFile, { filePath: "data.json" });
 ```
 
-See **[create-josh.vercel.app](https://input-file-json-josh.vercel.app/engine/runtime/inputs)** for documentation.
+See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.

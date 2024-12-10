@@ -20,4 +20,4 @@ import { inputFile } from "./inputs/inputFile.js";
 await take(inputFile, { filePath: "data.txt" });
 ```
 
-See **[create-josh.vercel.app](https://input-file-josh.vercel.app/engine/runtime/inputs)** for documentation.
+See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.
