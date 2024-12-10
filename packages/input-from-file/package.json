@@ -1,11 +1,11 @@
 {
-	"name": "input-file",
+	"name": "input-from-file",
 	"version": "0.1.0-alpha.0",
 	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
-		"directory": "packages/input-file"
+		"directory": "packages/input-from-file"
 	},
 	"license": "MIT",
 	"author": {

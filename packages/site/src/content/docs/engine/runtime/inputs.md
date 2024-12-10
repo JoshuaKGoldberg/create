@@ -138,8 +138,8 @@ export const inputNpmUsername = createInput({
 
 `create` manages a small set of commonly useful Inputs:
 
-- [`input-file`](https://www.npmjs.com/package/input-file): Reads a file's contents as text
-- [`input-file-json`](https://www.npmjs.com/package/input-file-json): Parse's a file's text contexts with `JSON.parse`
+- [`input-from-file`](https://www.npmjs.com/package/input-from-file): Reads a file's contents as text
+- [`input-from-file-json`](https://www.npmjs.com/package/input-from-file-json): Parse's a file's text contexts with `JSON.parse`
 
 See those individual packages for their documentation.
 

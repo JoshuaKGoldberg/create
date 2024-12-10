@@ -282,13 +282,13 @@ However, some properties will cause `testInput` to throw an error if they're not
 import { testInput } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { inputFile } from "./inputFile.js";
+import { inputFromFile } from "./inputFromFile.js";
 
-describe("inputFile", () => {
+describe("inputFromFile", () => {
 	it("returns the file's text when it exists", async () => {
 		const text = "abc123";
 
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: {
 				filePath: "file.txt",
 			},
@@ -335,20 +335,20 @@ describe("inputCatFact", () => {
 
 An object containing mocks to act as a file system.
 
-For example, this test asserts that an `inputFile` input returns the text of a file from disk:
+For example, this test asserts that an `inputFromFile` input returns the text of a file from disk:
 
 ```ts
 import { testInput } from "create-testers";
 import { describe, expect, it, vi } from "vitest";
 
-import { inputFile } from "./inputCatFact";
+import { inputFromFile } from "./inputCatFact";
 
-describe("inputFile", () => {
+describe("inputFromFile", () => {
 	it("returns the contents of a file", async () => {
 		const contents = "abc123";
 		const readFile = vi.fn().mockResolvedValue(contents);
 
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: { fileName: "text.txt" },
 			fs: { readFile },
 		});

@@ -1,11 +1,11 @@
 {
-	"name": "input-file-json",
+	"name": "input-from-file-json",
 	"version": "0.1.0-alpha.0",
 	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
-		"directory": "packages/input-file-json"
+		"directory": "packages/input-from-file-json"
 	},
 	"license": "MIT",
 	"author": {
@@ -24,7 +24,7 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"input-file": "workspace:*",
+		"input-from-file": "workspace:*",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

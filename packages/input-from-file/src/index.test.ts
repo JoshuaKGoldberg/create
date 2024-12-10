@@ -1,13 +1,13 @@
 import { testInput } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { inputFile } from "./index.js";
+import { inputFromFile } from "./index.js";
 
-describe("inputFile", () => {
+describe("inputFromFile", () => {
 	it("returns the file's text when it exists", async () => {
 		const text = "abc123";
 
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: {
 				filePath: "file.txt",
 			},
@@ -21,7 +21,7 @@ describe("inputFile", () => {
 
 	it("returns an error when reading the file rejects with an error", async () => {
 		const error = new Error("Oh no!");
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: {
 				filePath: "file.txt",
 			},
@@ -35,7 +35,7 @@ describe("inputFile", () => {
 
 	it("returns an error when reading the file rejects with a string", async () => {
 		const error = new Error("Oh no!");
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: {
 				filePath: "file.txt",
 			},

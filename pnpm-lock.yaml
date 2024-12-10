@@ -121,7 +121,7 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
 
-  packages/input-file:
+  packages/input-from-file:
     dependencies:
       create:
         specifier: workspace:*
@@ -134,14 +134,14 @@ importers:
         specifier: workspace:*
         version: link:../create-testers
 
-  packages/input-file-json:
+  packages/input-from-file-json:
     dependencies:
       create:
         specifier: workspace:*
         version: link:../create
-      input-file:
+      input-from-file:
         specifier: workspace:*
-        version: link:../input-file
+        version: link:../input-from-file
       zod:
         specifier: ^3.23.8
         version: 3.23.8

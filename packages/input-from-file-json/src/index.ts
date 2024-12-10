@@ -1,5 +1,5 @@
 import { createInput } from "create";
-import { inputFile } from "input-file";
+import { inputFromFile } from "input-from-file";
 import { z } from "zod";
 
 export const inputFileJSON = createInput({
@@ -7,7 +7,7 @@ export const inputFileJSON = createInput({
 		filePath: z.string(),
 	},
 	async produce({ args, take }) {
-		const text = await take(inputFile, args);
+		const text = await take(inputFromFile, args);
 
 		if (text instanceof Error) {
 			return text;

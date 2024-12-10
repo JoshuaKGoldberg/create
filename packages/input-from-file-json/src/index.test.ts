@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { inputFileJSON } from "./index.js";
 
 describe("inputFileJSON", () => {
-	it("returns the file's data when inputFile resolves with a data string", async () => {
+	it("returns the file's data when inputFromFile resolves with a data string", async () => {
 		const data = { value: "abc123" };
 
 		const actual = await testInput(inputFileJSON, {
@@ -17,7 +17,7 @@ describe("inputFileJSON", () => {
 		expect(actual).toEqual(data);
 	});
 
-	it("returns the error when inputFile resolves with an error", async () => {
+	it("returns the error when inputFromFile resolves with an error", async () => {
 		const error = new Error("Oh no!");
 
 		const actual = await testInput(inputFileJSON, {
@@ -30,7 +30,7 @@ describe("inputFileJSON", () => {
 		expect(actual).toEqual(error);
 	});
 
-	it("returns the parsing error when inputFile resolves with non-parsable string", async () => {
+	it("returns the parsing error when inputFromFile resolves with non-parsable string", async () => {
 		const actual = await testInput(inputFileJSON, {
 			args: {
 				filePath: "file.txt",
