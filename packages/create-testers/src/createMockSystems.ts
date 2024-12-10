@@ -1,8 +1,9 @@
-import { NativeSystem, TakeInput, WritingFileSystem } from "create";
+import { TakeInput, WritingFileSystem } from "create";
 
+import { MockSystemOptions } from "./types.js";
 import { createFailingFunction } from "./utils.js";
 
-export function createMockSystems(settings: Partial<NativeSystem> = {}) {
+export function createMockSystems(settings: MockSystemOptions = {}) {
 	const fetcher =
 		settings.fetcher ?? createFailingFunction("fetcher", "an input");
 
@@ -17,7 +18,9 @@ export function createMockSystems(settings: Partial<NativeSystem> = {}) {
 
 	const system = { fetcher, fs, runner };
 
-	const take = ((input, args) => input({ args, take, ...system })) as TakeInput;
+	const take =
+		settings.take ??
+		(((input, args) => input({ args, take, ...system })) as TakeInput);
 
 	return { system, take };
 }
