@@ -2,7 +2,7 @@ import { createInput } from "create";
 import { inputFromFile } from "input-from-file";
 import { z } from "zod";
 
-export const inputFileJSON = createInput({
+export const inputFromFileJSON = createInput({
 	args: {
 		filePath: z.string(),
 	},

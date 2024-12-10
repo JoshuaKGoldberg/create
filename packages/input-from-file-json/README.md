@@ -15,13 +15,13 @@ npm i input-from-file-json
 ```
 
 ```ts
-import { inputFileJSON } from "input-from-file-json";
+import { inputFromFileJSON } from "input-from-file-json";
 
-await take(inputFileJSON, { filePath: "data.json" });
+await take(inputFromFileJSON, { filePath: "data.json" });
 ```
 
 ## Options
 
-`inputFileJSON` takes a single argument, `filePath`, of type `string`.
+`inputFromFileJSON` takes a single argument, `filePath`, of type `string`.
 
 See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.

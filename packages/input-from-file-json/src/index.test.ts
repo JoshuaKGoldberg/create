@@ -1,13 +1,13 @@
 import { testInput } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { inputFileJSON } from "./index.js";
+import { inputFromFileJSON } from "./index.js";
 
-describe("inputFileJSON", () => {
+describe("inputFromFileJSON", () => {
 	it("returns the file's data when inputFromFile resolves with a data string", async () => {
 		const data = { value: "abc123" };
 
-		const actual = await testInput(inputFileJSON, {
+		const actual = await testInput(inputFromFileJSON, {
 			args: {
 				filePath: "file.txt",
 			},
@@ -20,7 +20,7 @@ describe("inputFileJSON", () => {
 	it("returns the error when inputFromFile resolves with an error", async () => {
 		const error = new Error("Oh no!");
 
-		const actual = await testInput(inputFileJSON, {
+		const actual = await testInput(inputFromFileJSON, {
 			args: {
 				filePath: "file.txt",
 			},
@@ -31,7 +31,7 @@ describe("inputFileJSON", () => {
 	});
 
 	it("returns the parsing error when inputFromFile resolves with non-parsable string", async () => {
-		const actual = await testInput(inputFileJSON, {
+		const actual = await testInput(inputFromFileJSON, {
 			args: {
 				filePath: "file.txt",
 			},
