@@ -146,12 +146,12 @@ Both [Direct Creations](../runtime/creations#direct-creations) and [Indirect Cre
 `settings` and all its properties are optional.
 However, some properties will cause `testBlock` to throw an error if they're not provided and the Block attempts to use them:
 
-- [`args`](#testblock-args): throws an error if accessed at all
+- [`addons`](#testblock-addons): throws an error if accessed at all
 - [`options`](#testblock-options): each property throws an error if accessed at all
 
-### `args` {#testblock-args}
+### `addons` {#testblock-addons}
 
-[Block Args](../concepts/blocks#args) may be provided under `args`.
+[Block Addons](../concepts/blocks#addons) may be provided under `addons`.
 
 For example, this test asserts that a Prettier block adds a `useTabs` arg to its output `".prettierrc.json"`:
 
@@ -163,15 +163,15 @@ import { z } from "zod";
 import { base } from "./base";
 
 const blockPrettier = base.createBlock({
-	args: {
+	addons: {
 		useTabs: z.boolean(),
 	},
-	produce({ args }) {
+	produce({ addons }) {
 		return {
 			files: {
 				".prettierrc.json": JSON.stringify({
 					$schema: "http://json.schemastore.org/prettierrc",
-					useTabs: args.useTabs,
+					useTabs: addons.useTabs,
 				}),
 			},
 		};
@@ -181,7 +181,7 @@ const blockPrettier = base.createBlock({
 describe("blockPrettier", () => {
 	it("creates a .prettierrc.json when provided options", async () => {
 		const actual = await testBlock(blockPrettier, {
-			args: {
+			addons: {
 				config: {
 					useTabs: true,
 				},
@@ -269,9 +269,38 @@ As with [`produceInput`](./producers#produceinput), `testInput` returns the data
 `settings` and all its properties are optional.
 However, some properties will cause `testInput` to throw an error if they're not provided and the Input attempts to use them:
 
+- [`args`](#testinput-args): throws an error if accessed at all
 - [`fetcher`](#testinput-fetcher): by default, throws an error if called as a function
 - [`fs`](#testinput-fs): by default, each method throws an error if called as a function
 - [`runner`](#testinput-runner): by default, throws an error if called as a function
+
+### `args` {#testinput-args}
+
+[Input Args](../concepts/inputs#args) may be provided under `args`.
+
+```ts
+import { testInput } from "create-testers";
+import { describe, expect, it } from "vitest";
+
+import { inputFromFile } from "./inputFromFile.js";
+
+describe("inputFromFile", () => {
+	it("returns the file's text when it exists", async () => {
+		const text = "abc123";
+
+		const actual = await testInput(inputFromFile, {
+			args: {
+				filePath: "file.txt",
+			},
+			fs: {
+				readFile: () => Promise.resolve(text),
+			},
+		});
+
+		expect(actual).toBe(text);
+	});
+});
+```
 
 ### `fetcher` {#testinput-fetcher}
 
@@ -306,20 +335,20 @@ describe("inputCatFact", () => {
 
 An object containing mocks to act as a file system.
 
-For example, this test asserts that an `inputFile` input returns the text of a file from disk:
+For example, this test asserts that an `inputFromFile` input returns the text of a file from disk:
 
 ```ts
 import { testInput } from "create-testers";
 import { describe, expect, it, vi } from "vitest";
 
-import { inputFile } from "./inputCatFact";
+import { inputFromFile } from "./inputCatFact";
 
-describe("inputFile", () => {
+describe("inputFromFile", () => {
 	it("returns the contents of a file", async () => {
 		const contents = "abc123";
 		const readFile = vi.fn().mockResolvedValue(contents);
 
-		const actual = await testInput(inputFile, {
+		const actual = await testInput(inputFromFile, {
 			args: { fileName: "text.txt" },
 			fs: { readFile },
 		});

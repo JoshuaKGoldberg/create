@@ -1,0 +1,38 @@
+{
+	"name": "input-from-file",
+	"version": "0.1.0-alpha.0",
+	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JoshuaKGoldberg/create",
+		"directory": "packages/input-from-file"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Josh Goldberg ✨",
+		"email": "npm@joshuakgoldberg.com"
+	},
+	"type": "module",
+	"main": "./lib/index.js",
+	"files": [
+		"lib/",
+		"package.json",
+		"LICENSE.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"create-testers": "workspace:*"
+	},
+	"peerDependencies": {
+		"create": "workspace:*"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}
