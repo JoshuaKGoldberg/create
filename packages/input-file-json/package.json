@@ -1,0 +1,42 @@
+{
+	"name": "input-file-json",
+	"version": "0.1.0-alpha.0",
+	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JoshuaKGoldberg/create",
+		"directory": "packages/create-testers"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Josh Goldberg ✨",
+		"email": "npm@joshuakgoldberg.com"
+	},
+	"type": "module",
+	"main": "./lib/index.js",
+	"files": [
+		"lib/",
+		"package.json",
+		"LICENSE.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"input-file": "workspace:*",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"create-testers": "workspace:*"
+	},
+	"peerDependencies": {
+		"create": "workspace:*"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"publishConfig": {
+		"provenance": true
+	}
+}

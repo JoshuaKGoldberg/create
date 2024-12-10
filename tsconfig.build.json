@@ -8,6 +8,8 @@
 	"references": [
 		{ "path": "./packages/create" },
 		{ "path": "./packages/create-testers" },
+		{ "path": "./packages/input-file" },
+		{ "path": "./packages/input-file-json" },
 		{ "path": "./packages/site" }
 	]
 }

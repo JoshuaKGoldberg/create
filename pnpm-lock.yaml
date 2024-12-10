@@ -121,6 +121,35 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
 
+  packages/input-file:
+    dependencies:
+      create:
+        specifier: workspace:*
+        version: link:../create
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      create-testers:
+        specifier: workspace:*
+        version: link:../create-testers
+
+  packages/input-file-json:
+    dependencies:
+      create:
+        specifier: workspace:*
+        version: link:../create
+      input-file:
+        specifier: workspace:*
+        version: link:../input-file
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      create-testers:
+        specifier: workspace:*
+        version: link:../create-testers
+
   packages/site:
     dependencies:
       '@astrojs/check':

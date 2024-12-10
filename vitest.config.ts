@@ -4,10 +4,11 @@ export default defineConfig({
 	test: {
 		coverage: {
 			exclude: [
-				"packages/site/astro.config.ts",
-				"packages/site/src/content",
 				"**/*.d.ts",
 				"**/*.js",
+				"**/vitest.*.ts",
+				"packages/site/astro.config.ts",
+				"packages/site/src/content",
 			],
 		},
 	},
