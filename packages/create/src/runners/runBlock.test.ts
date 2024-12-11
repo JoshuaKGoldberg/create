@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
-import { runPreset } from "./runPreset.js";
+import { runBlock } from "./runBlock.js";
 
 const base = createBase({
 	options: {
@@ -28,8 +28,8 @@ function createSystem() {
 	};
 }
 
-describe("runPreset", () => {
-	test("Preset with one Block", async () => {
+describe("runBlock", () => {
+	test("Block without Addons", async () => {
 		const block = base.createBlock({
 			produce({ options }) {
 				return {
@@ -40,13 +40,9 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = base.createPreset({
-			blocks: [block],
-		});
-
 		const system = createSystem();
 
-		await runPreset(preset, {
+		await runBlock(block, {
 			options: { title: "abc" },
 			...system,
 		});
@@ -72,8 +68,8 @@ describe("runPreset", () => {
 		`);
 	});
 
-	test("Preset with two Blocks", async () => {
-		const blockWithAddon = base.createBlock({
+	describe("Block with Addons", () => {
+		const block = base.createBlock({
 			addons: {
 				descriptions: z.array(z.string()).default([]),
 			},
@@ -86,49 +82,67 @@ describe("runPreset", () => {
 			},
 		});
 
-		const blockProvidingAddon = base.createBlock({
-			produce() {
-				return {
-					addons: [
-						blockWithAddon({
-							descriptions: ["def"],
-						}),
-					],
-				};
-			},
+		test("default Addon value", async () => {
+			const system = createSystem();
+
+			await runBlock(block, {
+				options: { title: "abc" },
+				...system,
+			});
+
+			expect({
+				writeDirectory: system.fs.writeDirectory.mock.calls,
+				writeFile: system.fs.writeFile.mock.calls,
+			}).toMatchInlineSnapshot(`
+				{
+				  "writeDirectory": [
+				    [
+				      ".",
+				    ],
+				  ],
+				  "writeFile": [
+				    [
+				      "README.md",
+				      "# abc
+				",
+				    ],
+				  ],
+				}
+			`);
 		});
 
-		const preset = base.createPreset({
-			blocks: [blockProvidingAddon, blockWithAddon],
+		test("provided Addon value", async () => {
+			const system = createSystem();
+
+			await runBlock(block, {
+				addons: {
+					descriptions: ["def"],
+				},
+				options: { title: "abc" },
+				...system,
+			});
+
+			expect({
+				writeDirectory: system.fs.writeDirectory.mock.calls,
+				writeFile: system.fs.writeFile.mock.calls,
+			}).toMatchInlineSnapshot(`
+				{
+				  "writeDirectory": [
+				    [
+				      ".",
+				    ],
+				  ],
+				  "writeFile": [
+				    [
+				      "README.md",
+				      "# abc
+
+				def
+				",
+				    ],
+				  ],
+				}
+			`);
 		});
-
-		const system = createSystem();
-
-		await runPreset(preset, {
-			options: { title: "abc" },
-			...system,
-		});
-
-		expect({
-			writeDirectory: system.fs.writeDirectory.mock.calls,
-			writeFile: system.fs.writeFile.mock.calls,
-		}).toMatchInlineSnapshot(`
-			{
-			  "writeDirectory": [
-			    [
-			      ".",
-			    ],
-			  ],
-			  "writeFile": [
-			    [
-			      "README.md",
-			      "# abc
-
-			def
-			",
-			    ],
-			  ],
-			}
-		`);
 	});
 });

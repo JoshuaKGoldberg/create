@@ -2,11 +2,23 @@ import { execa, parseCommandString } from "execa";
 import * as nodeFS from "node:fs/promises";
 
 import { TakeInput } from "../types/inputs.js";
-import { NativeSystem } from "../types/system.js";
+import { NativeSystem, SystemContext } from "../types/system.js";
 
 export interface NativeSystems {
 	system: NativeSystem;
 	take: TakeInput;
+}
+
+export function createWritingFileSystem() {
+	return {
+		readFile: async (filePath: string) =>
+			(await nodeFS.readFile(filePath)).toString(),
+		writeDirectory: async (directoryPath: string) =>
+			void (await nodeFS.mkdir(directoryPath, { recursive: true })),
+		writeFile: async (filePath: string, contents: string) => {
+			await nodeFS.writeFile(filePath, contents);
+		},
+	};
 }
 
 export function createNativeSystems(
@@ -14,15 +26,7 @@ export function createNativeSystems(
 ): NativeSystems {
 	const system = {
 		fetcher: providedSystem.fetcher ?? fetch,
-		fs: providedSystem.fs ?? {
-			readFile: async (filePath: string) =>
-				(await nodeFS.readFile(filePath)).toString(),
-			writeDirectory: async (directoryPath: string) =>
-				void (await nodeFS.mkdir(directoryPath, { recursive: true })),
-			writeFile: async (filePath: string, contents: string) => {
-				await nodeFS.writeFile(filePath, contents);
-			},
-		},
+		fs: providedSystem.fs ?? createWritingFileSystem(),
 		runner:
 			providedSystem.runner ??
 			(async (command: string) => await execa`${parseCommandString(command)}`),
@@ -31,4 +35,11 @@ export function createNativeSystems(
 	const take = ((input, args) => input({ args, take, ...system })) as TakeInput;
 
 	return { system, take };
+}
+
+export function createSystemContext(
+	providedSystem?: Partial<NativeSystem>,
+): SystemContext {
+	const { system, take } = createNativeSystems(providedSystem);
+	return { ...system, take };
 }

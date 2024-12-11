@@ -442,7 +442,7 @@ For example, this Input defines a required `path` string:
 import { createInput } from "create";
 import { z } from "zod";
 
-export const inputFile = createInput({
+export const inputFromFile = createInput({
 	args: {
 		path: z.string(),
 	},

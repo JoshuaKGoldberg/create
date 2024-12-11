@@ -7,7 +7,7 @@ The `create` engine is very early stage.
 Don't rely on it yet.
 :::
 
-Production APIs can be used to directly run create constructs:
+Production APIs can be used to create [Creations](../runtime/creations):
 
 - [`produceBase`](#producebase): generates [Base](../concepts/bases) options
 - [`produceBlock`](#produceblock): runs a [Block](../concepts/blocks) production
@@ -18,6 +18,11 @@ Each production API takes in up to two arguments:
 
 1. The construct to be produced
 2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts)
+
+:::note
+Production APIs only generate objects in memory.
+For APIs that apply those objects, see [Runners](./runners).
+:::
 
 ## `produceBase`
 

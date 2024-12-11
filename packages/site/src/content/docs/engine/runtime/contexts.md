@@ -108,7 +108,7 @@ For example, a minimal Input that combines two numbers:
 import { createInput } from "create";
 import { z } from "zod";
 
-export const inputFile = createInput({
+export const inputFromFile = createInput({
 	args: {
 		a: z.number(),
 		b: z.number(),
@@ -154,7 +154,7 @@ For example, this input reads the contents of a file from disk as a string:
 import { createInput } from "create";
 import { z } from "zod";
 
-export const inputFile = createInput({
+export const inputFromFile = createInput({
 	args: {
 		fileName: z.string(),
 	},
@@ -192,14 +192,14 @@ For example, this Block uses `take` to run Inputs that reads from a local file a
 
 ```ts
 import { base } from "./base";
-import { inputFile } from "./inputFile";
+import { inputFromFile } from "./inputFromFile";
 import { inputNpmWhoami } from "./inputNpmWhoami";
 
 const fileName = "AUTHORS.md";
 
 export const blockFileModified = base.createBlock({
 	async produce({ take }) {
-		const existing = await take(inputFile, { fileName });
+		const existing = await take(inputFromFile, { fileName });
 		const author = await take(inputNpmWhoami);
 
 		return {

@@ -1,8 +1,8 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/unified-signatures */
 
+import { executePresetBlocks } from "../internals/executePresetBlocks.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { runPreset } from "../runners/runPreset.js";
 import { createNativeSystems } from "../system/createNativeSystems.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
@@ -66,7 +66,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	} as InferredObject<OptionsShape>;
 	const augmentedOptions = await optionsAugment?.(optionsForAugmentation);
 
-	return runPreset(
+	return executePresetBlocks(
 		preset,
 		{
 			...optionsForAugmentation,
