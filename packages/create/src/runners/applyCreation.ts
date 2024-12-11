@@ -12,5 +12,5 @@ export async function applyCreation(
 	}
 
 	// TODO(#22): Implement shell command execution
-	// TODO(#22): Implement network request execution
+	// TODO(#23): Implement network request execution
 }
