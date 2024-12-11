@@ -32,7 +32,6 @@ export function produceBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockProductionSettings<Addons, Options>,
 ): Partial<Creation<Options>> {
-	// console.log("produceBlock", { settings });
 	return (block as BlockWithAddons<Addons, Options>).produce({
 		addons: (settings as BlockProductionSettingsWithAddons<Addons, Options>)
 			.addons,
