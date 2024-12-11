@@ -1,8 +1,8 @@
 import * as path from "node:path";
 import prettier from "prettier";
 
-import { CreatedFiles } from "../../types/creations.js";
-import { WritingFileSystem } from "../../types/system.js";
+import { CreatedFiles } from "../types/creations.js";
+import { WritingFileSystem } from "../types/system.js";
 
 export async function applyFilesToSystem(
 	files: CreatedFiles,

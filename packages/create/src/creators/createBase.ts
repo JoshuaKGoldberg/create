@@ -27,8 +27,10 @@ export function createBase<OptionsShape extends AnyShape>(
 			| BlockDefinitionWithAddons<AddonsShape, Options>
 			| BlockDefinitionWithoutAddons<Options>,
 	) {
+		// console.log("createBlock", { blockDefinition });
 		// Blocks without Addons can't be called as functions.
 		if (!isDefinitionWithAddons(blockDefinition)) {
+			// console.log("no addons.");
 			return blockDefinition;
 		}
 
@@ -38,6 +40,7 @@ export function createBase<OptionsShape extends AnyShape>(
 
 		// Blocks with Addons do need to be callable as functions...
 		function block(addons: Addons) {
+			// console.log("block function", { addons });
 			return { addons, block };
 		}
 
@@ -45,6 +48,7 @@ export function createBase<OptionsShape extends AnyShape>(
 		Object.assign(block, blockDefinition);
 
 		block.produce = (context: BlockContextWithAddons<Addons, Options>) => {
+			// console.log("Producing middleware", context.addons);
 			return blockDefinition.produce({
 				...context,
 				addons: applyZodDefaults(addonsSchema, context.addons),

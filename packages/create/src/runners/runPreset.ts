@@ -1,77 +1,47 @@
-import {
-	BlockProduction,
-	getUpdatedBlockAddons,
-} from "../mergers/getUpdatedBlockAddons.js";
-import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { Block } from "../types/blocks.js";
-import { Creation } from "../types/creations.js";
+import { producePreset } from "../producers/producePreset.js";
+import { createSystemContext } from "../system/createNativeSystems.js";
 import { Preset } from "../types/presets.js";
-import { SystemContext } from "../types/system.js";
+import { NativeSystem } from "../types/system.js";
+import { PromiseOrSync } from "../utils/promises.js";
+import { applyCreation } from "./applyCreation.js";
 
-export function runPreset<OptionsShape extends AnyShape>(
+export interface RunSettingsBase extends Partial<NativeSystem> {
+	rootDirectory?: string;
+}
+
+export interface AugmentingPresetRunSettings<OptionsShape extends AnyShape>
+	extends RunSettingsBase {
+	options?: Partial<InferredObject<OptionsShape>>;
+	optionsAugment: (
+		options: Partial<InferredObject<OptionsShape>>,
+	) => PromiseOrSync<InferredObject<OptionsShape>>;
+}
+
+export interface FullPresetRunSettings<OptionsShape extends AnyShape>
+	extends RunSettingsBase {
+	options: InferredObject<OptionsShape>;
+	optionsAugment?: (
+		options: InferredObject<OptionsShape>,
+	) => Promise<Partial<InferredObject<OptionsShape>>>;
+}
+
+export async function runPreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
-	options: InferredObject<OptionsShape>,
-	presetContext: SystemContext,
-) {
-	type Options = InferredObject<OptionsShape>;
+	settings:
+		| AugmentingPresetRunSettings<OptionsShape>
+		| FullPresetRunSettings<OptionsShape>,
+): Promise<void> {
+	const system = createSystemContext(settings);
 
-	// From engine/runtime/merging.md:
-	// This engine continuously re-runs Blocks until no new Args are provided.
-
-	const blockProductions = new Map<
-		Block<object | undefined, Options>,
-		BlockProduction<object, Options>
-	>();
-
-	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
-	const blocksToBeRun = new Set(preset.blocks);
-
-	// 2. For each Block in the queue:
-	while (blocksToBeRun.size) {
-		for (const currentBlock of blocksToBeRun) {
-			blocksToBeRun.delete(currentBlock);
-
-			// 2.1. Get the Creation from the Block, passing any current known Args
-			const previousProduction = blockProductions.get(currentBlock);
-			const previousAddons = previousProduction?.addons ?? {};
-			const blockCreation = currentBlock.produce({
-				...presetContext,
-				addons: previousAddons,
-				options,
-			});
-
-			// 2.2. Store that Block's Creation
-			blockProductions.set(currentBlock, {
-				addons: previousAddons,
-				creation: blockCreation,
-			});
-
-			// 2.3. If the Block specified new addons for any other Blocks:
-			const updatedBlockAddons = getUpdatedBlockAddons(
-				blockProductions,
-				blockCreation.addons,
-			);
-
-			// 2.3.1: Add those Blocks to the queue to re-run
-			for (const [updatedBlock, updatedAddons] of updatedBlockAddons) {
-				const addedBlockPreviousProduction = blockProductions.get(updatedBlock);
-				blockProductions.set(updatedBlock, {
-					...addedBlockPreviousProduction,
-					addons: updatedAddons,
-				});
-				blocksToBeRun.add(updatedBlock);
-			}
-		}
-	}
-
-	// 3. Merge all Block Creations together
-	return Array.from(blockProductions.values()).reduce<Creation<Options>>(
-		(created, next) => mergeCreations(created, next.creation ?? {}),
+	const creation = await producePreset(
+		preset,
+		// TODO: Why is this assertion necessary?
 		{
-			addons: [],
-			commands: [],
-			files: {},
-		},
+			...system,
+			...settings,
+		} as FullPresetRunSettings<OptionsShape>,
 	);
+
+	await applyCreation(creation, system, settings.rootDirectory);
 }

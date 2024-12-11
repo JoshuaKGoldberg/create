@@ -4,9 +4,9 @@ import { AnyOptionalShape, InferredObject } from "../options.js";
 
 export function applyZodDefaults<Shape extends AnyOptionalShape>(
 	shape: Shape,
-	value: InferredObject<Shape>,
+	value: InferredObject<Shape> | undefined,
 ): InferredObject<Shape> {
-	return z.object(shape).parse(value) as InferredObject<Shape>;
+	return z.object(shape).parse(value ?? {}) as InferredObject<Shape>;
 }
 
 export function isDefinitionWithAddons(definition: object) {

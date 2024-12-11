@@ -93,6 +93,8 @@ export const blockContributorCovenant = base.createBlock({
 });
 ```
 
+That would instruct the `create` engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
+
 #### File Creations
 
 Each property in a `files` object may be one of the following:
@@ -102,8 +104,6 @@ Each property in a `files` object may be one of the following:
 - `string`: A file to be created
 - `[string, CreatedFileOptions]`: A file to be created with [`fsPromises.writeFile` options](https://nodejs.org/api/fs.html#fspromiseswritefilefile-data-options):
   - `mode`: Integer mode, such as `0o777` to make executable
-
-That would instruct the `create` engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
 
 For example, this Block generates an executable `.husky/pre-commit` file:
 
