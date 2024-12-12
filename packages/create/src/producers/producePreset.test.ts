@@ -6,8 +6,8 @@ import { producePreset } from "./producePreset.js";
 
 const emptyCreation = {
 	addons: [],
-	commands: [],
 	files: {},
+	scripts: [],
 };
 
 describe("producePreset", () => {

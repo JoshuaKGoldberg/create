@@ -12,13 +12,13 @@ A Creation object is what's returned by each [Block](../about/blocks)'s `produce
 It may contain any of the following properties:
 
 - ["Direct" creations](#direct-creations) that always cause changes to the repository:
-  - [`commands`](#commands): Terminal commands to run after setup
   - [`files`](#files): Files to create or modify on disk
+  - [`scripts`](#scripts): Terminal commands to run after setup
   - Network requests _(to be added soon)_
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`addons`](#addons): Composed Addons to merge in for other Blocks, if they exist
 
-For example, a Block that adds pnpm package deduplication might choose to both run a command ([`commands`](#commands)) used in a GitHub Actions job in [addon Addons](#addons) to another Block:
+For example, a Block that adds pnpm package deduplication might choose to both run a script ([`scripts`](#scripts)) used in a GitHub Actions job in [Addons](#addons) to another Block:
 
 ```ts
 import { base } from "./base";
@@ -36,7 +36,7 @@ export const blockPnpmDeduplicate = base.createBlock({
 					],
 				}),
 			],
-			commands: ["pnpm dedupe"],
+			scripts: ["pnpm dedupe"],
 		};
 	},
 });
@@ -45,26 +45,6 @@ export const blockPnpmDeduplicate = base.createBlock({
 ## Direct Creations
 
 These Creation properties always cause changes to the output repository.
-
-### `commands`
-
-Terminal commands to run after setup.
-
-This can be useful when commands are necessary to initialize a repository after files are written.
-
-For example, an AllContributors block that runs a hydration command:
-
-```ts
-import { base } from "../base";
-
-export const blockKnip = base.createBlock({
-	produce() {
-		return {
-			commands: ["npx all-contributors-cli generate"],
-		};
-	},
-});
-```
 
 ### `files`
 
@@ -120,6 +100,87 @@ export const blockPreCommit = base.createBlock({
 	},
 });
 ```
+
+### `scripts`
+
+Terminal commands to run after production.
+
+Scripts will be run after files are applied to the system.
+This can be useful when shell scripts are necessary to apply changes the Block enforces in CI.
+
+Each command must be specified as an object with:
+
+- `commands` (`string[]`): Shell scripts to run within the phase, in order
+- `phase` (`number`): What order, relative to any other command groups, to run in
+
+For example, this Block runs pnpm package installation and duplication in a first phase:
+
+```ts
+import { base } from "../base";
+
+export const blockPnpmInstalls = base.createBlock({
+	produce() {
+		return {
+			// ...
+			scripts: [
+				{
+					phase: 0,
+					scripts: ["pnpm install", "pnpm dedupe"],
+				},
+			],
+		};
+	},
+});
+```
+
+A Prettier block might opt to run formatting in a subsequent phase, once any dependencies are done resolving:
+
+```ts
+import { base } from "../base";
+
+export const blockPrettier = base.createBlock({
+	produce() {
+		return {
+			// ...
+			scripts: [
+				{
+					phase: 1,
+					commands: ["pnpm format --write"],
+				},
+			],
+		};
+	},
+});
+```
+
+Those blocks together would run the following commands in order:
+
+1. `pnpm install`
+1. `pnpm dedupe`
+1. `pnpm format --write`
+
+If multiple command groups specify the same `phase`, then they will start executing their scripts at the same time.
+The next phase will not be started until all scripts in that phase complete.
+
+For example, given the following production of scripts:
+
+```ts
+[
+	{ commands: ["a", "b"], phase: 0 },
+	{ commands: ["c", "d"], phase: 1 },
+	{ commands: ["e", "f"], phase: 1 },
+	{ commands: ["g"], phase: 2 },
+];
+```
+
+Those commands would be run in the following order:
+
+1. `a`
+2. `b`
+3. `c` and `e`
+   - `d` _(after `c` completes)_
+   - `f` _(after `e` completes)_
+4. `g` _(after `d` and `f` complete)_
 
 ## Indirect Creations
 

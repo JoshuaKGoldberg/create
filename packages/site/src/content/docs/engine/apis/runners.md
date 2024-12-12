@@ -19,7 +19,7 @@ Each runner API takes in up to two arguments:
    - `rootDirectory: string` (default: `'.'`): The root directory to write files to
 
 :::note
-Runner APIs apply their generated objects to disk.
+Runner APIs apply their generated objects to disk, as well as executing any network requests and shell commands.
 For APIs that only create those objects in memory, see [Producers](./producers).
 :::
 

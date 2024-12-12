@@ -71,8 +71,8 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 		(created, next) => mergeCreations(created, next.creation ?? {}),
 		{
 			addons: [],
-			commands: [],
 			files: {},
+			scripts: [],
 		},
 	);
 }
