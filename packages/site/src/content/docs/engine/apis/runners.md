@@ -17,7 +17,7 @@ Each runner API takes in up to two arguments:
 1. The construct to be run
 2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts) and:
    - `directory: string` (default: `'.'`): The root directory to write files to
-   - `mode`: What [mode](#modes) to run in _(soon to be expanded)_
+   - `mode`: What [mode](#modes) to run in
 
 :::note
 Runner APIs apply their generated objects to disk, as well as executing any network requests and shell commands.
@@ -58,7 +58,7 @@ Runner APIs may be provided one of the following values for `mode`:
 - _(coming soon)_ `"migrate"`
 - `"new"`: Indicating the production is being used to create a new repository
 
-### Mode `"new"`
+### `"new"` {#mode-new}
 
 This mode creates a new repository on GitHub.
 After the production is run, including writing files on disk and running scripts, the `create` engine will:

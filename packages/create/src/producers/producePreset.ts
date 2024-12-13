@@ -3,7 +3,7 @@
 
 import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
@@ -91,10 +91,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	const creation = executePresetBlocks(
 		preset,
 		fullOptions,
-		{
-			...system,
-			directory,
-		},
+		{ ...system, directory },
 		mode,
 	);
 

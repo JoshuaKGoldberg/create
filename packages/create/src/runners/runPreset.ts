@@ -5,7 +5,7 @@ import { createTrackingBranches } from "../modes/createTrackingBranches.js";
 import { CreationOptions, ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { PromiseOrSync } from "../utils/promises.js";

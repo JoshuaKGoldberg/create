@@ -33,6 +33,8 @@ Given a [Base](../concepts/bases), creates an options object by running its [`pr
 1. `base` _(required)_: a Base
 2. `settings` _(optional)_: any properties from a [Base Context](../runtime/contexts#base-contexts), except for `take`
 
+`produceBase` returns a Promise for the resultant [Creation](../runtime/creations).
+
 For example, given this Base that declares an optional `value` option that defaults to `"default"`, `produceBase` can run its `produce()` with any provided options:
 
 ```ts
@@ -166,6 +168,8 @@ Given an [Input](../runtime/inputs), runs its `produce()` with any provided args
 1. `input` _(required)_: an Input
 2. `settings` _(required)_: at least `options`, as well as any other properties from an [Input Context](../runtime/contexts#input-contexts) other than `take`
 
+`produceInput` returns a Promise for the result of the Input's [`produce()`](./creators#createinput-produce).
+
 For example, this Input production reads data from an existing `data.json` file on disk:
 
 ```ts
@@ -177,6 +181,7 @@ const inputDataJson = createInput({
 	},
 });
 
+// Type: string
 await produceInput(inputDataJson);
 ```
 
@@ -214,8 +219,10 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
    - `optionsAugment` _(optional)_: a function to augment options from the Base
    - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
-`producePreset` returns a Promise for the Preset's [`Creation`](../runtime/creations).
-Both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations) will be present.
+`producePreset` returns a Promise for an object containing:
+
+- `creation`: The Preset's [`Creation`](../runtime/creations), including both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations)
+- `options`: The full merged options that production ran with
 
 For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `producePreset` can run its `produce()` with any provided options:
 
@@ -229,7 +236,7 @@ const preset = base.createPreset({
 	blocks: [blockReadme],
 });
 
-// { files: { "README.md": `# My App` }}
+// { creation: { files: { "README.md": `# My App` }}, options: { title: "My App" } }
 await producePreset(preset, { options: { title: "My App" } });
 ```
 

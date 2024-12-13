@@ -1,5 +1,5 @@
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { Base, LazyOptionalOptions } from "../types/bases.js";
 import { NativeSystem } from "../types/system.js";
 import {
