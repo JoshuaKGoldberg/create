@@ -1,6 +1,6 @@
 import { CreatedScript } from "../types/creations.js";
 
-export function mergeCommands(
+export function mergeScripts(
 	first: CreatedScript[] | undefined,
 	second: CreatedScript[] | undefined,
 ): CreatedScript[] | undefined {

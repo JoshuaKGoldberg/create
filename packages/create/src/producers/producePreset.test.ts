@@ -40,10 +40,13 @@ describe("producePreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: {
-					"value.txt": "abc",
+				creation: {
+					...emptyCreation,
+					files: {
+						"value.txt": "abc",
+					},
 				},
+				options: { value: "abc" },
 			});
 		});
 
@@ -55,10 +58,13 @@ describe("producePreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: {
-					"value.txt": "abc",
+				creation: {
+					...emptyCreation,
+					files: {
+						"value.txt": "abc",
+					},
 				},
+				options: { value: "abc" },
 			});
 		});
 
@@ -73,10 +79,13 @@ describe("producePreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: {
-					"value.txt": "abc-def",
+				creation: {
+					...emptyCreation,
+					files: {
+						"value.txt": "abc-def",
+					},
 				},
+				options: { value: "abc-def" },
 			});
 		});
 	});
@@ -118,10 +127,16 @@ describe("producePreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: {
-					"value-optional.txt": "optional-from-produce",
-					"value-required.txt": "required-from-provided",
+				creation: {
+					...emptyCreation,
+					files: {
+						"value-optional.txt": "optional-from-produce",
+						"value-required.txt": "required-from-provided",
+					},
+				},
+				options: {
+					optional: "optional-from-produce",
+					required: "required-from-provided",
 				},
 			});
 		});

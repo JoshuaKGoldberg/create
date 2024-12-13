@@ -1,18 +1,30 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/unified-signatures */
 
-import { executePresetBlocks } from "../internals/executePresetBlocks.js";
+import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { createNativeSystems } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { PromiseOrSync } from "../utils/promises.js";
+import { executePresetBlocks } from "./executePresetBlocks.js";
 import { produceBase } from "./produceBase.js";
+
+export interface Production<Options extends object> {
+	creation: Creation<Options>;
+	options: Options;
+}
+
+export interface ProductionSettingsBase {
+	directory?: string;
+	mode?: ProductionMode;
+}
 
 export interface AugmentingPresetProductionSettings<
 	OptionsShape extends AnyShape,
-> extends Partial<NativeSystem> {
+> extends ProductionSettingsBase,
+		Partial<NativeSystem> {
 	options?: Partial<InferredObject<OptionsShape>>;
 	optionsAugment: (
 		options: Partial<InferredObject<OptionsShape>>,
@@ -20,7 +32,8 @@ export interface AugmentingPresetProductionSettings<
 }
 
 export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
-	extends Partial<NativeSystem> {
+	extends ProductionSettingsBase,
+		Partial<NativeSystem> {
 	options: InferredObject<OptionsShape>;
 	optionsAugment?: (
 		options: InferredObject<OptionsShape>,
@@ -30,22 +43,27 @@ export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
 export async function producePreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	settings: AugmentingPresetProductionSettings<OptionsShape>,
-): Promise<Creation<InferredObject<OptionsShape>>>;
+): Promise<Production<InferredObject<OptionsShape>>>;
 export async function producePreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	settings: FullPresetProductionSettings<OptionsShape>,
-): Promise<Creation<InferredObject<OptionsShape>>>;
+): Promise<Production<InferredObject<OptionsShape>>>;
 export async function producePreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	{
+		directory = ".",
+		mode,
 		options,
 		optionsAugment,
 		...providedSystem
 	}:
 		| AugmentingPresetProductionSettings<OptionsShape>
 		| FullPresetProductionSettings<OptionsShape>,
-): Promise<Creation<InferredObject<OptionsShape>>> {
-	const { system, take } = createNativeSystems(providedSystem);
+): Promise<Production<InferredObject<OptionsShape>>> {
+	const system = createSystemContext({
+		directory,
+		...providedSystem,
+	});
 
 	// From engine/apis/producers.md > `optionsAugment`,
 	// Preset options are generated through three steps...
@@ -65,16 +83,17 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		...providedOptions,
 	} as InferredObject<OptionsShape>;
 	const augmentedOptions = await optionsAugment?.(optionsForAugmentation);
+	const fullOptions = {
+		...optionsForAugmentation,
+		...augmentedOptions,
+	} as InferredObject<OptionsShape>;
 
-	return executePresetBlocks(
+	const creation = executePresetBlocks(
 		preset,
-		{
-			...optionsForAugmentation,
-			...augmentedOptions,
-		} as InferredObject<OptionsShape>,
-		{
-			...system,
-			take,
-		},
+		fullOptions,
+		{ ...system, directory },
+		mode,
 	);
+
+	return { creation, options: fullOptions };
 }

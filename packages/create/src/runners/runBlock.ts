@@ -1,5 +1,5 @@
 import { produceBlock } from "../producers/produceBlock.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
 import { IndirectCreation } from "../types/creations.js";
 import { NativeSystem } from "../types/system.js";
@@ -8,8 +8,8 @@ import { applyCreation } from "./applyCreation.js";
 export interface BlockRunSettingsWithoutAddons<Options extends object>
 	extends Partial<NativeSystem> {
 	created?: Partial<IndirectCreation<Options>>;
+	directory?: string;
 	options: Options;
-	rootDirectory?: string;
 }
 
 export interface BlockRunSettingsWithOptionalAddons<
@@ -45,7 +45,8 @@ export async function runBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockRunSettings<Addons, Options>,
 ): Promise<void> {
-	const system = createSystemContext(settings);
+	const { directory = "." } = settings;
+	const system = createSystemContext({ directory, ...settings });
 
 	const creation = produceBlock(
 		// TODO: Why are these assertions necessary?
@@ -53,5 +54,5 @@ export async function runBlock<Addons extends object, Options extends object>(
 		settings as BlockRunSettingsWithRequiredAddons<Addons, Options>,
 	);
 
-	await applyCreation(creation, system, settings.rootDirectory);
+	await applyCreation(creation, system);
 }

@@ -3,8 +3,8 @@ import {
 	getUpdatedBlockAddons,
 } from "../mergers/getUpdatedBlockAddons.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
+import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
 import { Block } from "../types/blocks.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
@@ -13,7 +13,8 @@ import { SystemContext } from "../types/system.js";
 export function executePresetBlocks<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	options: InferredObject<OptionsShape>,
-	presetContext: SystemContext = createSystemContext(),
+	presetContext: SystemContext,
+	mode: ProductionMode | undefined,
 ) {
 	type Options = InferredObject<OptionsShape>;
 
@@ -36,25 +37,34 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 			// 2.1. Get the Creation from the Block, passing any current known Args
 			const previousProduction = blockProductions.get(currentBlock);
 			const previousAddons = previousProduction?.addons ?? {};
-			const blockCreation = currentBlock.produce({
+			const productionContext = {
 				...presetContext,
 				addons: previousAddons,
 				options,
-			});
+			};
+			let blockCreation = currentBlock.produce(productionContext);
 
-			// 2.2. Store that Block's Creation
+			// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
+			if (mode === "new" && currentBlock.initialize) {
+				blockCreation = mergeCreations(
+					blockCreation,
+					currentBlock.initialize(productionContext),
+				);
+			}
+
+			// 2.3. Store that Block's Creation
 			blockProductions.set(currentBlock, {
 				addons: previousAddons,
 				creation: blockCreation,
 			});
 
-			// 2.3. If the Block specified new addons for any other Blocks:
+			// 2.4. If the Block specified new addons for any other Blocks:
 			const updatedBlockAddons = getUpdatedBlockAddons(
 				blockProductions,
 				blockCreation.addons,
 			);
 
-			// 2.3.1: Add those Blocks to the queue to re-run
+			// 2.4.1: Add those Blocks to the queue to re-run
 			for (const [updatedBlock, updatedAddons] of updatedBlockAddons) {
 				const addedBlockPreviousProduction = blockProductions.get(updatedBlock);
 				blockProductions.set(updatedBlock, {

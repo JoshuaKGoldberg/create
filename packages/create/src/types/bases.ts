@@ -9,9 +9,15 @@ import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
 import { Preset, PresetDefinition } from "./presets.js";
 
+export interface RepositoryTemplate {
+	owner: string;
+	repository: string;
+}
+
 export interface BaseDefinition<OptionsShape extends AnyShape> {
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
+	template?: RepositoryTemplate;
 }
 
 export interface Base<OptionsShape extends AnyShape> {
@@ -19,6 +25,7 @@ export interface Base<OptionsShape extends AnyShape> {
 	createPreset: CreatePreset<OptionsShape>;
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
+	template?: RepositoryTemplate;
 }
 
 export interface BaseContext<Options> extends TakeContext {

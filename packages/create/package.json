@@ -26,6 +26,8 @@
 	},
 	"dependencies": {
 		"execa": "^9.3.1",
+		"get-github-auth-token": "^0.1.0",
+		"octokit": "^4.0.2",
 		"zod": "^3.23.8"
 	},
 	"engines": {

@@ -1,5 +1,5 @@
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { createSystemContext } from "../system/createSystemContext.js";
 import { Base, LazyOptionalOptions } from "../types/bases.js";
 import { NativeSystem } from "../types/system.js";
 import {
@@ -9,6 +9,7 @@ import {
 
 export interface BaseProductionSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
+	directory?: string;
 	options?: Partial<InferredObject<OptionsShape>>;
 }
 
@@ -23,10 +24,15 @@ export async function produceBase<OptionsShape extends AnyShape>(
 		return settings.options;
 	}
 
+	const system = createSystemContext({
+		directory: settings.directory ?? ".",
+		...settings,
+	});
+
 	return await awaitLazyProperties(
 		base.produce({
 			options: settings.options ?? {},
-			...createSystemContext(settings),
+			...system,
 		}),
 	);
 }
