@@ -6,8 +6,8 @@ import { testPreset } from "./testPreset.js";
 
 const emptyCreation = {
 	addons: [],
-	commands: [],
 	files: {},
+	scripts: [],
 };
 
 const base = createBase({
