@@ -3,6 +3,11 @@ description: "How the engine merges Block Addons at runtime."
 title: Merging
 ---
 
+:::danger
+The `create` engine is very early stage.
+Don't rely on it yet.
+:::
+
 [Blocks](../concepts/blocks) act as synchronous functions with optional metadata in the form of [Addons](../concepts/blocks#addons).
 Blocks don't know what order they're run in or what other Blocks exist.
 They only know to map inputs to output [Creations](./creations).
@@ -19,7 +24,7 @@ The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
 2. For each Block in the queue:
    1. Get the Creation from the Block, passing any current known Args
    2. Store that Block's Creation
-   3. If a [runner mode](../apis/runners#modes) is specified, additionally generate the approprate Block Creations
+   3. If a [runtime mode](./modes) is specified, additionally generate the approprate Block Creations
    4. If the Block specified new addons for any other Blocks:
       1. Add those Blocks to the queue of Blocks to re-run
 3. Merge all Block Creations together
