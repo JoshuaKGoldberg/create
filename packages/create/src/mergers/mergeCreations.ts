@@ -4,7 +4,7 @@ import { mergeArrays } from "./mergeArrays.js";
 import { mergeFileCreations } from "./mergeFileCreations.js";
 
 export function mergeCreations<Options extends object>(
-	first: Creation<Options>,
+	first: Partial<Creation<Options>>,
 	second: Partial<Creation<Options>>,
 ): Creation<Options> {
 	return {

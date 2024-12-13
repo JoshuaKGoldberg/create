@@ -1,4 +1,3 @@
-import { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
@@ -8,8 +7,8 @@ const mockCreateInOrg = vi.fn();
 const mockCreateForAuthenticatedUser = vi.fn();
 const mockGetAuthenticated = vi.fn();
 
-const createMockOctokit = () =>
-	({
+vi.mock("./getGitHub.js", () => ({
+	getGitHub: () => ({
 		rest: {
 			repos: {
 				createForAuthenticatedUser: mockCreateForAuthenticatedUser,
@@ -20,7 +19,8 @@ const createMockOctokit = () =>
 				getAuthenticated: mockGetAuthenticated,
 			},
 		},
-	}) as unknown as Octokit;
+	}),
+}));
 
 const mockClearLocalGitTags = vi.fn();
 
@@ -40,12 +40,7 @@ const template = {
 
 describe("createRepositoryOnGitHub", () => {
 	it("creates using a template when a template is provided", async () => {
-		await createRepositoryOnGitHub(
-			createMockOctokit(),
-			{ owner, repository },
-			vi.fn(),
-			template,
-		);
+		await createRepositoryOnGitHub({ owner, repository }, vi.fn(), template);
 
 		expect(mockCreateForAuthenticatedUser).not.toHaveBeenCalled();
 		expect(mockCreateInOrg).not.toHaveBeenCalled();
@@ -64,11 +59,7 @@ describe("createRepositoryOnGitHub", () => {
 				login: owner,
 			},
 		});
-		await createRepositoryOnGitHub(
-			createMockOctokit(),
-			{ owner, repository },
-			vi.fn(),
-		);
+		await createRepositoryOnGitHub({ owner, repository }, vi.fn());
 
 		expect(mockCreateForAuthenticatedUser).toHaveBeenCalledWith({
 			name: repository,
@@ -81,11 +72,7 @@ describe("createRepositoryOnGitHub", () => {
 	it("creates under an org when the user is not the owner", async () => {
 		const login = "other-user";
 		mockGetAuthenticated.mockResolvedValueOnce({ data: { login } });
-		await createRepositoryOnGitHub(
-			createMockOctokit(),
-			{ owner, repository },
-			vi.fn(),
-		);
+		await createRepositoryOnGitHub({ owner, repository }, vi.fn());
 
 		expect(mockCreateForAuthenticatedUser).not.toHaveBeenCalled();
 		expect(mockCreateInOrg).toHaveBeenCalledWith({

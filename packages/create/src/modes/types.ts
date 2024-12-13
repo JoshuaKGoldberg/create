@@ -5,4 +5,4 @@ export interface CreationOptions {
 
 // TODO(#44): Add "initialize"
 // TODO(#45): Add "migrate"
-export type ProductionMode = "create";
+export type ProductionMode = "new";

@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, it, test, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
@@ -38,8 +38,81 @@ describe("runPreset", () => {
 			blocks: [block],
 		});
 
-		executePresetBlocks(preset, { value: "Hello, world! " }, context);
+		const result = executePresetBlocks(
+			preset,
+			{ value: "Hello, world!" },
+			context,
+			undefined,
+		);
 
-		expect(context.fs.writeFile.mock.calls).toMatchInlineSnapshot(`[]`);
+		expect(result).toEqual({
+			addons: [],
+			files: {
+				"README.md": "Hello, world!",
+			},
+			scripts: [],
+		});
+	});
+
+	describe("initialize", () => {
+		const block = base.createBlock({
+			about: {
+				name: "Example Block",
+			},
+			initialize({ options }) {
+				return {
+					files: {
+						"data.txt": options.value,
+					},
+				};
+			},
+			produce({ options }) {
+				return {
+					files: { "README.md": options.value },
+				};
+			},
+		});
+
+		const preset = base.createPreset({
+			about: {
+				name: "Example Preset",
+			},
+			blocks: [block],
+		});
+
+		it("does not augment creations with a Block's initialize() when mode is undefined", () => {
+			const result = executePresetBlocks(
+				preset,
+				{ value: "Hello, world!" },
+				context,
+				undefined,
+			);
+
+			expect(result).toEqual({
+				addons: [],
+				files: {
+					"README.md": "Hello, world!",
+				},
+				scripts: [],
+			});
+		});
+
+		it("augments creations with a Block's initialize() when mode is 'new'", () => {
+			const result = executePresetBlocks(
+				preset,
+				{ value: "Hello, world!" },
+				context,
+				"new",
+			);
+
+			expect(result).toEqual({
+				addons: [],
+				files: {
+					"data.txt": "Hello, world!",
+					"README.md": "Hello, world!",
+				},
+				scripts: [],
+			});
+		});
 	});
 });

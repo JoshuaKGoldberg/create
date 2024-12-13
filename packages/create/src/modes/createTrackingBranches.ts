@@ -7,9 +7,8 @@ export async function createTrackingBranches(
 ) {
 	for (const command of [
 		`git remote add origin https://github.com/${owner}/${repository}`,
-		`git fetch`,
 		`git add -A`,
-		`git commit --message "feat: initialized repo ✨" --no-gpg-sign`,
+		`git commit --message "feat:\\ initialized\\ repo\\ ✨" --no-gpg-sign`,
 		`git push -u origin main --force`,
 	]) {
 		await runner(command);

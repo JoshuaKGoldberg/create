@@ -54,13 +54,13 @@ await runPreset(presetWithReadme);
 
 Runner APIs may be provided one of the following values for `mode`:
 
-- `"create"`: Indicating the production is being used to create a new repository
 - _(coming soon)_ `"initialize"`
 - _(coming soon)_ `"migrate"`
+- `"new"`: Indicating the production is being used to create a new repository
 
-### Mode `"create"`
+### Mode `"new"`
 
-The creation mode creates a new repository on GitHub.
+This mode creates a new repository on GitHub.
 After the production is run, including writing files on disk and running scripts, the `create` engine will:
 
 1. Create a new repository on GitHub

@@ -1,6 +1,7 @@
 // eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable @typescript-eslint/unified-signatures */
 
+import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { createSystemContext } from "../system/createNativeSystems.js";
 import { Creation } from "../types/creations.js";
@@ -17,6 +18,7 @@ export interface Production<Options extends object> {
 
 export interface ProductionSettingsBase {
 	directory?: string;
+	mode?: ProductionMode;
 }
 
 export interface AugmentingPresetProductionSettings<
@@ -50,6 +52,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	{
 		directory = ".",
+		mode,
 		options,
 		optionsAugment,
 		...providedSystem
@@ -85,10 +88,15 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		...augmentedOptions,
 	} as InferredObject<OptionsShape>;
 
-	const creation = executePresetBlocks(preset, fullOptions, {
-		...system,
-		directory,
-	});
+	const creation = executePresetBlocks(
+		preset,
+		fullOptions,
+		{
+			...system,
+			directory,
+		},
+		mode,
+	);
 
 	return { creation, options: fullOptions };
 }

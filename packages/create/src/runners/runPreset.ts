@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 
-import { createRepository } from "../modes/createRepository.js";
+import { createRepositoryOnGitHub } from "../modes/createRepositoryOnGitHub.js";
+import { createTrackingBranches } from "../modes/createTrackingBranches.js";
 import { CreationOptions, ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
@@ -55,9 +56,9 @@ export async function runPreset<OptionsShape extends AnyShape>(
 		} as FullPresetRunSettings<OptionsShape>,
 	);
 
-	if (settings.mode === "create") {
+	if (settings.mode === "new") {
 		// TODO: Hardcode owner and repository existing in options?
-		await createRepository(
+		await createRepositoryOnGitHub(
 			options as unknown as CreationOptions,
 			system.runner,
 			preset.base.template,
@@ -65,4 +66,11 @@ export async function runPreset<OptionsShape extends AnyShape>(
 	}
 
 	await applyCreation(creation, system);
+
+	if (settings.mode === "new") {
+		await createTrackingBranches(
+			options as unknown as CreationOptions,
+			system.runner,
+		);
+	}
 }

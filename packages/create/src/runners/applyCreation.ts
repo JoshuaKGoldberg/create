@@ -6,10 +6,9 @@ import { applyScriptsToSystem } from "./applyScriptsToSystem.js";
 export async function applyCreation(
 	creation: Partial<DirectCreation>,
 	system: SystemContext,
-	directory = ".",
 ) {
 	if (creation.files) {
-		await applyFilesToSystem(creation.files, system.fs, directory);
+		await applyFilesToSystem(creation.files, system.fs, system.directory);
 	}
 
 	if (creation.scripts) {

@@ -11,12 +11,15 @@ At runtime, the `create` engine will often need to re-run Blocks continuously as
 Blocks will be re-run whenever other Blocks signal new Addon data to them that they haven't yet seen.
 This allows Blocks to not need any explicit indication of what order to run in.
 
+## Presets
+
 The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
 
 1. Create a queue of Blocks to be run, starting with all defined in the Preset
 2. For each Block in the queue:
    1. Get the Creation from the Block, passing any current known Args
    2. Store that Block's Creation
-   3. If the Block specified new addons for any other Blocks:
+   3. If a [mode](../concepts/running#mode) is specified, additionally generate the approprate Block Creations
+   4. If the Block specified new addons for any other Blocks:
       1. Add those Blocks to the queue of Blocks to re-run
 3. Merge all Block Creations together
