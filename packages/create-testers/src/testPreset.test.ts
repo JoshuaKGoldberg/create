@@ -42,8 +42,11 @@ describe("testPreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: { "value.txt": "abc" },
+				creation: {
+					...emptyCreation,
+					files: { "value.txt": "abc" },
+				},
+				options: { value: "abc" },
 			});
 		});
 
@@ -53,8 +56,11 @@ describe("testPreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: { "value.txt": "abc" },
+				creation: {
+					...emptyCreation,
+					files: { "value.txt": "abc" },
+				},
+				options: { value: "abc" },
 			});
 		});
 
@@ -67,8 +73,11 @@ describe("testPreset", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
-				files: { "value.txt": "abc-def" },
+				creation: {
+					...emptyCreation,
+					files: { "value.txt": "abc-def" },
+				},
+				options: { value: "abc-def" },
 			});
 		});
 	});

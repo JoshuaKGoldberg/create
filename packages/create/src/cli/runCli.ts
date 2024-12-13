@@ -1,6 +1,4 @@
-import { producePreset } from "../producers/producePreset.js";
-import { applyCreation } from "../runners/applyCreation.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
+import { runPreset } from "../runners/runPreset.js";
 import { parseArgsPreset } from "./parseArgvPreset.js";
 import { parseZodArgs } from "./parseZodArgs.js";
 import { promptForPreset } from "./promptForPreset.js";
@@ -62,11 +60,15 @@ export async function runCli(templateLabel: string, ...args: string[]) {
 
 	const parsedOptions = parseZodArgs(args, preset.base.options);
 
-	const creation = await producePreset(preset, {
+	await runPreset(preset, {
+		// TODO: allow changing directory
+		// https://github.com/JoshuaKGoldberg/create/issues/26 (or a follow-up)
+		directory: ".",
+
 		options: parsedOptions,
-		optionsAugment: async (options) =>
+
+		// TODO: why is options `any` without the type annotation?
+		optionsAugment: async (options: typeof parsedOptions) =>
 			promptForPresetOptions(preset.base.options, options),
 	});
-
-	await applyCreation(creation, createSystemContext());
 }

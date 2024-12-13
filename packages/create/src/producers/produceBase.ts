@@ -9,6 +9,7 @@ import {
 
 export interface BaseProductionSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
+	directory?: string;
 	options?: Partial<InferredObject<OptionsShape>>;
 }
 
@@ -23,10 +24,15 @@ export async function produceBase<OptionsShape extends AnyShape>(
 		return settings.options;
 	}
 
+	const system = createSystemContext({
+		directory: settings.directory ?? ".",
+		...settings,
+	});
+
 	return await awaitLazyProperties(
 		base.produce({
 			options: settings.options ?? {},
-			...createSystemContext(settings),
+			...system,
 		}),
 	);
 }

@@ -28,4 +28,6 @@ export interface NativeSystem {
 	runner: SystemRunner;
 }
 
-export type SystemContext = NativeSystem & TakeContext;
+export interface SystemContext extends NativeSystem, TakeContext {
+	directory: string;
+}

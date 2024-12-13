@@ -7,9 +7,9 @@ import { WritingFileSystem } from "../types/system.js";
 export async function applyFilesToSystem(
 	files: CreatedFiles,
 	system: WritingFileSystem,
-	rootDirectory: string,
+	directory: string,
 ) {
-	await writeToSystemWorker(files, system, rootDirectory);
+	await writeToSystemWorker(files, system, directory);
 }
 
 async function writeToSystemWorker(

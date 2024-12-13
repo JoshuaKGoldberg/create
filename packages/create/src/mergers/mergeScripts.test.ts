@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { mergeCommands } from "./mergeCommands.js";
+import { mergeScripts } from "./mergeScripts.js";
 
-describe("mergeCommands", () => {
+describe("mergeScripts", () => {
 	test.each([
 		[undefined, undefined, undefined],
 		[[], undefined, []],
@@ -240,7 +240,7 @@ describe("mergeCommands", () => {
 			],
 		],
 	])("%j and %j", (first, second, expected) => {
-		const actual = mergeCommands(first, second);
+		const actual = mergeScripts(first, second);
 
 		expect(actual).toEqual(expected);
 	});

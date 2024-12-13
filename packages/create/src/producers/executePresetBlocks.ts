@@ -4,7 +4,6 @@ import {
 } from "../mergers/getUpdatedBlockAddons.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContext } from "../system/createNativeSystems.js";
 import { Block } from "../types/blocks.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
@@ -13,7 +12,7 @@ import { SystemContext } from "../types/system.js";
 export function executePresetBlocks<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
 	options: InferredObject<OptionsShape>,
-	presetContext: SystemContext = createSystemContext(),
+	presetContext: SystemContext,
 ) {
 	type Options = InferredObject<OptionsShape>;
 

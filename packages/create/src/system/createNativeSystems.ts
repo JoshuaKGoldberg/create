@@ -21,15 +21,23 @@ export function createWritingFileSystem() {
 	};
 }
 
+export function createSystemRunner(directory: string) {
+	const executor = execa({ cwd: directory });
+
+	return (command: string) => executor`${parseCommandString(command)}`;
+}
+
+export interface NativeSystemsSettings extends Partial<NativeSystem> {
+	directory: string;
+}
+
 export function createNativeSystems(
-	providedSystem: Partial<NativeSystem> = {},
+	settings: NativeSystemsSettings,
 ): NativeSystems {
 	const system = {
-		fetcher: providedSystem.fetcher ?? fetch,
-		fs: providedSystem.fs ?? createWritingFileSystem(),
-		runner:
-			providedSystem.runner ??
-			(async (command: string) => await execa`${parseCommandString(command)}`),
+		fetcher: settings.fetcher ?? fetch,
+		fs: settings.fs ?? createWritingFileSystem(),
+		runner: settings.runner ?? createSystemRunner(settings.directory),
 	};
 
 	const take = ((input, args) => input({ args, take, ...system })) as TakeInput;
@@ -38,8 +46,13 @@ export function createNativeSystems(
 }
 
 export function createSystemContext(
-	providedSystem?: Partial<NativeSystem>,
+	settings: NativeSystemsSettings,
 ): SystemContext {
-	const { system, take } = createNativeSystems(providedSystem);
-	return { ...system, take };
+	const { system, take } = createNativeSystems(settings);
+
+	return {
+		...system,
+		directory: settings.directory,
+		take,
+	};
 }

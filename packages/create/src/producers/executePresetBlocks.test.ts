@@ -5,6 +5,7 @@ import { createBase } from "../creators/createBase.js";
 import { executePresetBlocks } from "./executePresetBlocks.js";
 
 const context = {
+	directory: ".",
 	fetcher: vi.fn(),
 	fs: { readFile: vi.fn(), writeDirectory: vi.fn(), writeFile: vi.fn() },
 	runner: vi.fn(),

@@ -23,6 +23,7 @@ A Base Definition is an object containing:
 
 - [`options`](#createbase-options) _(required)_: a [Base Options](../concepts/bases#options) object containing [Zod](https://zod.dev) values
 - [`produce`](#createbase-produce) _(optional)_: a [Base production](../concepts/bases#production) function to fill in default options
+- [`template`](#createbase-template) _(optional)_: a repository locator for a [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository)
 
 ### `options` {#createbase-options}
 
@@ -136,6 +137,33 @@ export const base = createBase({
 
 When the Base's Presets are run, if the user provides an `author`, then they'll use that.
 Otherwise, they'll default the `author` to whatever `owner` the user provided.
+
+### `template` {#createbase-template}
+
+Locator for a [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository).
+
+`template` may be an object containing:
+
+- `owner` _(`string`)_: Owning organization or user on GitHub
+- `repository` _(`string`)_: Repository name on GitHub
+
+If specified, newly created repositories from the Base will include a _generated from_ notice pointing to that template repository.
+
+For example, this Base defines itself as being templated from [JoshuaKGoldberg/create-typescript-app](http://github.com/JoshuaKGoldberg/create-typescript-app):
+
+```ts
+import { createBase } from "create";
+
+export const base = createBase({
+	options: {
+		// ...
+	},
+	template: {
+		owner: "JoshuaKGoldberg",
+		repository: "create-typescript-app",
+	},
+});
+```
 
 ## `createBlock`
 
