@@ -4,8 +4,8 @@
 import { BlockWithAddons } from "./blocks.js";
 
 export interface DirectCreation {
-	commands: (CreatedCommand | string)[];
 	files: CreatedFiles;
+	scripts: CreatedScript[];
 	// TODO: Network calls
 }
 
@@ -27,9 +27,9 @@ export interface CreatedBlockAddons<
 	block: BlockWithAddons<Addons, Options>;
 }
 
-export interface CreatedCommand {
-	phase: number; // TODO: Make an enum?
-	script: string;
+export interface CreatedScript {
+	commands: string[];
+	phase: number;
 }
 
 export interface CreatedFiles {

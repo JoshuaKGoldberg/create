@@ -9,7 +9,7 @@ export function mergeCreations<Options extends object>(
 ): Creation<Options> {
 	return {
 		addons: mergeAddons(first.addons, second.addons),
-		commands: mergeArrays(first.commands, second.commands),
 		files: mergeFileCreations(first.files, second.files, []) ?? {},
+		scripts: mergeArrays(first.scripts, second.scripts),
 	};
 }

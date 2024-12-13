@@ -4,8 +4,8 @@ import { mergeCreations } from "./mergeCreations.js";
 
 const emptyCreation = {
 	addons: [],
-	commands: [],
 	files: {},
+	scripts: [],
 };
 
 describe("mergeCreations", () => {
@@ -13,33 +13,27 @@ describe("mergeCreations", () => {
 		const actual = mergeCreations(
 			{
 				...emptyCreation,
-				commands: ["run a", "run b"],
 				files: {
 					"README.md": "Hello, world!",
 					src: {
 						"index.ts": "",
 					},
 				},
+				scripts: [{ commands: ["run a", "run b"], phase: 0 }],
 			},
 			{
-				commands: ["run c", "run d"],
 				files: {
 					src: {
 						"second.ts": "// ...",
 					},
 				},
+				scripts: [{ commands: ["run c", "run d"], phase: 0 }],
 			},
 		);
 
 		expect(actual).toMatchInlineSnapshot(`
 			{
 			  "addons": [],
-			  "commands": [
-			    "run a",
-			    "run b",
-			    "run c",
-			    "run d",
-			  ],
 			  "files": {
 			    "README.md": "Hello, world!",
 			    "src": {
@@ -47,6 +41,22 @@ describe("mergeCreations", () => {
 			      "second.ts": "// ...",
 			    },
 			  },
+			  "scripts": [
+			    {
+			      "commands": [
+			        "run a",
+			        "run b",
+			      ],
+			      "phase": 0,
+			    },
+			    {
+			      "commands": [
+			        "run c",
+			        "run d",
+			      ],
+			      "phase": 0,
+			    },
+			  ],
 			}
 		`);
 	});
