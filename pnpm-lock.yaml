@@ -57,8 +57,8 @@ importers:
         specifier: 2.7.0
         version: 2.7.0(eslint@9.9.1(jiti@2.4.1))
       eslint-plugin-yml:
-        specifier: 1.14.0
-        version: 1.14.0(eslint@9.9.1(jiti@2.4.1))
+        specifier: 1.16.0
+        version: 1.16.0(eslint@9.9.1(jiti@2.4.1))
       husky:
         specifier: 9.1.5
         version: 9.1.5
@@ -1876,12 +1876,6 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-compat-utils@0.5.1:
-    resolution: {integrity: sha512-3z3vFexKIEnjHE3zCMRo6fn/e44U7T1khUjg+Hp0ZQMCigh28rALD0nPFBcGZuiLC5rLZa2ubQHDRln09JfU2Q==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      eslint: '>=6.0.0'
-
   eslint-compat-utils@0.6.4:
     resolution: {integrity: sha512-/u+GQt8NMfXO8w17QendT4gvO5acfxQsAKirAt0LVxDnr2N8YLCVbregaNc/Yhp7NM128DwCaRvr8PLDfeNkQw==}
     engines: {node: '>=12'}
@@ -1949,8 +1943,8 @@ packages:
     peerDependencies:
       eslint: '>=8.44.0'
 
-  eslint-plugin-yml@1.14.0:
-    resolution: {integrity: sha512-ESUpgYPOcAYQO9czugcX5OqRvn/ydDVwGCPXY4YjPqc09rHaUVUA6IE6HLQys4rXk/S+qx3EwTd1wHCwam/OWQ==}
+  eslint-plugin-yml@1.16.0:
+    resolution: {integrity: sha512-t4MNCetPjTn18/fUDlQ/wKkcYjnuLYKChBrZ0qUaNqRigVqChHWzTP8SrfFi5s4keX3vdlkWRSu8zHJMdKwxWQ==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -5815,11 +5809,6 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-compat-utils@0.5.1(eslint@9.9.1(jiti@2.4.1)):
-    dependencies:
-      eslint: 9.9.1(jiti@2.4.1)
-      semver: 7.6.3
-
   eslint-compat-utils@0.6.4(eslint@9.9.1(jiti@2.4.1)):
     dependencies:
       eslint: 9.9.1(jiti@2.4.1)
@@ -5904,11 +5893,11 @@ snapshots:
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
 
-  eslint-plugin-yml@1.14.0(eslint@9.9.1(jiti@2.4.1)):
+  eslint-plugin-yml@1.16.0(eslint@9.9.1(jiti@2.4.1)):
     dependencies:
       debug: 4.3.6
       eslint: 9.9.1(jiti@2.4.1)
-      eslint-compat-utils: 0.5.1(eslint@9.9.1(jiti@2.4.1))
+      eslint-compat-utils: 0.6.4(eslint@9.9.1(jiti@2.4.1))
       lodash: 4.17.21
       natural-compare: 1.4.0
       yaml-eslint-parser: 1.2.3
