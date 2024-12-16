@@ -7,19 +7,20 @@ const mockCreateInOrg = vi.fn();
 const mockCreateForAuthenticatedUser = vi.fn();
 const mockGetAuthenticated = vi.fn();
 
-vi.mock("./getGitHub.js", () => ({
-	getGitHub: () => ({
-		rest: {
-			repos: {
-				createForAuthenticatedUser: mockCreateForAuthenticatedUser,
-				createInOrg: mockCreateInOrg,
-				createUsingTemplate: mockCreateUsingTemplate,
+vi.mock("octokit-from-auth", () => ({
+	octokitFromAuth: () =>
+		Promise.resolve({
+			rest: {
+				repos: {
+					createForAuthenticatedUser: mockCreateForAuthenticatedUser,
+					createInOrg: mockCreateInOrg,
+					createUsingTemplate: mockCreateUsingTemplate,
+				},
+				users: {
+					getAuthenticated: mockGetAuthenticated,
+				},
 			},
-			users: {
-				getAuthenticated: mockGetAuthenticated,
-			},
-		},
-	}),
+		}),
 }));
 
 const mockClearLocalGitTags = vi.fn();

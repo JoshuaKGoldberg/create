@@ -107,12 +107,9 @@ importers:
       execa:
         specifier: ^9.3.1
         version: 9.3.1
-      get-github-auth-token:
-        specifier: ^0.1.0
-        version: 0.1.0
-      octokit:
-        specifier: ^4.0.2
-        version: 4.0.2
+      octokit-from-auth:
+        specifier: ^0.2.0
+        version: 0.2.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -2924,6 +2921,10 @@ packages:
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
+
+  octokit-from-auth@0.2.0:
+    resolution: {integrity: sha512-UMo+WQkWi1PS/HZ15SMM1sgPhhXykqPJKCCAi6R0+JAhTbLBcfeKCJ3AwUVdJBJQKSQ37BUqPpME4iGAjZQtkw==}
+    engines: {node: '>=18.3.0'}
 
   octokit@4.0.2:
     resolution: {integrity: sha512-wbqF4uc1YbcldtiBFfkSnquHtECEIpYD78YUXI6ri1Im5OO2NLo6ZVpRdbJpdnpZ05zMrVPssNiEo6JQtea+Qg==}
@@ -7311,6 +7312,11 @@ snapshots:
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
+
+  octokit-from-auth@0.2.0:
+    dependencies:
+      get-github-auth-token: 0.1.0
+      octokit: 4.0.2
 
   octokit@4.0.2:
     dependencies:
