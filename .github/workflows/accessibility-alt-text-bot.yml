@@ -3,7 +3,7 @@ jobs:
     if: ${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: github/accessibility-alt-text-bot@602a5efcf386c52ef8b9a11ead9bfa6ef8d56ba5 # v1.4.0
+      - uses: github/accessibility-alt-text-bot@ac6fa6d29595e1175b343b9d6d35cf7570a692f6 # v1.5.0
 
 name: Accessibility Alt Text Bot
 
