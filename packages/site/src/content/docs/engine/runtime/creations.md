@@ -108,17 +108,35 @@ Terminal commands to run after production.
 Scripts will be run after files are applied to the system.
 This can be useful when shell scripts are necessary to apply changes the Block enforces in CI.
 
-Each command must be specified as an object with:
+Each command must be specified as either a string or an object with:
 
 - `commands` (`string[]`): Shell scripts to run within the phase, in order
 - `phase` (`number`): What order, relative to any other command groups, to run in
 
-For example, this Block runs pnpm package installation and duplication in a first phase:
+Commands provided as strings are assumed to not be order-dependent.
+They are run all at the same time.
+
+For example, this Block runs pnpm package installation :
 
 ```ts
 import { base } from "../base";
 
-export const blockPnpmInstalls = base.createBlock({
+export const blockPnpmInstall = base.createBlock({
+	produce() {
+		return {
+			// ...
+			scripts: "pnpm install",
+		};
+	},
+});
+```
+
+For example, this Block runs pnpm package installation and duplication in series within a first phase:
+
+```ts
+import { base } from "../base";
+
+export const blockPnpmInstallAndDedupe = base.createBlock({
 	produce() {
 		return {
 			// ...
@@ -153,11 +171,11 @@ export const blockPrettier = base.createBlock({
 });
 ```
 
-Those blocks together would run the following commands in order:
+Those two Blocks with phase-dependent script commands together would run the following commands in order:
 
 1. `pnpm install`
-1. `pnpm dedupe`
-1. `pnpm format --write`
+2. `pnpm dedupe`
+3. `pnpm format --write`
 
 If multiple command groups specify the same `phase`, then they will start executing their scripts at the same time.
 The next phase will not be started until all scripts in that phase complete.

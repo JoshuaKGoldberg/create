@@ -27,6 +27,15 @@ describe("applyCommandsToSystem", () => {
 		expect(runner.mock.calls).toEqual([["a"], ["c"], ["b"], ["d"]]);
 	});
 
+	it("runs out-of-phase commands in parallel to phase commands when they exist", async () => {
+		const scripts = ["a", { commands: ["b", "d"], phase: 0 }, "d"];
+		const runner = vi.fn();
+
+		await applyScriptsToSystem(scripts, runner);
+
+		expect(runner.mock.calls).toEqual([["a"], ["d"], ["b"], ["d"]]);
+	});
+
 	test("mixed phase commands", async () => {
 		const scripts = [
 			{ commands: ["a", "b"], phase: 2 },

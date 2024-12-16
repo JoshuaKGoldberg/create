@@ -13,8 +13,14 @@ export function mergeScripts(
 	}
 
 	const commandsByPhase = new Map<number, string[][]>();
+	const commandsWithoutPhase: string[] = [];
 
 	for (const command of [...first, ...second]) {
+		if (typeof command === "string") {
+			commandsWithoutPhase.push(command);
+			continue;
+		}
+
 		const byPhase = commandsByPhase.get(command.phase);
 		if (!byPhase) {
 			commandsByPhase.set(command.phase, [command.commands.slice()]);
@@ -34,9 +40,12 @@ export function mergeScripts(
 		}
 	}
 
-	return Array.from(commandsByPhase).flatMap(([phase, phaseCommands]) =>
-		phaseCommands.map((commands) => ({ commands, phase })),
-	);
+	return [
+		...Array.from(commandsByPhase).flatMap(([phase, phaseCommands]) =>
+			phaseCommands.map((commands) => ({ commands, phase })),
+		),
+		...new Set(commandsWithoutPhase),
+	];
 }
 
 function firstHasSameStart(first: string[], second: string[]) {
