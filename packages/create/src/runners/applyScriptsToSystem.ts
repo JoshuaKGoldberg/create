@@ -6,11 +6,21 @@ export async function applyScriptsToSystem(
 	scripts: CreatedScript[],
 	runner: SystemRunner,
 ) {
-	const commandsByPhase = groupBy(scripts, (command) => command.phase);
+	const commandsByPhase = groupBy(
+		scripts.filter((script) => typeof script === "object"),
+		(script) => script.phase,
+	);
+	const commandsStandalone = scripts.filter(
+		(script) => typeof script === "string",
+	);
 
 	const phaseKeys = Object.keys(commandsByPhase)
 		.map((key) => Number(key))
 		.sort();
+
+	const commandsStandaloneTask = Promise.all(
+		commandsStandalone.map(async (command) => await runner(command)),
+	);
 
 	for (const phase of phaseKeys) {
 		await Promise.all(
@@ -21,4 +31,6 @@ export async function applyScriptsToSystem(
 			}),
 		);
 	}
+
+	await commandsStandaloneTask;
 }

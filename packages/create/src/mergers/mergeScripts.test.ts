@@ -6,8 +6,14 @@ describe("mergeScripts", () => {
 	test.each([
 		[undefined, undefined, undefined],
 		[[], undefined, []],
+		[["a"], undefined, ["a"]],
 		[undefined, [], []],
+		[undefined, ["a"], ["a"]],
 		[[], [], []],
+		[[], ["a"], ["a"]],
+		[["a"], [], ["a"]],
+		[["a"], ["a"], ["a"]],
+		[["a"], ["b"], ["a", "b"]],
 		[
 			[
 				{
@@ -41,6 +47,55 @@ describe("mergeScripts", () => {
 					commands: ["pnpm build"],
 					phase: 0,
 				},
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+			],
+			["pnpm build"],
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+				"pnpm build",
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+			],
+			["pnpm other"],
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+				"pnpm other",
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+			],
+			["pnpm other:a", "pnpm other:b"],
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+				"pnpm other:a",
+				"pnpm other:b",
 			],
 		],
 		[

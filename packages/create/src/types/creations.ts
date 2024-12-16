@@ -27,7 +27,9 @@ export interface CreatedBlockAddons<
 	block: BlockWithAddons<Addons, Options>;
 }
 
-export interface CreatedScript {
+export type CreatedScript = CreatedScriptWithPhase | string;
+
+export interface CreatedScriptWithPhase {
 	commands: string[];
 	phase: number;
 }
