@@ -1,7 +1,8 @@
+import { octokitFromAuth } from "octokit-from-auth";
+
 import { RepositoryTemplate } from "../types/bases.js";
 import { SystemRunner } from "../types/system.js";
 import { clearLocalGitTags } from "./clearLocalGitTags.js";
-import { getGitHub } from "./getGitHub.js";
 import { CreationOptions } from "./types.js";
 
 export async function createRepositoryOnGitHub(
@@ -9,7 +10,7 @@ export async function createRepositoryOnGitHub(
 	runner: SystemRunner,
 	template?: RepositoryTemplate,
 ) {
-	const octokit = await getGitHub();
+	const octokit = await octokitFromAuth();
 
 	if (template) {
 		await octokit.rest.repos.createUsingTemplate({
