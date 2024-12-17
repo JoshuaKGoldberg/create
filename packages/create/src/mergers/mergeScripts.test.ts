@@ -4,31 +4,11 @@ import { mergeScripts } from "./mergeScripts.js";
 
 describe("mergeScripts", () => {
 	test.each([
-		[undefined, undefined, undefined],
-		[[], undefined, []],
-		[["a"], undefined, ["a"]],
-		[undefined, [], []],
-		[undefined, ["a"], ["a"]],
 		[[], [], []],
 		[[], ["a"], ["a"]],
 		[["a"], [], ["a"]],
 		[["a"], ["a"], ["a"]],
 		[["a"], ["b"], ["a", "b"]],
-		[
-			[
-				{
-					commands: ["pnpm build"],
-					phase: 0,
-				},
-			],
-			undefined,
-			[
-				{
-					commands: ["pnpm build"],
-					phase: 0,
-				},
-			],
-		],
 		[
 			[
 				{

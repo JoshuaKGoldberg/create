@@ -3,24 +3,16 @@ import { describe, expect, test } from "vitest";
 import { CreatedFiles } from "../types/creations.js";
 import { mergeFileCreations } from "./mergeFileCreations.js";
 
-const path = ["test"];
-
 describe("mergeFileCreations", () => {
 	test.each([
-		[undefined, undefined, undefined],
-		[{}, undefined, {}],
-		[undefined, {}, {}],
 		[{}, {}, {}],
+		[{ a: false }, { a: undefined }, {}],
 		[{ a: "" }, { a: "" }, { a: "" }],
 		[{ a: "" }, { b: "" }, { a: "", b: "" }],
-		[{ a: "1" }, { a: "2" }, "Conflicting created files at path: 'test/a'."],
-		[{ a: "1" }, { a: ["2"] }, "Conflicting created files at path: 'test/a'."],
-		[{ a: ["1"] }, { a: "2" }, "Conflicting created files at path: 'test/a'."],
-		[
-			{ a: ["1"] },
-			{ a: ["2"] },
-			"Conflicting created files at path: 'test/a'.",
-		],
+		[{ a: "1" }, { a: "2" }, "Conflicting created files at path: 'a'."],
+		[{ a: "1" }, { a: ["2"] }, "Conflicting created files at path: 'a'."],
+		[{ a: ["1"] }, { a: "2" }, "Conflicting created files at path: 'a'."],
+		[{ a: ["1"] }, { a: ["2"] }, "Conflicting created files at path: 'a'."],
 		[{ a: {} }, { a: {} }, { a: {} }],
 		[{ a: {} }, { a: { b: "" } }, { a: { b: "" } }],
 		[{ a: { b: "" } }, { a: {} }, { a: { b: "" } }],
@@ -28,28 +20,20 @@ describe("mergeFileCreations", () => {
 		[
 			{ a: "" },
 			{ a: {} },
-			"Conflicting created directory and file at path: 'test/a'.",
+			"Conflicting created directory and file at path: 'a'.",
 		],
 		[
 			{ a: {} },
 			{ a: "" },
-			"Conflicting created directory and file at path: 'test/a'.",
+			"Conflicting created directory and file at path: 'a'.",
 		],
-	] satisfies [
-		CreatedFiles | undefined,
-		CreatedFiles | undefined,
-		CreatedFiles | string | undefined,
-	][])(
+	] satisfies [CreatedFiles, CreatedFiles, CreatedFiles | string][])(
 		"%j with %j",
-		(
-			first: CreatedFiles | undefined,
-			second: CreatedFiles | undefined,
-			expected?: object | string,
-		) => {
+		(first: CreatedFiles, second: CreatedFiles, expected?: object | string) => {
 			if (typeof expected === "string") {
-				expect(() => mergeFileCreations(first, second, path)).toThrow(expected);
+				expect(() => mergeFileCreations(first, second)).toThrow(expected);
 			} else {
-				expect(mergeFileCreations(first, second, path)).toEqual(expected);
+				expect(mergeFileCreations(first, second)).toEqual(expected);
 			}
 		},
 	);

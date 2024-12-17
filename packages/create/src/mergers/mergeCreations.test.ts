@@ -5,6 +5,7 @@ import { mergeCreations } from "./mergeCreations.js";
 const emptyCreation = {
 	addons: [],
 	files: {},
+	requests: [],
 	scripts: [],
 };
 
@@ -41,6 +42,7 @@ describe("mergeCreations", () => {
 			      "second.ts": "// ...",
 			    },
 			  },
+			  "requests": [],
 			  "scripts": [
 			    {
 			      "commands": [

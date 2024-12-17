@@ -2,11 +2,12 @@ import { describe, expect, it, test, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
+import { createSystemFetchers } from "../system/createSystemFetchers.js";
 import { executePresetBlocks } from "./executePresetBlocks.js";
 
 const context = {
 	directory: ".",
-	fetcher: vi.fn(),
+	fetchers: createSystemFetchers(vi.fn()),
 	fs: { readFile: vi.fn(), writeDirectory: vi.fn(), writeFile: vi.fn() },
 	runner: vi.fn(),
 	take: vi.fn(),
@@ -50,6 +51,7 @@ describe("runPreset", () => {
 			files: {
 				"README.md": "Hello, world!",
 			},
+			requests: [],
 			scripts: [],
 		});
 	});
@@ -93,6 +95,7 @@ describe("runPreset", () => {
 				files: {
 					"README.md": "Hello, world!",
 				},
+				requests: [],
 				scripts: [],
 			});
 		});
@@ -111,6 +114,7 @@ describe("runPreset", () => {
 					"data.txt": "Hello, world!",
 					"README.md": "Hello, world!",
 				},
+				requests: [],
 				scripts: [],
 			});
 		});

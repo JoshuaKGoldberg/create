@@ -7,6 +7,7 @@ import { producePreset } from "./producePreset.js";
 const emptyCreation = {
 	addons: [],
 	files: {},
+	requests: [],
 	scripts: [],
 };
 

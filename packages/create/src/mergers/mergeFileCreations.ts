@@ -2,18 +2,17 @@ import { CreatedFiles } from "../types/creations.js";
 import { mergeFileEntries } from "./mergeFileEntries.js";
 
 export function mergeFileCreations(
-	firsts: CreatedFiles | undefined,
-	seconds: CreatedFiles | undefined,
+	firsts: CreatedFiles,
+	seconds: CreatedFiles,
+) {
+	return mergeFileCreationsWorker(firsts, seconds, []);
+}
+
+function mergeFileCreationsWorker(
+	firsts: CreatedFiles,
+	seconds: CreatedFiles,
 	path: string[],
 ) {
-	if (!firsts) {
-		return seconds;
-	}
-
-	if (!seconds) {
-		return firsts;
-	}
-
 	const result: CreatedFiles = { ...firsts };
 
 	for (const i in seconds) {
@@ -37,7 +36,7 @@ export function mergeFileCreations(
 		}
 
 		result[i] = firstIsDirectory
-			? mergeFileCreations(first, second as CreatedFiles, nextPath)
+			? mergeFileCreationsWorker(first, second as CreatedFiles, nextPath)
 			: mergeFileEntries(first, second, nextPath);
 	}
 

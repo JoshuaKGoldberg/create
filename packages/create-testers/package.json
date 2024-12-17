@@ -23,6 +23,9 @@
 	"scripts": {
 		"build": "tsc"
 	},
+	"dependencies": {
+		"octokit": "^4.0.2"
+	},
 	"devDependencies": {
 		"zod": "3.24.1"
 	},

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
 import { BlockWithAddons } from "./blocks.js";
+import { SystemFetchers } from "./system.js";
 
 export interface CreatedBlockAddons<
 	Addons extends object,
@@ -30,6 +31,13 @@ export interface CreatedFiles {
 	[i: string]: CreatedFileEntry | undefined;
 }
 
+export interface CreatedRequest {
+	id: string;
+	send: CreatedRequestSender;
+}
+
+export type CreatedRequestSender = (fetchers: SystemFetchers) => Promise<void>;
+
 export type CreatedScript = CreatedScriptWithPhase | string;
 
 export interface CreatedScriptWithPhase {
@@ -42,8 +50,8 @@ export type Creation<Options extends object> = DirectCreation &
 
 export interface DirectCreation {
 	files: CreatedFiles;
+	requests: CreatedRequest[];
 	scripts: CreatedScript[];
-	// TODO: Network calls
 }
 
 export interface IndirectCreation<Options extends object> {

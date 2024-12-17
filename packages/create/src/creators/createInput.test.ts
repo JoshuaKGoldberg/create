@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
+import { createSystemFetchers } from "../system/createSystemFetchers.js";
 import { createInput } from "./createInput.js";
 
 describe("createInput", () => {
@@ -12,7 +13,7 @@ describe("createInput", () => {
 		});
 
 		const actual = input({
-			fetcher: vi.fn(),
+			fetchers: createSystemFetchers(vi.fn()),
 			fs: { readFile: vi.fn() },
 			runner: vi.fn(),
 			take: vi.fn(),
@@ -35,7 +36,7 @@ describe("createInput", () => {
 			args: {
 				offset: 1000,
 			},
-			fetcher: vi.fn(),
+			fetchers: createSystemFetchers(vi.fn()),
 			fs: { readFile: vi.fn() },
 			runner: vi.fn(),
 			take: vi.fn(),

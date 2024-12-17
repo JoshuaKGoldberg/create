@@ -1,12 +1,20 @@
 ---
-description: "Different runtime modes the engine can be targeted to."
-title: Modes
+description: "How the engine produces Creations from Blocks at runtime."
+title: Execution
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
+The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
+
+1. Create a queue of Blocks to be run, starting with all defined in the Preset
+2. For each Block in the queue:
+   1. Get the Creation from the Block, passing any current known Args
+   2. Store that Block's Creation
+   3. If a [runtime mode](#modes) is specified, additionally generate the approprate Block Creations
+   4. If the Block specified new addons for any other Blocks:
+      1. Add those Blocks to the queue of Blocks to re-run
+3. Merge all Block Creations together
+
+## Modes
 
 The `create` engine can be told to run in one the following "modes":
 
@@ -14,7 +22,7 @@ The `create` engine can be told to run in one the following "modes":
 - _(coming soon)_ `"migrate"`
 - `"new"`: Indicating the production is being used to create a new repository
 
-## `"new"`
+### `"new"`
 
 This mode creates a new repository on GitHub.
 As the production is run, including writing files on disk and running scripts, the `create` engine will:

@@ -25,9 +25,9 @@ export default defineConfig({
 							items: [
 								{ label: "Contexts", link: "engine/runtime/contexts" },
 								{ label: "Creations", link: "engine/runtime/creations" },
+								{ label: "Execution", link: "engine/runtime/execution" },
 								{ label: "Inputs", link: "engine/runtime/inputs" },
 								{ label: "Merging", link: "engine/runtime/merging" },
-								{ label: "Modes", link: "engine/runtime/modes" },
 							],
 							label: "Runtime",
 						},
