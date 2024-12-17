@@ -5,10 +5,11 @@ import {
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { Block } from "../types/blocks.js";
+import { Block, BlockWithAddons } from "../types/blocks.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
+import { produceBlock } from "./produceBlock.js";
 
 export function executePresetBlocks<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
@@ -34,23 +35,19 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 		for (const currentBlock of blocksToBeRun) {
 			blocksToBeRun.delete(currentBlock);
 
-			// 2.1. Get the Creation from the Block, passing any current known Args
+			// 2.1. Get the Creation from the Block, passing any current known Addons
+			// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
 			const previousProduction = blockProductions.get(currentBlock);
 			const previousAddons = previousProduction?.addons ?? {};
-			const productionContext = {
-				...presetContext,
-				addons: previousAddons,
-				options,
-			};
-			let blockCreation = currentBlock.produce(productionContext);
-
-			// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
-			if (mode === "new" && currentBlock.initialize) {
-				blockCreation = mergeCreations(
-					blockCreation,
-					currentBlock.initialize(productionContext),
-				);
-			}
+			const blockCreation = produceBlock(
+				currentBlock as BlockWithAddons<object, Options>,
+				{
+					...presetContext,
+					addons: previousAddons,
+					mode,
+					options,
+				},
+			);
 
 			// 2.3. Store that Block's Creation
 			blockProductions.set(currentBlock, {
@@ -77,13 +74,7 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 	}
 
 	// 3. Merge all Block Creations together
-	return Array.from(blockProductions.values()).reduce<Creation<Options>>(
-		(created, next) => mergeCreations(created, next.creation ?? {}),
-		{
-			addons: [],
-			files: {},
-			requests: [],
-			scripts: [],
-		},
-	);
+	return Array.from(blockProductions.values()).reduce<
+		Partial<Creation<Options>>
+	>((created, next) => mergeCreations(created, next.creation ?? {}), {});
 }

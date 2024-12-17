@@ -1,28 +1,29 @@
-import { BlockWithAddons, BlockWithoutAddons, Creation } from "create";
+import {
+	BlockProductionSettingsWithAddons,
+	BlockWithAddons,
+	BlockWithoutAddons,
+	Creation,
+	produceBlock,
+} from "create";
+import { ProductionMode } from "create/lib/modes/types.js";
 
-import { createFailingObject, failingFunction } from "./utils.js";
+import { createFailingObject } from "./utils.js";
 
 export interface BlockContextSettingsWithOptionalAddons<
 	Addons extends object,
 	Options extends object,
 > extends BlockContextSettingsWithoutAddons<Options> {
-	addons?: Addons;
+	addons?: Partial<Addons>;
 }
 
 export interface BlockContextSettingsWithoutAddons<Options extends object> {
+	mode?: ProductionMode;
 	options?: Options;
-}
-
-export interface BlockContextSettingsWithRequiredAddons<
-	Addons extends object,
-	Options extends object,
-> extends BlockContextSettingsWithoutAddons<Options> {
-	addons: Addons;
 }
 
 export function testBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,
-	settings: BlockContextSettingsWithRequiredAddons<Addons, Options>,
+	settings: BlockContextSettingsWithOptionalAddons<Addons, Options>,
 ): Partial<Creation<Options>>;
 export function testBlock<Options extends object>(
 	block: BlockWithoutAddons<Options>,
@@ -32,11 +33,12 @@ export function testBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockContextSettingsWithOptionalAddons<Addons, Options> = {},
 ): Partial<Creation<Options>> {
-	return block.produce({
-		get addons() {
-			return failingFunction("addons", "the Block");
-		},
-		options: createFailingObject("options", "the Block") as Options,
-		...settings,
-	});
+	return produceBlock(
+		block as BlockWithAddons<Addons, Options>,
+		{
+			addons: {},
+			options: createFailingObject("options", "the Block") as Options,
+			...settings,
+		} as BlockProductionSettingsWithAddons<Addons, Options>,
+	);
 }

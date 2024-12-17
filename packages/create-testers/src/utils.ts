@@ -11,7 +11,7 @@ export function createFailingObject(label: string, user: string) {
 	);
 }
 
-export function failingFunction(label: string, user: string): never {
+function failingFunction(label: string, user: string): never {
 	throw new Error(
 		`Context property '${label}' was used by ${user} but not provided.`,
 	);

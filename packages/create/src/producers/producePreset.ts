@@ -95,5 +95,14 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		mode,
 	);
 
-	return { creation, options: fullOptions };
+	return {
+		creation: {
+			addons: [],
+			files: {},
+			requests: [],
+			scripts: [],
+			...creation,
+		},
+		options: fullOptions,
+	};
 }

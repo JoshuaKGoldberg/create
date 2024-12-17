@@ -146,7 +146,6 @@ Both [Direct Creations](../runtime/creations#direct-creations) and [Indirect Cre
 `settings` and all its properties are optional.
 However, some properties will cause `testBlock` to throw an error if they're not provided and the Block attempts to use them:
 
-- [`addons`](#testblock-addons): throws an error if accessed at all
 - [`options`](#testblock-options): each property throws an error if accessed at all
 
 ### `addons` {#testblock-addons}

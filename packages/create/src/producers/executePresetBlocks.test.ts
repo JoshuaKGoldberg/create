@@ -47,12 +47,9 @@ describe("runPreset", () => {
 		);
 
 		expect(result).toEqual({
-			addons: [],
 			files: {
 				"README.md": "Hello, world!",
 			},
-			requests: [],
-			scripts: [],
 		});
 	});
 
@@ -91,12 +88,9 @@ describe("runPreset", () => {
 			);
 
 			expect(result).toEqual({
-				addons: [],
 				files: {
 					"README.md": "Hello, world!",
 				},
-				requests: [],
-				scripts: [],
 			});
 		});
 
@@ -109,13 +103,10 @@ describe("runPreset", () => {
 			);
 
 			expect(result).toEqual({
-				addons: [],
 				files: {
 					"data.txt": "Hello, world!",
 					"README.md": "Hello, world!",
 				},
-				requests: [],
-				scripts: [],
 			});
 		});
 	});

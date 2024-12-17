@@ -7,7 +7,7 @@ The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
 
 1. Create a queue of Blocks to be run, starting with all defined in the Preset
 2. For each Block in the queue:
-   1. Get the Creation from the Block, passing any current known Args
+   1. Get the Creation from the Block, passing any current known Addons
    2. Store that Block's Creation
    3. If a [runtime mode](#modes) is specified, additionally generate the approprate Block Creations
    4. If the Block specified new addons for any other Blocks:
