@@ -4,6 +4,7 @@ export default defineConfig({
 	test: {
 		coverage: {
 			exclude: [
+				"**/.*",
 				"**/*.d.ts",
 				"**/*.js",
 				"**/vitest.*.ts",
