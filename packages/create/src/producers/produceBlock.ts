@@ -45,10 +45,11 @@ export function produceBlock<Addons extends object, Options extends object>(
 
 	// From engine/runtime/execution.md:
 	// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
-	if (settings.mode === "new" && block.initialize) {
+	const augment = settings.mode && block[settings.mode];
+	if (augment) {
 		creation = mergeCreations(
 			creation,
-			block.initialize(settings as BlockContextWithAddons<Addons, Options>),
+			augment(settings as BlockContextWithAddons<Addons, Options>),
 		);
 	}
 

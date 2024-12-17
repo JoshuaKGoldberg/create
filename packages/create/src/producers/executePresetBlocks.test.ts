@@ -53,7 +53,7 @@ describe("runPreset", () => {
 		});
 	});
 
-	describe("initialize", () => {
+	describe("modes", () => {
 		const block = base.createBlock({
 			about: {
 				name: "Example Block",
@@ -63,6 +63,11 @@ describe("runPreset", () => {
 					files: {
 						"data.txt": options.value,
 					},
+				};
+			},
+			migrate() {
+				return {
+					scripts: ["rm old.txt"],
 				};
 			},
 			produce({ options }) {
@@ -79,7 +84,7 @@ describe("runPreset", () => {
 			blocks: [block],
 		});
 
-		it("does not augment creations with a Block's initialize() when mode is undefined", () => {
+		it("does not augment creations with a Block's initialize() or migrate() when mode is undefined", () => {
 			const result = executePresetBlocks(
 				preset,
 				{ value: "Hello, world!" },
@@ -94,12 +99,12 @@ describe("runPreset", () => {
 			});
 		});
 
-		it("augments creations with a Block's initialize() when mode is 'new'", () => {
+		it("augments creations with a Block's initialize() when mode is 'initialize'", () => {
 			const result = executePresetBlocks(
 				preset,
 				{ value: "Hello, world!" },
 				context,
-				"new",
+				"initialize",
 			);
 
 			expect(result).toEqual({
@@ -107,6 +112,22 @@ describe("runPreset", () => {
 					"data.txt": "Hello, world!",
 					"README.md": "Hello, world!",
 				},
+			});
+		});
+
+		it("augments creations with a Block's migrate() when mode is 'migrate'", () => {
+			const result = executePresetBlocks(
+				preset,
+				{ value: "Hello, world!" },
+				context,
+				"migrate",
+			);
+
+			expect(result).toEqual({
+				files: {
+					"README.md": "Hello, world!",
+				},
+				scripts: ["rm old.txt"],
 			});
 		});
 	});

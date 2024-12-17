@@ -16,13 +16,12 @@ The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
 
 ## Modes
 
-The `create` engine can be told to run in one the following "modes":
+The `create` engine can optionally be told to run in one the following "modes":
 
-- _(coming soon)_ `"initialize"`
-- _(coming soon)_ `"migrate"`
-- `"new"`: Indicating the production is being used to create a new repository
+- `"initialize"`: Indicating the production is being used to create a new repository
+- `"migrate"`: Indicating the production is migrating an existing repository
 
-### `"new"`
+### `"initialize"`
 
 This mode creates a new repository on GitHub.
 As the production is run, including writing files on disk and running scripts, the `create` engine will:
@@ -31,3 +30,9 @@ As the production is run, including writing files on disk and running scripts, t
    - If the Preset's Base defines a [`template`](../apis/creators#createbase-template), the repository will include a _generated from_ notice pointing to that template repository
 2. Add that new repository as the `origin` remote
 3. Force-push a single commit with the new repository contents to that origin
+
+### `"migrate"`
+
+This mode migrates an existing repository onto the provided template.
+As the production is run, the `create` engine will add in additional creations.
+This typically includes scripts that delete files from known no-longer-used pieces of tooling.

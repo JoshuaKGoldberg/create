@@ -56,7 +56,7 @@ export async function runPreset<OptionsShape extends AnyShape>(
 		} as FullPresetRunSettings<OptionsShape>,
 	);
 
-	if (settings.mode === "new") {
+	if (settings.mode === "initialize") {
 		// TODO: Hardcode owner and repository existing in options?
 		await createRepositoryOnGitHub(
 			options as unknown as CreationOptions,
@@ -67,7 +67,7 @@ export async function runPreset<OptionsShape extends AnyShape>(
 
 	await applyCreation(creation, system);
 
-	if (settings.mode === "new") {
+	if (settings.mode === "initialize") {
 		await createTrackingBranches(
 			options as unknown as CreationOptions,
 			system.runner,

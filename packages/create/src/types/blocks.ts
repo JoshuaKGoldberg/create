@@ -9,6 +9,17 @@ export type Block<
 	? BlockWithAddons<Addons, Options>
 	: BlockWithoutAddons<Options>;
 
+export type BlockAugmentWithAddons<
+	Addons extends object,
+	Options extends object,
+> = (
+	context: BlockContextWithAddons<Addons, Options>,
+) => Partial<DirectCreation>;
+
+export type BlockAugmentWithoutAddons<Options extends object> = (
+	context: BlockContextWithoutAddons<Options>,
+) => Partial<DirectCreation>;
+
 export interface BlockBase {
 	about?: AboutBase;
 }
@@ -60,7 +71,8 @@ export interface BlockDefinitionWithAddons<
 	Options extends object,
 > extends BlockDefinitionBase {
 	addons: AddonsShape;
-	initialize?: BlockInitializeWithAddons<InferredObject<AddonsShape>, Options>;
+	initialize?: BlockAugmentWithAddons<InferredObject<AddonsShape>, Options>;
+	migrate?: BlockAugmentWithAddons<InferredObject<AddonsShape>, Options>;
 	produce: BlockDefinitionProducerWithAddons<
 		InferredObject<AddonsShape>,
 		Options
@@ -69,20 +81,10 @@ export interface BlockDefinitionWithAddons<
 
 export interface BlockDefinitionWithoutAddons<Options extends object>
 	extends BlockDefinitionBase {
-	initialize?: BlockInitializeWithoutAddons<Options>;
+	initialize?: BlockAugmentWithoutAddons<Options>;
+	migrate?: BlockAugmentWithoutAddons<Options>;
 	produce: BlockDefinitionProducerWithoutAddons<Options>;
 }
-
-export type BlockInitializeWithAddons<
-	Addons extends object,
-	Options extends object,
-> = (
-	context: BlockContextWithAddons<Addons, Options>,
-) => Partial<DirectCreation>;
-
-export type BlockInitializeWithoutAddons<Options extends object> = (
-	context: BlockContextWithoutAddons<Options>,
-) => Partial<DirectCreation>;
 
 export type BlockProducerWithAddons<
 	Addons extends object,
@@ -97,12 +99,14 @@ export type BlockProducerWithoutAddons<Options extends object> = (
 
 export interface BlockWithAddons<Addons extends object, Options extends object>
 	extends BlockBase {
-	initialize?: BlockInitializeWithAddons<Addons, Options>;
+	initialize?: BlockAugmentWithAddons<Addons, Options>;
+	migrate?: BlockAugmentWithAddons<Addons, Options>;
 	produce: BlockProducerWithAddons<Addons, Options>;
 	(addons: Partial<Addons>): CreatedBlockAddons<Addons, Options>;
 }
 
 export interface BlockWithoutAddons<Options extends object> extends BlockBase {
-	initialize?: BlockInitializeWithoutAddons<Options>;
+	initialize?: BlockAugmentWithoutAddons<Options>;
+	migrate?: BlockAugmentWithoutAddons<Options>;
 	produce: BlockProducerWithoutAddons<Options>;
 }
