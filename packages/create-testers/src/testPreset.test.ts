@@ -7,6 +7,7 @@ import { testPreset } from "./testPreset.js";
 const emptyCreation = {
 	addons: [],
 	files: {},
+	requests: [],
 	scripts: [],
 };
 

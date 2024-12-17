@@ -17,7 +17,7 @@ Each runner API takes in up to two arguments:
 1. The construct to be run
 2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts) and:
    - `directory: string` (default: `'.'`): The root directory to write files to
-   - `mode`: What [runtime mode](../runtime/modes) to run in
+   - `mode`: What [runtime mode](../runtime/execution#modes) to run in
 
 :::note
 Runner APIs apply their generated objects to disk, as well as executing any network requests and shell commands.

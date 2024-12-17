@@ -1,6 +1,7 @@
 import { DirectCreation } from "../types/creations.js";
 import { SystemContext } from "../types/system.js";
 import { applyFilesToSystem } from "./applyFilesToSystem.js";
+import { applyRequestsToSystem } from "./applyRequestsToSystem.js";
 import { applyScriptsToSystem } from "./applyScriptsToSystem.js";
 
 export async function applyCreation(
@@ -11,9 +12,9 @@ export async function applyCreation(
 		await applyFilesToSystem(creation.files, system.fs, system.directory);
 	}
 
-	if (creation.scripts) {
-		await applyScriptsToSystem(creation.scripts, system.runner);
-	}
-
-	// TODO(#23): Implement network request execution
+	await Promise.all([
+		creation.scripts && applyScriptsToSystem(creation.scripts, system.runner),
+		creation.requests &&
+			applyRequestsToSystem(creation.requests, system.fetchers),
+	]);
 }

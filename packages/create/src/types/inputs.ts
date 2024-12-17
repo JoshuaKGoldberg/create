@@ -1,5 +1,5 @@
 import { TakeContext } from "./context.js";
-import { SystemRunner } from "./system.js";
+import { SystemFetchers, SystemRunner } from "./system.js";
 
 export type FileSystemReadFile = (filePath: string) => Promise<string>;
 
@@ -14,7 +14,7 @@ export type InputArgsFor<TypeofInput> =
 	TypeofInput extends Input<unknown, infer ArgsShape> ? ArgsShape : never;
 
 export interface InputContext extends TakeContext {
-	fetcher: typeof fetch;
+	fetchers: SystemFetchers;
 	fs: InputFileSystem;
 	runner: SystemRunner;
 }
@@ -25,6 +25,11 @@ export type InputContextFor<TypeofInput> =
 		: TypeofInput extends InputWithoutArgs<unknown>
 			? InputContext
 			: never;
+
+export interface InputContextWithArgs<Args extends object>
+	extends InputContext {
+	args: Args;
+}
 
 export interface InputContextWithArgs<Args extends object>
 	extends InputContext {

@@ -13,8 +13,8 @@ It may contain any of the following properties:
 
 - ["Direct" creations](#direct-creations) that always cause changes to the repository:
   - [`files`](#files): Files to create or modify on disk
-  - [`scripts`](#scripts): Terminal commands to run after setup
-  - Network requests _(to be added soon)_
+  - [`requests`](#requests): Network requests to send after files are created
+  - [`scripts`](#scripts): Terminal commands to run after files are created
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`addons`](#addons): Composed Addons to merge in for other Blocks, if they exist
 
@@ -101,14 +101,51 @@ export const blockPreCommit = base.createBlock({
 });
 ```
 
+### `requests`
+
+Network requests to send after files are created.
+
+This can be useful when repository settings or other APIs are necessary to align the created repository to what Blocks have produced.
+
+Each request may be specified as an object with:
+
+- `id` (`string`): Unique ID to know how to deduplicate previous creations during [merging](./merging#requests)
+- `send` (function): Asynchronous method that sends the request, which receives an object parameter containing:
+  - `fetcher`: Equivalent to the global `fetch`
+  - `octokit`: [GitHub Octokit](https://github.com/octokit/octokit.js?tab=readme-ov-file#octokit-api-client) that uses the `fetcher` internally
+
+For example, this Block sets a GitHub repository's default branch to `main`:
+
+```ts
+import { base } from "../base";
+
+export const blockDefaultBranch = base.createBlock({
+	produce({ options }) {
+		return {
+			requests: [
+				{
+					id: "default-branch",
+					async send({ octokit }) {
+						await octokit.rest.repos.update({
+							default_branch: "main",
+							owner: options.owner,
+							repo: options.repository,
+						});
+					},
+				},
+			],
+		};
+	},
+});
+```
+
 ### `scripts`
 
-Terminal commands to run after production.
+Terminal commands to run after files are created.
 
-Scripts will be run after files are applied to the system.
-This can be useful when shell scripts are necessary to apply changes the Block enforces in CI.
+This can be useful when shell scripts are necessary to apply changes to the repository to align the created repository to what Blocks have produced.
 
-Each command must be specified as either a string or an object with:
+Each script may be specified as either a string or an object with:
 
 - `commands` (`string[]`): Shell scripts to run within the phase, in order
 - `phase` (`number`): What order, relative to any other command groups, to run in
@@ -116,7 +153,7 @@ Each command must be specified as either a string or an object with:
 Commands provided as strings are assumed to not be order-dependent.
 They are run all at the same time.
 
-For example, this Block runs pnpm package installation :
+For example, this Block runs pnpm package installation:
 
 ```ts
 import { base } from "../base";
@@ -124,7 +161,6 @@ import { base } from "../base";
 export const blockPnpmInstall = base.createBlock({
 	produce() {
 		return {
-			// ...
 			scripts: "pnpm install",
 		};
 	},
@@ -139,7 +175,6 @@ import { base } from "../base";
 export const blockPnpmInstallAndDedupe = base.createBlock({
 	produce() {
 		return {
-			// ...
 			scripts: [
 				{
 					phase: 0,

@@ -107,6 +107,9 @@ importers:
       execa:
         specifier: ^9.5.2
         version: 9.5.2
+      octokit:
+        specifier: ^4.0.2
+        version: 4.0.2
       octokit-from-auth:
         specifier: ^0.3.0
         version: 0.3.0
@@ -119,6 +122,9 @@ importers:
       create:
         specifier: workspace:*
         version: link:../create
+      octokit:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       zod:
         specifier: 3.24.1

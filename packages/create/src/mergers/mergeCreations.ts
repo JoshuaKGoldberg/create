@@ -1,15 +1,18 @@
 import { Creation } from "../types/creations.js";
+import { applyMerger } from "./applyMerger.js";
 import { mergeAddons } from "./mergeAddons.js";
-import { mergeArrays } from "./mergeArrays.js";
 import { mergeFileCreations } from "./mergeFileCreations.js";
+import { mergeRequests } from "./mergeRequests.js";
+import { mergeScripts } from "./mergeScripts.js";
 
 export function mergeCreations<Options extends object>(
 	first: Partial<Creation<Options>>,
 	second: Partial<Creation<Options>>,
 ): Creation<Options> {
 	return {
-		addons: mergeAddons(first.addons, second.addons),
-		files: mergeFileCreations(first.files, second.files, []) ?? {},
-		scripts: mergeArrays(first.scripts, second.scripts),
+		addons: applyMerger(first.addons, second.addons, mergeAddons, []),
+		files: applyMerger(first.files, second.files, mergeFileCreations, {}),
+		requests: applyMerger(first.requests, second.requests, mergeRequests, []),
+		scripts: applyMerger(first.scripts, second.scripts, mergeScripts, []),
 	};
 }

@@ -18,7 +18,7 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 ) {
 	type Options = InferredObject<OptionsShape>;
 
-	// From engine/runtime/merging.md:
+	// From engine/runtime/execution.md:
 	// This engine continuously re-runs Blocks until no new Args are provided.
 
 	const blockProductions = new Map<
@@ -82,6 +82,7 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 		{
 			addons: [],
 			files: {},
+			requests: [],
 			scripts: [],
 		},
 	);

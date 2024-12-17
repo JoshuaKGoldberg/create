@@ -1,4 +1,5 @@
 import { Result } from "execa";
+import { Octokit } from "octokit";
 
 import { TakeContext } from "./context.js";
 import { InputFileSystem } from "./inputs.js";
@@ -16,13 +17,18 @@ export interface FileSystemWriteFileOptions {
 }
 
 export interface NativeSystem {
-	fetcher: typeof fetch;
+	fetchers: SystemFetchers;
 	fs: WritingFileSystem;
 	runner: SystemRunner;
 }
 
 export interface SystemContext extends NativeSystem, TakeContext {
 	directory: string;
+}
+
+export interface SystemFetchers {
+	fetch: typeof fetch;
+	octokit: Octokit;
 }
 
 export type SystemRunner = (command: string) => Promise<Result>;

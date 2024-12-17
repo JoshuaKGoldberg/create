@@ -1,17 +1,9 @@
 import { CreatedScript } from "../types/creations.js";
 
 export function mergeScripts(
-	first: CreatedScript[] | undefined,
-	second: CreatedScript[] | undefined,
-): CreatedScript[] | undefined {
-	if (!first) {
-		return second;
-	}
-
-	if (!second) {
-		return first;
-	}
-
+	first: CreatedScript[],
+	second: CreatedScript[],
+): CreatedScript[] {
 	const commandsByPhase = new Map<number, string[][]>();
 	const commandsWithoutPhase: string[] = [];
 
