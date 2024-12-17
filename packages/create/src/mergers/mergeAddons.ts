@@ -1,3 +1,5 @@
+import hashObject from "hash-object";
+
 import { BlockWithAddons } from "../types/blocks.js";
 import { CreatedBlockAddons } from "../types/creations.js";
 
@@ -36,29 +38,19 @@ function mergeBlockAddonArraysNonNullish(
 	firsts: unknown[],
 	seconds: unknown[],
 ) {
-	const results: unknown[] = [];
-	const sharedLength = Math.min(firsts.length, seconds.length);
+	const seen = new Set<unknown>();
 
-	for (let i = 0; i < sharedLength; i += 1) {
-		const first = firsts[i];
-		const second = seconds[i];
+	return [...firsts, ...seconds].filter((value) => {
+		const identity =
+			value && typeof value === "object" ? hashObject(value) : value;
 
-		if (first === second) {
-			results.push(first);
-		} else {
-			results.push(first, second);
+		if (seen.has(identity)) {
+			return false;
 		}
-	}
 
-	for (let i = seconds.length; i < firsts.length; i += 1) {
-		results.push(firsts[i]);
-	}
-
-	for (let i = firsts.length; i < seconds.length; i += 1) {
-		results.push(seconds[i]);
-	}
-
-	return Array.from(new Set(results));
+		seen.add(identity);
+		return true;
+	});
 }
 
 function mergeBlockAddons(first: unknown, second: unknown) {

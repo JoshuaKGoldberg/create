@@ -19,15 +19,22 @@ Blocks will be re-run whenever other Blocks signal new Addon data to them that t
 This allows Blocks to not need any explicit indication of what order to run in.
 
 Addons are merged by concatenating arrays and removing duplicate elements.
+Duplicates are detected by either `===` equality
 
 For example, given the following two Addons to be merged:
 
 ```ts
-[{ name: "First", steps: ["a", "b"] }];
+[
+	{ name: "First", steps: ["a", "b"] },
+	{ name: "Second", steps: ["c", "d"] },
+];
 ```
 
 ```ts
-[{ name: "Second", steps: ["c", "d"] }],
+[
+	{ name: "Second", steps: ["c", "d"] },
+	{ name: "Third", steps: ["e", "f"] },
+],
 ```
 
 The merged result would be:
@@ -36,6 +43,7 @@ The merged result would be:
 [
 	{ name: "First", steps: ["a", "b"] },
 	{ name: "Second", steps: ["c", "d"] },
+	{ name: "Third", steps: ["e", "f"] },
 ];
 ```
 

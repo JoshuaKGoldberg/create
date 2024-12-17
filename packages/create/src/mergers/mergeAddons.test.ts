@@ -68,7 +68,12 @@ describe("mergeAddons", () => {
 		[
 			[{ addons: [{ values: ["a"] }], block: blockFirst }],
 			[{ addons: [{ values: ["a"] }], block: blockFirst }],
-			[{ addons: [{ values: ["a"] }, { values: ["a"] }], block: blockFirst }],
+			[{ addons: [{ values: ["a"] }], block: blockFirst }],
+		],
+		[
+			[{ addons: [{ values: ["a", { b: "c" }] }], block: blockFirst }],
+			[{ addons: [{ values: ["a", { b: "c" }] }], block: blockFirst }],
+			[{ addons: [{ values: ["a", { b: "c" }] }], block: blockFirst }],
 		],
 		[
 			[{ addons: [{ value: {} }], block: blockFirst }],
@@ -133,6 +138,36 @@ describe("mergeAddons", () => {
 					addons: [
 						{ name: "First", steps: ["a", "b"] },
 						{ name: "Second", steps: ["c", "d"] },
+					],
+					block: blockFirst,
+				},
+			],
+		],
+		[
+			[
+				{
+					addons: [
+						{ name: "First", steps: ["a", "b"] },
+						{ name: "Second", steps: ["c", "d"] },
+					],
+					block: blockFirst,
+				},
+			],
+			[
+				{
+					addons: [
+						{ name: "Second", steps: ["c", "d"] },
+						{ name: "Third", steps: ["e", "f"] },
+					],
+					block: blockFirst,
+				},
+			],
+			[
+				{
+					addons: [
+						{ name: "First", steps: ["a", "b"] },
+						{ name: "Second", steps: ["c", "d"] },
+						{ name: "Third", steps: ["e", "f"] },
 					],
 					block: blockFirst,
 				},
