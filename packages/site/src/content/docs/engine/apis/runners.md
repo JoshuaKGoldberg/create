@@ -57,7 +57,7 @@ import { runBlock } from "create";
 import { presetWithReadme } from "./presetWithReadme.js";
 
 await runPreset(presetWithReadme, {
-	mode: "new",
+	mode: "initialize",
 	owner: "JoshuaKGoldberg",
 	repository: "example-new-repository",
 });

@@ -3,6 +3,4 @@ export interface CreationOptions {
 	repository: string;
 }
 
-// TODO(#44): Add "initialize"
-// TODO(#45): Add "migrate"
-export type ProductionMode = "new";
+export type ProductionMode = "initialize" | "migrate";
