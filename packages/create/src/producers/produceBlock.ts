@@ -1,4 +1,10 @@
-import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
+import { mergeCreations } from "../mergers/mergeCreations.js";
+import { ProductionMode } from "../modes/types.js";
+import {
+	BlockContextWithAddons,
+	BlockWithAddons,
+	BlockWithoutAddons,
+} from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
 
 export type BlockProductionSettings<
@@ -12,11 +18,12 @@ export interface BlockProductionSettingsWithAddons<
 	Addons extends object,
 	Options extends object,
 > extends BlockProductionSettingsWithoutAddons<Options> {
-	addons: Addons;
+	addons?: Addons;
 }
 
 export interface BlockProductionSettingsWithoutAddons<Options extends object> {
 	created?: Partial<IndirectCreation<Options>>;
+	mode?: ProductionMode;
 	options: Options;
 }
 
@@ -32,9 +39,18 @@ export function produceBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockProductionSettings<Addons, Options>,
 ): Partial<Creation<Options>> {
-	return (block as BlockWithAddons<Addons, Options>).produce({
-		addons: (settings as BlockProductionSettingsWithAddons<Addons, Options>)
-			.addons,
-		options: settings.options,
-	});
+	let creation = block.produce(
+		settings as BlockContextWithAddons<Addons, Options>,
+	);
+
+	// From engine/runtime/execution.md:
+	// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
+	if (settings.mode === "new" && block.initialize) {
+		creation = mergeCreations(
+			creation,
+			block.initialize(settings as BlockContextWithAddons<Addons, Options>),
+		);
+	}
+
+	return creation;
 }

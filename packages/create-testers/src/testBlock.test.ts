@@ -41,19 +41,22 @@ describe("testBlock", () => {
 			produce({ addons }) {
 				return {
 					files: {
-						"value.txt": addons.value,
+						"value.txt": addons.value ?? "default",
 					},
 				};
 			},
 		});
 
-		it("throws an error when addons isn't provided and a block uses addons", () => {
-			expect(
-				// @ts-expect-error -- Intentionally not allowed by types.
-				() => testBlock(blockUsingAddons, {}),
-			).toThrowErrorMatchingInlineSnapshot(
-				`[Error: Context property 'addons' was used by the Block but not provided.]`,
-			);
+		it("does not throws an error when addons isn't provided and a block uses addons", () => {
+			const actual = testBlock(blockUsingAddons, {});
+
+			expect(actual).toMatchInlineSnapshot(`
+				{
+				  "files": {
+				    "value.txt": "default",
+				  },
+				}
+			`);
 		});
 
 		it("passes addons to the block when provided", () => {
