@@ -8,7 +8,7 @@ export function mergeFileCreations(
 	return mergeFileCreationsWorker(firsts, seconds, []);
 }
 
-export function mergeFileCreationsWorker(
+function mergeFileCreationsWorker(
 	firsts: CreatedFiles,
 	seconds: CreatedFiles,
 	path: string[],
