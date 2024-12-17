@@ -11,6 +11,25 @@ import { PromiseOrSync } from "../utils/promises.js";
 import { executePresetBlocks } from "./executePresetBlocks.js";
 import { produceBase } from "./produceBase.js";
 
+export interface AugmentingPresetProductionSettings<
+	OptionsShape extends AnyShape,
+> extends Partial<NativeSystem>,
+		ProductionSettingsBase {
+	options?: Partial<InferredObject<OptionsShape>>;
+	optionsAugment: (
+		options: Partial<InferredObject<OptionsShape>>,
+	) => PromiseOrSync<InferredObject<OptionsShape>>;
+}
+
+export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
+	extends Partial<NativeSystem>,
+		ProductionSettingsBase {
+	options: InferredObject<OptionsShape>;
+	optionsAugment?: (
+		options: InferredObject<OptionsShape>,
+	) => Promise<Partial<InferredObject<OptionsShape>>>;
+}
+
 export interface Production<Options extends object> {
 	creation: Creation<Options>;
 	options: Options;
@@ -19,25 +38,6 @@ export interface Production<Options extends object> {
 export interface ProductionSettingsBase {
 	directory?: string;
 	mode?: ProductionMode;
-}
-
-export interface AugmentingPresetProductionSettings<
-	OptionsShape extends AnyShape,
-> extends ProductionSettingsBase,
-		Partial<NativeSystem> {
-	options?: Partial<InferredObject<OptionsShape>>;
-	optionsAugment: (
-		options: Partial<InferredObject<OptionsShape>>,
-	) => PromiseOrSync<InferredObject<OptionsShape>>;
-}
-
-export interface FullPresetProductionSettings<OptionsShape extends AnyShape>
-	extends ProductionSettingsBase,
-		Partial<NativeSystem> {
-	options: InferredObject<OptionsShape>;
-	optionsAugment?: (
-		options: InferredObject<OptionsShape>,
-	) => Promise<Partial<InferredObject<OptionsShape>>>;
 }
 
 export async function producePreset<OptionsShape extends AnyShape>(

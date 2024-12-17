@@ -11,10 +11,6 @@ import {
 
 import { createMockSystems } from "./createMockSystems.js";
 
-export interface TestProductionSettingsBase {
-	system?: Omit<Partial<SystemContext>, "take">;
-}
-
 export interface TestAugmentingPresetProductionSettings<
 	OptionsShape extends AnyShape,
 > extends TestProductionSettingsBase {
@@ -30,6 +26,10 @@ export interface TestFullPresetProductionSettings<OptionsShape extends AnyShape>
 	optionsAugment?: (
 		options: InferredObject<OptionsShape>,
 	) => Promise<Partial<InferredObject<OptionsShape>>>;
+}
+
+export interface TestProductionSettingsBase {
+	system?: Omit<Partial<SystemContext>, "take">;
 }
 
 export async function testPreset<OptionsShape extends AnyShape>(

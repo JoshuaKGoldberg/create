@@ -5,12 +5,12 @@ import { IndirectCreation } from "../types/creations.js";
 import { NativeSystem } from "../types/system.js";
 import { applyCreation } from "./applyCreation.js";
 
-export interface BlockRunSettingsWithoutAddons<Options extends object>
-	extends Partial<NativeSystem> {
-	created?: Partial<IndirectCreation<Options>>;
-	directory?: string;
-	options: Options;
-}
+export type BlockRunSettings<
+	Addons extends object | undefined,
+	Options extends object,
+> = Addons extends object
+	? BlockRunSettingsWithOptionalAddons<Addons, Options>
+	: BlockRunSettingsWithoutAddons<Options>;
 
 export interface BlockRunSettingsWithOptionalAddons<
 	Addons extends object,
@@ -19,19 +19,19 @@ export interface BlockRunSettingsWithOptionalAddons<
 	addons?: Addons;
 }
 
+export interface BlockRunSettingsWithoutAddons<Options extends object>
+	extends Partial<NativeSystem> {
+	created?: Partial<IndirectCreation<Options>>;
+	directory?: string;
+	options: Options;
+}
+
 export interface BlockRunSettingsWithRequiredAddons<
 	Addons extends object,
 	Options extends object,
 > extends BlockRunSettingsWithoutAddons<Options> {
 	addons: Addons;
 }
-
-export type BlockRunSettings<
-	Addons extends object | undefined,
-	Options extends object,
-> = Addons extends object
-	? BlockRunSettingsWithOptionalAddons<Addons, Options>
-	: BlockRunSettingsWithoutAddons<Options>;
 
 export async function runBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,

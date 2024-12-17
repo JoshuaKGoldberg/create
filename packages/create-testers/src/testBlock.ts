@@ -2,6 +2,13 @@ import { BlockWithAddons, BlockWithoutAddons, Creation } from "create";
 
 import { createFailingObject, failingFunction } from "./utils.js";
 
+export interface BlockContextSettingsWithOptionalAddons<
+	Addons extends object,
+	Options extends object,
+> extends BlockContextSettingsWithoutAddons<Options> {
+	addons?: Addons;
+}
+
 export interface BlockContextSettingsWithoutAddons<Options extends object> {
 	options?: Options;
 }
@@ -11,13 +18,6 @@ export interface BlockContextSettingsWithRequiredAddons<
 	Options extends object,
 > extends BlockContextSettingsWithoutAddons<Options> {
 	addons: Addons;
-}
-
-export interface BlockContextSettingsWithOptionalAddons<
-	Addons extends object,
-	Options extends object,
-> extends BlockContextSettingsWithoutAddons<Options> {
-	addons?: Addons;
 }
 
 export function testBlock<Addons extends object, Options extends object>(

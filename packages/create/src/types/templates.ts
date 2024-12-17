@@ -2,13 +2,10 @@ import { AnyShape } from "../options.js";
 import { AboutBase } from "./about.js";
 import { Preset } from "./presets.js";
 
-export interface TemplatePresetListing<
+export type Template<
 	Label extends string,
 	OptionsShape extends AnyShape,
-> {
-	label: Label;
-	preset: Preset<OptionsShape>;
-}
+> = TemplateDefinition<Label, OptionsShape>;
 
 export interface TemplateDefinition<
 	Label extends string,
@@ -19,7 +16,10 @@ export interface TemplateDefinition<
 	presets: TemplatePresetListing<Label, OptionsShape>[];
 }
 
-export type Template<
+export interface TemplatePresetListing<
 	Label extends string,
 	OptionsShape extends AnyShape,
-> = TemplateDefinition<Label, OptionsShape>;
+> {
+	label: Label;
+	preset: Preset<OptionsShape>;
+}

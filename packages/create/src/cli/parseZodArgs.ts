@@ -16,6 +16,9 @@ import {
 
 import { AnyShape, InferredObject } from "../options.js";
 
+type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
+
+type ParseArgsOptionsType = ParseArgsOptionsConfig[string]["type"];
 export function parseZodArgs<OptionsShape extends AnyShape>(
 	args: string[],
 	options: OptionsShape,
@@ -36,9 +39,6 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 		strict: false,
 	}).values as InferredObject<OptionsShape>;
 }
-
-type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
-type ParseArgsOptionsType = ParseArgsOptionsConfig[string]["type"];
 
 function zodValueToArgsOption(
 	zodValue: ZodTypeAny,

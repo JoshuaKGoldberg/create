@@ -11,12 +11,6 @@ import { NativeSystem } from "../types/system.js";
 import { PromiseOrSync } from "../utils/promises.js";
 import { applyCreation } from "./applyCreation.js";
 
-export interface RunSettingsBase extends Partial<NativeSystem> {
-	// TODO: make directory required in options?
-	directory?: string;
-	mode?: ProductionMode;
-}
-
 export interface AugmentingPresetRunSettings<OptionsShape extends AnyShape>
 	extends RunSettingsBase {
 	options?: Partial<InferredObject<OptionsShape>>;
@@ -31,6 +25,12 @@ export interface FullPresetRunSettings<OptionsShape extends AnyShape>
 	optionsAugment?: (
 		options: InferredObject<OptionsShape>,
 	) => Promise<Partial<InferredObject<OptionsShape>>>;
+}
+
+export interface RunSettingsBase extends Partial<NativeSystem> {
+	// TODO: make directory required in options?
+	directory?: string;
+	mode?: ProductionMode;
 }
 
 export async function runPreset<OptionsShape extends AnyShape>(

@@ -1,10 +1,12 @@
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
 
-export interface BlockProductionSettingsWithoutAddons<Options extends object> {
-	created?: Partial<IndirectCreation<Options>>;
-	options: Options;
-}
+export type BlockProductionSettings<
+	Addons extends object | undefined,
+	Options extends object,
+> = Addons extends object
+	? BlockProductionSettingsWithAddons<Addons, Options>
+	: BlockProductionSettingsWithoutAddons<Options>;
 
 export interface BlockProductionSettingsWithAddons<
 	Addons extends object,
@@ -13,12 +15,10 @@ export interface BlockProductionSettingsWithAddons<
 	addons: Addons;
 }
 
-export type BlockProductionSettings<
-	Addons extends object | undefined,
-	Options extends object,
-> = Addons extends object
-	? BlockProductionSettingsWithAddons<Addons, Options>
-	: BlockProductionSettingsWithoutAddons<Options>;
+export interface BlockProductionSettingsWithoutAddons<Options extends object> {
+	created?: Partial<IndirectCreation<Options>>;
+	options: Options;
+}
 
 export function produceBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,

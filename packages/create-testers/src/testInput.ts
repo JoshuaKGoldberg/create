@@ -3,13 +3,13 @@ import { Input, TakeInput } from "create";
 import { createMockSystems } from "./createMockSystems.js";
 import { MockSystemOptions } from "./types.js";
 
-export interface InputContextSettingsWithoutArgs extends MockSystemOptions {
-	take?: TakeInput;
-}
-
 export interface InputContextSettingsWithArgs<Args extends object>
 	extends InputContextSettingsWithoutArgs {
 	args: Args;
+}
+
+export interface InputContextSettingsWithoutArgs extends MockSystemOptions {
+	take?: TakeInput;
 }
 
 export function testInput<Result, Args extends object>(

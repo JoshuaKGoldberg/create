@@ -11,16 +11,16 @@ export type InputDefinition<
 	? InputDefinitionWithArgs<Result, ArgsSchema>
 	: InputDefinitionWithoutArgs<Result>;
 
-export interface InputDefinitionWithoutArgs<Result> {
-	produce: Input<Result>;
-}
-
 export interface InputDefinitionWithArgs<
 	Result,
 	ArgsSchema extends AnyShape | undefined,
 > {
 	args: ArgsSchema;
 	produce: Input<Result, InferredObject<ArgsSchema>>;
+}
+
+export interface InputDefinitionWithoutArgs<Result> {
+	produce: Input<Result>;
 }
 
 export function createInput<

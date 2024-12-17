@@ -1,22 +1,7 @@
 import { TakeContext } from "./context.js";
 import { SystemRunner } from "./system.js";
 
-export interface InputFileSystem {
-	readFile: FileSystemReadFile;
-}
-
 export type FileSystemReadFile = (filePath: string) => Promise<string>;
-
-export interface InputContext extends TakeContext {
-	fetcher: typeof fetch;
-	fs: InputFileSystem;
-	runner: SystemRunner;
-}
-
-export interface InputContextWithArgs<Args extends object>
-	extends InputContext {
-	args: Args;
-}
 
 export type Input<
 	Result,
@@ -25,11 +10,36 @@ export type Input<
 	? InputWithArgs<Result, Args>
 	: InputWithoutArgs<Result>;
 
-export type InputWithoutArgs<Result> = (context: InputContext) => Result;
+export type InputArgsFor<TypeofInput> =
+	TypeofInput extends Input<unknown, infer ArgsShape> ? ArgsShape : never;
+
+export interface InputContext extends TakeContext {
+	fetcher: typeof fetch;
+	fs: InputFileSystem;
+	runner: SystemRunner;
+}
+
+export type InputContextFor<TypeofInput> =
+	TypeofInput extends InputWithArgs<unknown, infer ArgsShape>
+		? InputContextWithArgs<ArgsShape>
+		: TypeofInput extends InputWithoutArgs<unknown>
+			? InputContext
+			: never;
+
+export interface InputContextWithArgs<Args extends object>
+	extends InputContext {
+	args: Args;
+}
+
+export interface InputFileSystem {
+	readFile: FileSystemReadFile;
+}
 
 export type InputWithArgs<Result, Args extends object> = (
 	context: InputContextWithArgs<Args>,
 ) => Result;
+
+export type InputWithoutArgs<Result> = (context: InputContext) => Result;
 
 export interface TakeInput {
 	<Result, Args extends object>(
@@ -38,13 +48,3 @@ export interface TakeInput {
 	): Result;
 	<Result>(input: InputWithoutArgs<Result>): Result;
 }
-
-export type InputArgsFor<TypeofInput> =
-	TypeofInput extends Input<unknown, infer ArgsShape> ? ArgsShape : never;
-
-export type InputContextFor<TypeofInput> =
-	TypeofInput extends InputWithArgs<unknown, infer ArgsShape>
-		? InputContextWithArgs<ArgsShape>
-		: TypeofInput extends InputWithoutArgs<unknown>
-			? InputContext
-			: never;

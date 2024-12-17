@@ -1,8 +1,8 @@
-export type AwaitedLazyProperty<T> = T extends () => infer R ? Awaited<R> : T;
-
 export type AwaitedLazyProperties<T> = {
 	[K in keyof T]: AwaitedLazyProperty<T[K]>;
 };
+
+export type AwaitedLazyProperty<T> = T extends () => infer R ? Awaited<R> : T;
 
 // TODO: move into separate package?
 export async function awaitLazyProperties<T extends object>(

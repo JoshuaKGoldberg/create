@@ -1,5 +1,3 @@
-/* eslint-disable perfectionist/sort-exports */
-
 // CLI
 export * from "./cli/runCli.js";
 
@@ -37,5 +35,3 @@ export type * from "./types/presets.js";
 export type * from "./types/system.js";
 export type * from "./types/templates.js";
 export type * from "./utils/promises.js";
-
-/* eslint-enable perfectionist/sort-exports */

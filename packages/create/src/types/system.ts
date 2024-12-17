@@ -3,9 +3,7 @@ import { Result } from "execa";
 import { TakeContext } from "./context.js";
 import { InputFileSystem } from "./inputs.js";
 
-export interface FileSystemWriteFileOptions {
-	mode?: number;
-}
+export type FileSystemWriteDirectory = (directoryPath: string) => Promise<void>;
 
 export type FileSystemWriteFile = (
 	filePath: string,
@@ -13,14 +11,9 @@ export type FileSystemWriteFile = (
 	options?: FileSystemWriteFileOptions,
 ) => Promise<void>;
 
-export type FileSystemWriteDirectory = (directoryPath: string) => Promise<void>;
-
-export interface WritingFileSystem extends InputFileSystem {
-	writeDirectory: FileSystemWriteDirectory;
-	writeFile: FileSystemWriteFile;
+export interface FileSystemWriteFileOptions {
+	mode?: number;
 }
-
-export type SystemRunner = (command: string) => Promise<Result>;
 
 export interface NativeSystem {
 	fetcher: typeof fetch;
@@ -30,4 +23,11 @@ export interface NativeSystem {
 
 export interface SystemContext extends NativeSystem, TakeContext {
 	directory: string;
+}
+
+export type SystemRunner = (command: string) => Promise<Result>;
+
+export interface WritingFileSystem extends InputFileSystem {
+	writeDirectory: FileSystemWriteDirectory;
+	writeFile: FileSystemWriteFile;
 }

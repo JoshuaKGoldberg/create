@@ -7,14 +7,14 @@ import {
 	awaitLazyProperties,
 } from "../utils/awaitLazyProperties.js";
 
+export type BaseProduction<OptionsShape extends AnyShape> =
+	AwaitedLazyProperties<LazyOptionalOptions<InferredObject<OptionsShape>>>;
+
 export interface BaseProductionSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
 	directory?: string;
 	options?: Partial<InferredObject<OptionsShape>>;
 }
-
-export type BaseProduction<OptionsShape extends AnyShape> =
-	AwaitedLazyProperties<LazyOptionalOptions<InferredObject<OptionsShape>>>;
 
 export async function produceBase<OptionsShape extends AnyShape>(
 	base: Base<OptionsShape>,

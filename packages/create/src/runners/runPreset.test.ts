@@ -10,12 +10,6 @@ const base = createBase({
 	},
 });
 
-function noop(label: string) {
-	return vi.fn(() => {
-		throw new Error(`Not implemented: ${label}`);
-	});
-}
-
 function createSystem() {
 	return {
 		fetcher: noop("fetcher"),
@@ -26,6 +20,12 @@ function createSystem() {
 		},
 		runner: noop("runner"),
 	};
+}
+
+function noop(label: string) {
+	return vi.fn(() => {
+		throw new Error(`Not implemented: ${label}`);
+	});
 }
 
 describe("runPreset", () => {

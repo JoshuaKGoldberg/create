@@ -5,14 +5,6 @@ import { promptForPreset } from "./promptForPreset.js";
 import { promptForPresetOptions } from "./promptForPresetOptions.js";
 import { isTemplate } from "./utils.js";
 
-async function tryImport(source: string) {
-	try {
-		return (await import(source)) as object;
-	} catch (error) {
-		return error as Error;
-	}
-}
-
 export async function runCli(templateLabel: string, ...args: string[]) {
 	const templateSource = /^[./\\]/.test(templateLabel)
 		? templateLabel
@@ -71,4 +63,12 @@ export async function runCli(templateLabel: string, ...args: string[]) {
 		optionsAugment: async (options: typeof parsedOptions) =>
 			promptForPresetOptions(preset.base.options, options),
 	});
+}
+
+async function tryImport(source: string) {
+	try {
+		return (await import(source)) as object;
+	} catch (error) {
+		return error as Error;
+	}
 }
