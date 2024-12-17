@@ -1,19 +1,31 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { BlockWithAddons } from "../types/blocks.js";
 import { mergeAddons } from "./mergeAddons.js";
 
-const blockFirst = {} as BlockWithAddons<object, object>;
-const blockSecond = {} as BlockWithAddons<object, object>;
+const blockFirst: BlockWithAddons<object, object> = Object.assign(vi.fn(), {
+	about: { name: "Block First" },
+	produce: vi.fn(),
+});
+
+const blockSecond: BlockWithAddons<object, object> = Object.assign(vi.fn(), {
+	about: { name: "BlockSecond" },
+	produce: vi.fn(),
+});
 
 const sharedObject = { value: true };
 
 describe("mergeAddons", () => {
 	test.each([
 		[
+			[{ addons: [null], block: blockFirst }],
+			[{ addons: [undefined], block: blockFirst }],
+			[{ addons: [], block: blockFirst }],
+		],
+		[
 			[{ addons: ["a"], block: blockFirst }],
-			[{ addons: ["a"], block: blockFirst }],
-			[{ addons: ["a"], block: blockFirst }],
+			[{ addons: [123], block: blockFirst }],
+			[{ addons: ["a", 123], block: blockFirst }],
 		],
 		[
 			[{ addons: ["a"], block: blockFirst }],
@@ -56,60 +68,77 @@ describe("mergeAddons", () => {
 		[
 			[{ addons: [{ values: ["a"] }], block: blockFirst }],
 			[{ addons: [{ values: ["a"] }], block: blockFirst }],
-			[{ addons: [{ values: ["a"] }], block: blockFirst }],
-		],
-		[
-			[{ addons: ["a"], block: blockFirst }],
-			[{ addons: [123], block: blockFirst }],
-			new Error(`Mismatched types in Block Addons: string and number.`),
-		],
-		[
-			[{ addons: [{ value: true }], block: blockFirst }],
-			[{ addons: [123], block: blockFirst }],
-			new Error(`Mismatched types in Block Addons: object and number.`),
+			[{ addons: [{ values: ["a"] }, { values: ["a"] }], block: blockFirst }],
 		],
 		[
 			[{ addons: [{ value: {} }], block: blockFirst }],
 			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
-			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
+			[
+				{
+					addons: [{ value: {} }, { value: { inner: true } }],
+					block: blockFirst,
+				},
+			],
 		],
 		[
 			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
 			[{ addons: [{ value: {} }], block: blockFirst }],
-			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
-		],
-		[
-			[{ addons: [{ value: true }], block: blockFirst }],
-			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
-			new Error(`Mismatched types in Block Addons: boolean and object.`),
-		],
-		[
-			[{ addons: [{ value: [true] }], block: blockFirst }],
-			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
-			new Error(`Mismatched types in Block Addons: array and non-array.`),
+			[
+				{
+					addons: [{ value: { inner: true } }, { value: {} }],
+					block: blockFirst,
+				},
+			],
 		],
 		[
 			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
 			[{ addons: [{ value: [true] }], block: blockFirst }],
-			new Error(`Mismatched types in Block Addons: non-array and array.`),
+			[
+				{
+					addons: [{ value: { inner: true } }, { value: [true] }],
+					block: blockFirst,
+				},
+			],
 		],
 		[
 			[{ addons: [{ value: { inner: false } }], block: blockFirst }],
 			[{ addons: [{ value: { inner: true } }], block: blockFirst }],
-			new Error(`Mismatched values in Block Addons: false and true.`),
+			[
+				{
+					addons: [{ value: { inner: false } }, { value: { inner: true } }],
+					block: blockFirst,
+				},
+			],
 		],
 		[
-			[{ addons: [{ value: sharedObject }], block: blockFirst }],
-			[{ addons: [{ value: sharedObject }], block: blockFirst }],
-			[{ addons: [{ value: sharedObject }], block: blockFirst }],
+			[{ addons: [sharedObject], block: blockFirst }],
+			[{ addons: [sharedObject], block: blockFirst }],
+			[{ addons: [sharedObject], block: blockFirst }],
+		],
+		[
+			[
+				{
+					addons: [{ name: "First", steps: ["a", "b"] }],
+					block: blockFirst,
+				},
+			],
+			[
+				{
+					addons: [{ name: "Second", steps: ["c", "d"] }],
+					block: blockFirst,
+				},
+			],
+			[
+				{
+					addons: [
+						{ name: "First", steps: ["a", "b"] },
+						{ name: "Second", steps: ["c", "d"] },
+					],
+					block: blockFirst,
+				},
+			],
 		],
 	])("%j and %j", (first, second, expected) => {
-		const act = () => mergeAddons(first, second);
-
-		if (expected instanceof Error) {
-			expect(act).toThrow(expected);
-		} else {
-			expect(act()).toEqual(expected);
-		}
+		expect(mergeAddons(first, second)).toEqual(expected);
 	});
 });

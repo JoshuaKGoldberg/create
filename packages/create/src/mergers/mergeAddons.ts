@@ -5,10 +5,17 @@ export function mergeAddons<Options extends object | unknown[]>(
 	first: CreatedBlockAddons<object, Options>[],
 	second: CreatedBlockAddons<object, Options>[],
 ): CreatedBlockAddons<object, Options>[] {
-	const byBlock = new Map<BlockWithAddons<object, Options>, object>();
+	const byBlock = new Map<
+		BlockWithAddons<object, Options>,
+		object | unknown[]
+	>();
 
 	for (const { addons, block } of [...first, ...second]) {
-		byBlock.set(block, mergeBlockAddons(byBlock.get(block), addons) as object);
+		const merged = mergeBlockAddons(byBlock.get(block), addons);
+
+		if (isNotNullish(merged)) {
+			byBlock.set(block, merged);
+		}
 	}
 
 	return Array.from(byBlock).map(([block, addons]) => ({ addons, block }));
@@ -30,19 +37,16 @@ function mergeBlockAddonArraysNonNullish(
 	seconds: unknown[],
 ) {
 	const results: unknown[] = [];
+	const sharedLength = Math.min(firsts.length, seconds.length);
 
-	for (let i = 0; i < firsts.length; i += 1) {
+	for (let i = 0; i < sharedLength; i += 1) {
 		const first = firsts[i];
 		const second = seconds[i];
 
-		if (typeof first === typeof second && typeof first !== "object") {
+		if (first === second) {
 			results.push(first);
-
-			if (first !== second) {
-				results.push(second);
-			}
 		} else {
-			results.push(mergeBlockAddonValues(first, second));
+			results.push(first, second);
 		}
 	}
 
@@ -62,48 +66,5 @@ function mergeBlockAddons(first: unknown, second: unknown) {
 		return mergeBlockAddonArrays(first, second);
 	}
 
-	return mergeBlockAddonValues(first, second);
-}
-
-function mergeBlockAddonValues(first: unknown, second: unknown) {
-	if (first == null || second == null) {
-		return first ?? second;
-	}
-
-	if (typeof first !== typeof second) {
-		throw new Error(
-			`Mismatched types in Block Addons: ${typeof first} and ${typeof second}.`,
-		);
-	}
-
-	if (Array.isArray(first)) {
-		if (!Array.isArray(second)) {
-			throw new Error(`Mismatched types in Block Addons: array and non-array.`);
-		}
-
-		return mergeBlockAddonArrays(first, second);
-	} else if (Array.isArray(second)) {
-		throw new Error(`Mismatched types in Block Addons: non-array and array.`);
-	}
-
-	if (typeof first !== "object") {
-		if (first !== second) {
-			throw new Error(
-				`Mismatched values in Block Addons: ${first as string} and ${second as string}.`,
-			);
-		}
-
-		return first;
-	}
-
-	const result: Record<string, unknown> = { ...first };
-
-	for (const [key, value] of Object.entries(second)) {
-		result[key] =
-			key in result
-				? mergeBlockAddonValues(first[key as keyof typeof first], value)
-				: value;
-	}
-
-	return result;
+	return first ?? second;
 }

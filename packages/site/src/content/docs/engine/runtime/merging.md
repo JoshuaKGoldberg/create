@@ -18,29 +18,25 @@ At runtime, the `create` engine will often need to re-run Blocks continuously as
 Blocks will be re-run whenever other Blocks signal new Addon data to them that they haven't yet seen.
 This allows Blocks to not need any explicit indication of what order to run in.
 
-Addons are merged together as follows:
-
-- If two non-nullish properties have different types, an error is thrown
-- Arrays are concatenated together and have duplicate elements removed
-- Objects are spread together, with properties of keys recursively merged
+Addons are merged by concatenating arrays and removing duplicate elements.
 
 For example, given the following two Addons to be merged:
 
 ```ts
-{ info: { power: 9001 }, values: ["a", "b"] },
+[{ name: "First", steps: ["a", "b"] }];
 ```
 
 ```ts
-{ info: { recorded: true }, values: ["b", "c"] },
+[{ name: "Second", steps: ["c", "d"] }],
 ```
 
 The merged result would be:
 
 ```ts
-{
-   info: { power: 9001, recorded: true },
-   values: ["a", "b", "c"]
-}
+[
+	{ name: "First", steps: ["a", "b"] },
+	{ name: "Second", steps: ["c", "d"] },
+];
 ```
 
 ## Creations
