@@ -116,6 +116,9 @@ importers:
       octokit-from-auth:
         specifier: ^0.3.0
         version: 0.3.0
+      prettier:
+        specifier: 3.4.2
+        version: 3.4.2
       zod:
         specifier: ^3.24.1
         version: 3.24.1
