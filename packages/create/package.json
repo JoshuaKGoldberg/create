@@ -1,6 +1,6 @@
 {
 	"name": "create",
-	"version": "0.1.0-alpha.6",
+	"version": "0.1.0-alpha.7",
 	"description": "Composable, testable, type-safe templates. 💝",
 	"repository": {
 		"type": "git",
@@ -34,8 +34,5 @@
 	},
 	"engines": {
 		"node": ">=18"
-	},
-	"publishConfig": {
-		"provenance": true
 	}
 }
