@@ -1,7 +1,9 @@
 import { execa, parseCommandString } from "execa";
 
-export function createSystemRunner(directory: string) {
-	const executor = execa({ cwd: directory });
+import { SystemRunner } from "../types/system.js";
+
+export function createSystemRunner(directory: string): SystemRunner {
+	const executor = execa({ cwd: directory, reject: false });
 
 	return (command: string) => executor`${parseCommandString(command)}`;
 }

@@ -1,11 +1,11 @@
 {
-	"name": "input-from-file-json",
+	"name": "input-from-script",
 	"version": "0.1.0-alpha.2",
-	"description": "create input that reads a file as JSON.",
+	"description": "create input that runs a script.",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
-		"directory": "packages/input-from-file-json"
+		"directory": "packages/input-from-script"
 	},
 	"license": "MIT",
 	"author": {
@@ -24,7 +24,6 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"input-from-file": "workspace:*",
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {

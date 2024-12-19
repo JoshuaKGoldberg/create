@@ -1,4 +1,4 @@
-import { Result } from "execa";
+import { ExecaError, Result } from "execa";
 import { Octokit } from "octokit";
 
 import { TakeContext } from "./context.js";
@@ -31,7 +31,7 @@ export interface SystemFetchers {
 	octokit: Octokit;
 }
 
-export type SystemRunner = (command: string) => Promise<Result>;
+export type SystemRunner = (command: string) => Promise<ExecaError | Result>;
 
 export interface WritingFileSystem extends InputFileSystem {
 	writeDirectory: FileSystemWriteDirectory;

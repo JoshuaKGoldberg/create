@@ -10,6 +10,7 @@
 		{ "path": "./packages/create-testers" },
 		{ "path": "./packages/input-from-file" },
 		{ "path": "./packages/input-from-file-json" },
+		{ "path": "./packages/input-from-script" },
 		{ "path": "./packages/site" }
 	]
 }

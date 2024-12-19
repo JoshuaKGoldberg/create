@@ -140,6 +140,7 @@ export const inputNpmUsername = createInput({
 
 - [`input-from-file`](https://www.npmjs.com/package/input-from-file): Reads a file's contents as text
 - [`input-from-file-json`](https://www.npmjs.com/package/input-from-file-json): Parse's a file's text contexts with `JSON.parse`
+- [`input-from-script`](https://www.npmjs.com/package/input-from-script): Runs a script command
 
 See those individual packages for their documentation.
 
