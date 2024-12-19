@@ -6,10 +6,6 @@ export const inputFromScript = createInput({
 		command: z.string(),
 	},
 	async produce({ args, runner }) {
-		try {
-			return await runner(args.command);
-		} catch (error) {
-			return error instanceof Error ? error : new Error(error as string);
-		}
+		return await runner(args.command);
 	},
 });

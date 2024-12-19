@@ -1,50 +1,20 @@
 import { testInput } from "create-testers";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { inputFromFile } from "./index.js";
+import { inputFromScript } from "./index.js";
 
-describe("inputFromFile", () => {
-	it("returns the file's text when it exists", async () => {
-		const text = "abc123";
+describe("inputFromScript", () => {
+	it("returns the result from running the command", async () => {
+		const command = "echo 123";
+		const expected = { stdout: "123" };
+		const runner = vi.fn().mockResolvedValue(expected);
 
-		const actual = await testInput(inputFromFile, {
-			args: {
-				filePath: "file.txt",
-			},
-			fs: {
-				readFile: () => Promise.resolve(text),
-			},
+		const actual = await testInput(inputFromScript, {
+			args: { command },
+			runner,
 		});
 
-		expect(actual).toBe(text);
-	});
-
-	it("returns an error when reading the file rejects with an error", async () => {
-		const error = new Error("Oh no!");
-		const actual = await testInput(inputFromFile, {
-			args: {
-				filePath: "file.txt",
-			},
-			fs: {
-				readFile: () => Promise.reject(error),
-			},
-		});
-
-		expect(actual).toEqual(error);
-	});
-
-	it("returns an error when reading the file rejects with a string", async () => {
-		const error = new Error("Oh no!");
-		const actual = await testInput(inputFromFile, {
-			args: {
-				filePath: "file.txt",
-			},
-			fs: {
-				// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-				readFile: () => Promise.reject(error.message),
-			},
-		});
-
-		expect(actual).toEqual(error);
+		expect(actual).toBe(expected);
+		expect(runner).toHaveBeenCalledWith(command);
 	});
 });
