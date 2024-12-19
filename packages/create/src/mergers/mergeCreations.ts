@@ -1,4 +1,5 @@
 import { Creation } from "../types/creations.js";
+import { removeEmptyProperties } from "../utils/removeEmptyProperties.js";
 import { applyMerger } from "./applyMerger.js";
 import { mergeAddons } from "./mergeAddons.js";
 import { mergeFileCreations } from "./mergeFileCreations.js";
@@ -15,15 +16,4 @@ export function mergeCreations<Options extends object>(
 		requests: applyMerger(first.requests, second.requests, mergeRequests),
 		scripts: applyMerger(first.scripts, second.scripts, mergeScripts),
 	});
-}
-
-function removeEmptyProperties<T extends object>(value: T): T {
-	for (const k in value) {
-		if (value[k] === undefined) {
-			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete value[k];
-		}
-	}
-
-	return value;
 }

@@ -19,6 +19,7 @@ import { AnyShape, InferredObject } from "../options.js";
 type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
 
 type ParseArgsOptionsType = ParseArgsOptionsConfig[string]["type"];
+
 export function parseZodArgs<OptionsShape extends AnyShape>(
 	args: string[],
 	options: OptionsShape,

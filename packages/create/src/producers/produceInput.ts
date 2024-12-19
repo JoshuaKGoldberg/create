@@ -5,6 +5,7 @@ import { NativeSystem } from "../types/system.js";
 export interface InputProductionSettings<Args extends object = object>
 	extends Partial<NativeSystem> {
 	args: Args;
+	auth?: string;
 	directory?: string;
 }
 

@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
 
+import { clearLocalGitTags } from "../modes/clearLocalGitTags.js";
 import { createRepositoryOnGitHub } from "../modes/createRepositoryOnGitHub.js";
 import { createTrackingBranches } from "../modes/createTrackingBranches.js";
 import { CreationOptions, ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
-import { createSystemContext } from "../system/createSystemContext.js";
+import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { PromiseOrSync } from "../utils/promises.js";
@@ -28,6 +29,7 @@ export interface FullPresetRunSettings<OptionsShape extends AnyShape>
 }
 
 export interface RunSettingsBase extends Partial<NativeSystem> {
+	auth?: string;
 	// TODO: make directory required in options?
 	directory?: string;
 	mode?: ProductionMode;
@@ -42,7 +44,7 @@ export async function runPreset<OptionsShape extends AnyShape>(
 	const { directory = "." } = settings;
 	await fs.mkdir(directory, { recursive: true });
 
-	const system = createSystemContext({
+	const system = await createSystemContextWithAuth({
 		directory,
 		...settings,
 	});
@@ -60,7 +62,7 @@ export async function runPreset<OptionsShape extends AnyShape>(
 		// TODO: Hardcode owner and repository existing in options?
 		await createRepositoryOnGitHub(
 			options as unknown as CreationOptions,
-			system.runner,
+			system,
 			preset.base.template,
 		);
 	}
@@ -72,5 +74,9 @@ export async function runPreset<OptionsShape extends AnyShape>(
 			options as unknown as CreationOptions,
 			system.runner,
 		);
+
+		if (preset.base.template) {
+			await clearLocalGitTags(system.runner);
+		}
 	}
 }

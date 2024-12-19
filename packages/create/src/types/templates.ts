@@ -3,23 +3,22 @@ import { AboutBase } from "./about.js";
 import { Preset } from "./presets.js";
 
 export type Template<
-	Label extends string,
-	OptionsShape extends AnyShape,
-> = TemplateDefinition<Label, OptionsShape>;
+	OptionsShape extends AnyShape = AnyShape,
+	Presets extends string = string,
+> = TemplateDefinition<OptionsShape, Presets>;
 
 export interface TemplateDefinition<
-	Label extends string,
 	OptionsShape extends AnyShape,
+	Presets extends string,
 > {
 	about?: AboutBase;
-	default: Label;
-	presets: TemplatePresetListing<Label, OptionsShape>[];
+	default: NoInfer<Presets>;
+	presets: Record<Presets, TemplatePresetListing<OptionsShape>>;
 }
 
 export interface TemplatePresetListing<
-	Label extends string,
-	OptionsShape extends AnyShape,
+	OptionsShape extends AnyShape = AnyShape,
 > {
-	label: Label;
+	label: string;
 	preset: Preset<OptionsShape>;
 }

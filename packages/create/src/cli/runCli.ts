@@ -1,74 +1,77 @@
-import { runPreset } from "../runners/runPreset.js";
-import { parseArgsPreset } from "./parseArgvPreset.js";
-import { parseZodArgs } from "./parseZodArgs.js";
-import { promptForPreset } from "./promptForPreset.js";
-import { promptForPresetOptions } from "./promptForPresetOptions.js";
-import { isTemplate } from "./utils.js";
+import * as prompts from "@clack/prompts";
+import chalk from "chalk";
+import { parseArgs } from "node:util";
+import { z } from "zod";
 
-export async function runCli(templateLabel: string, ...args: string[]) {
-	const templateSource = /^[./\\]/.test(templateLabel)
-		? templateLabel
-		: `create-${templateLabel}`;
+import { packageData } from "../packageData.js";
+import { runModeInitialize } from "./initialize.ts/runModeInitialize.js";
+import { logHelpText } from "./logHelpText.js";
+import { runModeMigrate } from "./migrate/runModeMigrate.js";
+import { readProductionSettings } from "./readProductionSettings.js";
+import { CLIStatus } from "./status.js";
+import { Logger } from "./types.js";
 
-	const templateModule = await tryImport(templateSource);
+const valuesSchema = z.object({
+	directory: z.string().optional(),
+	from: z.string().optional(),
+	mode: z.union([z.literal("initialize"), z.literal("migrate")]).optional(),
+	preset: z.string().optional(),
+});
 
-	if (templateModule instanceof Error) {
-		throw new Error(`Could not import ${templateSource}.`, {
-			cause: templateModule,
-		});
-	}
-
-	if (!("default" in templateModule)) {
-		throw new Error(
-			`${templateSource} should have a default exported Template.`,
-		);
-	}
-
-	const template = templateModule.default;
-	if (!isTemplate(template)) {
-		throw new Error(`${templateSource}'s default export should be a Template.`);
-	}
-
-	console.log(
-		`Let us ✨ create ✨ a repository for the ${templateSource} Template!`,
-	);
-
-	const presetLabel = await promptForPreset(
-		template.presets.map((preset) => preset.label),
-		parseArgsPreset(args),
-	);
-
-	const presetListing = template.presets.find(
-		(preset) => preset.label === presetLabel,
-	);
-
-	if (!presetListing) {
-		throw new Error(
-			`${templateSource} should have a Preset with label ${presetLabel}.`,
-		);
-	}
-
-	const { preset } = presetListing;
-
-	const parsedOptions = parseZodArgs(args, preset.base.options);
-
-	await runPreset(preset, {
-		// TODO: allow changing directory
-		// https://github.com/JoshuaKGoldberg/create/issues/26 (or a follow-up)
-		directory: ".",
-
-		options: parsedOptions,
-
-		// TODO: why is options `any` without the type annotation?
-		optionsAugment: async (options: typeof parsedOptions) =>
-			promptForPresetOptions(preset.base.options, options),
+export async function runCli(args: string[], logger: Logger) {
+	const { values } = parseArgs({
+		args,
+		options: {
+			directory: {
+				type: "string",
+			},
+			from: {
+				type: "string",
+			},
+			help: {
+				type: "boolean",
+			},
+			mode: {
+				type: "string",
+			},
+			preset: {
+				type: "string",
+			},
+			version: {
+				type: "boolean",
+			},
+		},
+		strict: false,
 	});
-}
 
-async function tryImport(source: string) {
-	try {
-		return (await import(source)) as object;
-	} catch (error) {
-		return error as Error;
+	if (values.help) {
+		logHelpText(logger);
+		return CLIStatus.Success;
 	}
+
+	if (values.version) {
+		return CLIStatus.Success;
+	}
+
+	prompts.intro(
+		[
+			chalk.greenBright(`✨ `),
+			chalk.bgGreenBright.black(`create`),
+			chalk.greenBright(`@${packageData.version} ✨`),
+		].join(""),
+	);
+
+	const validatedValues = valuesSchema.parse(values);
+	const productionSettings = await readProductionSettings(validatedValues);
+
+	const { outro, status } =
+		productionSettings.mode === "initialize"
+			? await runModeInitialize({ ...validatedValues, args })
+			: await runModeMigrate();
+
+	prompts.outro(
+		outro ?? "Operation cancelled. Exiting - maybe another time? 👋",
+	);
+
+	return status;
 }
