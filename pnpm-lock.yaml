@@ -165,6 +165,19 @@ importers:
         specifier: workspace:*
         version: link:../create-testers
 
+  packages/input-from-script:
+    dependencies:
+      create:
+        specifier: workspace:*
+        version: link:../create
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      create-testers:
+        specifier: workspace:*
+        version: link:../create-testers
+
   packages/site:
     dependencies:
       '@astrojs/check':
