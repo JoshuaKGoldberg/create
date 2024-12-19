@@ -4,6 +4,7 @@
 import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { createSystemContext } from "../system/createSystemContext.js";
+import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
 import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
@@ -60,7 +61,7 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		| AugmentingPresetProductionSettings<OptionsShape>
 		| FullPresetProductionSettings<OptionsShape>,
 ): Promise<Production<InferredObject<OptionsShape>>> {
-	const system = createSystemContext({
+	const system = await createSystemContextWithAuth({
 		directory,
 		...providedSystem,
 	});
@@ -72,10 +73,14 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	const providedOptions = options ?? {};
 
 	// 2. Calling the Preset's Base's produce method, if it exists
-	const producedOptions = await produceBase(preset.base, {
-		options: providedOptions,
-		...system,
-	});
+	// TODO: ...do we even want this?
+	// Maybe initialize() in the CLI should do it itself?
+	const producedOptions = Math.random()
+		? {}
+		: await produceBase(preset.base, {
+				options: providedOptions,
+				...system,
+			});
 
 	// 3. Calling to an optional optionsAugment method of producePreset's second parameter
 	const optionsForAugmentation = {

@@ -26,7 +26,15 @@ export async function applyScriptsToSystem(
 		await Promise.all(
 			commandsByPhase[phase].map(async (command) => {
 				for (const script of command.commands) {
-					await runner(script);
+					try {
+						// TODO: Handle in-progress outputs better, in some way?
+						console.log("Running script:", script);
+						await runner(script);
+						console.log("Done with script:", script);
+					} catch (error) {
+						// TODO: Handle errors better, in some way?
+						console.error("Error in script", script, (error as Error).message);
+					}
 				}
 			}),
 		);

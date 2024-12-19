@@ -26,11 +26,11 @@ describe("createTemplate", () => {
 			about: {
 				name: "TypeScript App",
 			},
-			default: "First",
-			presets: [
-				{ label: "First", preset: presetFirst },
-				{ label: "Second", preset: presetSecond },
-			],
+			default: "first",
+			presets: {
+				first: { label: "First", preset: presetFirst },
+				second: { label: "Second", preset: presetSecond },
+			},
 		});
 	});
 });

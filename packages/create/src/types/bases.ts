@@ -9,7 +9,7 @@ import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
 import { Preset, PresetDefinition } from "./presets.js";
 
-export interface Base<OptionsShape extends AnyShape> {
+export interface Base<OptionsShape extends AnyShape = AnyShape> {
 	createBlock: CreateBlock<InferredObject<OptionsShape>>;
 	createPreset: CreatePreset<OptionsShape>;
 	options: OptionsShape;

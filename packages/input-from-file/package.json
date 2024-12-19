@@ -1,7 +1,7 @@
 {
 	"name": "input-from-file",
 	"version": "0.1.0-alpha.2",
-	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
+	"description": "create input that reads a file as text.",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",

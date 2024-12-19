@@ -1,38 +1,47 @@
-import readline from "node:readline/promises";
+import * as prompts from "@clack/prompts";
 import * as z from "zod";
 
-import { promptForBoolean } from "./promptForBoolean.js";
+import { validateNumber, validatorFromSchema } from "./validators.js";
 
 type ZodDef = z.ZodBooleanDef | z.ZodNumberDef | z.ZodStringDef;
 
-export async function promptForSchema(
-	rl: readline.Interface,
-	key: string,
-	schema: z.ZodTypeAny,
-) {
+export async function promptForSchema(key: string, schema: z.ZodTypeAny) {
 	const def = schema._def as ZodDef;
+	const message = schema.description
+		? `What will the ${schema.description} be? (--${key})`
+		: `What will the --${key} be?`;
 	let value: unknown;
 
 	while (value === undefined || value === "") {
 		switch (def.typeName) {
 			case z.ZodFirstPartyTypeKind.ZodBoolean: {
-				value = await promptForBoolean(rl, `Enter y or n for ${key}.\n`);
+				value = await prompts.confirm({ message });
 				break;
 			}
 
 			case z.ZodFirstPartyTypeKind.ZodNumber:
-				value = schema.parse(
-					Number(await rl.question(`Enter a value for ${key}.\n`)),
-				) as unknown;
+				value = Number(
+					await prompts.text({
+						message,
+						validate: validateNumber,
+					}),
+				);
 				break;
 
 			// TODO: Handle numeric literals, unions, ...
 
-			default:
-				value = schema.parse(
-					await rl.question(`Enter a value for ${key}.\n`),
-				) as unknown;
-				break;
+			default: {
+				const text = await prompts.text({
+					message,
+					validate: validatorFromSchema(schema),
+				});
+
+				if (prompts.isCancel(text)) {
+					return text;
+				}
+
+				return schema.parse(text) as unknown;
+			}
 		}
 	}
 

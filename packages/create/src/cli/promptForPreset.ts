@@ -1,29 +1,42 @@
-import readline from "node:readline/promises";
+import * as prompts from "@clack/prompts";
+
+import { Template, TemplatePresetListing } from "../types/templates.js";
 
 export async function promptForPreset(
-	labels: string[],
-	specified: string | undefined,
+	requested: string | undefined,
+	template: Template,
 ) {
-	let rl: readline.Interface | undefined;
+	if (requested) {
+		if (requested in template.presets) {
+			return template.presets[requested].preset;
+		}
 
-	const allowed = new Map(labels.map((label) => [label.toLowerCase(), label]));
-	let label = specified && allowed.get(specified.toLowerCase());
-
-	while (!label) {
-		rl ??= readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-		});
-
-		// TODO: Eventually, it'd be nice to use Clack or similar...
-		const answer = await rl.question(
-			`Out of (${labels.join(", ")}), which preset would you like?\n`,
+		prompts.log.error(
+			`${requested} is not one of: ${Array.from(Object.keys(template.presets)).join(", ")}`,
 		);
-
-		label = allowed.get(answer.toLowerCase());
 	}
 
-	rl?.close();
+	const preset = await prompts.select({
+		message: "Which Preset would you like to start with?",
+		options: Object.entries(template.presets).map(([preset, listing]) => ({
+			...generatePresetLabel(listing),
+			value: preset,
+		})),
+	});
 
-	return label;
+	if (prompts.isCancel(preset)) {
+		return preset;
+	}
+
+	return template.presets[preset].preset;
+}
+function generatePresetLabel(listing: TemplatePresetListing) {
+	if (!listing.preset.about?.name) {
+		return { label: listing.label };
+	}
+
+	return {
+		hint: listing.preset.about.description,
+		label: listing.preset.about.name,
+	};
 }

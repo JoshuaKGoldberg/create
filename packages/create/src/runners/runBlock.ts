@@ -1,5 +1,6 @@
 import { produceBlock } from "../producers/produceBlock.js";
 import { createSystemContext } from "../system/createSystemContext.js";
+import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
 import { IndirectCreation } from "../types/creations.js";
 import { NativeSystem } from "../types/system.js";
@@ -46,7 +47,7 @@ export async function runBlock<Addons extends object, Options extends object>(
 	settings: BlockRunSettings<Addons, Options>,
 ): Promise<void> {
 	const { directory = "." } = settings;
-	const system = createSystemContext({ directory, ...settings });
+	const system = await createSystemContextWithAuth({ directory, ...settings });
 
 	const creation = produceBlock(
 		// TODO: Why are these assertions necessary?
