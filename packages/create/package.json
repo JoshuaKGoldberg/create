@@ -31,6 +31,7 @@
 		"execa": "^9.5.2",
 		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
+		"import-local-or-npx": "^0.1.0",
 		"octokit": "^4.0.2",
 		"prettier": "3.4.2",
 		"without-undefined-properties": "^0.1.1",
