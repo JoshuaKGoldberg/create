@@ -30,7 +30,7 @@
 		"zod": "3.24.1"
 	},
 	"peerDependencies": {
-		"create": "workspace:*"
+		"create": "workspace:^"
 	},
 	"engines": {
 		"node": ">=18"

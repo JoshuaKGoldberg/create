@@ -141,7 +141,7 @@ importers:
   packages/create-testers:
     dependencies:
       create:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create
       octokit:
         specifier: ^4.0.2
@@ -154,43 +154,43 @@ importers:
   packages/input-from-file:
     dependencies:
       create:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
       create-testers:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create-testers
 
   packages/input-from-file-json:
     dependencies:
       create:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create
       input-from-file:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../input-from-file
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
       create-testers:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create-testers
 
   packages/input-from-script:
     dependencies:
       create:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
       create-testers:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../create-testers
 
   packages/site:
