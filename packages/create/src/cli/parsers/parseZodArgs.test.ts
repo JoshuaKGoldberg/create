@@ -61,13 +61,9 @@ describe("parseZodArgs", () => {
 	});
 
 	test("object parsing failure", () => {
-		const args = ["--value", "abc"];
+		const args = ["--value"];
 		const options = { value: z.object({}) };
 
-		const act = () => parseZodArgs(args, options);
-
-		expect(act).toThrowError(
-			`create does not know how to parse this Zod type on the CLI: ZodObject`,
-		);
+		expect(parseZodArgs(args, options)).toEqual({ value: true });
 	});
 });

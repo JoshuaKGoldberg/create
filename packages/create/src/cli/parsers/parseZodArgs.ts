@@ -27,9 +27,9 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 	const argsOptions: ParseArgsConfig["options"] = {};
 
 	for (const [key, value] of Object.entries(options)) {
-		const argsOption = zodValueToArgsOption(value);
+		const argsOption = zodValueToArgsOption(key, value);
 
-		if (argsOption) {
+		if (!(argsOption instanceof Error)) {
 			argsOptions[key] = argsOption;
 		}
 	}
@@ -42,8 +42,9 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 }
 
 function zodValueToArgsOption(
+	key: string,
 	zodValue: ZodTypeAny,
-): ParseArgsOptionsConfig[string] | undefined {
+): Error | ParseArgsOptionsConfig[string] {
 	switch (zodValue._def.typeName) {
 		case "ZodBoolean":
 		case "ZodLiteral":
@@ -53,14 +54,14 @@ function zodValueToArgsOption(
 			};
 
 		case "ZodOptional":
-			return zodValueToArgsOption(zodValue._def.innerType);
+			return zodValueToArgsOption(key, zodValue._def.innerType);
 
 		case "ZodUnion":
-			return zodValueToArgsOption(zodValue._def.options[0]);
+			return zodValueToArgsOption(key, zodValue._def.options[0]);
 	}
 
-	throw new Error(
-		`create does not know how to parse this Zod type on the CLI: ${zodValue._def.typeName as string}`,
+	return new Error(
+		`create does not know how to parse --${key}'s Zod type on the CLI: ${zodValue._def.typeName as string}`,
 	);
 }
 
