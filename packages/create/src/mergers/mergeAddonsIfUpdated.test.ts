@@ -6,11 +6,22 @@ describe("mergeArgsIfUpdated", () => {
 	it.each([
 		[{}, {}, undefined],
 		[{ a: true }, {}, { a: true }],
+		[{ a: true }, { a: null }, undefined],
 		[{ a: true }, { a: true }, undefined],
 		[
 			{ a: true },
 			{ a: false },
 			new Error("Mismatched merging addons (true vs. false)."),
+		],
+		[
+			{ a: [] },
+			{ a: false },
+			new Error("Mismatched merging addons (Array.isArray)."),
+		],
+		[
+			{ a: {} },
+			{ a: false },
+			new Error("Mismatched merging addons (typeof object)."),
 		],
 		[{ a: true }, { b: true }, { a: true, b: true }],
 		[{}, { b: true }, { b: true }],

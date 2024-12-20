@@ -15,9 +15,11 @@ Runner APIs can be used to execute and apply [Creations](../runtime/creations) o
 Each runner API takes in up to two arguments:
 
 1. The construct to be run
-2. An object with properties from the construct's context as well as [System contexts](../runtime/contexts#system-contexts) and:
+2. An object with properties from the construct's context as well as:
    - `directory: string` (default: `'.'`): The root directory to write files to
-   - `mode`: What [runtime mode](../runtime/execution#modes) to run in
+   - `mode` (optional): What [runtime mode](../runtime/execution#modes) to run in
+   - `options` (optional): The construct's Options values
+   - Any properties from [System contexts](../runtime/contexts#system-contexts) (optional)
 
 :::note
 Runner APIs apply their generated objects to disk, as well as executing any network requests and shell commands.
@@ -47,18 +49,9 @@ For example, given a Preset containing the previous Block that creates a `README
 import { runBlock } from "create";
 import { presetWithReadme } from "./presetWithReadme.js";
 
-await runPreset(presetWithReadme);
-```
-
-To create a repository on GitHub with the same contents, `mode`, `owner`, and `repository` can be specified:
-
-```ts
-import { runBlock } from "create";
-import { presetWithReadme } from "./presetWithReadme.js";
-
 await runPreset(presetWithReadme, {
-	mode: "initialize",
-	owner: "JoshuaKGoldberg",
-	repository: "example-new-repository",
+	options: {
+		// ...
+	},
 });
 ```

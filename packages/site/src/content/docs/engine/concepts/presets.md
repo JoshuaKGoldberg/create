@@ -19,6 +19,9 @@ import { blockNvmrc } from "./blockNvmrc";
 import { blockREADME } from "./blockREADME";
 
 export const presetExampleBlocks = base.createPreset({
+	about: {
+		name: "Example",
+	},
 	blocks: [blockNvmrc, blockREADME],
 });
 ```

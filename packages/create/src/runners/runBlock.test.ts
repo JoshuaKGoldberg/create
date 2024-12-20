@@ -1,3 +1,4 @@
+import { Octokit } from "octokit";
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
@@ -12,7 +13,10 @@ const base = createBase({
 
 function createSystem() {
 	return {
-		fetcher: noop("fetcher"),
+		fetchers: {
+			fetch: noop("fetcher"),
+			octokit: {} as Octokit,
+		},
 		fs: {
 			readFile: noop("readFile"),
 			writeDirectory: vi.fn(),
@@ -23,9 +27,7 @@ function createSystem() {
 }
 
 function noop(label: string) {
-	return vi.fn(() => {
-		throw new Error(`Not implemented: ${label}`);
-	});
+	return vi.fn().mockReturnValue(`Not implemented: ${label}`);
 }
 
 describe("runBlock", () => {

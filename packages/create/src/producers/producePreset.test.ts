@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { Octokit } from "octokit";
+import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
@@ -9,137 +10,57 @@ const emptyCreation = {
 	files: {},
 	requests: [],
 	scripts: [],
+	suggestions: [],
+};
+
+const system = {
+	fetchers: {
+		fetch: vi.fn(),
+		octokit: {} as Octokit,
+	},
+	fs: {
+		readFile: vi.fn(),
+		writeDirectory: vi.fn(),
+		writeFile: vi.fn(),
+	},
+	runner: vi.fn(),
 };
 
 describe("producePreset", () => {
-	describe("passed options", () => {
-		const baseWithOption = createBase({
-			options: {
-				value: z.string(),
-			},
-		});
-
-		const blockUsingOption = baseWithOption.createBlock({
-			produce({ options }) {
-				return {
-					files: {
-						"value.txt": options.value,
-					},
-				};
-			},
-		});
-
-		const presetUsingOption = baseWithOption.createPreset({
-			blocks: [blockUsingOption],
-		});
-
-		it("passes options to the preset when provided via options", async () => {
-			const actual = await producePreset(presetUsingOption, {
-				options: {
-					value: "abc",
-				},
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: {
-						"value.txt": "abc",
-					},
-				},
-				options: { value: "abc" },
-			});
-		});
-
-		it("passes options to the preset when provided via optionsAugment", async () => {
-			const actual = await producePreset(presetUsingOption, {
-				optionsAugment: () => ({
-					value: "abc",
-				}),
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: {
-						"value.txt": "abc",
-					},
-				},
-				options: { value: "abc" },
-			});
-		});
-
-		it("passes options to the preset when provided via options and  optionsAugment", async () => {
-			const actual = await producePreset(presetUsingOption, {
-				options: {
-					value: "abc",
-				},
-				optionsAugment: (existing) => ({
-					value: [existing.value, "def"].join("-"),
-				}),
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: {
-						"value.txt": "abc-def",
-					},
-				},
-				options: { value: "abc-def" },
-			});
-		});
+	const baseWithOption = createBase({
+		options: {
+			value: z.string(),
+		},
 	});
 
-	describe("directly produced options", () => {
-		const baseWithProduce = createBase({
+	const blockUsingOption = baseWithOption.createBlock({
+		produce({ options }) {
+			return {
+				files: {
+					"value.txt": options.value,
+				},
+			};
+		},
+	});
+
+	const presetUsingOption = baseWithOption.createPreset({
+		about: { name: "Test" },
+		blocks: [blockUsingOption],
+	});
+
+	it("passes options to the preset when provided via options", async () => {
+		const actual = await producePreset(presetUsingOption, {
+			...system,
 			options: {
-				optional: z.string().optional(),
-				required: z.string(),
-			},
-			produce() {
-				return {
-					optional: "optional-from-produce",
-					required: "required-from-produce",
-				};
+				value: "abc",
 			},
 		});
 
-		const blockUsingOption = baseWithProduce.createBlock({
-			produce({ options }) {
-				return {
-					files: {
-						"value-optional.txt": options.optional,
-						"value-required.txt": options.required,
-					},
-				};
+		expect(actual).toEqual({
+			...emptyCreation,
+			files: {
+				"value.txt": "abc",
 			},
-		});
-
-		const presetUsingOption = baseWithProduce.createPreset({
-			blocks: [blockUsingOption],
-		});
-
-		it("prioritizes provided options over Base produced options", async () => {
-			const actual = await producePreset(presetUsingOption, {
-				options: {
-					required: "required-from-provided",
-				},
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: {
-						"value-optional.txt": "optional-from-produce",
-						"value-required.txt": "required-from-provided",
-					},
-				},
-				options: {
-					optional: "optional-from-produce",
-					required: "required-from-provided",
-				},
-			});
 		});
 	});
 });

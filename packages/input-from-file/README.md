@@ -1,6 +1,6 @@
 <h1 align="center">input-from-file</h1>
 
-<p align="center"><code>create</code> input that reads a file as JSON.</p>
+<p align="center"><code>create</code> input that reads a file as text.</p>
 
 <p align="center">
 	<a href="https://github.com/JoshuaKGoldberg/create/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>
@@ -22,5 +22,10 @@ await take(inputFromFile, { filePath: "data.txt" });
 ## Options
 
 `inputFromFile` takes a single argument, `filePath`, of type `string`.
+
+It reads the `filePath` from disk and returns either:
+
+- `Error`: If an error was caught reading the file
+- `string`: The text contents of the file
 
 See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.

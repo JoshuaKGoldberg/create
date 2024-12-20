@@ -1,86 +1,75 @@
+import { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
+
+const options = { owner: "StubOwner", repository: "stub-repository" };
 
 const mockCreateUsingTemplate = vi.fn();
 const mockCreateInOrg = vi.fn();
 const mockCreateForAuthenticatedUser = vi.fn();
 const mockGetAuthenticated = vi.fn();
 
-vi.mock("octokit-from-auth", () => ({
-	octokitFromAuth: () =>
-		Promise.resolve({
-			rest: {
-				repos: {
-					createForAuthenticatedUser: mockCreateForAuthenticatedUser,
-					createInOrg: mockCreateInOrg,
-					createUsingTemplate: mockCreateUsingTemplate,
-				},
-				users: {
-					getAuthenticated: mockGetAuthenticated,
-				},
+const createMockOctokit = () =>
+	({
+		rest: {
+			repos: {
+				createForAuthenticatedUser: mockCreateForAuthenticatedUser,
+				createInOrg: mockCreateInOrg,
+				createUsingTemplate: mockCreateUsingTemplate,
 			},
-		}),
-}));
-
-const mockClearLocalGitTags = vi.fn();
-
-vi.mock("./clearLocalGitTags", () => ({
-	get clearLocalGitTags() {
-		return mockClearLocalGitTags;
-	},
-}));
-
-const owner = "StubOwner";
-const repository = "stub-repository";
-
-const template = {
-	owner: "JoshuaKGoldberg",
-	repository: "create-typescript-app",
-};
+			users: {
+				getAuthenticated: mockGetAuthenticated,
+			},
+		},
+	}) as unknown as Octokit;
 
 describe("createRepositoryOnGitHub", () => {
-	it("creates using a template when a template is provided", async () => {
-		await createRepositoryOnGitHub({ owner, repository }, vi.fn(), template);
+	it("creates using a template when one is provided", async () => {
+		const template = {
+			owner: "JoshuaKGoldberg",
+			repository: "create-typescript-app",
+		};
+
+		await createRepositoryOnGitHub(options, createMockOctokit(), template);
 
 		expect(mockCreateForAuthenticatedUser).not.toHaveBeenCalled();
 		expect(mockCreateInOrg).not.toHaveBeenCalled();
 		expect(mockCreateUsingTemplate).toHaveBeenCalledWith({
-			name: repository,
-			owner,
+			name: options.repository,
+			owner: options.owner,
 			template_owner: template.owner,
 			template_repo: template.repository,
 		});
-		expect(mockClearLocalGitTags).toHaveBeenCalledOnce();
 	});
 
 	it("creates under the user when the user is the owner", async () => {
 		mockGetAuthenticated.mockResolvedValueOnce({
 			data: {
-				login: owner,
+				login: options.owner,
 			},
 		});
-		await createRepositoryOnGitHub({ owner, repository }, vi.fn());
+
+		await createRepositoryOnGitHub(options, createMockOctokit());
 
 		expect(mockCreateForAuthenticatedUser).toHaveBeenCalledWith({
-			name: repository,
+			name: options.repository,
 		});
 		expect(mockCreateInOrg).not.toHaveBeenCalled();
 		expect(mockCreateUsingTemplate).not.toHaveBeenCalled();
-		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
 	});
 
 	it("creates under an org when the user is not the owner", async () => {
 		const login = "other-user";
 		mockGetAuthenticated.mockResolvedValueOnce({ data: { login } });
-		await createRepositoryOnGitHub({ owner, repository }, vi.fn());
+
+		await createRepositoryOnGitHub(options, createMockOctokit());
 
 		expect(mockCreateForAuthenticatedUser).not.toHaveBeenCalled();
 		expect(mockCreateInOrg).toHaveBeenCalledWith({
-			name: repository,
-			org: owner,
+			name: options.repository,
+			org: options.owner,
 		});
 		expect(mockCreateUsingTemplate).not.toHaveBeenCalled();
-		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
 	});
 });

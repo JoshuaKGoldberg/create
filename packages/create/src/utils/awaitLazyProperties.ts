@@ -1,3 +1,5 @@
+import { withoutUndefinedProperties } from "without-undefined-properties";
+
 export type AwaitedLazyProperties<T> = {
 	[K in keyof T]: AwaitedLazyProperty<T[K]>;
 };
@@ -32,5 +34,5 @@ export async function awaitLazyProperties<T extends object>(
 
 	await Promise.all(tasks);
 
-	return result as AwaitedLazyProperties<T>;
+	return withoutUndefinedProperties(result) as AwaitedLazyProperties<T>;
 }

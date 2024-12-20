@@ -2,17 +2,59 @@ import { describe, expect, it, test, vi } from "vitest";
 
 import { applyScriptsToSystem } from "./applyScriptsToSystem.js";
 
+function createStubSystem() {
+	return {
+		display: {
+			item: vi.fn(),
+			log: vi.fn(),
+		},
+		runner: vi.fn(),
+	};
+}
+
 describe("applyCommandsToSystem", () => {
+	it("displays the error when a standalone command results in an error", async () => {
+		const command = "abc";
+		const error = new Error("Oh no!");
+
+		const system = createStubSystem();
+		system.runner.mockReturnValueOnce(error);
+
+		await applyScriptsToSystem([command], system);
+
+		expect(system.display.item.mock.calls).toEqual([
+			["scripts", command, { start: expect.any(Number) }],
+			["scripts", command, { end: expect.any(Number) }],
+			["scripts", command, { error }],
+		]);
+	});
+
+	it("displays the error when a phased command results in an error", async () => {
+		const command = "abc";
+		const error = new Error("Oh no!");
+
+		const system = createStubSystem();
+		system.runner.mockReturnValueOnce(error);
+
+		await applyScriptsToSystem([{ commands: [command], phase: 0 }], system);
+
+		expect(system.display.item.mock.calls).toEqual([
+			["scripts", command, { start: expect.any(Number) }],
+			["scripts", command, { end: expect.any(Number) }],
+			["scripts", command, { error }],
+		]);
+	});
+
 	it("runs phase commands in different phases in order of phase", async () => {
 		const scripts = [
 			{ commands: ["c", "d"], phase: 1 },
 			{ commands: ["a", "b"], phase: 0 },
 		];
-		const runner = vi.fn();
+		const system = createStubSystem();
 
-		await applyScriptsToSystem(scripts, runner);
+		await applyScriptsToSystem(scripts, system);
 
-		expect(runner.mock.calls).toEqual([["a"], ["b"], ["c"], ["d"]]);
+		expect(system.runner.mock.calls).toEqual([["a"], ["b"], ["c"], ["d"]]);
 	});
 
 	it("runs phase commands in the same phase in series", async () => {
@@ -20,20 +62,20 @@ describe("applyCommandsToSystem", () => {
 			{ commands: ["a", "b"], phase: 0 },
 			{ commands: ["c", "d"], phase: 0 },
 		];
-		const runner = vi.fn();
+		const system = createStubSystem();
 
-		await applyScriptsToSystem(scripts, runner);
+		await applyScriptsToSystem(scripts, system);
 
-		expect(runner.mock.calls).toEqual([["a"], ["c"], ["b"], ["d"]]);
+		expect(system.runner.mock.calls).toEqual([["a"], ["c"], ["b"], ["d"]]);
 	});
 
 	it("runs out-of-phase commands in parallel to phase commands when they exist", async () => {
 		const scripts = ["a", { commands: ["b", "d"], phase: 0 }, "d"];
-		const runner = vi.fn();
+		const system = createStubSystem();
 
-		await applyScriptsToSystem(scripts, runner);
+		await applyScriptsToSystem(scripts, system);
 
-		expect(runner.mock.calls).toEqual([["a"], ["d"], ["b"], ["d"]]);
+		expect(system.runner.mock.calls).toEqual([["a"], ["d"], ["b"], ["d"]]);
 	});
 
 	test("mixed phase commands", async () => {
@@ -43,11 +85,11 @@ describe("applyCommandsToSystem", () => {
 			{ commands: ["f", "g"], phase: 1 },
 			{ commands: ["h"], phase: 0 },
 		];
-		const runner = vi.fn();
+		const system = createStubSystem();
 
-		await applyScriptsToSystem(scripts, runner);
+		await applyScriptsToSystem(scripts, system);
 
-		expect(runner.mock.calls).toEqual([
+		expect(system.runner.mock.calls).toEqual([
 			["h"],
 			["c"],
 			["f"],

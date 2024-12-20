@@ -13,8 +13,7 @@ export async function applyCreation(
 	}
 
 	await Promise.all([
-		creation.scripts && applyScriptsToSystem(creation.scripts, system.runner),
-		creation.requests &&
-			applyRequestsToSystem(creation.requests, system.fetchers),
+		creation.scripts && applyScriptsToSystem(creation.scripts, system),
+		creation.requests && applyRequestsToSystem(creation.requests, system),
 	]);
 }

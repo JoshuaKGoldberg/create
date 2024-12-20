@@ -14,11 +14,12 @@ import {
 	ZodTypeAny,
 } from "zod";
 
-import { AnyShape, InferredObject } from "../options.js";
+import { AnyShape, InferredObject } from "../../options.js";
 
 type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
 
 type ParseArgsOptionsType = ParseArgsOptionsConfig[string]["type"];
+
 export function parseZodArgs<OptionsShape extends AnyShape>(
 	args: string[],
 	options: OptionsShape,
@@ -26,9 +27,9 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 	const argsOptions: ParseArgsConfig["options"] = {};
 
 	for (const [key, value] of Object.entries(options)) {
-		const argsOption = zodValueToArgsOption(value);
+		const argsOption = zodValueToArgsOption(key, value);
 
-		if (argsOption) {
+		if (!(argsOption instanceof Error)) {
 			argsOptions[key] = argsOption;
 		}
 	}
@@ -41,15 +42,10 @@ export function parseZodArgs<OptionsShape extends AnyShape>(
 }
 
 function zodValueToArgsOption(
+	key: string,
 	zodValue: ZodTypeAny,
-): ParseArgsOptionsConfig[string] | undefined {
+): Error | ParseArgsOptionsConfig[string] {
 	switch (zodValue._def.typeName) {
-		// case "ZodArray":
-		// 	return {
-		// 		multiple: true,
-		// 		type: zodValueTypeToArgsOptionType(zodValue._def),
-		// 	};
-
 		case "ZodBoolean":
 		case "ZodLiteral":
 		case "ZodString":
@@ -58,14 +54,15 @@ function zodValueToArgsOption(
 			};
 
 		case "ZodOptional":
-			return zodValueToArgsOption(zodValue._def.innerType);
+			return zodValueToArgsOption(key, zodValue._def.innerType);
 
 		case "ZodUnion":
-			return zodValueToArgsOption(zodValue._def.options[0]);
+			return zodValueToArgsOption(key, zodValue._def.options[0]);
 	}
 
-	// throw new Error(`Unknown zod value type: ${zodValue._def.typeName}`);
-	return undefined;
+	return new Error(
+		`create does not know how to parse --${key}'s Zod type on the CLI: ${zodValue._def.typeName as string}`,
+	);
 }
 
 function zodValueTypeToArgsOptionType(
@@ -80,12 +77,13 @@ function zodValueTypeToArgsOptionType(
 			if (typeofValue === "boolean" || typeofValue === "string") {
 				return typeofValue;
 			}
-			break;
+			throw new Error(
+				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
+				`create does not know how to parse this Zod literal on the CLI: ${def.value?.toString()}`,
+			);
 		}
 
 		case ZodFirstPartyTypeKind.ZodString:
 			return "string";
 	}
-
-	throw new Error(`Unknown zod value type: ${def.typeName}`);
 }

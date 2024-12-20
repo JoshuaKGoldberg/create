@@ -25,11 +25,16 @@
 		"build": "tsc"
 	},
 	"dependencies": {
+		"@clack/prompts": "^0.8.2",
+		"cached-factory": "^0.1.0",
+		"chalk": "^5.4.0",
 		"execa": "^9.5.2",
+		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
+		"import-local-or-npx": "^0.1.0",
 		"octokit": "^4.0.2",
-		"octokit-from-auth": "^0.3.0",
 		"prettier": "3.4.2",
+		"without-undefined-properties": "^0.1.1",
 		"zod": "^3.24.1"
 	},
 	"engines": {

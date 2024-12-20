@@ -49,11 +49,12 @@ The merged result would be:
 
 ## Creations
 
-Each of the three Creations from Blocks has their own merging logic:
+Each of the four other Creations from Blocks has their own merging logic:
 
 - [`files`](#files)
 - [`requests`](#requests)
 - [`scripts`](#scripts)
+- [`suggestions`](#suggestions)
 
 ### Files
 
@@ -185,5 +186,35 @@ The merged result would be:
 		phase: 0,
 	},
 	`npx set-github-repository-labels --labels "$(cat labels.json)"`,
+];
+```
+
+### Suggestions
+
+[Suggestions](./creations#suggestions) are deduplicated by identity.
+
+For example, given the following two `suggestions` Creations to be merged:
+
+```ts
+[
+	"- set a CODECOV secret to an codecov repository token",
+	"- set a NPM_TOKEN secret to an npm automation token",
+];
+```
+
+```ts
+[
+	"- set an ACCESS_TOKEN secret to a GitHub PAT with repo and workflow permissions",
+	"- set a NPM_TOKEN secret to an npm access token with automation permissions",
+];
+```
+
+The merged result would be:
+
+```ts
+[
+	"- set a CODECOV secret to an codecov repository token",
+	"- set a NPM_TOKEN secret to an npm access token with automation permissions",
+	"- set an ACCESS_TOKEN secret to a GitHub PAT with repo and workflow permissions",
 ];
 ```

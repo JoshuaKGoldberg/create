@@ -1,76 +1,71 @@
 import fs from "node:fs/promises";
 
+import { assertOptionsForInitialize } from "../cli/initialize/assertOptionsForInitialize.js";
+import { clearLocalGitTags } from "../modes/clearLocalGitTags.js";
 import { createRepositoryOnGitHub } from "../modes/createRepositoryOnGitHub.js";
 import { createTrackingBranches } from "../modes/createTrackingBranches.js";
-import { CreationOptions, ProductionMode } from "../modes/types.js";
+import { ProductionMode } from "../modes/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
-import { createSystemContext } from "../system/createSystemContext.js";
+import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
+import { Creation } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
-import { PromiseOrSync } from "../utils/promises.js";
 import { applyCreation } from "./applyCreation.js";
 
 export interface AugmentingPresetRunSettings<OptionsShape extends AnyShape>
 	extends RunSettingsBase {
 	options?: Partial<InferredObject<OptionsShape>>;
-	optionsAugment: (
-		options: Partial<InferredObject<OptionsShape>>,
-	) => PromiseOrSync<InferredObject<OptionsShape>>;
 }
 
-export interface FullPresetRunSettings<OptionsShape extends AnyShape>
+export interface PresetRunSettings<OptionsShape extends AnyShape>
 	extends RunSettingsBase {
 	options: InferredObject<OptionsShape>;
-	optionsAugment?: (
-		options: InferredObject<OptionsShape>,
-	) => Promise<Partial<InferredObject<OptionsShape>>>;
 }
 
 export interface RunSettingsBase extends Partial<NativeSystem> {
-	// TODO: make directory required in options?
+	auth?: string;
 	directory?: string;
 	mode?: ProductionMode;
 }
 
 export async function runPreset<OptionsShape extends AnyShape>(
 	preset: Preset<OptionsShape>,
-	settings:
-		| AugmentingPresetRunSettings<OptionsShape>
-		| FullPresetRunSettings<OptionsShape>,
-): Promise<void> {
-	const { directory = "." } = settings;
+	settings: PresetRunSettings<OptionsShape>,
+): Promise<Creation<InferredObject<OptionsShape>>> {
+	const { directory = ".", options } = settings;
 	await fs.mkdir(directory, { recursive: true });
 
-	const system = createSystemContext({
+	const system = await createSystemContextWithAuth({
 		directory,
 		...settings,
 	});
 
-	const { creation, options } = await producePreset(
-		preset,
-		// TODO: Why is this assertion necessary?
-		{
-			...system,
-			...settings,
-		} as FullPresetRunSettings<OptionsShape>,
+	const run = async () => {
+		const creation = await producePreset(preset, { ...system, ...settings });
+		await applyCreation(creation, system);
+		return creation;
+	};
+
+	if (settings.mode !== "initialize") {
+		return await run();
+	}
+
+	assertOptionsForInitialize(options);
+
+	await createRepositoryOnGitHub(
+		options,
+		system.fetchers.octokit,
+		preset.base.template,
 	);
 
-	if (settings.mode === "initialize") {
-		// TODO: Hardcode owner and repository existing in options?
-		await createRepositoryOnGitHub(
-			options as unknown as CreationOptions,
-			system.runner,
-			preset.base.template,
-		);
+	const creation = await run();
+
+	await createTrackingBranches(options, system.runner);
+
+	if (preset.base.template) {
+		await clearLocalGitTags(system.runner);
 	}
 
-	await applyCreation(creation, system);
-
-	if (settings.mode === "initialize") {
-		await createTrackingBranches(
-			options as unknown as CreationOptions,
-			system.runner,
-		);
-	}
+	return creation;
 }
