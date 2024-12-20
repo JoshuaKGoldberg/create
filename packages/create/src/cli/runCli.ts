@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import { packageData } from "../packageData.js";
 import { runModeInitialize } from "./initialize.ts/runModeInitialize.js";
-import { logHelpText } from "./logHelpText.js";
+import { logHelpText } from "./loggers/logHelpText.js";
 import { runModeMigrate } from "./migrate/runModeMigrate.js";
 import { readProductionSettings } from "./readProductionSettings.js";
 import { CLIStatus } from "./status.js";

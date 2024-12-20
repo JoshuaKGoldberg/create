@@ -1,4 +1,4 @@
-import { Logger } from "./types.js";
+import { Logger } from "../types.js";
 
 export function logHelpText(logger: Logger) {
 	logger.log("Thanks for trying the create CLI!");
