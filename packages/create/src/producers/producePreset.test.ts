@@ -107,7 +107,6 @@ describe("producePreset", () => {
 
 		const blockUsingOption = baseWithProduce.createBlock({
 			produce({ options }) {
-				console.log({ options });
 				return {
 					files: {
 						"value-optional.txt": options.optional,
@@ -121,7 +120,7 @@ describe("producePreset", () => {
 			blocks: [blockUsingOption],
 		});
 
-		it.only("prioritizes provided options over Base produced options", async () => {
+		it("prioritizes provided options over Base produced options", async () => {
 			const actual = await producePreset(presetUsingOption, {
 				options: {
 					required: "required-from-provided",

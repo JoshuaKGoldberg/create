@@ -75,12 +75,10 @@ export async function producePreset<OptionsShape extends AnyShape>(
 	// 2. Calling the Preset's Base's produce method, if it exists
 	// TODO: ...do we even want this?
 	// Maybe initialize() in the CLI should do it itself?
-	const producedOptions = Math.random()
-		? {}
-		: await produceBase(preset.base, {
-				options: providedOptions,
-				...system,
-			});
+	const producedOptions = await produceBase(preset.base, {
+		options: providedOptions,
+		...system,
+	});
 
 	// 3. Calling to an optional optionsAugment method of producePreset's second parameter
 	const optionsForAugmentation = {
