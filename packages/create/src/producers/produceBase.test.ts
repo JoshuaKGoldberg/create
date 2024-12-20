@@ -54,6 +54,7 @@ describe("produceBase", () => {
 
 		it("uses an option value from produce when settings do not have the options value", async () => {
 			const actual = await produceBase(baseWithOptionalOption, {
+				...system,
 				options: {},
 			});
 
