@@ -23,9 +23,7 @@ function createSystem() {
 }
 
 function noop(label: string) {
-	return vi.fn(() => {
-		throw new Error(`Not implemented: ${label}`);
-	});
+	return vi.fn().mockReturnValue(`Not implemented: ${label}`);
 }
 
 describe("runBlock", () => {

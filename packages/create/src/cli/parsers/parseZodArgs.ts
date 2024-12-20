@@ -45,12 +45,6 @@ function zodValueToArgsOption(
 	zodValue: ZodTypeAny,
 ): ParseArgsOptionsConfig[string] | undefined {
 	switch (zodValue._def.typeName) {
-		// case "ZodArray":
-		// 	return {
-		// 		multiple: true,
-		// 		type: zodValueTypeToArgsOptionType(zodValue._def),
-		// 	};
-
 		case "ZodBoolean":
 		case "ZodLiteral":
 		case "ZodString":
@@ -65,8 +59,9 @@ function zodValueToArgsOption(
 			return zodValueToArgsOption(zodValue._def.options[0]);
 	}
 
-	// throw new Error(`Unknown zod value type: ${zodValue._def.typeName}`);
-	return undefined;
+	throw new Error(
+		`create does not know how to parse this Zod type on the CLI: ${zodValue._def.typeName as string}`,
+	);
 }
 
 function zodValueTypeToArgsOptionType(
@@ -81,12 +76,12 @@ function zodValueTypeToArgsOptionType(
 			if (typeofValue === "boolean" || typeofValue === "string") {
 				return typeofValue;
 			}
-			break;
+			throw new Error(
+				`create does not know how to parse this Zod literal on the CLI: ${def.value?.toString()}`,
+			);
 		}
 
 		case ZodFirstPartyTypeKind.ZodString:
 			return "string";
 	}
-
-	throw new Error(`Unknown zod value type: ${def.typeName}`);
 }

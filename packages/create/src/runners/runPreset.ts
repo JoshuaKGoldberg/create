@@ -52,7 +52,12 @@ export async function runPreset<OptionsShape extends AnyShape>(
 	}
 
 	assertOptionsForInitialize(options);
-	await createRepositoryOnGitHub(options, system, preset.base.template);
+
+	await createRepositoryOnGitHub(
+		options,
+		system.fetchers.octokit,
+		preset.base.template,
+	);
 
 	const creation = await run();
 

@@ -8,12 +8,10 @@ import { isLocalPath } from "../utils.js";
 import { tryImport } from "./tryImport.js";
 import { tryRequire } from "./tryRequire.js";
 
-export interface ImportedFrom {
-	imported: object;
-	packageJson: object;
-}
-
-export async function tryImportFrom(from: string): Promise<Error | object> {
+// TODO: Split this out into its own module?
+export async function tryImportAndInstallIfNecessary(
+	from: string,
+): Promise<Error | object> {
 	const spinner = prompts.spinner();
 	spinner.start(`Retrieving ${from}`);
 

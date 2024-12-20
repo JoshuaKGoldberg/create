@@ -33,7 +33,6 @@
 		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
 		"octokit": "^4.0.2",
-		"octokit-from-auth": "^0.3.0",
 		"prettier": "3.4.2",
 		"tmp-promise": "^3.0.3",
 		"without-undefined-properties": "^0.1.1",

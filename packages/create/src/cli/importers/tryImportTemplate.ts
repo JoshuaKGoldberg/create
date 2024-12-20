@@ -1,8 +1,8 @@
 import { isTemplate } from "../utils.js";
-import { tryImportFrom } from "./tryImportFrom.js";
+import { tryImportAndInstallIfNecessary } from "./tryImportAndInstallIfNecessary.js";
 
 export async function tryImportTemplate(from: string) {
-	const templateModule = await tryImportFrom(from);
+	const templateModule = await tryImportAndInstallIfNecessary(from);
 	if (templateModule instanceof Error) {
 		return templateModule;
 	}
