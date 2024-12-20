@@ -1,3 +1,4 @@
+import { Octokit } from "octokit";
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
@@ -12,7 +13,10 @@ const base = createBase({
 
 function createSystem() {
 	return {
-		fetcher: noop("fetcher"),
+		fetchers: {
+			fetch: noop("fetcher"),
+			octokit: {} as Octokit,
+		},
 		fs: {
 			readFile: noop("readFile"),
 			writeDirectory: vi.fn(),
@@ -27,7 +31,7 @@ function noop(label: string) {
 }
 
 describe("runBlock", () => {
-	test("Block without Addons", async () => {
+	test.only("Block without Addons", async () => {
 		const block = base.createBlock({
 			produce({ options }) {
 				return {

@@ -12,7 +12,10 @@ const base = createBase({
 
 function createSystem() {
 	return {
-		fetcher: noop("fetcher"),
+		fetchers: {
+			fetch: noop("fetcher"),
+			octokit: {} as Octokit,
+		},
 		fs: {
 			readFile: noop("readFile"),
 			writeDirectory: vi.fn(),
