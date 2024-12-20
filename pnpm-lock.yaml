@@ -134,6 +134,9 @@ importers:
       tmp-promise:
         specifier: ^3.0.3
         version: 3.0.3
+      without-undefined-properties:
+        specifier: ^0.1.1
+        version: 0.1.1
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -3996,6 +3999,10 @@ packages:
   widest-line@5.0.0:
     resolution: {integrity: sha512-c9bZp7b5YtRj2wOe6dlj32MK+Bx/M/d+9VB2SHM1OtsUHR0aV0tdP6DWh/iMt0kWi1t5g1Iudu6hQRNd1A4PVA==}
     engines: {node: '>=18'}
+
+  without-undefined-properties@0.1.1:
+    resolution: {integrity: sha512-0RyzRGsPo7+yauqscwFQq/s+nW5Q5FydnLlIUZuipZafd1nP9WEw8rcAszOCDljnZkgUtaWO7HmtpqOCU/yRdw==}
+    engines: {node: '>=18.3.0'}
 
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
@@ -8577,6 +8584,8 @@ snapshots:
   widest-line@5.0.0:
     dependencies:
       string-width: 7.2.0
+
+  without-undefined-properties@0.1.1: {}
 
   word-wrap@1.2.5: {}
 
