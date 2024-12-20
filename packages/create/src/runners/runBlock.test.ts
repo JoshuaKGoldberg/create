@@ -31,7 +31,7 @@ function noop(label: string) {
 }
 
 describe("runBlock", () => {
-	test.only("Block without Addons", async () => {
+	test("Block without Addons", async () => {
 		const block = base.createBlock({
 			produce({ options }) {
 				return {
