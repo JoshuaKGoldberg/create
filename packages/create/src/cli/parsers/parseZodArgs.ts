@@ -77,6 +77,7 @@ function zodValueTypeToArgsOptionType(
 				return typeofValue;
 			}
 			throw new Error(
+				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
 				`create does not know how to parse this Zod literal on the CLI: ${def.value?.toString()}`,
 			);
 		}

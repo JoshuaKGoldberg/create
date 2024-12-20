@@ -2,7 +2,6 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { createBase } from "../creators/createBase.js";
 import { createInput } from "../creators/createInput.js";
 import { produceInput } from "./produceInput.js";
 
