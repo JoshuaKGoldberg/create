@@ -7,6 +7,10 @@ import { executePresetBlocks } from "./executePresetBlocks.js";
 
 const context = {
 	directory: ".",
+	display: {
+		item: vi.fn(),
+		log: vi.fn(),
+	},
 	fetchers: createSystemFetchers({ fetch: vi.fn() }),
 	fs: { readFile: vi.fn(), writeDirectory: vi.fn(), writeFile: vi.fn() },
 	runner: vi.fn(),

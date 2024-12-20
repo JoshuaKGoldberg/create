@@ -41,6 +41,7 @@ describe("runPreset", () => {
 		});
 
 		const preset = base.createPreset({
+			about: { name: "Test" },
 			blocks: [block],
 		});
 
@@ -99,6 +100,7 @@ describe("runPreset", () => {
 		});
 
 		const preset = base.createPreset({
+			about: { name: "Test" },
 			blocks: [blockProvidingAddon, blockWithAddon],
 		});
 

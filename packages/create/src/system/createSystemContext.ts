@@ -1,5 +1,6 @@
 import { TakeInput } from "../types/inputs.js";
-import { NativeSystem, SystemContext } from "../types/system.js";
+import { NativeSystem, SystemContext, SystemDisplay } from "../types/system.js";
+import { createSystemDisplay } from "./createSystemDisplay.js";
 import { createSystemFetchers } from "./createSystemFetchers.js";
 import { createSystemRunner } from "./createSystemRunner.js";
 import { createWritingFileSystem } from "./createWritingFileSystem.js";
@@ -7,6 +8,7 @@ import { createWritingFileSystem } from "./createWritingFileSystem.js";
 export interface SystemContextSettings extends Partial<NativeSystem> {
 	auth?: string;
 	directory: string;
+	display?: SystemDisplay;
 }
 
 export function createSystemContext(
@@ -23,6 +25,7 @@ export function createSystemContext(
 	return {
 		...system,
 		directory: settings.directory,
+		display: settings.display ?? createSystemDisplay(),
 		take,
 	};
 }

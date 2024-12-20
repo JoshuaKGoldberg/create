@@ -1,4 +1,5 @@
 import * as prompts from "@clack/prompts";
+import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
@@ -8,6 +9,7 @@ import { promptForInitializationDirectory } from "../prompts/promptForInitializa
 import { promptForPreset } from "../prompts/promptForPreset.js";
 import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
+import { createClackDisplay } from "./createClackDisplay.js";
 import { findPositionalFrom } from "./findPositionalFrom.js";
 
 export interface RunModeInitializeSettings {
@@ -55,7 +57,9 @@ export async function runModeInitialize({
 		};
 	}
 
-	const system = await createSystemContextWithAuth({ directory });
+	const display = createClackDisplay();
+	const system = await createSystemContextWithAuth({ directory, display });
+
 	const options = await promptForPresetOptions({
 		base: preset.base,
 		existingOptions: {
@@ -69,15 +73,23 @@ export async function runModeInitialize({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	await runPreset(preset, {
+	display.spinner.start("Creating repository...");
+
+	const creation = await runPreset(preset, {
 		...system,
 		directory,
 		mode: "initialize",
 		options,
 	});
 
+	display.spinner.stop("Created repository");
+
 	return {
-		outro: "TODO",
+		outro: [
+			chalk.blue("Your new repository is ready in:"),
+			chalk.green(directory.startsWith(".") ? directory : `./${directory}`),
+		].join(" "),
 		status: CLIStatus.Error,
+		suggestions: creation.suggestions,
 	};
 }

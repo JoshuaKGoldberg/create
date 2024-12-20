@@ -4,8 +4,9 @@ import { parseArgs } from "node:util";
 import { z } from "zod";
 
 import { packageData } from "../packageData.js";
-import { runModeInitialize } from "./initialize.ts/runModeInitialize.js";
+import { runModeInitialize } from "./initialize/runModeInitialize.js";
 import { logHelpText } from "./loggers/logHelpText.js";
+import { logOutro } from "./loggers/logOutro.js";
 import { runModeMigrate } from "./migrate/runModeMigrate.js";
 import { readProductionSettings } from "./readProductionSettings.js";
 import { CLIStatus } from "./status.js";
@@ -64,13 +65,14 @@ export async function runCli(args: string[], logger: Logger) {
 	const validatedValues = valuesSchema.parse(values);
 	const productionSettings = await readProductionSettings(validatedValues);
 
-	const { outro, status } =
+	const { outro, status, suggestions } =
 		productionSettings.mode === "initialize"
 			? await runModeInitialize({ ...validatedValues, args })
 			: await runModeMigrate();
 
-	prompts.outro(
-		outro ?? "Operation cancelled. Exiting - maybe another time? 👋",
+	logOutro(
+		outro ?? chalk.red("Operation cancelled. Exiting - maybe another time? 👋"),
+		suggestions,
 	);
 
 	return status;

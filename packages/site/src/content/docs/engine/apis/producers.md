@@ -216,7 +216,6 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
 1. `preset` _(required)_: a Preset
 2. `settings` _(required)_:
    - `options` _(required)_: [Base](../concepts/bases) options to run with
-   - `optionsAugment` _(optional)_: a function to augment options from the Base
    - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
 `producePreset` returns a Promise for an object containing:
@@ -242,55 +241,22 @@ await producePreset(preset, { options: { title: "My App" } });
 
 ### `options` {#preset-options}
 
-Any number of options defined by the Preset's [Base](../concepts/bases).
+Any options defined by the Preset's [Base](../concepts/bases).
+
+This must include all required Options from the Base.
+It may also include any other optional Options.
 
 For example, this Preset is run with a `name` option:
 
 ```ts
-import { Preset, produceBlock } from "create";
-import { z } from "zod";
-
-declare const preset: Preset<{ name: z.ZodString }>;
-
-await produceBlock(preset, {
-	options: {
-		name: "My Production",
-	},
-});
-```
-
-### `optionsAugment`
-
-A function that takes in the explicitly provided options and returns any remaining options.
-
-Preset options are generated through three steps:
-
-1. Any options provided by `producePreset`'s second parameter's `options`
-2. Calling the Preset's [Base](../concepts/bases)'s `produce` method, if it exists
-3. Calling to an optional `optionsAugment` method of `producePreset`'s second parameter
-
-In other words, `optionsAugment` runs _after_ the Preset's [Base](../concepts/bases)'s `produce` method, if it exists.
-This can be useful to prompt for any options not determined by `produce()`.
-
-For example, this `optionsAugment` uses a Node.js prompt to fill in a `name` option if it isn't provided:
-
-```ts
 import { Preset, producePreset } from "create";
-import readline from "node:readline/promises";
 import { z } from "zod";
 
 declare const preset: Preset<{ name: z.ZodString }>;
-
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
 
 await producePreset(preset, {
-	optionsAugment({ options }) {
-		return {
-			name: options.name ?? (await rl.question("What is your name?")),
-		};
+	options: {
+		name: "My Production",
 	},
 });
 ```

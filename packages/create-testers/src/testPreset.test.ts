@@ -9,6 +9,7 @@ const emptyCreation = {
 	files: {},
 	requests: [],
 	scripts: [],
+	suggestions: [],
 };
 
 const base = createBase({
@@ -18,10 +19,6 @@ const base = createBase({
 });
 
 describe("testPreset", () => {
-	// TODO: It would be nice to also test the case of no options,
-	// as testBlock.test.ts does with a @ts-expect-error.
-	// However, the Object spreads in producePreset wipe Proxy `get`s... 🤷
-
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
 			produce({ options }) {
@@ -34,6 +31,7 @@ describe("testPreset", () => {
 		});
 
 		const presetUsingOptions = base.createPreset({
+			about: { name: "Test" },
 			blocks: [blockUsingOptions],
 		});
 
@@ -43,42 +41,8 @@ describe("testPreset", () => {
 			});
 
 			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: { "value.txt": "abc" },
-				},
-				options: { value: "abc" },
-			});
-		});
-
-		it("passes options to the block when provided via optionsAugment", async () => {
-			const actual = await testPreset(presetUsingOptions, {
-				optionsAugment: () => ({ value: "abc" }),
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: { "value.txt": "abc" },
-				},
-				options: { value: "abc" },
-			});
-		});
-
-		it("passes options to the block when provided via options and optionsAugment", async () => {
-			const actual = await testPreset(presetUsingOptions, {
-				options: { value: "abc" },
-				optionsAugment: (options) => ({
-					value: [options.value, "def"].join("-"),
-				}),
-			});
-
-			expect(actual).toEqual({
-				creation: {
-					...emptyCreation,
-					files: { "value.txt": "abc-def" },
-				},
-				options: { value: "abc-def" },
+				...emptyCreation,
+				files: { "value.txt": "abc" },
 			});
 		});
 	});

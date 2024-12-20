@@ -107,6 +107,9 @@ importers:
       '@clack/prompts':
         specifier: ^0.8.2
         version: 0.8.2
+      cached-factory:
+        specifier: ^0.1.0
+        version: 0.1.0
       chalk:
         specifier: ^5.4.0
         version: 5.4.0
@@ -1679,6 +1682,10 @@ packages:
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
+
+  cached-factory@0.1.0:
+    resolution: {integrity: sha512-IGOSWu+NuED5UzCRmBeqQPZ8z7SkgrD/nN67W2iY1Qv83CVhevyMexkGclJ86saXisIqxoOnbeiTWvsCHRqJBw==}
+    engines: {node: '>=18'}
 
   callsites@3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
@@ -5646,6 +5653,8 @@ snapshots:
       fill-range: 7.1.1
 
   cac@6.7.14: {}
+
+  cached-factory@0.1.0: {}
 
   callsites@3.1.0: {}
 

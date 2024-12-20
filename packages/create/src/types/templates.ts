@@ -2,23 +2,11 @@ import { AnyShape } from "../options.js";
 import { AboutBase } from "./about.js";
 import { Preset } from "./presets.js";
 
-export type Template<
-	OptionsShape extends AnyShape = AnyShape,
-	Presets extends string = string,
-> = TemplateDefinition<OptionsShape, Presets>;
+export type Template<OptionsShape extends AnyShape = AnyShape> =
+	TemplateDefinition<OptionsShape>;
 
-export interface TemplateDefinition<
-	OptionsShape extends AnyShape,
-	Presets extends string,
-> {
+export interface TemplateDefinition<OptionsShape extends AnyShape> {
 	about?: AboutBase;
-	default: NoInfer<Presets>;
-	presets: Record<Presets, TemplatePresetListing<OptionsShape>>;
-}
-
-export interface TemplatePresetListing<
-	OptionsShape extends AnyShape = AnyShape,
-> {
-	label: string;
-	preset: Preset<OptionsShape>;
+	presets: Preset<OptionsShape>[];
+	suggested?: Preset<OptionsShape>;
 }

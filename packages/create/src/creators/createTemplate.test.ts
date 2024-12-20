@@ -11,10 +11,12 @@ const base = createBase({
 });
 
 const presetFirst = base.createPreset({
+	about: { name: "First" },
 	blocks: [],
 });
 
 const presetSecond = base.createPreset({
+	about: { name: "Second" },
 	blocks: [],
 });
 
@@ -26,11 +28,8 @@ describe("createTemplate", () => {
 			about: {
 				name: "TypeScript App",
 			},
-			default: "first",
-			presets: {
-				first: { label: "First", preset: presetFirst },
-				second: { label: "Second", preset: presetSecond },
-			},
+			presets: [presetFirst, presetSecond],
+			suggested: presetFirst,
 		});
 	});
 });

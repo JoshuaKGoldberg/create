@@ -12,6 +12,7 @@ export async function promptForInitializationDirectory(
 		if (validateBlankDirectory(requested)) {
 			prompts.log.warn(`The '${requested}' directory already exists.`);
 		} else {
+			await fs.mkdir(requested, { recursive: true });
 			return requested;
 		}
 	}

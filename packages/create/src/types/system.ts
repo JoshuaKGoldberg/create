@@ -24,6 +24,18 @@ export interface NativeSystem {
 
 export interface SystemContext extends NativeSystem, TakeContext {
 	directory: string;
+	display: SystemDisplay;
+}
+
+export interface SystemDisplay {
+	item(group: string, id: string, item: Partial<SystemDisplayItem>): void;
+	log(message: string): void;
+}
+
+export interface SystemDisplayItem {
+	end?: number;
+	error?: unknown;
+	start?: number;
 }
 
 export interface SystemFetchers {

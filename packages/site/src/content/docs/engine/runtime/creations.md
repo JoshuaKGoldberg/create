@@ -17,6 +17,7 @@ It may contain any of the following properties:
   - [`scripts`](#scripts): Terminal commands to run after files are created
 - ["Indirect" creations](#indirect-creations) only made to be used by later blocks:
   - [`addons`](#addons): Composed Addons to merge in for other Blocks, if they exist
+  - [`suggestions`](#suggestions): Tips for the next steps to take
 
 For example, a Block that adds pnpm package deduplication might choose to both run a script ([`scripts`](#scripts)) used in a GitHub Actions job in [Addons](#addons) to another Block:
 
@@ -269,3 +270,31 @@ export const blockESLintJSDoc = base.createBlock({
 ```
 
 If `blockESLint` is run in the same Preset, then it will receive those additional Addons.
+
+### `suggestions`
+
+Tips for the next steps to take.
+
+Some Blocks require additional setup that users will have to take action on.
+These will be logged to users after running `npx create`.
+
+For example, this `blockNpmPublish` Block directs the user to create an automation token:
+
+```ts
+import { base } from "./base";
+import { blockESLint } from "./blockESLint";
+
+export const blockNpmPublish = base.createBlock({
+	produce() {
+		return {
+			suggestions: [
+				"Set an NPM_TOKEN secret to an npm access token with automation permissions",
+			],
+		};
+	},
+});
+```
+
+:::tip
+These should be used only if a setup step can't be automated with a [`request`](#requests) or [`script`](#scripts).
+:::
