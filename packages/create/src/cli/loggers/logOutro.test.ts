@@ -19,74 +19,28 @@ describe("logOutro", () => {
 	test("no suggestions", () => {
 		logOutro("Bye!");
 
-		expect(mockLog.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Enjoy! 💝",
-			  ],
-			  [],
-			]
-		`);
-		expect(mockOutro.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Bye!",
-			  ],
-			]
-		`);
+		expect(mockLog).not.toHaveBeenCalled();
+		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
 	});
 
 	test("empty suggestions", () => {
 		logOutro("Bye!", []);
 
-		expect(mockLog.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Enjoy! 💝",
-			  ],
-			  [],
-			]
-		`);
-		expect(mockOutro.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Bye!",
-			  ],
-			]
-		`);
+		expect(mockLog).not.toHaveBeenCalled();
+		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
 	});
 
 	test("suggestions", () => {
 		logOutro("Bye!", ["a", "b", "c"]);
 
-		expect(mockLog.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Be sure to:",
-			  ],
-			  [],
-			  [
-			    "a",
-			  ],
-			  [
-			    "b",
-			  ],
-			  [
-			    "c",
-			  ],
-			  [],
-			  [
-			    "Enjoy! 💝",
-			  ],
-			  [],
-			]
-		`);
-		expect(mockOutro.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Bye!",
-			  ],
-			]
-		`);
+		expect(mockLog.mock.calls).toEqual([
+			["Be sure to:"],
+			[],
+			["a"],
+			["b"],
+			["c"],
+			[],
+		]);
+		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
 	});
 });

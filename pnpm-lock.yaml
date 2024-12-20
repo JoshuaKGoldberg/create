@@ -113,9 +113,6 @@ importers:
       chalk:
         specifier: ^5.4.0
         version: 5.4.0
-      enhanced-resolve:
-        specifier: ^5.17.1
-        version: 5.17.1
       execa:
         specifier: ^9.5.2
         version: 9.5.2
@@ -128,15 +125,9 @@ importers:
       octokit:
         specifier: ^4.0.2
         version: 4.0.2
-      octokit-from-auth:
-        specifier: ^0.3.0
-        version: 0.3.0
       prettier:
         specifier: 3.4.2
         version: 3.4.2
-      tmp-promise:
-        specifier: ^3.0.3
-        version: 3.0.3
       without-undefined-properties:
         specifier: ^0.1.1
         version: 0.1.1
@@ -3036,10 +3027,6 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  octokit-from-auth@0.3.0:
-    resolution: {integrity: sha512-HeS+YVPExV5nkdRZyQQRepZVV+pL4ahVmh9KfKXLAbNc3D82G2xeuSWfKzHSIlqB1taQnZYPJWdpfcIe45d1lw==}
-    engines: {node: '>=18.3.0'}
-
   octokit@4.0.2:
     resolution: {integrity: sha512-wbqF4uc1YbcldtiBFfkSnquHtECEIpYD78YUXI6ri1Im5OO2NLo6ZVpRdbJpdnpZ05zMrVPssNiEo6JQtea+Qg==}
     engines: {node: '>= 18'}
@@ -3620,13 +3607,6 @@ packages:
   tinyspy@3.0.2:
     resolution: {integrity: sha512-n1cw8k1k0x4pgA2+9XrOkFydTerNcJ1zWCO5Nn9scWHTD+5tp8dghT2x1uduQePZTZgd3Tupf+x9BxJjeJi77Q==}
     engines: {node: '>=14.0.0'}
-
-  tmp-promise@3.0.3:
-    resolution: {integrity: sha512-RwM7MoPojPxsOBYnyd2hy0bxtIlVrihNs9pj5SUvY8Zz1sQcQG2tG1hSr8PDxfgEB8RNKDhqbIlroIarSNDNsQ==}
-
-  tmp@0.2.3:
-    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
-    engines: {node: '>=14.14'}
 
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
@@ -7515,11 +7495,6 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  octokit-from-auth@0.3.0:
-    dependencies:
-      get-github-auth-token: 0.1.0
-      octokit: 4.0.2
-
   octokit@4.0.2:
     dependencies:
       '@octokit/app': 15.1.1
@@ -8233,12 +8208,6 @@ snapshots:
   tinyrainbow@1.2.0: {}
 
   tinyspy@3.0.2: {}
-
-  tmp-promise@3.0.3:
-    dependencies:
-      tmp: 0.2.3
-
-  tmp@0.2.3: {}
 
   to-regex-range@5.0.1:
     dependencies:

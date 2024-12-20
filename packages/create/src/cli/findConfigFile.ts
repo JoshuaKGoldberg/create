@@ -3,9 +3,24 @@ import * as fs from "node:fs/promises";
 export async function findConfigFile(directory: string) {
 	try {
 		const children = await fs.readdir(directory);
+		let found: string | undefined;
 
-		return children.find((child) => /create\.config\.\w+/.test(child));
+		for (const child of children) {
+			if (child === "create.config.ts") {
+				return child;
+			}
+
+			if (isConfigFileName(child)) {
+				found = child;
+			}
+		}
+
+		return found;
 	} catch {
-		return false;
+		return undefined;
 	}
+}
+
+function isConfigFileName(fileName: string) {
+	return /create\.config\.\w+/.test(fileName);
 }

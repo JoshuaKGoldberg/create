@@ -12,6 +12,7 @@ vi.mock("./tryImportAndInstallIfNecessary.js", () => ({
 }));
 
 const from = "from";
+
 describe("assertOptionsForInitialize", () => {
 	it("returns the error when tryImportAndInstallIfNecessary resolves with an error", async () => {
 		const error = new Error("Oh no!");

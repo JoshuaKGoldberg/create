@@ -10,8 +10,15 @@ export interface ReadProductionSettingsOptions {
 export async function readProductionSettings({
 	directory = ".",
 	mode,
-}: ReadProductionSettingsOptions): Promise<ProductionSettings> {
+}: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
 	const configFile = await findConfigFile(directory);
+
+	if (configFile && mode === "initialize") {
+		return new Error(
+			`Cannot run in --mode initialize in a directory that already has a ${configFile}.`,
+		);
+	}
+
 	if (configFile) {
 		return {
 			configFile,

@@ -51,6 +51,7 @@ export async function runCli(args: string[], logger: Logger) {
 	}
 
 	if (values.version) {
+		logger.log(packageData.version);
 		return CLIStatus.Success;
 	}
 
@@ -64,6 +65,10 @@ export async function runCli(args: string[], logger: Logger) {
 
 	const validatedValues = valuesSchema.parse(values);
 	const productionSettings = await readProductionSettings(validatedValues);
+	if (productionSettings instanceof Error) {
+		logOutro(chalk.red(productionSettings.message));
+		return CLIStatus.Error;
+	}
 
 	const { outro, status, suggestions } =
 		productionSettings.mode === "initialize"
@@ -71,7 +76,8 @@ export async function runCli(args: string[], logger: Logger) {
 			: await runModeMigrate();
 
 	logOutro(
-		outro ?? chalk.red("Operation cancelled. Exiting - maybe another time? 👋"),
+		outro ??
+			chalk.yellow("Operation cancelled. Exiting - maybe another time? 👋"),
 		suggestions,
 	);
 

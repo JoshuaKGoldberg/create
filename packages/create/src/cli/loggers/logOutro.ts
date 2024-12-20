@@ -1,5 +1,4 @@
 import * as prompts from "@clack/prompts";
-import chalk from "chalk";
 
 export function logOutro(message: string, suggestions?: string[]) {
 	prompts.outro(message);
@@ -14,7 +13,4 @@ export function logOutro(message: string, suggestions?: string[]) {
 
 		console.log();
 	}
-
-	console.log(chalk.green(`Enjoy! 💝`));
-	console.log();
 }
