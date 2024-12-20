@@ -1,5 +1,5 @@
 {
-	"dictionaries": ["typescript"],
+	"dictionaries": ["npm", "node", "typescript"],
 	"ignorePaths": [
 		".github",
 		"*.tsbuildinfo",
@@ -11,5 +11,5 @@
 		"packages/site/src/content",
 		"pnpm-lock.yaml"
 	],
-	"words": ["astrojs", "outro", "Rajlich", "tsconfigs", "tseslint"]
+	"words": ["Rajlich"]
 }
