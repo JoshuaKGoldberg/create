@@ -32,3 +32,5 @@ At the moment, it's being developed as an MVP to replace the internals of [creat
 See [FAQs > How do I use `create`?](./faqs#how-do-i-use-create).
 
 > 💙 This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app).
+
+> Special thanks to [Nathan Rajlich](https://n8.io) for granting use of the `create` package name. 🙏
