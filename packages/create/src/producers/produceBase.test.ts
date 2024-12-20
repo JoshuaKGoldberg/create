@@ -1,8 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { Octokit } from "octokit";
+import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
 import { produceBase } from "./produceBase.js";
+
+const system = {
+	fetchers: {
+		fetch: vi.fn(),
+		octokit: {} as Octokit,
+	},
+	fs: {
+		readFile: vi.fn(),
+		writeDirectory: vi.fn(),
+		writeFile: vi.fn(),
+	},
+	runner: vi.fn(),
+};
 
 describe("produceBase", () => {
 	it("returns settings.options directly when the Base does not have a produce()", async () => {
@@ -13,7 +27,7 @@ describe("produceBase", () => {
 		});
 
 		const options = { value: "input" };
-		const actual = await produceBase(baseWithNoProduce, { options });
+		const actual = await produceBase(baseWithNoProduce, { ...system, options });
 
 		expect(actual).toEqual(options);
 	});
@@ -31,7 +45,7 @@ describe("produceBase", () => {
 		});
 
 		it("uses an option value from produce when settings do not have options", async () => {
-			const actual = await produceBase(baseWithOptionalOption);
+			const actual = await produceBase(baseWithOptionalOption, system);
 
 			expect(actual).toEqual({
 				value: "default",
@@ -50,6 +64,7 @@ describe("produceBase", () => {
 
 		it("uses an option value from settings when settings have the options value", async () => {
 			const actual = await produceBase(baseWithOptionalOption, {
+				...system,
 				options: {
 					value: "override",
 				},

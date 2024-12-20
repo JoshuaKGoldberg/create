@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { Octokit } from "octokit";
+import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
@@ -10,6 +11,19 @@ const emptyCreation = {
 	requests: [],
 	scripts: [],
 	suggestions: [],
+};
+
+const system = {
+	fetchers: {
+		fetch: vi.fn(),
+		octokit: {} as Octokit,
+	},
+	fs: {
+		readFile: vi.fn(),
+		writeDirectory: vi.fn(),
+		writeFile: vi.fn(),
+	},
+	runner: vi.fn(),
 };
 
 describe("producePreset", () => {
@@ -36,6 +50,7 @@ describe("producePreset", () => {
 
 	it("passes options to the preset when provided via options", async () => {
 		const actual = await producePreset(presetUsingOption, {
+			...system,
 			options: {
 				value: "abc",
 			},
