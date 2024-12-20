@@ -14,7 +14,7 @@ import {
 	ZodTypeAny,
 } from "zod";
 
-import { AnyShape, InferredObject } from "../options.js";
+import { AnyShape, InferredObject } from "../../options.js";
 
 type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
 

@@ -1,5 +1,5 @@
+import { isTemplate } from "../utils.js";
 import { tryImportFrom } from "./tryImportFrom.js";
-import { isTemplate } from "./utils.js";
 
 export async function tryImportTemplate(from: string) {
 	const templateModule = await tryImportFrom(from);

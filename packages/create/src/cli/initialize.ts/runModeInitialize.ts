@@ -2,13 +2,12 @@ import * as prompts from "@clack/prompts";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
-import { SystemContext } from "../../types/system.js";
-import { parseZodArgs } from "../parseZodArgs.js";
-import { promptForInitializationDirectory } from "../promptForInitializationDirectory.js";
-import { promptForPreset } from "../promptForPreset.js";
-import { promptForPresetOptions } from "../promptForPresetOptions.js";
+import { tryImportTemplate } from "../importers/tryImportTemplate.js";
+import { parseZodArgs } from "../parsers/parseZodArgs.js";
+import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
+import { promptForPreset } from "../prompts/promptForPreset.js";
+import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
-import { tryImportTemplate } from "../tryImportTemplate.js";
 import { findPositionalFrom } from "./findPositionalFrom.js";
 
 export interface RunModeInitializeSettings {

@@ -1,4 +1,4 @@
-import { describe, expect, it, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { findPositionalFrom } from "./findPositionalFrom.js";
 

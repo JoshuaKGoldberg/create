@@ -1,7 +1,7 @@
 import * as prompts from "@clack/prompts";
 import fs from "node:fs/promises";
 
-import { Template } from "../types/templates.js";
+import { Template } from "../../types/templates.js";
 import { validateBlankDirectory } from "./validators.js";
 
 export async function promptForInitializationDirectory(

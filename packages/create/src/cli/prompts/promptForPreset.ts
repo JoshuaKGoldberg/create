@@ -1,6 +1,6 @@
 import * as prompts from "@clack/prompts";
 
-import { Template, TemplatePresetListing } from "../types/templates.js";
+import { Template, TemplatePresetListing } from "../../types/templates.js";
 
 export async function promptForPreset(
 	requested: string | undefined,

@@ -1,11 +1,10 @@
 import * as prompts from "@clack/prompts";
 import enhancedResolve from "enhanced-resolve";
 import { $ } from "execa";
-import path from "node:path";
 import tmp from "tmp-promise";
 
+import { isLocalPath } from "../utils.js";
 import { tryImport } from "./tryImport.js";
-import { isLocalPath } from "./utils.js";
 
 export async function tryImportFrom(from: string) {
 	const initialImport = await tryImport(from);

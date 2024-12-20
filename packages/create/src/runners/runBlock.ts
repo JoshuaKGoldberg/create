@@ -1,5 +1,4 @@
 import { produceBlock } from "../producers/produceBlock.js";
-import { createSystemContext } from "../system/createSystemContext.js";
 import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
 import { IndirectCreation } from "../types/creations.js";

@@ -1,5 +1,3 @@
-import { ProductionMode } from "../modes/types.js";
-
 export type Logger = Pick<Console, "log">;
 
 export type ProductionSettings =

@@ -1,9 +1,9 @@
 import * as prompts from "@clack/prompts";
 
-import { AnyShape, InferredObject } from "../options.js";
-import { produceBase } from "../producers/produceBase.js";
-import { Base } from "../types/bases.js";
-import { SystemContext } from "../types/system.js";
+import { AnyShape, InferredObject } from "../../options.js";
+import { produceBase } from "../../producers/produceBase.js";
+import { Base } from "../../types/bases.js";
+import { SystemContext } from "../../types/system.js";
 import { promptForSchema } from "./promptForSchema.js";
 
 export interface PromptForPresetOptionsSettings {
