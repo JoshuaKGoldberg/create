@@ -28,12 +28,12 @@ export async function applyScriptsToSystem(
 				for (const script of command.commands) {
 					try {
 						// TODO: Handle in-progress outputs better, in some way?
-						console.log("Running script:", script);
+						// console.log("Running script:", script);
 						await runner(script);
-						console.log("Done with script:", script);
+						// console.log("Done with script:", script);
 					} catch (error) {
 						// TODO: Handle errors better, in some way?
-						console.error("Error in script", script, (error as Error).message);
+						// console.error("Error in script", script, (error as Error).message);
 					}
 				}
 			}),

@@ -1,6 +1,5 @@
 import { Template } from "../types/templates.js";
 
-// TODO: Is there a more formal way to do this?
 export function isLocalPath(from: string) {
 	return [".", "/", "~"].includes(from[0]);
 }
