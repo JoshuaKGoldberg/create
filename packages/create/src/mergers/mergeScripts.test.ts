@@ -4,6 +4,19 @@ import { mergeScripts } from "./mergeScripts.js";
 
 describe("mergeScripts", () => {
 	test.each([
+		[
+			[
+				{ commands: ["rm CONTRIBUTING.md"], phase: 0 },
+				{ commands: ["rm CODE_OF_CONDUCT.md"], phase: 0 },
+				{ commands: ["rm DEVELOPMENT.md"], phase: 0 },
+			],
+			[{ commands: ["rm DEVELOPMENT.md"], phase: 0 }],
+			[
+				{ commands: ["rm CONTRIBUTING.md"], phase: 0 },
+				{ commands: ["rm CODE_OF_CONDUCT.md"], phase: 0 },
+				{ commands: ["rm DEVELOPMENT.md"], phase: 0 },
+			],
+		],
 		[[], [], []],
 		[[], ["a"], ["a"]],
 		[["a"], [], ["a"]],

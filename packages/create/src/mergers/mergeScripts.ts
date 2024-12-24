@@ -1,3 +1,5 @@
+import hashObject from "hash-object";
+
 import { CreatedScript } from "../types/creations.js";
 
 export function mergeScripts(
@@ -32,9 +34,21 @@ export function mergeScripts(
 		}
 	}
 
+	const seenPhaseCommands = new Set<string>();
+
 	return [
 		...Array.from(commandsByPhase).flatMap(([phase, phaseCommands]) =>
-			phaseCommands.map((commands) => ({ commands, phase })),
+			phaseCommands
+				.map((commands) => ({ commands, phase }))
+				.filter((phaseCommand) => {
+					const hash = hashObject(phaseCommand);
+					if (seenPhaseCommands.has(hash)) {
+						return false;
+					}
+
+					seenPhaseCommands.add(hash);
+					return true;
+				}),
 		),
 		...new Set(commandsWithoutPhase),
 	];
