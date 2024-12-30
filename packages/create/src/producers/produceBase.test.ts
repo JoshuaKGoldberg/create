@@ -19,7 +19,7 @@ const system = {
 };
 
 describe("produceBase", () => {
-	it("returns {} when no settings.options exists the Base does not have a produce()", async () => {
+	it("returns {} when no settings.options exists and the Base does not have a produce()", async () => {
 		const baseWithNoProduce = createBase({
 			options: {
 				value: z.string().optional(),
