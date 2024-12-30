@@ -28,6 +28,10 @@ vi.mock("../../runners/runPreset.js", () => ({
 	},
 }));
 
+vi.mock("../../system/createSystemContextWithAuth.js", () => ({
+	createSystemContextWithAuth: vi.fn().mockResolvedValue({}),
+}));
+
 vi.mock("../display/createClackDisplay.js", () => ({
 	createClackDisplay: () => ({
 		spinner: {
