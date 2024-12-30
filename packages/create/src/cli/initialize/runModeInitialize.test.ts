@@ -3,11 +3,19 @@ import { describe, expect, it, vi } from "vitest";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
-const mockTryImportTemplate = vi.fn();
+const mockIsCancel = vi.fn();
 
-vi.mock("../importers/tryImportTemplate.js", () => ({
-	get tryImportTemplate() {
-		return mockTryImportTemplate;
+vi.mock("@clack/prompts", () => ({
+	get isCancel() {
+		return mockIsCancel;
+	},
+}));
+
+const mockTryImportTemplatePreset = vi.fn();
+
+vi.mock("../importers/tryImportTemplatePreset.js", () => ({
+	get tryImportTemplatePreset() {
+		return mockTryImportTemplatePreset;
 	},
 }));
 
@@ -20,13 +28,13 @@ describe("runModeInitialize", () => {
 			status: CLIStatus.Error,
 		});
 
-		expect(mockTryImportTemplate).not.toHaveBeenCalled();
+		expect(mockTryImportTemplatePreset).not.toHaveBeenCalled();
 	});
 
-	it("returns a CLI error when importing the template fails", async () => {
+	it("returns the error when importing tryImportTemplatePreset resolves with an error", async () => {
 		const message = "Oh no!";
 
-		mockTryImportTemplate.mockResolvedValueOnce(new Error(message));
+		mockTryImportTemplatePreset.mockResolvedValueOnce(new Error(message));
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
@@ -36,5 +44,17 @@ describe("runModeInitialize", () => {
 			outro: message,
 			status: CLIStatus.Error,
 		});
+	});
+
+	it("returns the cancellation when tryImportTemplatePreset is cancelled", async () => {
+		const cancellation = Symbol.for("cancel");
+		mockTryImportTemplatePreset.mockResolvedValueOnce(cancellation);
+		mockIsCancel.mockReturnValueOnce(true);
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({ status: CLIStatus.Cancelled });
 	});
 });

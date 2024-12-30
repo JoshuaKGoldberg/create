@@ -19,9 +19,9 @@ export interface BaseProductionSettings<OptionsShape extends AnyShape>
 export async function produceBase<OptionsShape extends AnyShape>(
 	base: Base<OptionsShape>,
 	settings: BaseProductionSettings<OptionsShape> = {},
-): Promise<Partial<BaseProduction<OptionsShape>> | undefined> {
+): Promise<Partial<BaseProduction<OptionsShape>>> {
 	if (!base.produce) {
-		return settings.options;
+		return settings.options ?? {};
 	}
 
 	const system = await createSystemContextWithAuth({

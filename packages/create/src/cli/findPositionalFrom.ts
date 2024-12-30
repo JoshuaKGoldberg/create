@@ -1,4 +1,4 @@
-import { isLocalPath } from "../utils.js";
+import { isLocalPath } from "./utils.js";
 
 export function findPositionalFrom(positionals: string[]) {
 	const indexOfDashes = positionals.findIndex((positional) =>

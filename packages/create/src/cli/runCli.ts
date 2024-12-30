@@ -75,6 +75,7 @@ export async function runCli(args: string[], logger: Logger) {
 			? await runModeInitialize({ ...validatedValues, args })
 			: await runModeMigrate({
 					...validatedValues,
+					args,
 					configFile: productionSettings.configFile,
 				});
 

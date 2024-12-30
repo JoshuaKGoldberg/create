@@ -1,23 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createConfig } from "../../config/createConfig.js";
 import { createBase } from "../../creators/createBase.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
+const mockIsCancel = vi.fn();
+
 vi.mock("@clack/prompts", () => ({
+	get isCancel() {
+		return mockIsCancel;
+	},
 	log: {
 		message: vi.fn(),
 	},
 	spinner: vi.fn(),
-}));
-
-const mockTryImportConfig = vi.fn();
-
-vi.mock("../../config/tryImportConfig.js", () => ({
-	get tryImportConfig() {
-		return mockTryImportConfig;
-	},
 }));
 
 const mockRunPreset = vi.fn();
@@ -41,35 +37,46 @@ vi.mock("../display/createClackDisplay.js", () => ({
 	}),
 }));
 
+const mockLoadMigrationPreset = vi.fn();
+
+vi.mock("./loadMigrationPreset.js", () => ({
+	get loadMigrationPreset() {
+		return mockLoadMigrationPreset;
+	},
+}));
+
 describe("runModeMigrate", () => {
-	it("returns a CLI error when configFile is undefined", async () => {
-		const actual = await runModeMigrate({ configFile: undefined });
+	it("returns the error when loadMigrationPreset resolves with an error", async () => {
+		const error = new Error("Oh no!");
 
-		expect(actual).toEqual({
-			outro:
-				"--mode migrate without a configFile is not yet implemented. Check back later! ❤️‍🔥",
-			status: CLIStatus.Error,
-		});
-
-		expect(mockTryImportConfig).not.toHaveBeenCalled();
-	});
-
-	it("returns a CLI error when importing the preset fails", async () => {
-		const message = "Oh no!";
-
-		mockTryImportConfig.mockResolvedValueOnce(new Error(message));
+		mockLoadMigrationPreset.mockResolvedValueOnce(error);
 
 		const actual = await runModeMigrate({
-			configFile: "create.config.js",
+			args: [],
+			configFile: undefined,
 		});
 
 		expect(actual).toEqual({
-			outro: message,
+			outro: error.message,
 			status: CLIStatus.Error,
 		});
 	});
 
-	it("returns a CLI success when importing the preset succeeds", async () => {
+	it("returns a cancellation status when loadMigrationPreset resolves with an error", async () => {
+		mockLoadMigrationPreset.mockResolvedValueOnce({});
+		mockIsCancel.mockReturnValueOnce(true);
+
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+		});
+
+		expect(actual).toEqual({
+			status: CLIStatus.Cancelled,
+		});
+	});
+
+	it("returns a CLI success when importing and running the preset succeeds", async () => {
 		const base = createBase({
 			options: {},
 		});
@@ -77,14 +84,17 @@ describe("runModeMigrate", () => {
 			about: { name: "Test" },
 			blocks: [],
 		});
-		mockTryImportConfig.mockResolvedValueOnce(createConfig(preset));
+		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockIsCancel.mockReturnValueOnce(false);
 
 		const actual = await runModeMigrate({
+			args: [],
 			configFile: "create.config.js",
 		});
 
+		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 		expect(actual).toEqual({
-			outro: `Applied the Test preset to files on disk. You might want to commit any changes.`,
+			outro: `You might want to commit any changes.`,
 			status: CLIStatus.Success,
 		});
 	});

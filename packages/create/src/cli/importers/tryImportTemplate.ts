@@ -1,5 +1,5 @@
 import { isTemplate } from "../../predicates/isTemplate.js";
-import { tryImportWithPredicate } from "../../predicates/tryImportWithPredicate.js";
+import { tryImportWithPredicate } from "../tryImportWithPredicate.js";
 import { tryImportAndInstallIfNecessary } from "./tryImportAndInstallIfNecessary.js";
 
 export async function tryImportTemplate(from: string) {

@@ -1,5 +1,5 @@
+import { tryImportWithPredicate } from "../cli/tryImportWithPredicate.js";
 import { isCreateConfig } from "../predicates/isCreateConfig.js";
-import { tryImportWithPredicate } from "../predicates/tryImportWithPredicate.js";
 
 export async function tryImportConfig(configFile: string) {
 	return await tryImportWithPredicate(

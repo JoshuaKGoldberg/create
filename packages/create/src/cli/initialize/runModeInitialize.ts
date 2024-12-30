@@ -4,14 +4,13 @@ import chalk from "chalk";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
-import { tryImportTemplate } from "../importers/tryImportTemplate.js";
+import { findPositionalFrom } from "../findPositionalFrom.js";
+import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
-import { promptForPreset } from "../prompts/promptForPreset.js";
 import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
-import { findPositionalFrom } from "./findPositionalFrom.js";
 
 export interface RunModeInitializeSettings {
 	args: string[];
@@ -33,16 +32,14 @@ export async function runModeInitialize({
 		};
 	}
 
-	const template = await tryImportTemplate(from);
-	if (template instanceof Error) {
+	const loaded = await tryImportTemplatePreset(from, requestedPreset);
+	if (loaded instanceof Error) {
 		return {
-			outro: template.message,
+			outro: loaded.message,
 			status: CLIStatus.Error,
 		};
 	}
-
-	const preset = await promptForPreset(requestedPreset, template);
-	if (prompts.isCancel(preset)) {
+	if (prompts.isCancel(loaded)) {
 		return {
 			status: CLIStatus.Cancelled,
 		};
@@ -50,7 +47,7 @@ export async function runModeInitialize({
 
 	const directory = await promptForInitializationDirectory(
 		requestedDirectory,
-		template,
+		loaded.template,
 	);
 	if (prompts.isCancel(directory)) {
 		return {
@@ -62,10 +59,10 @@ export async function runModeInitialize({
 	const system = await createSystemContextWithAuth({ directory, display });
 
 	const options = await promptForPresetOptions({
-		base: preset.base,
+		base: loaded.preset.base,
 		existingOptions: {
 			repository: directory,
-			...parseZodArgs(args, preset.base.options),
+			...parseZodArgs(args, loaded.preset.base.options),
 		},
 		system,
 	});
@@ -76,7 +73,7 @@ export async function runModeInitialize({
 
 	display.spinner.start("Creating repository...");
 
-	const creation = await runPreset(preset, {
+	const creation = await runPreset(loaded.preset, {
 		...system,
 		directory,
 		mode: "initialize",
