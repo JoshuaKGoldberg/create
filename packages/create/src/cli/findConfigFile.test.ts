@@ -27,25 +27,12 @@ describe("findConfigFile", () => {
 		expect(actual).toBe("create.config.js");
 	});
 
-	it("returns a create.config.ts when it exists", async () => {
-		mockReaddir.mockResolvedValueOnce(["a", "create.config.ts", "b"]);
+	it("returns a create.config.mjs when it exists", async () => {
+		mockReaddir.mockResolvedValueOnce(["a", "create.config.mjs", "b"]);
 
 		const actual = await findConfigFile(".");
 
-		expect(actual).toBe("create.config.ts");
-	});
-
-	it("returns a create.config.ts when it is found after a create.config.js", async () => {
-		mockReaddir.mockResolvedValueOnce([
-			"a",
-			"create.config.js",
-			"create.config.ts",
-			"b",
-		]);
-
-		const actual = await findConfigFile(".");
-
-		expect(actual).toBe("create.config.ts");
+		expect(actual).toBe("create.config.mjs");
 	});
 
 	it("returns undefined when no create.config.* exists", async () => {

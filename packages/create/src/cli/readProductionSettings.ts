@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { ProductionMode } from "../modes/types.js";
 import { findConfigFile } from "./findConfigFile.js";
 import { ProductionSettings } from "./types.js";
@@ -8,10 +10,10 @@ export interface ReadProductionSettingsOptions {
 }
 
 export async function readProductionSettings({
-	directory = ".",
+	directory,
 	mode,
 }: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
-	const configFile = await findConfigFile(directory);
+	const configFile = await findConfigFile(directory ?? ".");
 
 	if (configFile && mode === "initialize") {
 		return new Error(
@@ -21,7 +23,7 @@ export async function readProductionSettings({
 
 	if (configFile) {
 		return {
-			configFile,
+			configFile: directory ? path.join(directory, configFile) : configFile,
 			mode: "migrate",
 		};
 	}

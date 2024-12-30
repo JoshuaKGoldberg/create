@@ -3,8 +3,8 @@ import { AboutBase } from "./about.js";
 import { CreatedBlockAddons, Creation, DirectCreation } from "./creations.js";
 
 export type Block<
-	Addons extends object | undefined,
-	Options extends object,
+	Addons extends object | undefined = object | undefined,
+	Options extends object = object,
 > = Addons extends object
 	? BlockWithAddons<Addons, Options>
 	: BlockWithoutAddons<Options>;

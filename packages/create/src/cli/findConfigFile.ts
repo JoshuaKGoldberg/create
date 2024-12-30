@@ -2,20 +2,7 @@ import * as fs from "node:fs/promises";
 
 export async function findConfigFile(directory: string) {
 	try {
-		const children = await fs.readdir(directory);
-		let found: string | undefined;
-
-		for (const child of children) {
-			if (child === "create.config.ts") {
-				return child;
-			}
-
-			if (isConfigFileName(child)) {
-				found = child;
-			}
-		}
-
-		return found;
+		return (await fs.readdir(directory)).find(isConfigFileName);
 	} catch {
 		return undefined;
 	}
