@@ -78,7 +78,7 @@ describe("loadMigrationPreset", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce(expected);
 
 		const actual = await loadMigrationPreset({
-			from: "my-appcreate",
+			from: "my-app",
 		});
 
 		expect(actual).toBe(expected);
