@@ -1,7 +1,8 @@
+import * as fs from "node:fs/promises";
 import path from "node:path";
 
 import { ProductionMode } from "../modes/types.js";
-import { findConfigFile } from "./findConfigFile.js";
+import { isConfigFileName } from "./isConfigFileName.js";
 import { ProductionSettings } from "./types.js";
 
 export interface ReadProductionSettingsOptions {
@@ -13,22 +14,23 @@ export async function readProductionSettings({
 	directory,
 	mode,
 }: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
-	const configFile = await findConfigFile(directory ?? ".");
+	const items = await fs.readdir(directory ?? ".");
+	let defaultMode: ProductionMode = mode ?? "initialize";
 
-	if (configFile && mode === "initialize") {
-		return new Error(
-			`Cannot run in --mode initialize in a directory that already has a ${configFile}.`,
-		);
-	}
+	for (const item of items) {
+		if (/create\.config\.\w+/.test(item)) {
+			return {
+				configFile: directory ? path.join(directory, item) : item,
+				mode: "migrate",
+			};
+		}
 
-	if (configFile) {
-		return {
-			configFile: directory ? path.join(directory, configFile) : configFile,
-			mode: "migrate",
-		};
+		if (item === ".git" && mode !== "initialize") {
+			defaultMode = "migrate";
+		}
 	}
 
 	return {
-		mode: mode ?? "initialize",
+		mode: defaultMode,
 	};
 }

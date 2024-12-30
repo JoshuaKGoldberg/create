@@ -60,7 +60,7 @@ describe("promptForPreset", () => {
 		expect(mockError).toHaveBeenCalledWith(`c is not one of: a, b`);
 		expect(mockSelect).toHaveBeenCalledWith({
 			initialValue: presetA,
-			message: "Which --preset would you like to start with?",
+			message: "Which --preset would you like to create with?",
 			options: [
 				{ label: "A", value: presetA },
 				{ label: "B", value: presetB },
@@ -75,7 +75,7 @@ describe("promptForPreset", () => {
 		expect(mockError).not.toHaveBeenCalled();
 		expect(mockSelect).toHaveBeenCalledWith({
 			initialValue: presetA,
-			message: "Which --preset would you like to start with?",
+			message: "Which --preset would you like to create with?",
 			options: [
 				{ label: "A", value: presetA },
 				{ label: "B", value: presetB },

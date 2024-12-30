@@ -9,7 +9,11 @@ export async function tryImportAndInstallIfNecessary(
 	const spinner = prompts.spinner();
 	spinner.start(`Retrieving ${from}`);
 
-	const imported = await importLocalOrNpx(from);
+	const imported = await importLocalOrNpx(from, {
+		// We ignore logs because we don't want to clutter CLI output
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		logger: () => {},
+	});
 
 	if (imported.kind === "failure") {
 		spinner.stop(`Could not retrieve ${from}`);

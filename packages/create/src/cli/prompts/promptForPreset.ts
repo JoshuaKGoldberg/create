@@ -28,7 +28,7 @@ export async function promptForPreset(
 
 	return await prompts.select({
 		initialValue: template.suggested,
-		message: "Which --preset would you like to start with?",
+		message: "Which --preset would you like to create with?",
 		options: template.presets.map((preset) => ({
 			hint: preset.about.description,
 			label: preset.about.name,
