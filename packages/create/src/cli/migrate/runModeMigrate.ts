@@ -25,10 +25,7 @@ export async function runModeMigrate({
 		};
 	}
 
-	const config = await tryImportConfig(
-		configFile,
-		async (moduleName) => (await import(moduleName)) as object,
-	);
+	const config = await tryImportConfig(configFile);
 	if (config instanceof Error) {
 		return {
 			outro: config.message,
