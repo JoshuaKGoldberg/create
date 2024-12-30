@@ -1,6 +1,9 @@
 // CLI
 export * from "./cli/runCli.js";
 
+// Config
+export * from "./config/createConfig.js";
+
 // Creators
 export * from "./creators/createBase.js";
 export * from "./creators/createInput.js";

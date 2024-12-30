@@ -3,13 +3,14 @@ import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { createClackDisplay } from "../display/createClackDisplay.js";
 import { tryImportTemplate } from "../importers/tryImportTemplate.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
 import { promptForPreset } from "../prompts/promptForPreset.js";
 import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
-import { createClackDisplay } from "./createClackDisplay.js";
+import { ModeResults } from "../types.js";
 import { findPositionalFrom } from "./findPositionalFrom.js";
 
 export interface RunModeInitializeSettings {
@@ -24,7 +25,7 @@ export async function runModeInitialize({
 	directory: requestedDirectory,
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
-}: RunModeInitializeSettings) {
+}: RunModeInitializeSettings): Promise<ModeResults> {
 	if (!from) {
 		return {
 			outro: "Please specify a package to create from.",

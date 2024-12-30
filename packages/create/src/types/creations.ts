@@ -5,8 +5,8 @@ import { BlockWithAddons } from "./blocks.js";
 import { SystemFetchers } from "./system.js";
 
 export interface CreatedBlockAddons<
-	Addons extends object,
-	Options extends object,
+	Addons extends object = object,
+	Options extends object = object,
 > {
 	addons: Addons;
 	block: BlockWithAddons<Addons, Options>;

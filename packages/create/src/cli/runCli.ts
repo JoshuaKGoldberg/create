@@ -73,7 +73,10 @@ export async function runCli(args: string[], logger: Logger) {
 	const { outro, status, suggestions } =
 		productionSettings.mode === "initialize"
 			? await runModeInitialize({ ...validatedValues, args })
-			: await runModeMigrate();
+			: await runModeMigrate({
+					...validatedValues,
+					configFile: productionSettings.configFile,
+				});
 
 	logOutro(
 		outro ??

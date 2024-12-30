@@ -7,19 +7,18 @@ title: Configuration
 The `create` engine is very early stage.
 Don't rely on it yet.
 
-**Configuration files have not been implemented yet.**
+**Configuration files are only partially implemented so far.**
 :::
 
-Running `npx create --preset ...` in a repository that was already set up with the Preset will re-run the Preset on the repository.
-Re-running `create` will bring in any updates from the latest version of the Preset.
+Running `npx create --preset ...` in a repository that was already set up with that Preset will re-run the Preset on the repository.
+You can store CLI settings for `create` in a configuration file named `create.config.js` in the root of the repository.
 
-If you plan on keeping a repository up-to-date with its Preset, you can add a `create.config.js` or `create.config.ts` file in the root of the repository.
 It should `export default` a call to a `createConfig()` function that takes in a Preset.
 `npx create` will pick up on that file and read any customizations to your Preset from it.
 
 For example, keeping a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-```ts title="create.config.ts"
+```ts title="create.config.js"
 import { createConfig } from "create";
 import { presetEverything } from "create-typescript-app";
 
@@ -32,7 +31,7 @@ Once that file is created, you can re-run `create`:
 npx create
 ```
 
-Running `npx create` in a repository with that `create.config.ts` would be the equivalent of running `npx create typescript-app --preset everything`.
+Running `npx create` in a repository with that `create.config.js` would be the equivalent of running `npx create typescript-app --preset everything`.
 
 ## `createConfig`
 
@@ -45,12 +44,16 @@ The customizations that can be passed to `createConfig` are a superset of what y
 
 ### `addons`
 
+:::danger
+Addons in config files have not yet been implemented.
+:::
+
 Any [Addons](./engine/concepts/blocks#addons) to be passed to the [Blocks](./engines/concepts/blocks) that come with the Preset.
 These will be [merged](./engine/runtime/merging) in with Addons provided by other Blocks.
 
 For example, this configuration file adds the word `"arethetypeswrong"` to a CSpell Block's Addons:
 
-```ts title="create.config.ts"
+```ts title="create.config.js"
 import { createConfig } from "create";
 import { blockCSpell, presetEverything } from "create-typescript-app";
 
@@ -67,6 +70,10 @@ Running `npx create` in a repository with that configuration file would merge in
 
 ### `blocks`
 
+:::danger
+Blocks in config files have not yet been implemented.
+:::
+
 Any customizations to the [Blocks](./engines/concepts/blocks) provided as part of the Preset.
 
 #### `add`
@@ -75,7 +82,7 @@ Any Blocks to add to what the Preset provides.
 
 For example, this configuration file adds in an "arethetypeswrong" Block alongside existing Blocks provided by `create-typescript-app`:
 
-```ts title="create.config.ts"
+```ts title="create.config.js"
 import { createConfig } from "create";
 import { blockAreTheTypesWrong, presetEverything } from "create-typescript-app";
 
@@ -92,9 +99,9 @@ Running `npx create` in a repository with that configuration file would add in t
 
 Any Blocks to remove from what the Preset provides.
 
-For example, this configuration file removes the default _"This package was templated with..."_ notice that comes with by `create-typescript-app`:
+For example, this configuration file removes the default _"This package was templated with..."_ notice that comes with `create-typescript-app`:
 
-```ts title="create.config.ts"
+```ts title="create.config.js"
 import { createConfig } from "create";
 import { blockTemplatedBy, presetEverything } from "create-typescript-app";
 
