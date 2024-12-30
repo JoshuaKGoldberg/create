@@ -42,7 +42,7 @@ $ npx create typescript-app
 
 ┌ Let us ✨ create ✨ a TypeScript App repository!
 │
-◆ Which Preset would you like to start with?
+◆ Which Preset would you like to create with?
 │ ○ minimal
 │ ● common
 │ ○ everything

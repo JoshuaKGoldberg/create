@@ -19,7 +19,19 @@ const system = {
 };
 
 describe("produceBase", () => {
-	it("returns settings.options directly when the Base does not have a produce()", async () => {
+	it("returns {} when no settings.options exists and the Base does not have a produce()", async () => {
+		const baseWithNoProduce = createBase({
+			options: {
+				value: z.string().optional(),
+			},
+		});
+
+		const actual = await produceBase(baseWithNoProduce, { ...system });
+
+		expect(actual).toEqual({});
+	});
+
+	it("returns settings.options directly when it exists and the Base does not have a produce()", async () => {
 		const baseWithNoProduce = createBase({
 			options: {
 				value: z.string().optional(),

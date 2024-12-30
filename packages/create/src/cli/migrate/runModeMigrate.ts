@@ -1,53 +1,56 @@
 import * as prompts from "@clack/prompts";
 
-import { tryImportConfig } from "../../config/tryImportConfig.js";
 import { produceBase } from "../../producers/produceBase.js";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
+import { findPositionalFrom } from "../findPositionalFrom.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
+import { loadMigrationPreset } from "./loadMigrationPreset.js";
 
 export interface RunModeMigrateSettings {
+	args: string[];
 	configFile: string | undefined;
 	directory?: string;
+	from?: string;
+	preset?: string | undefined;
 }
 
 export async function runModeMigrate({
+	args,
 	configFile,
 	directory = ".",
+	from = findPositionalFrom(args),
+	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
-	if (!configFile) {
+	const loaded = await loadMigrationPreset({
+		configFile,
+		from,
+		requestedPreset,
+	});
+	if (loaded instanceof Error) {
 		return {
-			outro:
-				"--mode migrate without a configFile is not yet implemented. Check back later! ❤️‍🔥",
+			outro: loaded.message,
 			status: CLIStatus.Error,
 		};
 	}
-
-	const config = await tryImportConfig(configFile);
-	if (config instanceof Error) {
-		return {
-			outro: config.message,
-			status: CLIStatus.Error,
-		};
+	if (prompts.isCancel(loaded)) {
+		return { status: CLIStatus.Cancelled };
 	}
-	const description = `the ${config.preset.about.name} preset`;
 
-	prompts.log.message(`Loaded ${description} from ${configFile}.`);
-
+	const description = `the ${loaded.preset.about.name} preset`;
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
 	display.spinner.start(`Running ${description}...`);
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const options = (await produceBase(config.preset.base, {
+	const options = await produceBase(loaded.preset.base, {
 		...system,
 		directory,
-	}))!;
+	});
 
-	await runPreset(config.preset, {
+	await runPreset(loaded.preset, {
 		...system,
 		directory,
 		mode: "migrate",
@@ -57,7 +60,7 @@ export async function runModeMigrate({
 	display.spinner.stop(`Ran ${description}.`);
 
 	return {
-		outro: `Applied ${description} to files on disk. You might want to commit any changes.`,
+		outro: `You might want to commit any changes.`,
 		status: CLIStatus.Success,
 	};
 }

@@ -1,69 +1,84 @@
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import { readProductionSettings } from "./readProductionSettings.js";
 
-const mockFindConfigFile = vi.fn();
+const mockReaddir = vi.fn();
 
-vi.mock("./findConfigFile.js", () => ({
-	get findConfigFile() {
-		return mockFindConfigFile;
+vi.mock("node:fs/promises", () => ({
+	get readdir() {
+		return mockReaddir;
 	},
 }));
 
 describe("readProductionSettings", () => {
-	it("reads from directory '.' when a directory not provided", async () => {
-		mockFindConfigFile.mockResolvedValueOnce(undefined);
+	it("reads from directory '.' when a directory is not provided", async () => {
+		mockReaddir.mockResolvedValueOnce([]);
 
 		await readProductionSettings();
 
-		expect(mockFindConfigFile).toHaveBeenCalledWith(".");
+		expect(mockReaddir).toHaveBeenCalledWith(".");
 	});
 
 	it("reads from the directory when provided", async () => {
 		const directory = "./other";
-		mockFindConfigFile.mockResolvedValueOnce(undefined);
+		mockReaddir.mockResolvedValueOnce([]);
 
 		await readProductionSettings({ directory });
 
-		expect(mockFindConfigFile).toHaveBeenCalledWith(directory);
+		expect(mockReaddir).toHaveBeenCalledWith(directory);
 	});
 
 	it("returns the config file and mode: migrate when a config file is found without a mode", async () => {
 		const configFile = "create.config.ts";
-		mockFindConfigFile.mockResolvedValueOnce(configFile);
+		mockReaddir.mockResolvedValueOnce([configFile]);
 
 		const actual = await readProductionSettings();
 
 		expect(actual).toEqual({ configFile, mode: "migrate" });
-		expect(mockFindConfigFile).toHaveBeenCalledWith(".");
 	});
 
-	it("returns an error when a config file is found in mode initialize", async () => {
+	it("returns the config file relative to the directory when a config file is found with a directory", async () => {
 		const configFile = "create.config.ts";
-		mockFindConfigFile.mockResolvedValueOnce(configFile);
+		mockReaddir.mockResolvedValueOnce([configFile]);
 
-		const actual = await readProductionSettings({ mode: "initialize" });
+		const actual = await readProductionSettings({ directory: "path/to" });
 
-		expect(actual).toEqual(
-			new Error(
-				`Cannot run in --mode initialize in a directory that already has a ${configFile}.`,
-			),
-		);
+		expect(actual).toEqual({
+			configFile: path.join("path/to", configFile),
+			mode: "migrate",
+		});
 	});
 
-	it("returns mode initialize when no config file is found without a mode", async () => {
-		mockFindConfigFile.mockResolvedValueOnce(undefined);
-
-		const actual = await readProductionSettings();
-
-		expect(actual).toEqual({ mode: "initialize" });
-	});
-
-	it("returns mode migrate when no config file is found in mode migrate", async () => {
-		mockFindConfigFile.mockResolvedValueOnce(undefined);
+	it("returns mode migrate when only a .git is is found with mode migrate", async () => {
+		mockReaddir.mockResolvedValueOnce([".git"]);
 
 		const actual = await readProductionSettings({ mode: "migrate" });
 
 		expect(actual).toEqual({ mode: "migrate" });
+	});
+
+	it("returns mode initialize when only a .git is is found with mode initialize", async () => {
+		mockReaddir.mockResolvedValueOnce([".git"]);
+
+		const actual = await readProductionSettings({ mode: "initialize" });
+
+		expect(actual).toEqual({ mode: "initialize" });
+	});
+
+	it("returns mode migrate when only a .git is is found without a mode", async () => {
+		mockReaddir.mockResolvedValueOnce([".git"]);
+
+		const actual = await readProductionSettings();
+
+		expect(actual).toEqual({ mode: "migrate" });
+	});
+
+	it("returns mode initialize when no config file or .git is found without a mode", async () => {
+		mockReaddir.mockResolvedValueOnce([]);
+
+		const actual = await readProductionSettings();
+
+		expect(actual).toEqual({ mode: "initialize" });
 	});
 });
