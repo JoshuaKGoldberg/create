@@ -65,7 +65,7 @@ describe("runModeMigrate", () => {
 		});
 	});
 
-	it.only("returns a CLI success when importing the preset succeeds", async () => {
+	it("returns a CLI success when importing the preset succeeds", async () => {
 		const base = createBase({
 			options: {},
 		});
