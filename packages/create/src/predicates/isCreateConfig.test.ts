@@ -1,4 +1,4 @@
-import { describe, expect, it, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { createBase } from "../creators/createBase.js";
 import { isCreateConfig } from "./isCreateConfig.js";

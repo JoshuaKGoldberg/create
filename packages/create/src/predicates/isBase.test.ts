@@ -1,13 +1,13 @@
 import { describe, expect, test } from "vitest";
 
 import { createBase } from "../creators/createBase.js";
-import { isPreset } from "./isPreset.js";
+import { isBase } from "./isBase.js";
 
 const base = createBase({
 	options: {},
 });
 
-describe("isPreset", () => {
+describe("isBase", () => {
 	test.each([
 		[null, false],
 		[undefined, false],
@@ -17,7 +17,7 @@ describe("isPreset", () => {
 		[{ createBlock: {}, createPreset: {}, options: {} }, false],
 		[base, true],
 	])("%j", (input, expected) => {
-		const actual = isPreset(input);
+		const actual = isBase(input);
 
 		expect(actual).toBe(expected);
 	});
