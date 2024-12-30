@@ -4,8 +4,9 @@ import { tryImportConfig } from "../../config/tryImportConfig.js";
 import { produceBase } from "../../producers/produceBase.js";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
-import { createClackDisplay } from "../initialize/createClackDisplay.js";
+import { createClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
+import { ModeResults } from "../types.js";
 
 export interface RunModeMigrateSettings {
 	configFile: string | undefined;
@@ -15,13 +16,12 @@ export interface RunModeMigrateSettings {
 export async function runModeMigrate({
 	configFile,
 	directory = ".",
-}: RunModeMigrateSettings) {
+}: RunModeMigrateSettings): Promise<ModeResults> {
 	if (!configFile) {
 		return {
 			outro:
-				"--mode migrate without a configFile is not yet implemented. Check back soon!",
+				"--mode migrate without a configFile is not yet implemented. Check back later! ❤️‍🔥",
 			status: CLIStatus.Error,
-			suggestions: [],
 		};
 	}
 
@@ -33,18 +33,16 @@ export async function runModeMigrate({
 		return {
 			outro: config.message,
 			status: CLIStatus.Error,
-			suggestions: [],
 		};
 	}
+	const description = `the ${config.preset.about.name} preset`;
 
-	prompts.log.message(
-		`Loaded ${config.preset.about.name} preset from ${configFile}.`,
-	);
+	prompts.log.message(`Loaded ${description} from ${configFile}.`);
 
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
-	display.spinner.start(`Running the ${config.preset.about.name} preset...`);
+	display.spinner.start(`Running ${description}...`);
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const options = (await produceBase(config.preset.base, {
@@ -59,12 +57,10 @@ export async function runModeMigrate({
 		options,
 	});
 
-	display.spinner.stop(`Ran the ${config.preset.about.name} preset.`);
+	display.spinner.stop(`Ran ${description}.`);
 
 	return {
-		outro:
-			"Applied the preset to files on disk. You might want to commit any changes.",
-		status: CLIStatus.Error,
-		suggestions: [],
+		outro: `Applied ${description} to files on disk. You might want to commit any changes.`,
+		status: CLIStatus.Success,
 	};
 }

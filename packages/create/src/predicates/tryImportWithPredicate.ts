@@ -22,5 +22,6 @@ export async function tryImportWithPredicate<T>(
 		);
 	}
 
+	console.log({ value });
 	return value;
 }
