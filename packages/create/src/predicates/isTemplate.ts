@@ -5,6 +5,6 @@ export function isTemplate(value: unknown): value is Template {
 		!!value &&
 		typeof value === "object" &&
 		"presets" in value &&
-		typeof value.presets === "object"
+		Array.isArray(value.presets)
 	);
 }
