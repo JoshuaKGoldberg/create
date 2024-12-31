@@ -14,6 +14,7 @@ import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
+import { makeRelative } from "../utils.js";
 import { assertOptionsForInitialize } from "./assertOptionsForInitialize.js";
 import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
 import { createTrackingBranches } from "./createTrackingBranches.js";
@@ -110,7 +111,7 @@ export async function runModeInitialize({
 	return {
 		outro: [
 			chalk.blue("Your new repository is ready in:"),
-			chalk.green(directory.startsWith(".") ? directory : `./${directory}`),
+			chalk.green(makeRelative(directory)),
 		].join(" "),
 		status: CLIStatus.Success,
 		suggestions: creation.suggestions,

@@ -1,17 +1,22 @@
+import path from "node:path";
+
+import { CreateConfig } from "../../config/createConfig.js";
 import { tryImportConfig } from "../../config/tryImportConfig.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 
 export interface MigrationLoadSettings {
 	configFile?: string;
+	directory: string;
 	from?: string;
 	requestedPreset?: string;
 }
 
 export async function tryLoadMigrationPreset({
 	configFile,
+	directory,
 	from,
 	requestedPreset,
-}: MigrationLoadSettings) {
+}: MigrationLoadSettings): Promise<CreateConfig | Error | symbol> {
 	if (configFile && from) {
 		return new Error(
 			"--mode migrate requires either a config file or a specified template, but not both.",
@@ -19,7 +24,9 @@ export async function tryLoadMigrationPreset({
 	}
 
 	if (configFile) {
-		return await tryImportConfig(configFile);
+		return await tryImportConfig(
+			path.join(process.cwd(), directory, configFile),
+		);
 	}
 
 	if (from) {

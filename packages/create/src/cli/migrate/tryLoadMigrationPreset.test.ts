@@ -31,6 +31,7 @@ describe("tryLoadMigrationPreset", () => {
 	it("returns a CLI error when configFile and from are undefined", async () => {
 		const actual = await tryLoadMigrationPreset({
 			configFile: undefined,
+			directory: ".",
 		});
 
 		expect(actual).toEqual(
@@ -46,6 +47,7 @@ describe("tryLoadMigrationPreset", () => {
 	it("returns a CLI error when configFile and from are both defined", async () => {
 		const actual = await tryLoadMigrationPreset({
 			configFile: "create.config.js",
+			directory: ".",
 			from: "my-app",
 		});
 
@@ -66,6 +68,7 @@ describe("tryLoadMigrationPreset", () => {
 
 		const actual = await tryLoadMigrationPreset({
 			configFile: "create.config.js",
+			directory: ".",
 		});
 
 		expect(actual).toBe(expected);
@@ -78,6 +81,7 @@ describe("tryLoadMigrationPreset", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce(expected);
 
 		const actual = await tryLoadMigrationPreset({
+			directory: ".",
 			from: "my-app",
 		});
 

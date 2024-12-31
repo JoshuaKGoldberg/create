@@ -10,16 +10,16 @@ export interface ReadProductionSettingsOptions {
 }
 
 export async function readProductionSettings({
-	directory,
+	directory = ".",
 	mode,
 }: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
-	const items = await fs.readdir(directory ?? ".");
+	const items = await fs.readdir(directory);
 	let defaultMode: ProductionMode = mode ?? "initialize";
 
 	for (const item of items) {
 		if (/create\.config\.\w+/.test(item)) {
 			return {
-				configFile: directory ? path.join(directory, item) : item,
+				configFile: path.join(directory, item),
 				mode: "migrate",
 			};
 		}

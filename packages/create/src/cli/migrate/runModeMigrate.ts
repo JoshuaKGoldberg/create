@@ -1,4 +1,5 @@
 import * as prompts from "@clack/prompts";
+import path from "node:path";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
@@ -32,6 +33,7 @@ export async function runModeMigrate({
 }: RunModeMigrateSettings): Promise<ModeResults> {
 	const loaded = await tryLoadMigrationPreset({
 		configFile,
+		directory,
 		from,
 		requestedPreset,
 	});
@@ -79,6 +81,7 @@ export async function runModeMigrate({
 		`Ran the ${loaded.preset.about.name} preset`,
 		async () => {
 			await runPreset(loaded.preset, {
+				...loaded.settings,
 				...system,
 				directory,
 				mode: "migrate",
