@@ -3,6 +3,7 @@ export * from "./cli/runCli.js";
 
 // Config
 export * from "./config/createConfig.js";
+export type * from "./config/types.js";
 
 // Creators
 export * from "./creators/createBase.js";

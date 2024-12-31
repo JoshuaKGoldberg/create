@@ -1,4 +1,4 @@
-import { CreateConfig } from "../config/createConfig.js";
+import { CreateConfig } from "../config/types.js";
 import { isPreset } from "./isPreset.js";
 
 export function isCreateConfig(value: unknown): value is CreateConfig {

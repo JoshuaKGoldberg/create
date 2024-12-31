@@ -3,33 +3,29 @@ import {
 	getUpdatedBlockAddons,
 } from "../mergers/getUpdatedBlockAddons.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
-import { AnyShape, InferredObject } from "../options.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
 import { CreatedBlockAddons, Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
-import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
 import { produceBlock } from "./produceBlock.js";
 
-export interface ExecutePresetBlocksSettings<OptionsShape extends AnyShape> {
+export interface ExecutePresetBlocksSettings<Options extends object> {
 	// TODO: I don't know what to put here instead of object...
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	addons?: CreatedBlockAddons<any, InferredObject<OptionsShape>>[];
+	addons?: CreatedBlockAddons<any, Options>[];
+	blocks: Block<object | undefined, Options>[];
 	mode?: ProductionMode;
-	options: InferredObject<OptionsShape>;
-	preset: Preset<OptionsShape>;
+	options: Options;
 	presetContext: SystemContext;
 }
 
-export function executePresetBlocks<OptionsShape extends AnyShape>({
+export function executePresetBlocks<Options extends object>({
 	addons,
+	blocks,
 	mode,
 	options,
-	preset,
 	presetContext,
-}: ExecutePresetBlocksSettings<OptionsShape>) {
-	type Options = InferredObject<OptionsShape>;
-
+}: ExecutePresetBlocksSettings<Options>) {
 	// From engine/runtime/execution.md:
 	// This engine continuously re-runs Blocks until no new Args are provided.
 
@@ -39,7 +35,7 @@ export function executePresetBlocks<OptionsShape extends AnyShape>({
 	>(addons?.map((addon) => [addon.block, { addons: addon.addons as object }]));
 
 	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
-	const blocksToBeRun = new Set(preset.blocks);
+	const blocksToBeRun = new Set(blocks);
 
 	// 2. For each Block in the queue:
 	while (blocksToBeRun.size) {
