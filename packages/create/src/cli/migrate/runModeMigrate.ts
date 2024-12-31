@@ -44,17 +44,17 @@ export async function runModeMigrate({
 
 	const display = createClackDisplay();
 
-	const [templateDescription, system] = await Promise.all([
+	const [templateLocator, system] = await Promise.all([
 		loaded.preset.base.template &&
 			getForkedTemplateLocator(directory, loaded.preset.base.template),
 		createSystemContextWithAuth({ directory, display }),
 	]);
 
-	if (templateDescription) {
-		display.spinner.start(`Clearing from ${templateDescription}...`);
+	if (templateLocator) {
+		display.spinner.start(`Clearing from ${templateLocator}...`);
 		await clearTemplateFiles(directory);
 		await clearLocalGitTags(system.runner);
-		display.spinner.start(`Cleared from ${templateDescription}.`);
+		display.spinner.start(`Cleared from ${templateLocator}.`);
 	}
 
 	const presetDescription = `the ${loaded.preset.about.name} preset`;

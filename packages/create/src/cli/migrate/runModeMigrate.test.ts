@@ -39,7 +39,7 @@ vi.mock("../display/createClackDisplay.js", () => ({
 
 const mockClearLocalGitTags = vi.fn();
 
-vi.mock("./clearLocalGitTags.js", () => ({
+vi.mock("../clearLocalGitTags.js", () => ({
 	get clearLocalGitTags() {
 		return mockClearLocalGitTags;
 	},
@@ -53,11 +53,11 @@ vi.mock("./clearTemplateFiles.js", () => ({
 	},
 }));
 
-const mockIsForkOfTemplate = vi.fn();
+const mockGetForkedTemplateLocator = vi.fn();
 
-vi.mock("./isForkOfTemplate.js", () => ({
-	get isForkOfTemplate() {
-		return mockIsForkOfTemplate;
+vi.mock("./getForkedTemplateLocator.js", () => ({
+	get getForkedTemplateLocator() {
+		return mockGetForkedTemplateLocator;
 	},
 }));
 
@@ -71,7 +71,12 @@ vi.mock("./loadMigrationPreset.js", () => ({
 
 const base = createBase({
 	options: {},
+	template: {
+		owner: "TestOwner",
+		repository: "test-repository",
+	},
 });
+
 const preset = base.createPreset({
 	about: { name: "Test" },
 	blocks: [],
@@ -108,10 +113,10 @@ describe("runModeMigrate", () => {
 		});
 	});
 
-	it("doesn't clear template files or tags when not a template fork", async () => {
+	it("doesn't clear template files or tags when no forked template locator is available", async () => {
 		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
-		mockIsForkOfTemplate.mockResolvedValueOnce(false);
+		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 
 		await runModeMigrate({
 			args: [],
@@ -122,18 +127,18 @@ describe("runModeMigrate", () => {
 		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
 	});
 
-	it("clears template files and tags when a template fork", async () => {
+	it("clears template files and tags when a forked template locator is available", async () => {
 		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
-		mockIsForkOfTemplate.mockResolvedValueOnce(true);
+		mockGetForkedTemplateLocator.mockResolvedValueOnce("a/b");
 
 		await runModeMigrate({
 			args: [],
 			configFile: "create.config.js",
 		});
 
-		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
-		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+		expect(mockClearTemplateFiles).toHaveBeenCalled();
+		expect(mockClearLocalGitTags).toHaveBeenCalled();
 	});
 
 	it("returns a CLI success when importing and running the preset succeeds", async () => {

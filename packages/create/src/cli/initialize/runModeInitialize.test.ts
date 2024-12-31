@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { createBase } from "../../creators/createBase.js";
+import { createTemplate } from "../../creators/createTemplate.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
@@ -18,6 +20,27 @@ vi.mock("../importers/tryImportTemplatePreset.js", () => ({
 		return mockTryImportTemplatePreset;
 	},
 }));
+
+const mockPromptForInitializationDirectory = vi.fn();
+
+vi.mock("../prompts/promptForInitializationDirectory.js", () => ({
+	get promptForInitializationDirectory() {
+		return mockPromptForInitializationDirectory;
+	},
+}));
+
+const base = createBase({
+	options: {},
+});
+
+const preset = base.createPreset({
+	about: { name: "Test" },
+	blocks: [],
+});
+
+const template = createTemplate({
+	presets: [],
+});
 
 describe("runModeInitialize", () => {
 	it("returns a CLI error when no positional from can be found", async () => {
@@ -50,6 +73,19 @@ describe("runModeInitialize", () => {
 		const cancellation = Symbol.for("cancel");
 		mockTryImportTemplatePreset.mockResolvedValueOnce(cancellation);
 		mockIsCancel.mockReturnValueOnce(true);
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+	});
+
+	it("returns the cancellation when promptForInitializationDirectory is cancelled", async () => {
+		const cancellation = Symbol.for("cancel");
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(cancellation);
+		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
