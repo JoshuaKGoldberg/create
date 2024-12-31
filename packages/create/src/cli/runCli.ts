@@ -70,8 +70,6 @@ export async function runCli(args: string[], logger: Logger) {
 		return CLIStatus.Error;
 	}
 
-	console.log({ productionSettings });
-
 	const { outro, status, suggestions } =
 		productionSettings.mode === "initialize"
 			? await runModeInitialize({ ...validatedValues, args })
