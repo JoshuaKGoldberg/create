@@ -27,6 +27,15 @@ vi.mock("../tryImportWithPredicate.js", () => ({
 }));
 
 describe("tryImportTemplatePreset", () => {
+	it("returns an error when from is undefined", async () => {
+		const actual = await tryImportTemplatePreset(undefined);
+
+		expect(actual).toEqual(
+			new Error("Please specify a package to create from."),
+		);
+		expect(mockTryImportWithPredicate).not.toHaveBeenCalled();
+	});
+
 	it("returns the error when tryImportWithPredicate resolves with an error", async () => {
 		const error = new Error("Oh no!");
 

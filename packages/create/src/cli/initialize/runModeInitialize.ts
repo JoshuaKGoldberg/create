@@ -3,35 +3,36 @@ import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { clearLocalGitTags } from "../clearLocalGitTags.js";
+import { createInitialCommit } from "../createInitialCommit.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
+import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
+import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
-import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
+import { assertOptionsForInitialize } from "./assertOptionsForInitialize.js";
+import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
+import { createTrackingBranches } from "./createTrackingBranches.js";
 
 export interface RunModeInitializeSettings {
 	args: string[];
 	directory?: string;
 	from?: string;
 	preset?: string;
+	repository?: string;
 }
 
 export async function runModeInitialize({
 	args,
-	directory: requestedDirectory,
+	repository,
+	directory: requestedDirectory = repository,
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
-	if (!from) {
-		return {
-			outro: "Please specify a package to create from.",
-			status: CLIStatus.Error,
-		};
-	}
-
 	const loaded = await tryImportTemplatePreset(from, requestedPreset);
 	if (loaded instanceof Error) {
 		return {
@@ -58,36 +59,60 @@ export async function runModeInitialize({
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
-	const options = await promptForPresetOptions({
+	const options = await promptForBaseOptions({
 		base: loaded.preset.base,
-		existingOptions: {
-			repository: directory,
-			...parseZodArgs(args, loaded.preset.base.options),
-		},
+		existingOptions: parseZodArgs(args, loaded.preset.base.options),
 		system,
 	});
-
 	if (prompts.isCancel(options)) {
 		return { status: CLIStatus.Cancelled };
 	}
 
-	display.spinner.start("Creating repository...");
+	assertOptionsForInitialize(options);
 
-	const creation = await runPreset(loaded.preset, {
-		...system,
-		directory,
-		mode: "initialize",
-		options,
-	});
+	await runSpinnerTask(
+		display,
+		"Creating repository on GitHub",
+		"Created repository on GitHub",
+		async () => {
+			await createRepositoryOnGitHub(
+				options,
+				system.fetchers.octokit,
+				loaded.preset.base.template,
+			);
+		},
+	);
 
-	display.spinner.stop("Created repository");
+	const creation = await runSpinnerTask(
+		display,
+		`Running the ${loaded.preset.about.name} preset`,
+		`Ran the ${loaded.preset.about.name} preset`,
+		async () =>
+			await runPreset(loaded.preset, {
+				...system,
+				directory,
+				mode: "initialize",
+				options,
+			}),
+	);
+
+	await runSpinnerTask(
+		display,
+		"Preparing local repository",
+		"Prepared local repository",
+		async () => {
+			await createTrackingBranches(options, system.runner);
+			await createInitialCommit(system.runner);
+			await clearLocalGitTags(system.runner);
+		},
+	);
 
 	return {
 		outro: [
 			chalk.blue("Your new repository is ready in:"),
 			chalk.green(directory.startsWith(".") ? directory : `./${directory}`),
 		].join(" "),
-		status: CLIStatus.Error,
+		status: CLIStatus.Success,
 		suggestions: creation.suggestions,
 	};
 }

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { createConfig } from "../config/createConfig.js";
 import { createBase } from "../creators/createBase.js";
 import { isCreateConfig } from "./isCreateConfig.js";
 
@@ -26,7 +27,8 @@ describe("isCreateConfig", () => {
 		[{ preset: {}, settings: {} }, false],
 		[{ preset: {}, settings: {} }, false],
 		[{ preset }, true],
-		[{ preset, settings: {} }, true],
+		[createConfig(preset), true],
+		[createConfig(preset, {}), true],
 	])("%j", (input, expected) => {
 		const actual = isCreateConfig(input);
 

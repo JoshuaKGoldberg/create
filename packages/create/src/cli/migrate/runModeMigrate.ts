@@ -1,13 +1,19 @@
 import * as prompts from "@clack/prompts";
 
-import { produceBase } from "../../producers/produceBase.js";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { clearLocalGitTags } from "../clearLocalGitTags.js";
+import { createInitialCommit } from "../createInitialCommit.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
+import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
+import { parseZodArgs } from "../parsers/parseZodArgs.js";
+import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
-import { loadMigrationPreset } from "./loadMigrationPreset.js";
+import { clearTemplateFiles } from "./clearTemplateFiles.js";
+import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
+import { tryLoadMigrationPreset } from "./tryLoadMigrationPreset.js";
 
 export interface RunModeMigrateSettings {
 	args: string[];
@@ -24,7 +30,7 @@ export async function runModeMigrate({
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
-	const loaded = await loadMigrationPreset({
+	const loaded = await tryLoadMigrationPreset({
 		configFile,
 		from,
 		requestedPreset,
@@ -39,28 +45,66 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const description = `the ${loaded.preset.about.name} preset`;
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
-	display.spinner.start(`Running ${description}...`);
+	const templateLocator =
+		loaded.preset.base.template &&
+		(await getForkedTemplateLocator(directory, loaded.preset.base.template));
 
-	const options = await produceBase(loaded.preset.base, {
-		...system,
-		directory,
+	if (templateLocator) {
+		await runSpinnerTask(
+			display,
+			`Clearing from ${templateLocator}`,
+			`Cleared from ${templateLocator}`,
+			async () => {
+				await clearTemplateFiles(directory);
+				await clearLocalGitTags(system.runner);
+			},
+		);
+	}
+
+	const options = await promptForBaseOptions({
+		base: loaded.preset.base,
+		existingOptions: parseZodArgs(args, loaded.preset.base.options),
+		system,
 	});
+	if (prompts.isCancel(options)) {
+		return { status: CLIStatus.Cancelled };
+	}
 
-	await runPreset(loaded.preset, {
-		...system,
-		directory,
-		mode: "migrate",
-		options,
-	});
+	await runSpinnerTask(
+		display,
+		`Running the ${loaded.preset.about.name} preset`,
+		`Ran the ${loaded.preset.about.name} preset`,
+		async () => {
+			await runPreset(loaded.preset, {
+				...system,
+				directory,
+				mode: "migrate",
+				options,
+			});
+		},
+	);
 
-	display.spinner.stop(`Ran ${description}.`);
+	if (!templateLocator) {
+		return {
+			outro: `You might want to commit any changes.`,
+			status: CLIStatus.Success,
+		};
+	}
+
+	await runSpinnerTask(
+		display,
+		"Creating initial commit",
+		"Created initial commit",
+		async () => {
+			await createInitialCommit(system.runner, true);
+		},
+	);
 
 	return {
-		outro: `You might want to commit any changes.`,
+		outro: `Done!`,
 		status: CLIStatus.Success,
 	};
 }

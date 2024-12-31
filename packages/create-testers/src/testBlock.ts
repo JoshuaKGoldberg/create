@@ -4,8 +4,8 @@ import {
 	BlockWithoutAddons,
 	Creation,
 	produceBlock,
+	ProductionMode,
 } from "create";
-import { ProductionMode } from "create/lib/modes/types.js";
 
 import { createFailingObject } from "./utils.js";
 

@@ -6,9 +6,13 @@ import { tryImportWithPredicate } from "../tryImportWithPredicate.js";
 import { tryImportAndInstallIfNecessary } from "./tryImportAndInstallIfNecessary.js";
 
 export async function tryImportTemplatePreset(
-	from: string,
+	from: string | undefined,
 	requestedPreset?: string,
 ) {
+	if (!from) {
+		return new Error("Please specify a package to create from.");
+	}
+
 	const template = await tryImportWithPredicate(
 		tryImportAndInstallIfNecessary,
 		from,

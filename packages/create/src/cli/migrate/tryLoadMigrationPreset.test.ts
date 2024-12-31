@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { loadMigrationPreset } from "./loadMigrationPreset.js";
+import { tryLoadMigrationPreset } from "./tryLoadMigrationPreset.js";
 
 const mockTryImportConfig = vi.fn();
 
@@ -27,9 +27,9 @@ vi.mock("../importers/tryImportTemplatePreset.js", () => ({
 	},
 }));
 
-describe("loadMigrationPreset", () => {
+describe("tryLoadMigrationPreset", () => {
 	it("returns a CLI error when configFile and from are undefined", async () => {
-		const actual = await loadMigrationPreset({
+		const actual = await tryLoadMigrationPreset({
 			configFile: undefined,
 		});
 
@@ -44,7 +44,7 @@ describe("loadMigrationPreset", () => {
 	});
 
 	it("returns a CLI error when configFile and from are both defined", async () => {
-		const actual = await loadMigrationPreset({
+		const actual = await tryLoadMigrationPreset({
 			configFile: "create.config.js",
 			from: "my-app",
 		});
@@ -64,7 +64,7 @@ describe("loadMigrationPreset", () => {
 
 		mockTryImportConfig.mockResolvedValueOnce(expected);
 
-		const actual = await loadMigrationPreset({
+		const actual = await tryLoadMigrationPreset({
 			configFile: "create.config.js",
 		});
 
@@ -77,7 +77,7 @@ describe("loadMigrationPreset", () => {
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce(expected);
 
-		const actual = await loadMigrationPreset({
+		const actual = await tryLoadMigrationPreset({
 			from: "my-app",
 		});
 

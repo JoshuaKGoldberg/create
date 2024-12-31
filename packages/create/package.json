@@ -31,11 +31,16 @@
 		"execa": "^9.5.2",
 		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
+		"hosted-git-info": "^8.0.2",
 		"import-local-or-npx": "^0.1.0",
 		"octokit": "^4.0.2",
 		"prettier": "3.4.2",
+		"read-pkg": "^9.0.1",
 		"without-undefined-properties": "^0.1.1",
 		"zod": "^3.24.1"
+	},
+	"devDependencies": {
+		"@types/hosted-git-info": "^3.0.5"
 	},
 	"engines": {
 		"node": ">=18"

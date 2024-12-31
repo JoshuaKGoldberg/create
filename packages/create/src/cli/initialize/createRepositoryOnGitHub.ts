@@ -1,7 +1,7 @@
 import { Octokit } from "octokit";
 
-import { RepositoryTemplate } from "../types/bases.js";
-import { CreationOptions } from "./types.js";
+import { RepositoryTemplate } from "../../types/bases.js";
+import { CreationOptions } from "./assertOptionsForInitialize.js";
 
 export async function createRepositoryOnGitHub(
 	{ owner, repository }: CreationOptions,

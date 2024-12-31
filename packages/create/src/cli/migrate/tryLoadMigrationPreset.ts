@@ -7,7 +7,7 @@ export interface MigrationLoadSettings {
 	requestedPreset?: string;
 }
 
-export async function loadMigrationPreset({
+export async function tryLoadMigrationPreset({
 	configFile,
 	from,
 	requestedPreset,
