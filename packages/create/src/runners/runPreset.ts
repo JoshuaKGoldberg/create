@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 
+import { BlockModifications } from "../config/types.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
 import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
@@ -12,6 +13,7 @@ import { applyCreation } from "./applyCreation.js";
 export interface PresetRunSettings<OptionsShape extends AnyShape>
 	extends RunSettingsBase {
 	addons?: CreatedBlockAddons<object, InferredObject<OptionsShape>>[];
+	blocks?: BlockModifications<InferredObject<OptionsShape>>;
 	options: InferredObject<OptionsShape>;
 }
 

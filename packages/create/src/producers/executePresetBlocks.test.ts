@@ -36,16 +36,9 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = base.createPreset({
-			about: {
-				name: "Example Preset",
-			},
-			blocks: [block],
-		});
-
 		const result = executePresetBlocks({
+			blocks: [block],
 			options: { value: "Hello, world!" },
-			preset,
 			presetContext,
 		});
 
@@ -62,7 +55,7 @@ describe("runPreset", () => {
 				name: "Example Block",
 			},
 			addons: {
-				extra: z.string().default(""),
+				extra: z.string().optional(),
 			},
 			produce({ addons, options }) {
 				return {
@@ -71,17 +64,10 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = base.createPreset({
-			about: {
-				name: "Example Preset",
-			},
-			blocks: [block],
-		});
-
 		const result = executePresetBlocks({
 			addons: [block({ extra: "line" })],
+			blocks: [block],
 			options: { value: "Hello, world!" },
-			preset,
 			presetContext,
 		});
 
@@ -116,17 +102,10 @@ describe("runPreset", () => {
 			},
 		});
 
-		const preset = base.createPreset({
-			about: {
-				name: "Example Preset",
-			},
-			blocks: [block],
-		});
-
 		it("does not augment creations with a Block's initialize() or migrate() when mode is undefined", () => {
 			const result = executePresetBlocks({
+				blocks: [block],
 				options: { value: "Hello, world!" },
-				preset,
 				presetContext,
 			});
 
@@ -139,9 +118,9 @@ describe("runPreset", () => {
 
 		it("augments creations with a Block's initialize() when mode is 'initialize'", () => {
 			const result = executePresetBlocks({
+				blocks: [block],
 				mode: "initialize",
 				options: { value: "Hello, world!" },
-				preset,
 				presetContext,
 			});
 
@@ -155,9 +134,9 @@ describe("runPreset", () => {
 
 		it("augments creations with a Block's migrate() when mode is 'migrate'", () => {
 			const result = executePresetBlocks({
+				blocks: [block],
 				mode: "migrate",
 				options: { value: "Hello, world!" },
-				preset,
 				presetContext,
 			});
 

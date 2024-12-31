@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { CreateConfig } from "../../config/createConfig.js";
 import { tryImportConfig } from "../../config/tryImportConfig.js";
+import { CreateConfig } from "../../config/types.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 
 export interface MigrationLoadSettings {

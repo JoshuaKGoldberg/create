@@ -215,6 +215,8 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
 
 1. `preset` _(required)_: a Preset
 2. `settings` _(required)_:
+   - `addons` _(optional)_: any additional [Addons](../concepts/blocks#addons) to provide to Blocks
+   - `blocks` _(optional)_: any additions and/or removals of Blocks
    - `options` _(required)_: [Base](../concepts/bases) options to run with
    - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
@@ -238,6 +240,58 @@ const preset = base.createPreset({
 // { creation: { files: { "README.md": `# My App` }}, options: { title: "My App" } }
 await producePreset(preset, { options: { title: "My App" } });
 ```
+
+### `addons` {#preset-addons}
+
+Any additional [Addons](../concepts/blocks#addons) to provide to Blocks.
+
+For example, this production adds a `"generated"` Addon to a Prettier Block:
+
+```ts
+import { Preset, producePreset } from "create";
+import { z } from "zod";
+
+import { blockPrettier } from "./blockPrettier";
+
+declare const preset: Preset<{ name: z.ZodString }>;
+
+await producePreset(preset, {
+	addons: [blockPrettier({ ignores: ["generated"] })],
+	options: {
+		name: "My Production",
+	},
+});
+```
+
+See [Configuration > `addons`](../../configuration#addons) for how this is used.
+
+### `blocks` {#preset-blocks}
+
+Any Blocks to `add` and/or `remove`.
+
+For example, this production adds a Jest Block and removes a Vitest Block:
+
+```ts
+import { Preset, producePreset } from "create";
+import { z } from "zod";
+
+import { blockJest } from "./blockJest";
+import { blockVitest } from "./blockVitest";
+
+declare const preset: Preset<{ name: z.ZodString }>;
+
+await producePreset(preset, {
+	blocks: {
+		add: [blockJest],
+		remove: [blockVitest],
+	},
+	options: {
+		name: "My Production",
+	},
+});
+```
+
+See [Configuration > `blocks`](../../configuration#blocks) for how this is used.
 
 ### `options` {#preset-options}
 
