@@ -22,11 +22,13 @@ export interface RunModeInitializeSettings {
 	directory?: string;
 	from?: string;
 	preset?: string;
+	repository?: string;
 }
 
 export async function runModeInitialize({
 	args,
-	directory: requestedDirectory,
+	repository,
+	directory: requestedDirectory = repository,
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
@@ -118,7 +120,7 @@ export async function runModeInitialize({
 			chalk.blue("Your new repository is ready in:"),
 			chalk.green(directory.startsWith(".") ? directory : `./${directory}`),
 		].join(" "),
-		status: CLIStatus.Error,
+		status: CLIStatus.Success,
 		suggestions: creation.suggestions,
 	};
 }

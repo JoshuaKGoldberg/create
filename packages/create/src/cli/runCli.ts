@@ -16,7 +16,9 @@ const valuesSchema = z.object({
 	directory: z.string().optional(),
 	from: z.string().optional(),
 	mode: z.union([z.literal("initialize"), z.literal("migrate")]).optional(),
+	owner: z.string().optional(),
 	preset: z.string().optional(),
+	repository: z.string().optional(),
 });
 
 export async function runCli(args: string[], logger: Logger) {
@@ -35,7 +37,13 @@ export async function runCli(args: string[], logger: Logger) {
 			mode: {
 				type: "string",
 			},
+			owner: {
+				type: "string",
+			},
 			preset: {
+				type: "string",
+			},
+			repository: {
 				type: "string",
 			},
 			version: {
