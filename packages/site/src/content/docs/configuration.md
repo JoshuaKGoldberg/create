@@ -6,8 +6,6 @@ title: Configuration
 :::danger
 The `create` engine is very early stage.
 Don't rely on it yet.
-
-**Configuration files are only partially implemented so far.**
 :::
 
 Running `npx create --preset ...` in a repository that was already set up with that Preset will re-run the Preset on the repository.
