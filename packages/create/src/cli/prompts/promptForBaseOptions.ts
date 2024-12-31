@@ -6,17 +6,17 @@ import { Base } from "../../types/bases.js";
 import { SystemContext } from "../../types/system.js";
 import { promptForSchema } from "./promptForSchema.js";
 
-export interface PromptForPresetOptionsSettings {
+export interface PromptForBaseOptionsSettings {
 	base: Base;
 	existingOptions: Partial<InferredObject<AnyShape>>;
 	system: SystemContext;
 }
 
-export async function promptForPresetOptions({
+export async function promptForBaseOptions({
 	base,
 	existingOptions,
 	system,
-}: PromptForPresetOptionsSettings) {
+}: PromptForBaseOptionsSettings) {
 	const { directory } = system;
 	const options: InferredObject<AnyShape> = {
 		directory,

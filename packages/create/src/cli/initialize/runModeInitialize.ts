@@ -5,11 +5,12 @@ import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
+import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
+import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
-import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { assertOptionsForInitialize } from "./assertOptionsForInitialize.js";
@@ -62,12 +63,9 @@ export async function runModeInitialize({
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
-	const options = await promptForPresetOptions({
+	const options = await promptForBaseOptions({
 		base: loaded.preset.base,
-		existingOptions: {
-			repository: directory,
-			...parseZodArgs(args, loaded.preset.base.options),
-		},
+		existingOptions: parseZodArgs(args, loaded.preset.base.options),
 		system,
 	});
 
@@ -77,35 +75,43 @@ export async function runModeInitialize({
 
 	assertOptionsForInitialize(options);
 
-	display.spinner.start("Creating repository on GitHub...");
-
-	await createRepositoryOnGitHub(
-		options,
-		system.fetchers.octokit,
-		loaded.preset.base.template,
+	await runSpinnerTask(
+		display,
+		"Creating repository on GitHub",
+		"Created repository on GitHub",
+		async () => {
+			await createRepositoryOnGitHub(
+				options,
+				system.fetchers.octokit,
+				loaded.preset.base.template,
+			);
+		},
 	);
 
-	display.spinner.stop("Created repository on GitHub.");
+	const presetDescription = `the ${loaded.preset.about.name} preset`;
 
-	const description = `the ${loaded.preset.about.name} preset`;
+	const creation = await runSpinnerTask(
+		display,
+		`Running ${presetDescription}`,
+		`Ran ${presetDescription}`,
+		async () =>
+			await runPreset(loaded.preset, {
+				...system,
+				directory,
+				mode: "initialize",
+				options,
+			}),
+	);
 
-	display.spinner.start(`Running ${description}...`);
-
-	const creation = await runPreset(loaded.preset, {
-		...system,
-		directory,
-		mode: "initialize",
-		options,
-	});
-
-	display.spinner.stop(`Ran ${description}.`);
-
-	display.spinner.start(`Preparing local repository...`);
-
-	await createTrackingBranches(options, system.runner);
-	await clearLocalGitTags(system.runner);
-
-	display.spinner.start(`Prepared local repository.`);
+	await runSpinnerTask(
+		display,
+		"Preparing local repository",
+		"Prepared local repository",
+		async () => {
+			await createTrackingBranches(options, system.runner);
+			await clearLocalGitTags(system.runner);
+		},
+	);
 
 	return {
 		outro: [
