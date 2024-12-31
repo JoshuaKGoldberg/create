@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
@@ -28,14 +29,15 @@ vi.mock("../../system/createSystemContextWithAuth.js", () => ({
 	createSystemContextWithAuth: vi.fn().mockResolvedValue({}),
 }));
 
-vi.mock("../display/createClackDisplay.js", () => ({
-	createClackDisplay: () => ({
-		spinner: {
-			start: vi.fn(),
-			stop: vi.fn(),
-		},
-	}),
-}));
+const stubDisplay = {
+	dumpItems: vi.fn(),
+	item: vi.fn(),
+	log: vi.fn(),
+	spinner: {
+		start: vi.fn(),
+		stop: vi.fn(),
+	},
+} as unknown as ClackDisplay;
 
 const mockPromptForBaseOptions = vi.fn();
 
@@ -107,6 +109,7 @@ describe("runModeMigrate", () => {
 		const actual = await runModeMigrate({
 			args: [],
 			configFile: undefined,
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({
@@ -122,6 +125,7 @@ describe("runModeMigrate", () => {
 		const actual = await runModeMigrate({
 			args: [],
 			configFile: undefined,
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -136,6 +140,7 @@ describe("runModeMigrate", () => {
 		const actual = await runModeMigrate({
 			args: [],
 			configFile: "create.config.js",
+			display: stubDisplay,
 		});
 
 		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
@@ -152,6 +157,7 @@ describe("runModeMigrate", () => {
 		await runModeMigrate({
 			args: [],
 			configFile: "create.config.js",
+			display: stubDisplay,
 		});
 
 		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
@@ -167,6 +173,7 @@ describe("runModeMigrate", () => {
 		await runModeMigrate({
 			args: [],
 			configFile: "create.config.js",
+			display: stubDisplay,
 		});
 
 		expect(mockClearTemplateFiles).toHaveBeenCalled();
@@ -181,6 +188,7 @@ describe("runModeMigrate", () => {
 		const actual = await runModeMigrate({
 			args: [],
 			configFile: "create.config.js",
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({

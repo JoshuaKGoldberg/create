@@ -26,6 +26,15 @@ const template = {
 };
 
 describe("getForkedTemplateLocator", () => {
+	it("returns undefined when readPackage rejects", async () => {
+		mockReadPackage.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await getForkedTemplateLocator(".", template);
+
+		expect(actual).toBeUndefined();
+		expect(mockFromUrl).not.toHaveBeenCalled();
+	});
+
 	it("returns undefined when there is no package repository url", async () => {
 		mockReadPackage.mockResolvedValueOnce({});
 

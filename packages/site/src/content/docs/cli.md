@@ -6,8 +6,6 @@ title: CLI
 :::danger
 The `create` engine is very early stage.
 Don't rely on it yet.
-
-**This CLI is only partially implemented so far.**
 :::
 
 The `create` CLI is what you run to generate a new repository.
@@ -92,10 +90,6 @@ npx create typescript-app --preset common
 
 > Type: `boolean`
 
-:::danger
-**This will be very experimental** and targeted to developers writing their own repository templates.
-:::
-
 Whether to keep `create` running in a "watch" mode after its initial pass.
 When in watch mode, `create` will re-apply file creations whenever the "from" file or any of its imported entries change.
 This is only supported when the "from" is a relative path to a local ESM entry point on disk.
@@ -125,6 +119,10 @@ If your file changes aren't statically detectable, you can always manually save 
 
 ### Base Arguments
 
+:::danger
+Base arguments are not yet implemented in the `create` CLI.
+:::
+
 The Template being generated from will add in additional arguments based on its [Base](./concepts/bases).
 Arguments defined in a Template's Base can be provided to `create` after a `--`.
 Their name will be the lowercase name of the defined option.
@@ -138,6 +136,10 @@ npx create typescript-app --preset everything -- --title "My New App"
 Any required Base arguments that are not provided will be prompted for by the `create` CLI.
 
 ### Skipping Blocks
+
+:::danger
+Skipped Blocks are not yet implemented in the `create` CLI.
+:::
 
 Most of the time, you shouldn't need to customize a Template beyond the options defined by its [Base](./concepts/bases).
 However, it can sometimes be desirable to skip producing some pieces of tooling for individual projects.

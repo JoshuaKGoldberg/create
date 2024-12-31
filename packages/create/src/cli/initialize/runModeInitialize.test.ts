@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
 import { createTemplate } from "../../creators/createTemplate.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
@@ -36,14 +37,15 @@ vi.mock("../clearLocalGitTags.js", () => ({
 	clearLocalGitTags: vi.fn(),
 }));
 
-vi.mock("../display/createClackDisplay.js", () => ({
-	createClackDisplay: () => ({
-		spinner: {
-			start: vi.fn(),
-			stop: vi.fn(),
-		},
-	}),
-}));
+const stubDisplay = {
+	dumpItems: vi.fn(),
+	item: vi.fn(),
+	log: vi.fn(),
+	spinner: {
+		start: vi.fn(),
+		stop: vi.fn(),
+	},
+} as unknown as ClackDisplay;
 
 const mockTryImportTemplatePreset = vi.fn();
 
@@ -98,6 +100,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({
@@ -112,6 +115,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -124,6 +128,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -140,6 +145,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -162,6 +168,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({
@@ -189,6 +196,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display: stubDisplay,
 		});
 
 		expect(actual).toEqual({

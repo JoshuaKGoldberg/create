@@ -4,7 +4,7 @@ import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
-import { createClackDisplay } from "../display/createClackDisplay.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
@@ -19,6 +19,7 @@ export interface RunModeMigrateSettings {
 	args: string[];
 	configFile: string | undefined;
 	directory?: string;
+	display: ClackDisplay;
 	from?: string;
 	preset?: string | undefined;
 }
@@ -27,6 +28,7 @@ export async function runModeMigrate({
 	args,
 	configFile,
 	directory = ".",
+	display,
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
@@ -46,7 +48,6 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
 	const templateLocator =
@@ -89,24 +90,28 @@ export async function runModeMigrate({
 		},
 	);
 
-	if (!templateLocator) {
-		return {
-			outro: `You might want to commit any changes.`,
-			status: CLIStatus.Success,
-		};
+	let outro: string;
+
+	if (templateLocator) {
+		outro = `You might want to commit any changes.`;
+		await runSpinnerTask(
+			display,
+			"Creating initial commit",
+			"Created initial commit",
+			async () => {
+				await createInitialCommit(system.runner, true);
+			},
+		);
+	} else {
+		outro = `Done!`;
 	}
 
-	await runSpinnerTask(
-		display,
-		"Creating initial commit",
-		"Created initial commit",
-		async () => {
-			await createInitialCommit(system.runner, true);
-		},
-	);
-
 	return {
-		outro: `Done!`,
+		directory,
+		from,
+		options,
+		outro,
 		status: CLIStatus.Success,
+		system,
 	};
 }

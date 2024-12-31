@@ -34,6 +34,7 @@
 		"hosted-git-info": "^8.0.2",
 		"import-local-or-npx": "^0.1.0",
 		"octokit": "^4.0.2",
+		"precinct": "^12.1.2",
 		"prettier": "3.4.2",
 		"read-pkg": "^9.0.1",
 		"without-undefined-properties": "^0.1.1",

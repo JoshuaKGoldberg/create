@@ -4,6 +4,7 @@ import { parseArgs } from "node:util";
 import { z } from "zod";
 
 import { packageData } from "../packageData.js";
+import { createClackDisplay } from "./display/createClackDisplay.js";
 import { runModeInitialize } from "./initialize/runModeInitialize.js";
 import { logHelpText } from "./loggers/logHelpText.js";
 import { logOutro } from "./loggers/logOutro.js";
@@ -11,6 +12,7 @@ import { runModeMigrate } from "./migrate/runModeMigrate.js";
 import { readProductionSettings } from "./readProductionSettings.js";
 import { CLIStatus } from "./status.js";
 import { Logger } from "./types.js";
+import { startWatchMode } from "./watch/startWatchMode.js";
 
 const valuesSchema = z.object({
 	directory: z.string().optional(),
@@ -19,6 +21,7 @@ const valuesSchema = z.object({
 	owner: z.string().optional(),
 	preset: z.string().optional(),
 	repository: z.string().optional(),
+	watch: z.boolean().optional(),
 });
 
 export async function runCli(args: string[], logger: Logger) {
@@ -47,6 +50,9 @@ export async function runCli(args: string[], logger: Logger) {
 				type: "string",
 			},
 			version: {
+				type: "boolean",
+			},
+			watch: {
 				type: "boolean",
 			},
 		},
@@ -78,20 +84,39 @@ export async function runCli(args: string[], logger: Logger) {
 		return CLIStatus.Error;
 	}
 
-	const { outro, status, suggestions } =
+	const display = createClackDisplay();
+	const modeResults =
 		productionSettings.mode === "initialize"
-			? await runModeInitialize({ ...validatedValues, args })
+			? await runModeInitialize({ ...validatedValues, args, display })
 			: await runModeMigrate({
 					...validatedValues,
 					args,
 					configFile: productionSettings.configFile,
+					display,
 				});
 
-	logOutro(
-		outro ??
-			chalk.yellow("Operation cancelled. Exiting - maybe another time? 👋"),
-		suggestions,
-	);
+	if (modeResults.status !== CLIStatus.Success) {
+		logOutro(
+			modeResults.status === CLIStatus.Error
+				? modeResults.outro
+				: chalk.yellow("Operation cancelled. Exiting - maybe another time? 👋"),
+		);
+		return modeResults.status;
+	}
 
-	return status;
+	if (!validatedValues.watch) {
+		logOutro(modeResults.outro, modeResults.suggestions);
+		return modeResults.status;
+	}
+
+	const watchResults = await startWatchMode({
+		...validatedValues,
+		...modeResults,
+		...productionSettings,
+		display,
+	});
+
+	logOutro(watchResults.outro);
+
+	return watchResults.status;
 }

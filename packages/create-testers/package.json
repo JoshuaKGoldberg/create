@@ -24,6 +24,7 @@
 		"build": "tsc"
 	},
 	"dependencies": {
+		"enhanced-resolve": "^5.18.0",
 		"octokit": "^4.0.2"
 	},
 	"devDependencies": {

@@ -5,3 +5,11 @@ export function isLocalPath(from: string) {
 export function makeRelative(item: string) {
 	return item.startsWith(".") ? item : `./${item}`;
 }
+
+export async function swallowAsync<T>(task: Promise<T>) {
+	try {
+		return await task;
+	} catch {
+		return undefined;
+	}
+}
