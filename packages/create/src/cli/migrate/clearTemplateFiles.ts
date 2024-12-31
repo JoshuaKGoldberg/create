@@ -7,7 +7,7 @@ export async function clearTemplateFiles(directory: string) {
 		children
 			.filter((child) => child !== ".git")
 			.map(async (child) => {
-				await fs.rm(child);
+				await fs.rm(child, { recursive: true });
 			}),
 	);
 }
