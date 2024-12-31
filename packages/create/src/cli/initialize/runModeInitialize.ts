@@ -4,6 +4,7 @@ import chalk from "chalk";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
+import { createInitialCommit } from "../createInitialCommit.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
@@ -101,6 +102,7 @@ export async function runModeInitialize({
 		"Prepared local repository",
 		async () => {
 			await createTrackingBranches(options, system.runner);
+			await createInitialCommit(system.runner);
 			await clearLocalGitTags(system.runner);
 		},
 	);

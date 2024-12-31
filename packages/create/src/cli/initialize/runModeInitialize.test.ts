@@ -14,8 +14,35 @@ vi.mock("@clack/prompts", () => ({
 	spinner: vi.fn(),
 }));
 
+const mockRunPreset = vi.fn();
+
+vi.mock("../../runners/runPreset.js", () => ({
+	get runPreset() {
+		return mockRunPreset;
+	},
+}));
+
 vi.mock("../../system/createSystemContextWithAuth.js", () => ({
-	createSystemContextWithAuth: vi.fn().mockResolvedValue({}),
+	createSystemContextWithAuth: vi.fn().mockResolvedValue({
+		fetchers: {},
+	}),
+}));
+
+vi.mock("../createInitialCommit.js", () => ({
+	createInitialCommit: vi.fn(),
+}));
+
+vi.mock("../clearLocalGitTags.js", () => ({
+	clearLocalGitTags: vi.fn(),
+}));
+
+vi.mock("../display/createClackDisplay.js", () => ({
+	createClackDisplay: () => ({
+		spinner: {
+			start: vi.fn(),
+			stop: vi.fn(),
+		},
+	}),
 }));
 
 const mockTryImportTemplatePreset = vi.fn();
@@ -40,6 +67,14 @@ vi.mock("../prompts/promptForInitializationDirectory.js", () => ({
 	get promptForInitializationDirectory() {
 		return mockPromptForInitializationDirectory;
 	},
+}));
+
+vi.mock("./createRepositoryOnGitHub.js", () => ({
+	createRepositoryOnGitHub: vi.fn(),
+}));
+
+vi.mock("./createTrackingBranches.js", () => ({
+	createTrackingBranches: vi.fn(),
 }));
 
 const base = createBase({
@@ -108,5 +143,59 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+	});
+
+	it("returns a CLI success and makes an absolute directory relative when importing and running the preset succeeds", async () => {
+		const directory = "local-directory";
+		const suggestions = ["abc"];
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockIsCancel.mockReturnValue(false);
+		mockRunPreset.mockResolvedValueOnce({
+			suggestions,
+		});
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({
+			outro: "Your new repository is ready in: ./local-directory",
+			status: CLIStatus.Success,
+			suggestions,
+		});
+		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
+	});
+
+	it("returns a CLI success and keeps a relative directory when importing and running the preset succeeds", async () => {
+		const directory = "./local-directory";
+		const suggestions = ["abc"];
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockIsCancel.mockReturnValue(false);
+		mockRunPreset.mockResolvedValueOnce({
+			suggestions,
+		});
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({
+			outro: "Your new repository is ready in: ./local-directory",
+			status: CLIStatus.Success,
+			suggestions,
+		});
+		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 	});
 });

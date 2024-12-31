@@ -53,6 +53,14 @@ vi.mock("../clearLocalGitTags.js", () => ({
 	},
 }));
 
+const mockCreateInitialCommit = vi.fn();
+
+vi.mock("../createInitialCommit.js", () => ({
+	get createInitialCommit() {
+		return mockCreateInitialCommit;
+	},
+}));
+
 const mockClearTemplateFiles = vi.fn();
 
 vi.mock("./clearTemplateFiles.js", () => ({
@@ -136,7 +144,7 @@ describe("runModeMigrate", () => {
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
 	});
 
-	it("doesn't clear template files or tags when no forked template locator is available", async () => {
+	it("doesn't clear Git or template files when no forked template locator is available", async () => {
 		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
@@ -148,9 +156,10 @@ describe("runModeMigrate", () => {
 
 		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
 		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+		expect(mockCreateInitialCommit).not.toHaveBeenCalled();
 	});
 
-	it("clears template files and tags when a forked template locator is available", async () => {
+	it("clears Git and template files when a forked template locator is available", async () => {
 		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 		mockGetForkedTemplateLocator.mockResolvedValueOnce("a/b");
@@ -162,6 +171,7 @@ describe("runModeMigrate", () => {
 
 		expect(mockClearTemplateFiles).toHaveBeenCalled();
 		expect(mockClearLocalGitTags).toHaveBeenCalled();
+		expect(mockCreateInitialCommit).toHaveBeenCalled();
 	});
 
 	it("returns a CLI success when importing and running the preset succeeds", async () => {
@@ -173,10 +183,10 @@ describe("runModeMigrate", () => {
 			configFile: "create.config.js",
 		});
 
-		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 		expect(actual).toEqual({
 			outro: `You might want to commit any changes.`,
 			status: CLIStatus.Success,
 		});
+		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 	});
 });
