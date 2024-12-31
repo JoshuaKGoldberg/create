@@ -5,18 +5,29 @@ import {
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
-import { Creation } from "../types/creations.js";
+import { CreatedBlockAddons, Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
 import { Preset } from "../types/presets.js";
 import { SystemContext } from "../types/system.js";
 import { produceBlock } from "./produceBlock.js";
 
-export function executePresetBlocks<OptionsShape extends AnyShape>(
-	preset: Preset<OptionsShape>,
-	options: InferredObject<OptionsShape>,
-	presetContext: SystemContext,
-	mode: ProductionMode | undefined,
-) {
+export interface ExecutePresetBlocksSettings<OptionsShape extends AnyShape> {
+	// TODO: I don't know what to put here instead of object...
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	addons?: CreatedBlockAddons<any, InferredObject<OptionsShape>>[];
+	mode?: ProductionMode;
+	options: InferredObject<OptionsShape>;
+	preset: Preset<OptionsShape>;
+	presetContext: SystemContext;
+}
+
+export function executePresetBlocks<OptionsShape extends AnyShape>({
+	addons,
+	mode,
+	options,
+	preset,
+	presetContext,
+}: ExecutePresetBlocksSettings<OptionsShape>) {
 	type Options = InferredObject<OptionsShape>;
 
 	// From engine/runtime/execution.md:
@@ -25,7 +36,7 @@ export function executePresetBlocks<OptionsShape extends AnyShape>(
 	const blockProductions = new Map<
 		Block<object | undefined, Options>,
 		BlockProduction<object, Options>
-	>();
+	>(addons?.map((addon) => [addon.block, { addons: addon.addons as object }]));
 
 	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
 	const blocksToBeRun = new Set(preset.blocks);

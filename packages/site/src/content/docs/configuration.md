@@ -44,10 +44,6 @@ The customizations that can be passed to `createConfig` are a superset of what y
 
 ### `addons`
 
-:::danger
-Addons in config files have not yet been implemented.
-:::
-
 Any [Addons](./engine/concepts/blocks#addons) to be passed to the [Blocks](./engines/concepts/blocks) that come with the Preset.
 These will be [merged](./engine/runtime/merging) in with Addons provided by other Blocks.
 
