@@ -5,7 +5,7 @@ import { createBase } from "../creators/createBase.js";
 import { createSystemFetchers } from "../system/createSystemFetchers.js";
 import { executePresetBlocks } from "./executePresetBlocks.js";
 
-const context = {
+const presetContext = {
 	directory: ".",
 	display: {
 		item: vi.fn(),
@@ -43,16 +43,51 @@ describe("runPreset", () => {
 			blocks: [block],
 		});
 
-		const result = executePresetBlocks(
+		const result = executePresetBlocks({
+			options: { value: "Hello, world!" },
 			preset,
-			{ value: "Hello, world!" },
-			context,
-			undefined,
-		);
+			presetContext,
+		});
 
 		expect(result).toEqual({
 			files: {
 				"README.md": "Hello, world!",
+			},
+		});
+	});
+
+	it("adds addons when provided", () => {
+		const block = base.createBlock({
+			about: {
+				name: "Example Block",
+			},
+			addons: {
+				extra: z.string().default(""),
+			},
+			produce({ addons, options }) {
+				return {
+					files: { "README.md": [options.value, addons.extra].join("\n") },
+				};
+			},
+		});
+
+		const preset = base.createPreset({
+			about: {
+				name: "Example Preset",
+			},
+			blocks: [block],
+		});
+
+		const result = executePresetBlocks({
+			addons: [block({ extra: "line" })],
+			options: { value: "Hello, world!" },
+			preset,
+			presetContext,
+		});
+
+		expect(result).toEqual({
+			files: {
+				"README.md": "Hello, world!\nline",
 			},
 		});
 	});
@@ -89,12 +124,11 @@ describe("runPreset", () => {
 		});
 
 		it("does not augment creations with a Block's initialize() or migrate() when mode is undefined", () => {
-			const result = executePresetBlocks(
+			const result = executePresetBlocks({
+				options: { value: "Hello, world!" },
 				preset,
-				{ value: "Hello, world!" },
-				context,
-				undefined,
-			);
+				presetContext,
+			});
 
 			expect(result).toEqual({
 				files: {
@@ -104,12 +138,12 @@ describe("runPreset", () => {
 		});
 
 		it("augments creations with a Block's initialize() when mode is 'initialize'", () => {
-			const result = executePresetBlocks(
+			const result = executePresetBlocks({
+				mode: "initialize",
+				options: { value: "Hello, world!" },
 				preset,
-				{ value: "Hello, world!" },
-				context,
-				"initialize",
-			);
+				presetContext,
+			});
 
 			expect(result).toEqual({
 				files: {
@@ -120,12 +154,12 @@ describe("runPreset", () => {
 		});
 
 		it("augments creations with a Block's migrate() when mode is 'migrate'", () => {
-			const result = executePresetBlocks(
+			const result = executePresetBlocks({
+				mode: "migrate",
+				options: { value: "Hello, world!" },
 				preset,
-				{ value: "Hello, world!" },
-				context,
-				"migrate",
-			);
+				presetContext,
+			});
 
 			expect(result).toEqual({
 				files: {

@@ -3,19 +3,15 @@ import fs from "node:fs/promises";
 import { AnyShape, InferredObject } from "../options.js";
 import { producePreset } from "../producers/producePreset.js";
 import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
-import { Creation } from "../types/creations.js";
+import { CreatedBlockAddons, Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { applyCreation } from "./applyCreation.js";
 
-export interface AugmentingPresetRunSettings<OptionsShape extends AnyShape>
-	extends RunSettingsBase {
-	options?: Partial<InferredObject<OptionsShape>>;
-}
-
 export interface PresetRunSettings<OptionsShape extends AnyShape>
 	extends RunSettingsBase {
+	addons?: CreatedBlockAddons<object, InferredObject<OptionsShape>>[];
 	options: InferredObject<OptionsShape>;
 }
 
