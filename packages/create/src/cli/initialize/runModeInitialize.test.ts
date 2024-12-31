@@ -14,6 +14,10 @@ vi.mock("@clack/prompts", () => ({
 	spinner: vi.fn(),
 }));
 
+vi.mock("../../system/createSystemContextWithAuth.js", () => ({
+	createSystemContextWithAuth: vi.fn().mockResolvedValue({}),
+}));
+
 const mockTryImportTemplatePreset = vi.fn();
 
 vi.mock("../importers/tryImportTemplatePreset.js", () => ({
