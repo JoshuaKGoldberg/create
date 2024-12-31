@@ -145,7 +145,7 @@ importers:
         version: 3.24.1
     devDependencies:
       '@types/hosted-git-info':
-        specifier: ^3.0.5
+        specifier: 3.0.5
         version: 3.0.5
 
   packages/create-testers:

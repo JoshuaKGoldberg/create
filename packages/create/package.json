@@ -40,7 +40,7 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@types/hosted-git-info": "^3.0.5"
+		"@types/hosted-git-info": "3.0.5"
 	},
 	"engines": {
 		"node": ">=18"
