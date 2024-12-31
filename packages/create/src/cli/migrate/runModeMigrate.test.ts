@@ -37,6 +37,30 @@ vi.mock("../display/createClackDisplay.js", () => ({
 	}),
 }));
 
+const mockClearLocalGitTags = vi.fn();
+
+vi.mock("./clearLocalGitTags.js", () => ({
+	get clearLocalGitTags() {
+		return mockClearLocalGitTags;
+	},
+}));
+
+const mockClearTemplateFiles = vi.fn();
+
+vi.mock("./clearTemplateFiles.js", () => ({
+	get clearTemplateFiles() {
+		return mockClearTemplateFiles;
+	},
+}));
+
+const mockIsForkOfTemplate = vi.fn();
+
+vi.mock("./isForkOfTemplate.js", () => ({
+	get isForkOfTemplate() {
+		return mockIsForkOfTemplate;
+	},
+}));
+
 const mockLoadMigrationPreset = vi.fn();
 
 vi.mock("./loadMigrationPreset.js", () => ({
@@ -44,6 +68,14 @@ vi.mock("./loadMigrationPreset.js", () => ({
 		return mockLoadMigrationPreset;
 	},
 }));
+
+const base = createBase({
+	options: {},
+});
+const preset = base.createPreset({
+	about: { name: "Test" },
+	blocks: [],
+});
 
 describe("runModeMigrate", () => {
 	it("returns the error when loadMigrationPreset resolves with an error", async () => {
@@ -76,14 +108,35 @@ describe("runModeMigrate", () => {
 		});
 	});
 
+	it("doesn't clear template files or tags when not a template fork", async () => {
+		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockIsCancel.mockReturnValueOnce(false);
+		mockIsForkOfTemplate.mockResolvedValueOnce(false);
+
+		await runModeMigrate({
+			args: [],
+			configFile: "create.config.js",
+		});
+
+		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
+		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+	});
+
+	it("clears template files and tags when a template fork", async () => {
+		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockIsCancel.mockReturnValueOnce(false);
+		mockIsForkOfTemplate.mockResolvedValueOnce(true);
+
+		await runModeMigrate({
+			args: [],
+			configFile: "create.config.js",
+		});
+
+		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
+		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+	});
+
 	it("returns a CLI success when importing and running the preset succeeds", async () => {
-		const base = createBase({
-			options: {},
-		});
-		const preset = base.createPreset({
-			about: { name: "Test" },
-			blocks: [],
-		});
 		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 

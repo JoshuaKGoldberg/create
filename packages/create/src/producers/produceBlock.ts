@@ -1,11 +1,11 @@
 import { mergeCreations } from "../mergers/mergeCreations.js";
-import { ProductionMode } from "../modes/types.js";
 import {
 	BlockContextWithAddons,
 	BlockWithAddons,
 	BlockWithoutAddons,
 } from "../types/blocks.js";
 import { Creation, IndirectCreation } from "../types/creations.js";
+import { ProductionMode } from "../types/modes.js";
 
 export type BlockProductionSettings<
 	Addons extends object | undefined,

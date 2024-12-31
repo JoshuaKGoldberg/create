@@ -3,6 +3,7 @@ import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
@@ -11,6 +12,9 @@ import { promptForInitializationDirectory } from "../prompts/promptForInitializa
 import { promptForPresetOptions } from "../prompts/promptForPresetOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
+import { assertOptionsForInitialize } from "./assertOptionsForInitialize.js";
+import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
+import { createTrackingBranches } from "./createTrackingBranches.js";
 
 export interface RunModeInitializeSettings {
 	args: string[];
@@ -71,7 +75,21 @@ export async function runModeInitialize({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	display.spinner.start("Creating repository...");
+	assertOptionsForInitialize(options);
+
+	display.spinner.start("Creating repository on GitHub...");
+
+	await createRepositoryOnGitHub(
+		options,
+		system.fetchers.octokit,
+		loaded.preset.base.template,
+	);
+
+	display.spinner.stop("Created repository on GitHub.");
+
+	const description = `the ${loaded.preset.about.name} preset`;
+
+	display.spinner.start(`Running ${description}...`);
 
 	const creation = await runPreset(loaded.preset, {
 		...system,
@@ -80,7 +98,14 @@ export async function runModeInitialize({
 		options,
 	});
 
-	display.spinner.stop("Created repository");
+	display.spinner.stop(`Ran ${description}.`);
+
+	display.spinner.start(`Preparing local repository...`);
+
+	await createTrackingBranches(options, system.runner);
+	await clearLocalGitTags(system.runner);
+
+	display.spinner.start(`Prepared local repository.`);
 
 	return {
 		outro: [

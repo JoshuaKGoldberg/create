@@ -1,4 +1,7 @@
-import { CreationOptions } from "../../modes/types.js";
+export interface CreationOptions {
+	owner: string;
+	repository: string;
+}
 
 export function assertOptionsForInitialize(
 	options: object,

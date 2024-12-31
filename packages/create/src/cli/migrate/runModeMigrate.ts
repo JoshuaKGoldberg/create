@@ -3,10 +3,13 @@ import * as prompts from "@clack/prompts";
 import { produceBase } from "../../producers/produceBase.js";
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
+import { clearTemplateFiles } from "./clearTemplateFiles.js";
+import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
 import { loadMigrationPreset } from "./loadMigrationPreset.js";
 
 export interface RunModeMigrateSettings {
@@ -39,11 +42,23 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const description = `the ${loaded.preset.about.name} preset`;
 	const display = createClackDisplay();
-	const system = await createSystemContextWithAuth({ directory, display });
 
-	display.spinner.start(`Running ${description}...`);
+	const [templateDescription, system] = await Promise.all([
+		loaded.preset.base.template &&
+			getForkedTemplateLocator(directory, loaded.preset.base.template),
+		createSystemContextWithAuth({ directory, display }),
+	]);
+
+	if (templateDescription) {
+		display.spinner.start(`Clearing from ${templateDescription}...`);
+		await clearTemplateFiles(directory);
+		await clearLocalGitTags(system.runner);
+		display.spinner.start(`Cleared from ${templateDescription}.`);
+	}
+
+	const presetDescription = `the ${loaded.preset.about.name} preset`;
+	display.spinner.start(`Running ${presetDescription}...`);
 
 	const options = await produceBase(loaded.preset.base, {
 		...system,
@@ -57,7 +72,7 @@ export async function runModeMigrate({
 		options,
 	});
 
-	display.spinner.stop(`Ran ${description}.`);
+	display.spinner.stop(`Ran ${presetDescription}.`);
 
 	return {
 		outro: `You might want to commit any changes.`,

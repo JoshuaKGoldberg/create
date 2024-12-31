@@ -34,6 +34,7 @@ export type * from "./types/blocks.js";
 export type * from "./types/context.js";
 export type * from "./types/creations.js";
 export type * from "./types/inputs.js";
+export type * from "./types/modes.js";
 export type * from "./types/presets.js";
 export type * from "./types/system.js";
 export type * from "./types/templates.js";

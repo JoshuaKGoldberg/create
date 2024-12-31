@@ -63,6 +63,7 @@ export type LazyOptionalOptions<Options> = {
 };
 
 export interface RepositoryTemplate {
+	deletions?: string[];
 	owner: string;
 	repository: string;
 }

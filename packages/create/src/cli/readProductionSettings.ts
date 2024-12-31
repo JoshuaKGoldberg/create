@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import { ProductionMode } from "../modes/types.js";
+import { ProductionMode } from "../types/modes.js";
 import { ProductionSettings } from "./types.js";
 
 export interface ReadProductionSettingsOptions {
