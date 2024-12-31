@@ -66,10 +66,6 @@ Running `npx create` in a repository with that configuration file would merge in
 
 ### `blocks`
 
-:::danger
-Blocks in config files have not yet been implemented.
-:::
-
 Any customizations to the [Blocks](./engines/concepts/blocks) provided as part of the Preset.
 
 #### `add`
