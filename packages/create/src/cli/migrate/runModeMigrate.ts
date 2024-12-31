@@ -1,5 +1,4 @@
 import * as prompts from "@clack/prompts";
-import path from "node:path";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
