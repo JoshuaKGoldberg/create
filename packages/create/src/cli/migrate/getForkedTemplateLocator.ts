@@ -12,8 +12,7 @@ export async function getForkedTemplateLocator(
 		return undefined;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/await-thenable
-	const gitInfo = await hostedGitInfo.fromUrl(repository.url);
+	const gitInfo = hostedGitInfo.fromUrl(repository.url);
 
 	if (
 		gitInfo?.user !== template.owner ||

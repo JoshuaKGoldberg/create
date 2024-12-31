@@ -40,7 +40,7 @@ describe("getForkedTemplateLocator", () => {
 			repository: { url: "..." },
 		});
 
-		mockFromUrl.mockResolvedValueOnce(undefined);
+		mockFromUrl.mockReturnValueOnce(undefined);
 
 		const actual = await getForkedTemplateLocator(".", template);
 
@@ -52,7 +52,7 @@ describe("getForkedTemplateLocator", () => {
 			repository: { url: "..." },
 		});
 
-		mockFromUrl.mockResolvedValueOnce({
+		mockFromUrl.mockReturnValueOnce({
 			project: template.repository,
 			user: "other",
 		});
@@ -67,7 +67,7 @@ describe("getForkedTemplateLocator", () => {
 			repository: { url: "..." },
 		});
 
-		mockFromUrl.mockResolvedValueOnce({
+		mockFromUrl.mockReturnValueOnce({
 			project: "other",
 			user: template.owner,
 		});
@@ -82,7 +82,7 @@ describe("getForkedTemplateLocator", () => {
 			repository: { url: "..." },
 		});
 
-		mockFromUrl.mockResolvedValueOnce({
+		mockFromUrl.mockReturnValueOnce({
 			project: template.repository,
 			user: template.owner,
 		});
