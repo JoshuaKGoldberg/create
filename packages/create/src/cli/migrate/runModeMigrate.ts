@@ -12,7 +12,7 @@ import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { clearTemplateFiles } from "./clearTemplateFiles.js";
 import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
-import { loadMigrationPreset } from "./loadMigrationPreset.js";
+import { tryLoadMigrationPreset } from "./tryLoadMigrationPreset.js";
 
 export interface RunModeMigrateSettings {
 	args: string[];
@@ -29,7 +29,7 @@ export async function runModeMigrate({
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
-	const loaded = await loadMigrationPreset({
+	const loaded = await tryLoadMigrationPreset({
 		configFile,
 		from,
 		requestedPreset,
@@ -72,12 +72,10 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const presetDescription = `the ${loaded.preset.about.name} preset`;
-
 	await runSpinnerTask(
 		display,
-		`Running ${presetDescription}`,
-		`Ran ${presetDescription}`,
+		`Running the ${loaded.preset.about.name} preset`,
+		`Ran the ${loaded.preset.about.name} preset`,
 		async () => {
 			await runPreset(loaded.preset, {
 				...system,

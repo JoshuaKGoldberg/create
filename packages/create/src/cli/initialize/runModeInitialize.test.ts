@@ -21,6 +21,14 @@ vi.mock("../importers/tryImportTemplatePreset.js", () => ({
 	},
 }));
 
+const mockPromptForBaseOptions = vi.fn();
+
+vi.mock("../prompts/promptForBaseOptions.js", () => ({
+	get promptForBaseOptions() {
+		return mockPromptForBaseOptions;
+	},
+}));
+
 const mockPromptForInitializationDirectory = vi.fn();
 
 vi.mock("../prompts/promptForInitializationDirectory.js", () => ({
@@ -43,17 +51,6 @@ const template = createTemplate({
 });
 
 describe("runModeInitialize", () => {
-	it("returns a CLI error when no positional from can be found", async () => {
-		const actual = await runModeInitialize({ args: [] });
-
-		expect(actual).toEqual({
-			outro: "Please specify a package to create from.",
-			status: CLIStatus.Error,
-		});
-
-		expect(mockTryImportTemplatePreset).not.toHaveBeenCalled();
-	});
-
 	it("returns the error when importing tryImportTemplatePreset resolves with an error", async () => {
 		const message = "Oh no!";
 
@@ -85,6 +82,20 @@ describe("runModeInitialize", () => {
 		const cancellation = Symbol.for("cancel");
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForInitializationDirectory.mockResolvedValueOnce(cancellation);
+		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+	});
+
+	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
+		const cancellation = Symbol.for("cancel");
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
+		mockPromptForBaseOptions.mockResolvedValueOnce(cancellation);
 		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
 
 		const actual = await runModeInitialize({

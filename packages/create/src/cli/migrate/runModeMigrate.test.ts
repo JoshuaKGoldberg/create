@@ -61,11 +61,11 @@ vi.mock("./getForkedTemplateLocator.js", () => ({
 	},
 }));
 
-const mockLoadMigrationPreset = vi.fn();
+const mockTryLoadMigrationPreset = vi.fn();
 
-vi.mock("./loadMigrationPreset.js", () => ({
-	get loadMigrationPreset() {
-		return mockLoadMigrationPreset;
+vi.mock("./tryLoadMigrationPreset.js", () => ({
+	get tryLoadMigrationPreset() {
+		return mockTryLoadMigrationPreset;
 	},
 }));
 
@@ -83,10 +83,10 @@ const preset = base.createPreset({
 });
 
 describe("runModeMigrate", () => {
-	it("returns the error when loadMigrationPreset resolves with an error", async () => {
+	it("returns the error when tryLoadMigrationPreset resolves with an error", async () => {
 		const error = new Error("Oh no!");
 
-		mockLoadMigrationPreset.mockResolvedValueOnce(error);
+		mockTryLoadMigrationPreset.mockResolvedValueOnce(error);
 
 		const actual = await runModeMigrate({
 			args: [],
@@ -99,8 +99,8 @@ describe("runModeMigrate", () => {
 		});
 	});
 
-	it("returns a cancellation status when loadMigrationPreset resolves with an error", async () => {
-		mockLoadMigrationPreset.mockResolvedValueOnce({});
+	it("returns a cancellation status when tryLoadMigrationPreset resolves with an error", async () => {
+		mockTryLoadMigrationPreset.mockResolvedValueOnce({});
 		mockIsCancel.mockReturnValueOnce(true);
 
 		const actual = await runModeMigrate({
@@ -114,7 +114,7 @@ describe("runModeMigrate", () => {
 	});
 
 	it("doesn't clear template files or tags when no forked template locator is available", async () => {
-		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 
@@ -128,7 +128,7 @@ describe("runModeMigrate", () => {
 	});
 
 	it("clears template files and tags when a forked template locator is available", async () => {
-		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 		mockGetForkedTemplateLocator.mockResolvedValueOnce("a/b");
 
@@ -142,7 +142,7 @@ describe("runModeMigrate", () => {
 	});
 
 	it("returns a CLI success when importing and running the preset succeeds", async () => {
-		mockLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
 		mockIsCancel.mockReturnValueOnce(false);
 
 		const actual = await runModeMigrate({

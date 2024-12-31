@@ -32,13 +32,6 @@ export async function runModeInitialize({
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
-	if (!from) {
-		return {
-			outro: "Please specify a package to create from.",
-			status: CLIStatus.Error,
-		};
-	}
-
 	const loaded = await tryImportTemplatePreset(from, requestedPreset);
 	if (loaded instanceof Error) {
 		return {
@@ -70,7 +63,6 @@ export async function runModeInitialize({
 		existingOptions: parseZodArgs(args, loaded.preset.base.options),
 		system,
 	});
-
 	if (prompts.isCancel(options)) {
 		return { status: CLIStatus.Cancelled };
 	}
@@ -90,12 +82,10 @@ export async function runModeInitialize({
 		},
 	);
 
-	const presetDescription = `the ${loaded.preset.about.name} preset`;
-
 	const creation = await runSpinnerTask(
 		display,
-		`Running ${presetDescription}`,
-		`Ran ${presetDescription}`,
+		`Running the ${loaded.preset.about.name} preset`,
+		`Ran the ${loaded.preset.about.name} preset`,
 		async () =>
 			await runPreset(loaded.preset, {
 				...system,

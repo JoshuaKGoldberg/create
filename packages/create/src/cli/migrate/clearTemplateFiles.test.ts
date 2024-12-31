@@ -36,9 +36,9 @@ describe("clearTemplateFiles", () => {
 
 		await clearTemplateFiles(directory);
 
-		expect(mockRm).not.toHaveBeenCalledWith(".git");
-		expect(mockRm).toHaveBeenCalledWith(".github");
-		expect(mockRm).toHaveBeenCalledWith("src");
-		expect(mockRm).toHaveBeenCalledWith("package.json");
+		expect(mockRm).not.toHaveBeenCalledWith(".git", expect.any(Object));
+		expect(mockRm).toHaveBeenCalledWith(".github", { recursive: true });
+		expect(mockRm).toHaveBeenCalledWith("src", { recursive: true });
+		expect(mockRm).toHaveBeenCalledWith("package.json", { recursive: true });
 	});
 });
