@@ -37,6 +37,14 @@ vi.mock("../display/createClackDisplay.js", () => ({
 	}),
 }));
 
+const mockPromptForBaseOptions = vi.fn();
+
+vi.mock("../prompts/promptForBaseOptions.js", () => ({
+	get promptForBaseOptions() {
+		return mockPromptForBaseOptions;
+	},
+}));
+
 const mockClearLocalGitTags = vi.fn();
 
 vi.mock("../clearLocalGitTags.js", () => ({
@@ -108,9 +116,24 @@ describe("runModeMigrate", () => {
 			configFile: undefined,
 		});
 
-		expect(actual).toEqual({
-			status: CLIStatus.Cancelled,
+		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+	});
+
+	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
+		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
+		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
+		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+		mockPromptForBaseOptions.mockResolvedValueOnce(Symbol.for("cancel"));
+
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: "create.config.js",
 		});
+
+		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
+		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+
+		expect(actual).toEqual({ status: CLIStatus.Cancelled });
 	});
 
 	it("doesn't clear template files or tags when no forked template locator is available", async () => {

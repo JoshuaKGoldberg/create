@@ -11,6 +11,7 @@ vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
+	spinner: vi.fn(),
 }));
 
 const mockTryImportTemplatePreset = vi.fn();
@@ -67,8 +68,7 @@ describe("runModeInitialize", () => {
 	});
 
 	it("returns the cancellation when tryImportTemplatePreset is cancelled", async () => {
-		const cancellation = Symbol.for("cancel");
-		mockTryImportTemplatePreset.mockResolvedValueOnce(cancellation);
+		mockTryImportTemplatePreset.mockResolvedValueOnce(Symbol(""));
 		mockIsCancel.mockReturnValueOnce(true);
 
 		const actual = await runModeInitialize({
@@ -79,9 +79,8 @@ describe("runModeInitialize", () => {
 	});
 
 	it("returns the cancellation when promptForInitializationDirectory is cancelled", async () => {
-		const cancellation = Symbol.for("cancel");
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(cancellation);
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(Symbol(""));
 		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
 
 		const actual = await runModeInitialize({
@@ -92,11 +91,13 @@ describe("runModeInitialize", () => {
 	});
 
 	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
-		const cancellation = Symbol.for("cancel");
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
-		mockPromptForBaseOptions.mockResolvedValueOnce(cancellation);
-		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
+		mockPromptForBaseOptions.mockResolvedValueOnce(Symbol(""));
+		mockIsCancel
+			.mockReturnValueOnce(false)
+			.mockReturnValueOnce(false)
+			.mockReturnValueOnce(true);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
