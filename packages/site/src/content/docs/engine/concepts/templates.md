@@ -3,11 +3,6 @@ description: "Groups of presets that a user can choose between."
 title: Templates
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 A _Template_ defines a group of [Presets](./presets) that can be chosen between by a user.
 
 Templates are the highest level of grouping in `create` projects.
@@ -40,13 +35,16 @@ A [CLI](../../cli) like `npx create` can then work with that Template to prompt 
 ```bash
 $ npx create typescript-app
 
-┌ Let us ✨ create ✨ a TypeScript App repository!
+┌  ✨ create ✨
 │
-◆ Which Preset would you like to create with?
-│ ○ minimal
-│ ● common
-│ ○ everything
-└
+│  Welcome to create: a delightful repository templating engine.
+│
+│  Learn more about create on:
+│    https://create.bingo
+│
+│  Running with mode --create for a new repository using the template:
+│    create-typescript-app
+|
 ```
 
 :::note

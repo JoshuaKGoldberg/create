@@ -2,11 +2,6 @@
 title: Runner APIs
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 Runner APIs can be used to execute and apply [Creations](../runtime/creations) on disk:
 
 - [`runBlock`](#runblock): applies a [Block](../concepts/blocks) production

@@ -46,7 +46,7 @@ export async function runModeMigrate({
 
 	prompts.log.message(
 		[
-			`Running with --mode migrate for a new repository using the ${source.type}:`,
+			`Running with --mode migrate for an existing repository using the ${source.type}:`,
 			`  ${chalk.green(source.descriptor)}`,
 		].join("\n"),
 	);
@@ -84,7 +84,10 @@ export async function runModeMigrate({
 
 	const options = await promptForBaseOptions({
 		base: preset.base,
-		existingOptions: parseZodArgs(args, preset.base.options),
+		existingOptions: {
+			...settings?.options,
+			...parseZodArgs(args, preset.base.options),
+		},
 		system,
 	});
 	if (prompts.isCancel(options)) {

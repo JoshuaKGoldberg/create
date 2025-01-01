@@ -3,18 +3,12 @@ description: "Configuring create from a config file."
 title: Configuration
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
+Running the [Migration mode](./cli#migration-mode) in an existing repository will re-run `create` on that repository.
 
-Running `npx create --preset ...` in a repository that was already set up with that Preset will re-run the Preset on the repository.
-You can store CLI settings for `create` in a configuration file named `create.config.js` in the root of the repository.
+You can store persistent customizations to the repository's template in a configuration file named `create.config.js`.
+It should `export default` a call to a `createConfig()` function that takes in a preset imported from a template.
 
-It should `export default` a call to a `createConfig()` function that takes in a Preset.
-`npx create` will pick up on that file and read any customizations to your Preset from it.
-
-For example, keeping a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, keeping a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app)'s _everything_ preset:
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
@@ -23,22 +17,14 @@ import { presetEverything } from "create-typescript-app";
 export default createConfig(presetEverything);
 ```
 
-Once that file is created, you can re-run `create`:
-
-```shell
-npx create
-```
-
 Running `npx create` in a repository with that `create.config.js` would be the equivalent of running `npx create typescript-app --preset everything`.
 
 ## `createConfig`
 
 The exported `createConfig` function takes in up to two arguments:
 
-1. _(required)_ A Preset imported from a package
+1. _(required)_ A preset imported from a package
 2. _(optional)_ An object containing any customizations to be applied to the preset
-
-The customizations that can be passed to `createConfig` are a superset of what you can pass on the CLI.
 
 ### `addons`
 

@@ -3,11 +3,6 @@ description: "Standalone functions to read in dynamic data."
 title: Inputs
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 An _Input_ defines a standalone function to provide any dynamic data needed to inform production.
 Unlike [Blocks](./blocks) and [Presets](./presets), Inputs are not bound to any one [Base](./bases).
 Inputs may be shared and used freely within production functions.

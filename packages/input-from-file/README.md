@@ -28,4 +28,4 @@ It reads the `filePath` from disk and returns either:
 - `Error`: If an error was caught reading the file
 - `string`: The text contents of the file
 
-See **[create.bingo > Engine > Runtime > Inputs](https://create.bingo/engine/runtime/inputs)** for more documentation on Inputs.
+See **[create.bingo > Templating Engine > Runtime > Inputs](https://create.bingo/engine/runtime/inputs)** for more documentation on Inputs.

@@ -1,0 +1,52 @@
+---
+banner:
+  content: create is very early stage. Expect greatness, but don't be surprised by breakages. Please report any issues on GitHub! 🙏
+description: Delightful templates for web repositories. 💝
+template: splash
+hero:
+  actions:
+    - icon: open-book
+      link: /about
+      text: Learn More
+      variant: "primary"
+    - icon: right-arrow
+      link: /cli
+      text: Run the CLI
+      variant: secondary
+    - attrs:
+        rel: me
+        target: _blank
+      icon: external
+      link: https://github.com/JoshuaKGoldberg/create
+      text: View on GitHub
+      target: _blank
+      variant: minimal
+  image:
+    alt: A sparkling heart emerging from a yellow gift box
+    dark: ~/assets/logo-dark.webp
+    light: ~/assets/logo-light.webp
+  tagline: Delightful templates for web repositories.
+  title: "create"
+title: Delightful templates for web repositories. 💝
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+<CardGrid stagger>
+	<Card title="Creation from Templates" icon="add-document">
+		Create fully-formed, ready-to-use repositories with a single command from
+		templates of your choosing.
+	</Card>
+	<Card title="Flexible Options" icon="setting">
+		Customize templates with base options and swapping out which pieces of
+		tooling you'd like to use.
+	</Card>
+	<Card title="Predictable Migrations" icon="approve-check-circle">
+		Keep your repositories up-to-date with automated migrations -- including
+		preserving template customizations.
+	</Card>
+	<Card title="Rich Templating" icon="document">
+		Define templates as straightforward as Handlebars folders or as nuanced as
+		individually configurable blocks. It's up to you.
+	</Card>
+</CardGrid>

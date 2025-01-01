@@ -15,18 +15,7 @@
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
 
-👉 See **[create.bingo](https://create.bingo)**.
-
-`create` is a new scaffolding engine for describing repository templates.
-It's like a modern version of [Yeoman](https://yeoman.io), but:
-
-- **Composable**: Individual blocks in your templates can be mix-and-matched together
-- **Testable**: Each layer of your templates can be individually unit or end-to-end tested
-- **Type-Safe**: Fully typed from the ground up, including [Zod](https://zod.dev)-based options schemas
-
-`create` also provides scaffolding to turn templates into a repository generator akin to a `create-next-app` or `create-typescript-app`.
-
-👉 See **[create.bingo](https://create.bingo)**.
+<img align="right" alt="Project logo: a sparkling heart emerging from a yellow gift box" height="128" src="./packages/site/src/assets/logo-small.webp" width="128">
 
 ## Status
 

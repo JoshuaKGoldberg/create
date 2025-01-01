@@ -28,4 +28,4 @@ It runs the `command` with [`execa`](https://www.npmjs.com/package/execa) and re
 - `Error`: If an error was caught running the script
 - `Result`: The type from `execa`, including the `stdout` property
 
-See **[create.bingo > Engine > Runtime > Inputs](https://create.bingo/engine/runtime/inputs)** for more documentation on Inputs.
+See **[create.bingo > Templating Engine > Runtime > Inputs](https://create.bingo/engine/runtime/inputs)** for more documentation on Inputs.

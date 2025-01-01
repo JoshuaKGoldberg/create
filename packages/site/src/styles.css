@@ -15,3 +15,11 @@ details details ul li a {
 	padding-top: 3px;
 	font-size: 14px;
 }
+
+.hero {
+	padding-block: clamp(1.255rem, calc(0.5rem + 5vmin), 5rem);
+}
+
+h2 + h3 {
+	padding-top: 1rem;
+}

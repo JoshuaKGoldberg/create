@@ -15,4 +15,5 @@ export interface CreateConfig {
 export interface CreateConfigSettings<Options extends object = object> {
 	addons?: CreatedBlockAddons<object, Options>[];
 	blocks?: BlockModifications<Options>;
+	options?: Options;
 }

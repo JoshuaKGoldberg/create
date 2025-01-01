@@ -3,11 +3,6 @@ description: "The pieces of a repository as described by Blocks."
 title: Creations
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 A Creation object is what's returned by each [Block](../about/blocks)'s `produce()` method.
 It may contain any of the following properties:
 
