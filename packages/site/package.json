@@ -18,6 +18,6 @@
 		"typescript": "^5.7.2"
 	},
 	"devDependencies": {
-		"sharp": "^0.33.5"
+		"sharp": "0.33.5"
 	}
 }

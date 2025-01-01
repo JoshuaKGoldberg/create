@@ -225,7 +225,7 @@ importers:
         version: 5.7.2
     devDependencies:
       sharp:
-        specifier: ^0.33.5
+        specifier: 0.33.5
         version: 0.33.5
 
 packages:
