@@ -11,6 +11,9 @@ vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
+	log: {
+		message: vi.fn(),
+	},
 	spinner: vi.fn(),
 }));
 
@@ -91,6 +94,17 @@ const template = createTemplate({
 });
 
 describe("runModeInitialize", () => {
+	it("returns an error when there is no from", async () => {
+		const actual = await runModeInitialize({
+			args: ["node", "create"],
+		});
+
+		expect(actual).toEqual({
+			outro: "Please specify a package to create from.",
+			status: CLIStatus.Error,
+		});
+	});
+
 	it("returns the error when importing tryImportTemplatePreset resolves with an error", async () => {
 		const message = "Oh no!";
 
@@ -165,7 +179,7 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(actual).toEqual({
-			outro: "Your new repository is ready in: ./local-directory",
+			outro: "Thanks for using create! 💝",
 			status: CLIStatus.Success,
 			suggestions,
 		});
@@ -192,7 +206,7 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(actual).toEqual({
-			outro: "Your new repository is ready in: ./local-directory",
+			outro: "Thanks for using create! 💝",
 			status: CLIStatus.Success,
 			suggestions,
 		});

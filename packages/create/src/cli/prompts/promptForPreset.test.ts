@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
@@ -14,7 +15,7 @@ const presetA = base.createPreset({
 });
 
 const presetB = base.createPreset({
-	about: { name: "B" },
+	about: { description: "b-description", name: "B" },
 	blocks: [],
 });
 
@@ -62,13 +63,13 @@ describe("promptForPreset", () => {
 			initialValue: presetA,
 			message: "Which --preset would you like to create with?",
 			options: [
-				{ label: "A", value: presetA },
-				{ label: "B", value: presetB },
+				{ label: chalk.bold("A"), value: presetA },
+				{ label: `${chalk.bold("B")} b-description`, value: presetB },
 			],
 		});
 	});
 
-	it("prompts for a preset without logging an error when no preset is requested", async () => {
+	it("prompts for a preset without a description without logging an error when no preset is requested", async () => {
 		const actual = await promptForPreset(undefined, template);
 
 		expect(actual).toBe(presetB);
@@ -77,8 +78,8 @@ describe("promptForPreset", () => {
 			initialValue: presetA,
 			message: "Which --preset would you like to create with?",
 			options: [
-				{ label: "A", value: presetA },
-				{ label: "B", value: presetB },
+				{ label: chalk.bold("A"), value: presetA },
+				{ label: `${chalk.bold("B")} b-description`, value: presetB },
 			],
 		});
 	});

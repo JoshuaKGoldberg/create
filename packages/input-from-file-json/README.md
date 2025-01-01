@@ -28,4 +28,4 @@ It reads the `filePath` from disk and returns either:
 - `Error`: If an error was caught reading or parsing the file
 - `unknown`: The result of running `JSON.parse` on the file's text contents
 
-See **[create-josh.vercel.app > Engine > Runtime > Inputs](https://create-josh.vercel.app/engine/runtime/inputs)** for more documentation on Inputs.
+See **[create.bingo > Engine > Runtime > Inputs](https://create.bingo/engine/runtime/inputs)** for more documentation on Inputs.

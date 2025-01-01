@@ -10,7 +10,6 @@ import { logOutro } from "./loggers/logOutro.js";
 import { runModeMigrate } from "./migrate/runModeMigrate.js";
 import { readProductionSettings } from "./readProductionSettings.js";
 import { CLIStatus } from "./status.js";
-import { Logger } from "./types.js";
 
 const valuesSchema = z.object({
 	directory: z.string().optional(),
@@ -21,7 +20,7 @@ const valuesSchema = z.object({
 	repository: z.string().optional(),
 });
 
-export async function runCli(args: string[], logger: Logger) {
+export async function runCli(args: string[]) {
 	const { values } = parseArgs({
 		args,
 		options: {
@@ -54,12 +53,12 @@ export async function runCli(args: string[], logger: Logger) {
 	});
 
 	if (values.help) {
-		logHelpText(logger);
+		logHelpText(console);
 		return CLIStatus.Success;
 	}
 
 	if (values.version) {
-		logger.log(packageData.version);
+		console.log(packageData.version);
 		return CLIStatus.Success;
 	}
 
@@ -71,11 +70,31 @@ export async function runCli(args: string[], logger: Logger) {
 		].join(""),
 	);
 
+	prompts.log.message(
+		[
+			`Welcome to ${chalk.bgGreenBright.black("create")}: a composable, testable, type-safe templating engine.`,
+			"",
+			"Learn more about create on:",
+			`  ${chalk.green("https://create.bingo")}`,
+		].join("\n"),
+	);
+
 	const validatedValues = valuesSchema.parse(values);
 	const productionSettings = await readProductionSettings(validatedValues);
 	if (productionSettings instanceof Error) {
 		logOutro(chalk.red(productionSettings.message));
 		return CLIStatus.Error;
+	}
+
+	if (productionSettings.mode === "initialize" && args.length === 0) {
+		prompts.log.message(
+			[
+				`Try it out with:`,
+				`  ${chalk.green("npx create typescript-app")}`,
+			].join("\n"),
+		);
+		logOutro("Cheers! 💝");
+		return CLIStatus.Success;
 	}
 
 	const { outro, status, suggestions } =

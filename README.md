@@ -15,7 +15,7 @@
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
 
-👉 See **[create-josh.vercel.app](https://create-josh.vercel.app)**.
+👉 See **[create.bingo](https://create.bingo)**.
 
 `create` is a new scaffolding engine for describing repository templates.
 It's like a modern version of [Yeoman](https://yeoman.io), but:
@@ -26,7 +26,7 @@ It's like a modern version of [Yeoman](https://yeoman.io), but:
 
 `create` also provides scaffolding to turn templates into a repository generator akin to a `create-next-app` or `create-typescript-app`.
 
-👉 See **[create-josh.vercel.app](https://create-josh.vercel.app)**.
+👉 See **[create.bingo](https://create.bingo)**.
 
 ## Status
 

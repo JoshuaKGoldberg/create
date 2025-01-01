@@ -1,4 +1,5 @@
 import * as prompts from "@clack/prompts";
+import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
@@ -13,7 +14,7 @@ import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { clearTemplateFiles } from "./clearTemplateFiles.js";
 import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
-import { tryLoadMigrationPreset } from "./tryLoadMigrationPreset.js";
+import { parseMigrationSource } from "./parseMigrationSource.js";
 
 export interface RunModeMigrateSettings {
 	args: string[];
@@ -30,12 +31,27 @@ export async function runModeMigrate({
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
-	const loaded = await tryLoadMigrationPreset({
+	const source = parseMigrationSource({
 		configFile,
 		directory,
 		from,
 		requestedPreset,
 	});
+	if (source instanceof Error) {
+		return {
+			outro: source.message,
+			status: CLIStatus.Error,
+		};
+	}
+
+	prompts.log.message(
+		[
+			`Running with --mode migrate for a new repository using the ${source.type}:`,
+			`  ${chalk.green(source.descriptor)}`,
+		].join("\n"),
+	);
+
+	const loaded = await source.load();
 	if (loaded instanceof Error) {
 		return {
 			outro: loaded.message,
@@ -46,12 +62,13 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
+	const { preset, settings } = loaded;
 	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({ directory, display });
 
 	const templateLocator =
-		loaded.preset.base.template &&
-		(await getForkedTemplateLocator(directory, loaded.preset.base.template));
+		preset.base.template &&
+		(await getForkedTemplateLocator(directory, preset.base.template));
 
 	if (templateLocator) {
 		await runSpinnerTask(
@@ -66,8 +83,8 @@ export async function runModeMigrate({
 	}
 
 	const options = await promptForBaseOptions({
-		base: loaded.preset.base,
-		existingOptions: parseZodArgs(args, loaded.preset.base.options),
+		base: preset.base,
+		existingOptions: parseZodArgs(args, preset.base.options),
 		system,
 	});
 	if (prompts.isCancel(options)) {
@@ -76,11 +93,11 @@ export async function runModeMigrate({
 
 	await runSpinnerTask(
 		display,
-		`Running the ${loaded.preset.about.name} preset`,
-		`Ran the ${loaded.preset.about.name} preset`,
+		`Running the ${preset.about.name} preset`,
+		`Ran the ${preset.about.name} preset`,
 		async () => {
-			await runPreset(loaded.preset, {
-				...loaded.settings,
+			await runPreset(preset, {
+				...settings,
 				...system,
 				directory,
 				mode: "migrate",
@@ -89,24 +106,24 @@ export async function runModeMigrate({
 		},
 	);
 
-	if (!templateLocator) {
+	if (templateLocator) {
+		await runSpinnerTask(
+			display,
+			"Creating initial commit",
+			"Created initial commit",
+			async () => {
+				await createInitialCommit(system.runner, true);
+			},
+		);
+
 		return {
-			outro: `You might want to commit any changes.`,
+			outro: `Done. Enjoy your new repository! 💝`,
 			status: CLIStatus.Success,
 		};
 	}
 
-	await runSpinnerTask(
-		display,
-		"Creating initial commit",
-		"Created initial commit",
-		async () => {
-			await createInitialCommit(system.runner, true);
-		},
-	);
-
 	return {
-		outro: `Done!`,
+		outro: `Done. Enjoy your updated repository! 💝`,
 		status: CLIStatus.Success,
 	};
 }
