@@ -6,33 +6,25 @@ title: FAQs
 
 ### How do I use `create`?
 
-For now, you don't.
-It's still _very_ early stage.
+See [CLI](./cli) for running the `create` command.
 
-Soon, there will be APIs added and documented that allow providing a [Preset](./concepts/presets) and having the `create` engine _create_ a new repository or _update_ an existing one based on it.
+### How do I remove part of a template?
 
-`npx create` _(or something similar)_ will be able to take in a package containing a Preset and run with it.
-For example, using a Preset soon to be provided by [`create-typescript-app`](https://www.npmjs.com/package/create-typescript-app):
+Go ahead and change your repository!
+After you create a repository, you can customize it however you see fit.
 
-```shell
-npx create typescript-app
-```
+If you'd like to keep a repository updated with a template, you can customize your tooling with a [configuration file](./configuration).
+See [Configuration > Blocks](./configuration#blocks) for how to add or remove pieces of tooling.
 
-Later, there will be higher-level scaffolding utilities that will allow packages such as `create-typescript-app` to:
+### What else can `create` do?
+
+Soon, there will be higher-level scaffolding utilities that will allow packages such as `create-typescript-app` to:
 
 - Generate full documentation websites to describe their Blocks and Presets
 - Manage and keep updated sample repositories for their presets
 - Migrate repositories from external tools and/or older Preset or Template versions
 
 See [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181) for more history.
-
-### Will there be GitHub repository template support akin to `create-typescript-app`'s?
-
-Yes, after the _create_ and _update_ APIs are done.
-
-### Will there be repository _migration_ akin to `create-typescript-app`'s?
-
-Yes, after the _create_ and _update_ APIs are done.
 
 ## Development
 

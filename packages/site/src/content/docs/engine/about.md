@@ -1,9 +1,9 @@
 ---
 description: How the create engine works.
-title: About
+title: Templates
 ---
 
-The `create` engine combines the following layers:
+The `create` templating engine combines the following layers:
 
 1. **[Bases](./concepts/bases)**: Option types and default values that will be used to scaffold a repository
 2. **[Blocks](./concepts/blocks)**: Generators for individual portions of a repository
@@ -11,3 +11,9 @@ The `create` engine combines the following layers:
 4. **[Templates](./concepts/templates)**: Groups of Presets that form a `create-*-app` project
 
 Those layers allow you to define the inputs to your repository generator, the individual pieces of the repository to be generated, and any preset configurations users can choose to start from.
+
+:::note
+This "Block" engine will not be the only templating engine supported by `create`.
+Soon, less-heavyweight engines will be available to make authoring straightforward Templates easier.
+See [create#76 🚀 Feature: Switch to a pluggable templating engine system](https://github.com/JoshuaKGoldberg/create/issues/76).
+:::

@@ -3,11 +3,6 @@ description: "Options and shared helpers made available to Blocks and Inputs."
 title: Contexts
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 _Context_ objects are provided to [Blocks](../concepts/blocks), [Inputs](../inputs), and [Bases](../concepts/bases).
 Each contains shared helper functions and information.
 

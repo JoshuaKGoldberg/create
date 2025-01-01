@@ -6,10 +6,15 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			customCss: ["./src/styles.css"],
+			favicon: "src/assets/favicon.png",
 			sidebar: [
+				{ label: "About", link: "about" },
 				{ label: "CLI", link: "cli" },
 				{ label: "Configuration", link: "configuration" },
+				{ label: "FAQs", link: "faqs" },
+				{ label: "Glossary", link: "glossary" },
 				{
+					collapsed: true,
 					items: [
 						{ label: "About", link: "engine/about" },
 						{
@@ -41,10 +46,8 @@ export default defineConfig({
 							label: "APIs",
 						},
 					],
-					label: "Engine",
+					label: "Templating Engine",
 				},
-				{ label: "FAQs", link: "faqs" },
-				{ label: "Glossary", link: "glossary" },
 			],
 			social: {
 				github: "https://github.com/JoshuaKGoldberg/create",

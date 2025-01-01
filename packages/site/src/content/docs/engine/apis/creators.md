@@ -2,11 +2,6 @@
 title: Creator APIs
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 The main driver of `create` is a set of APIs that set up the generators for repositories:
 
 - [`createBase`](#createbase): creates a new [Base](../concepts/bases)

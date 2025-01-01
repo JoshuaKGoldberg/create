@@ -66,13 +66,13 @@ export async function runCli(args: string[]) {
 		[
 			chalk.greenBright(`✨ `),
 			chalk.bgGreenBright.black(`create`),
-			chalk.greenBright(`@${packageData.version} ✨`),
+			chalk.greenBright(` ✨`),
 		].join(""),
 	);
 
 	prompts.log.message(
 		[
-			`Welcome to ${chalk.bgGreenBright.black("create")}: a composable, testable, type-safe templating engine.`,
+			`Welcome to ${chalk.bgGreenBright.black("create")}: a delightful repository templating engine.`,
 			"",
 			"Learn more about create on:",
 			`  ${chalk.green("https://create.bingo")}`,

@@ -3,15 +3,24 @@ description: "Running create on your command line."
 title: CLI
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
+The `create` CLI is what you run to generate a new repository or migrate an existing one.
+It will interactively prompt you for any options it needs to run that can't be inferred from disk.
 
-**This CLI is only partially implemented so far.**
-:::
+```shell
+npx create
+```
 
-The `create` CLI is what you run to generate a new repository.
-It takes in a Template, such as the name of a `create-*` package on npm, and prompts you to fill in any details.
+## Modes
+
+The `create` CLI will automatically detect which [`-m`/`--mode`](#-m----mode) it is being run in:
+
+- [Initialization](#initialization-mode): Creating a new repository from a template
+- [Migration](#migration-mode): Updating an existing repositories to a new version of a template
+
+### Initialization Mode
+
+Creates a new repository from a template.
+This mode will be used by default if the current directory is empty.
 
 For example, to generate a new repository using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
@@ -20,21 +29,48 @@ npx create typescript-app
 ```
 
 ```plaintext
-┌ Let us ✨ create ✨ a TypeScript App repository!
+┌  ✨ create ✨
 │
-◆ Which Preset would you like to create with?
-│ ○ minimal
-│ ● common
-│ ○ everything
-└
+│  Welcome to create: a delightful repository templating engine.
+│
+│  Learn more about create on:
+│    https://create.bingo
+│
+│  Running with mode --create for a new repository using the template:
+│    create-typescript-app
+|
 ```
 
-:::note
-The `create` CLI is just a general runner to pull in information from Templates.
-See the docs for your specific Template for additional arguments.
-:::
+### Migration Mode
 
-## Arguments
+Updates an existing repository to a new version of a template.
+This mode will be used by default if the current directory is a Git repository and/or contains a [`create.config.*` configuration file](./configuration).
+
+For example, to update an existing repository to the latest [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+
+```shell
+npx create typescript-app
+```
+
+```plaintext
+┌  ✨ create ✨
+│
+│  Welcome to create: a delightful repository templating engine.
+│
+│  Learn more about create on:
+│    https://create.bingo
+│
+│  Running with mode --create for an existing repository using the template:
+│    create-typescript-app
+|
+```
+
+## Flags
+
+:::note
+The `create` CLI is a general runner to pull in information from templates.
+See the documentation for your specific template for additional flags.
+:::
 
 The first argument passed to `create` can be a shorthand [`-f` / `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
 A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
@@ -43,12 +79,12 @@ A shorthand name excludes the `create-` prefix to an npm package name that start
 
 > Type: `string`
 
-What local directory path to create the new repository under.
+What local directory path to run under.
 
 If not provided:
 
 - If the current directory is empty, defaults to it (`.`)
-- Otherwise, `create` will prompt the user to input one
+- Otherwise, you'll be prompted to input one
 
 For example, creating a new repository in a subdirectory:
 
@@ -60,13 +96,13 @@ npx create typescript-app --directory my-fancy-project
 
 > Type: `string`
 
-An explicit path to import the Template from.
+An explicit path to import a template from.
 
 This can be either:
 
 - A full npm package name, such as `create-typescript-app`
-  - Use this if you'd like to specify a package name that doesn't begin with `create-`.
-- A relative path to import from: such as `npx create ./path/to/repository`
+  - Use this if you'd like to specify a package name that doesn't begin with `create-`
+- A relative path to import from: such as `npx create --from ./path/to/repository`
 
 For example, using an org-scoped package:
 
@@ -74,13 +110,37 @@ For example, using an org-scoped package:
 npx create --from @joshuakgoldberg/my-fancy-template
 ```
 
+### `-h` / `--help`
+
+> Type: `boolean`
+
+Prints help text.
+
+```shell
+npx create --help
+```
+
+### `-m` / `--mode`
+
+> Type: `string`
+
+Which [mode](#modes) to run in.
+
+If not provided, it will be inferred based on whether `create` is being run in an existing repository.
+
+For example, specifying creating a new repository with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+
+```shell
+npx create typescript-app --mode initialize
+```
+
 ### `-p` / `--preset`
 
 > Type: `string`
 
-Which [Preset](./concepts/presets) to use from the Template.
+Which [Preset](./concepts/presets) to use from the template.
 
-If not provided, and the Template defines multiple Presets, `create` will prompt the user to select one.
+If not provided, and the template defines multiple Presets, `create` will prompt the user to select one.
 
 For example, specifying the _common_ preset for [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
@@ -88,65 +148,24 @@ For example, specifying the _common_ preset for [`create-typescript-app`](https:
 npx create typescript-app --preset common
 ```
 
-### `-w` / `--watch`
+### `-v` / `--version`
 
 > Type: `boolean`
 
-:::danger
-**This will be very experimental** and targeted to developers writing their own repository templates.
-:::
-
-Whether to keep `create` running in a "watch" mode after its initial pass.
-When in watch mode, `create` will re-apply file creations whenever the "from" file or any of its imported entries change.
-This is only supported when the "from" is a relative path to a local ESM entry point on disk.
-
-For example, using a sibling `create-typescript-app` directory's package entry point to create a new repository under a child `generated/` directory:
+Prints the `create` package version.
 
 ```shell
-npx create --directory generated --from ../create-typescript-app --watch
+npx create --version
 ```
 
-Running in watch mode is useful if you're working on your own repository template and want to preview changes locally.
+### Template Options
 
-Watch mode assumes that another tool will be running to recreate the "from" entry point file.
+The template being generated from may add in additional flags.
 
-For example, with the previous `--watch` command, it would be reasonable to run the build script in its own watch mode in the sibling `../create-typescript-app` directory:
+For example, if a template's Base defines a `title` option, `--title` will be type `string`:
 
 ```shell
-# ../create-typescript-app
-pnpm build -- --watch
+npx create typescript-app --title "My New App"
 ```
 
-:::tip
-Watch mode only reruns when a file that is statically imported by the "from" entry point changes.
-Detection is done by [precinct](https://www.npmjs.com/package/precinct).
-If your file changes aren't statically detectable, you can always manually save the "from" file.
-:::
-
-### Base Arguments
-
-The Template being generated from will add in additional arguments based on its [Base](./concepts/bases).
-Arguments defined in a Template's Base can be provided to `create` after a `--`.
-Their name will be the lowercase name of the defined option.
-
-For example, if a Template's Base defines a `title: z.string()` option, `--title` will be type `string`:
-
-```shell
-npx create typescript-app --preset everything -- --title "My New App"
-```
-
-Any required Base arguments that are not provided will be prompted for by the `create` CLI.
-
-### Skipping Blocks
-
-Most of the time, you shouldn't need to customize a Template beyond the options defined by its [Base](./concepts/bases).
-However, it can sometimes be desirable to skip producing some pieces of tooling for individual projects.
-
-The `create` CLI automatically adds in boolean `--skip-*` arguments that can omit specific named [Blocks](./concepts/blocks).
-Those arguments use the lowercase name of the block for the `*`.
-
-For example, to use `create-typescript-app`'s _everything_ preset and omit its Markdownlint block:
-
-```shell
-npx create typescript-app --preset everything --skip-markdownlint
-```
+Any required options that are not provided will be prompted for by the `create` CLI.

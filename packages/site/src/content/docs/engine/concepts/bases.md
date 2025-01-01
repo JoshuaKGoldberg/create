@@ -3,11 +3,6 @@ description: "Option types and default values that will be used to scaffold a re
 title: Bases
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 A _Base_ defines an object of option types and default values that will be used to scaffold a repository.
 Bases are used to generate [Blocks](./blocks) and [Presets](./presets.md) that rely on user-specified values for those options.
 

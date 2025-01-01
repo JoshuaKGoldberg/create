@@ -3,11 +3,6 @@ description: "Generators for individual portions of a repository."
 title: Blocks
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 A _Block_ defines the logic to create a portion of a repository.
 Each Block is associated with a parent [Base](./bases).
 Blocks can then be listed in [Presets](./presets) associated with the same base.

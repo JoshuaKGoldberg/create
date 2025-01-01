@@ -3,11 +3,6 @@ description: "How the engine merges Block Addons and Creations at runtime."
 title: Merging
 ---
 
-:::danger
-The `create` engine is very early stage.
-Don't rely on it yet.
-:::
-
 [Blocks](../concepts/blocks) act as synchronous functions with optional metadata in the form of [Addons](../concepts/blocks#addons).
 Blocks don't know what order they're run in or what other Blocks exist.
 They only know to map Addons and Options inputs to output [Creations](./creations).
