@@ -138,9 +138,9 @@ npx create typescript-app --mode initialize
 
 > Type: `string`
 
-Which [Preset](./concepts/presets) to use from the template.
+Which [Preset](./engine/concepts/presets) to use from the template.
 
-If not provided, and the template defines multiple Presets, `create` will prompt the user to select one.
+If not provided, and the template defines multiple presets, `create` will prompt the user to select one.
 
 For example, specifying the _common_ preset for [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
@@ -158,14 +158,26 @@ Prints the `create` package version.
 npx create --version
 ```
 
-### Template Options
+## Template Options
 
 The template being generated from may add in additional flags.
 
-For example, if a template's Base defines a `title` option, `--title` will be type `string`:
+For example, if a template defines a `title` option, `--title` will be type `string`:
 
 ```shell
 npx create typescript-app --title "My New App"
 ```
 
 Any required options that are not provided will be prompted for by the `create` CLI.
+
+See the documentation for your specific template for additional flags.
+
+### Block Exclusions
+
+Individual [Blocks](./engine/concepts/blocks) from a template may be excluded with `--exclude-*` flags, where `*` is the `kebab-case` name of the Block.
+
+For example, if a Block is named `Vitest`, its exclusion flag would be `--exclude-vitest`:
+
+```ts
+npx create typescript-app --exclude-vitest
+```

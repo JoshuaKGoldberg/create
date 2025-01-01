@@ -71,11 +71,11 @@ export default createConfig(presetEverything, {
 
 Running `npx create` in a repository with that configuration file would add in the created outputs from `blockAreTheTypesWrong`.
 
-#### `remove`
+#### `exclude`
 
-Any Blocks to remove from what the Preset provides.
+Any Blocks to exclude from what the Preset provides.
 
-For example, this configuration file removes the default _"This package was templated with..."_ notice that comes with `create-typescript-app`:
+For example, this configuration file omits the default _"This package was templated with..."_ notice that comes with `create-typescript-app`:
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
@@ -83,7 +83,7 @@ import { blockTemplatedBy, presetEverything } from "create-typescript-app";
 
 export default createConfig(presetEverything, {
 	blocks: {
-		remove: [blockTemplatedBy],
+		exclude: [blockTemplatedBy],
 	},
 });
 ```

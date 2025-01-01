@@ -35,6 +35,7 @@ export function executePresetBlocks<Options extends object>({
 	>(addons?.map((addon) => [addon.block, { addons: addon.addons as object }]));
 
 	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
+	const allowedBlocks = new Set(blocks);
 	const blocksToBeRun = new Set(blocks);
 
 	// 2. For each Block in the queue:
@@ -62,8 +63,9 @@ export function executePresetBlocks<Options extends object>({
 				creation: blockCreation,
 			});
 
-			// 2.4. If the Block specified new addons for any other Blocks:
+			// 2.4. If the Block specified new addons for any defined Blocks:
 			const updatedBlockAddons = getUpdatedBlockAddons(
+				allowedBlocks,
 				blockProductions,
 				blockCreation.addons,
 			);

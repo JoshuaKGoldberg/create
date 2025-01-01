@@ -264,7 +264,7 @@ See [Configuration > `addons`](../../configuration#addons) for how this is used.
 
 Any Blocks to `add` and/or `remove`.
 
-For example, this production adds a Jest Block and removes a Vitest Block:
+For example, this production swaps in a Jest Block instead of a Vitest Block:
 
 ```ts
 import { Preset, producePreset } from "create";
@@ -278,7 +278,7 @@ declare const preset: Preset<{ name: z.ZodString }>;
 await producePreset(preset, {
 	blocks: {
 		add: [blockJest],
-		remove: [blockVitest],
+		exclude: [blockVitest],
 	},
 	options: {
 		name: "My Production",

@@ -29,6 +29,42 @@ describe("readProductionSettings", () => {
 		expect(mockReaddir).toHaveBeenCalledWith(directory);
 	});
 
+	it("returns mode: initialize when the directory does not exist and mode is not provided", async () => {
+		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await readProductionSettings({
+			directory: "other",
+		});
+
+		expect(actual).toEqual({ mode: "initialize" });
+	});
+
+	it("returns mode: initialize when the directory does not exist and mode is initialize", async () => {
+		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await readProductionSettings({
+			directory: "other",
+			mode: "initialize",
+		});
+
+		expect(actual).toEqual({ mode: "initialize" });
+	});
+
+	it("returns an error when the directory does not exist and mode is migrate", async () => {
+		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await readProductionSettings({
+			directory: "other",
+			mode: "migrate",
+		});
+
+		expect(actual).toEqual(
+			new Error(
+				"Cannot run with --mode migrate on a directory that does not yet exist.",
+			),
+		);
+	});
+
 	it("returns the config file and mode: migrate when a config file is found without a mode", async () => {
 		const configFile = "create.config.ts";
 		mockReaddir.mockResolvedValueOnce([configFile]);
