@@ -4,7 +4,9 @@ import { createBase } from "../../creators/createBase.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
-const mockIsCancel = vi.fn();
+const mockCancel = Symbol("");
+
+const mockIsCancel = (value: unknown) => value === mockCancel;
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
@@ -77,11 +79,11 @@ vi.mock("./getForkedTemplateLocator.js", () => ({
 	},
 }));
 
-const mockTryLoadMigrationPreset = vi.fn();
+const mockParseMigrationSource = vi.fn();
 
-vi.mock("./tryLoadMigrationPreset.js", () => ({
-	get tryLoadMigrationPreset() {
-		return mockTryLoadMigrationPreset;
+vi.mock("./parseMigrationSource.js", () => ({
+	get parseMigrationSource() {
+		return mockParseMigrationSource;
 	},
 }));
 
@@ -99,15 +101,12 @@ const preset = base.createPreset({
 });
 
 describe("runModeMigrate", () => {
-	it("returns the error when tryLoadMigrationPreset resolves with an error", async () => {
+	it("returns the error when parseMigrationSource returns an error", async () => {
 		const error = new Error("Oh no!");
 
-		mockTryLoadMigrationPreset.mockResolvedValueOnce(error);
+		mockParseMigrationSource.mockReturnValueOnce(error);
 
-		const actual = await runModeMigrate({
-			args: [],
-			configFile: undefined,
-		});
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
 
 		expect(actual).toEqual({
 			outro: error.message,
@@ -115,78 +114,80 @@ describe("runModeMigrate", () => {
 		});
 	});
 
-	it("returns a cancellation status when tryLoadMigrationPreset resolves with an error", async () => {
-		mockTryLoadMigrationPreset.mockResolvedValueOnce({});
-		mockIsCancel.mockReturnValueOnce(true);
+	it("returns the error when the loaded source resolves with an error", async () => {
+		const error = new Error("Oh no!");
 
-		const actual = await runModeMigrate({
-			args: [],
-			configFile: undefined,
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve(error),
 		});
 
-		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
+
+		expect(actual).toEqual({
+			outro: error.message,
+			status: CLIStatus.Error,
+		});
+	});
+
+	it("returns the cancellation when the loaded source is cancelled", async () => {
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve(mockCancel),
+		});
+
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
+
+		expect(actual).toEqual({
+			status: CLIStatus.Cancelled,
+		});
 	});
 
 	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
-		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
-		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
-		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
-		mockPromptForBaseOptions.mockResolvedValueOnce(Symbol.for("cancel"));
-
-		const actual = await runModeMigrate({
-			args: [],
-			configFile: "create.config.js",
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve({ preset }),
 		});
+		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
 
-		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
-		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
-
-		expect(actual).toEqual({ status: CLIStatus.Cancelled });
-	});
-
-	it("doesn't clear Git or template files when no forked template locator is available", async () => {
-		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
-		mockIsCancel.mockReturnValueOnce(false);
-		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
-
-		await runModeMigrate({
-			args: [],
-			configFile: "create.config.js",
-		});
-
-		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
-		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
-		expect(mockCreateInitialCommit).not.toHaveBeenCalled();
-	});
-
-	it("clears Git and template files when a forked template locator is available", async () => {
-		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
-		mockIsCancel.mockReturnValueOnce(false);
-		mockGetForkedTemplateLocator.mockResolvedValueOnce("a/b");
-
-		await runModeMigrate({
-			args: [],
-			configFile: "create.config.js",
-		});
-
-		expect(mockClearTemplateFiles).toHaveBeenCalled();
-		expect(mockClearLocalGitTags).toHaveBeenCalled();
-		expect(mockCreateInitialCommit).toHaveBeenCalled();
-	});
-
-	it("returns a CLI success when importing and running the preset succeeds", async () => {
-		mockTryLoadMigrationPreset.mockResolvedValueOnce({ preset });
-		mockIsCancel.mockReturnValueOnce(false);
-
-		const actual = await runModeMigrate({
-			args: [],
-			configFile: "create.config.js",
-		});
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
 
 		expect(actual).toEqual({
-			outro: `You might want to commit any changes.`,
+			status: CLIStatus.Cancelled,
+		});
+	});
+
+	it("doesn't clear the existing repository when no forked template locator is available", async () => {
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve({ preset }),
+		});
+		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
+
+		expect(actual).toEqual({
+			outro: "Done. Enjoy your updated repository! 💝",
 			status: CLIStatus.Success,
 		});
-		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
+		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
+		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+	});
+
+	it("clears the existing repository when a forked template locator is available", async () => {
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve({ preset }),
+		});
+		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockGetForkedTemplateLocator.mockResolvedValueOnce({
+			owner: "",
+			repository: "",
+		});
+
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
+
+		expect(actual).toEqual({
+			outro: "Done. Enjoy your new repository! 💝",
+			status: CLIStatus.Success,
+		});
+		expect(mockClearTemplateFiles).toHaveBeenCalled();
+		expect(mockClearLocalGitTags).toHaveBeenCalled();
 	});
 });

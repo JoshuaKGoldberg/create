@@ -5,5 +5,5 @@ export function logHelpText(logger: Logger) {
 	logger.log(
 		"A full --help display isn't yet available, as the CLI is still being worked on.",
 	);
-	logger.log("See http://create-josh.vercel.app in the meantime.");
+	logger.log("See http://create.bingo in the meantime.");
 }

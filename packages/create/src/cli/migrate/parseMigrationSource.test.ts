@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { tryLoadMigrationPreset } from "./tryLoadMigrationPreset.js";
+import {
+	MigrationSource,
+	parseMigrationSource,
+} from "./parseMigrationSource.js";
 
 const mockTryImportConfig = vi.fn();
 
@@ -27,10 +30,9 @@ vi.mock("../importers/tryImportTemplatePreset.js", () => ({
 	},
 }));
 
-describe("tryLoadMigrationPreset", () => {
-	it("returns a CLI error when configFile and from are undefined", async () => {
-		const actual = await tryLoadMigrationPreset({
-			configFile: undefined,
+describe("parseMigrationSource", () => {
+	it("returns a CLI error when configFile and from are undefined", () => {
+		const actual = parseMigrationSource({
 			directory: ".",
 		});
 
@@ -39,13 +41,10 @@ describe("tryLoadMigrationPreset", () => {
 				"--mode migrate requires either a config file exist or a template be specified on the CLI.",
 			),
 		);
-
-		expect(mockTryImportConfig).not.toHaveBeenCalled();
-		expect(mockTryImportTemplatePreset).not.toHaveBeenCalled();
 	});
 
-	it("returns a CLI error when configFile and from are both defined", async () => {
-		const actual = await tryLoadMigrationPreset({
+	it("returns a CLI error when configFile and from are both defined", () => {
+		const actual = parseMigrationSource({
 			configFile: "create.config.js",
 			directory: ".",
 			from: "my-app",
@@ -56,36 +55,47 @@ describe("tryLoadMigrationPreset", () => {
 				"--mode migrate requires either a config file or a specified template, but not both.",
 			),
 		);
-
-		expect(mockTryImportConfig).not.toHaveBeenCalled();
-		expect(mockTryImportTemplatePreset).not.toHaveBeenCalled();
 	});
 
-	it("returns the result from tryImportConfig when only configFile is specified", async () => {
+	it("returns a config loader when only configFile is defined", async () => {
 		const expected = { configFile: true };
 
 		mockTryImportConfig.mockResolvedValueOnce(expected);
 
-		const actual = await tryLoadMigrationPreset({
+		const actual = parseMigrationSource({
 			configFile: "create.config.js",
 			directory: ".",
 		});
 
-		expect(actual).toBe(expected);
+		expect(actual).toEqual({
+			descriptor: "create.config.js",
+			load: expect.any(Function),
+			type: "config file",
+		});
+
+		const loaded = await (actual as MigrationSource).load();
+		expect(loaded).toBe(expected);
 		expect(mockTryImportTemplatePreset).not.toHaveBeenCalled();
 	});
 
-	it("returns the result from tryImportConfig when only from is specified", async () => {
+	it("returns a template loader when only from is defined", async () => {
 		const expected = { configFile: true };
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce(expected);
 
-		const actual = await tryLoadMigrationPreset({
+		const actual = parseMigrationSource({
 			directory: ".",
 			from: "my-app",
 		});
 
-		expect(actual).toBe(expected);
+		expect(actual).toEqual({
+			descriptor: "my-app",
+			load: expect.any(Function),
+			type: "template",
+		});
+
+		const loaded = await (actual as MigrationSource).load();
+		expect(loaded).toBe(expected);
 		expect(mockTryImportConfig).not.toHaveBeenCalled();
 	});
 });

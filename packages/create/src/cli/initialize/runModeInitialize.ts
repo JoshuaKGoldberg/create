@@ -34,6 +34,20 @@ export async function runModeInitialize({
 	from = findPositionalFrom(args),
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
+	if (!from) {
+		return {
+			outro: "Please specify a package to create from.",
+			status: CLIStatus.Error,
+		};
+	}
+
+	prompts.log.message(
+		[
+			"Running with mode --create for a new repository using the template:",
+			`  ${chalk.green(from)}`,
+		].join("\n"),
+	);
+
 	const loaded = await tryImportTemplatePreset(from, requestedPreset);
 	if (loaded instanceof Error) {
 		return {
@@ -108,11 +122,18 @@ export async function runModeInitialize({
 		},
 	);
 
+	prompts.log.message(
+		[
+			"Great, you've got a new repository ready to use in:",
+			`  ${chalk.green(makeRelative(directory))}`,
+			"",
+			"It's also pushed to GitHub on:",
+			`  ${chalk.green(`https://github.com/${options.owner}/${options.repository}`)}`,
+		].join("\n"),
+	);
+
 	return {
-		outro: [
-			chalk.blue("Your new repository is ready in:"),
-			chalk.green(makeRelative(directory)),
-		].join(" "),
+		outro: `Thanks for using ${chalk.bgGreenBright.black("create")}! 💝`,
 		status: CLIStatus.Success,
 		suggestions: creation.suggestions,
 	};

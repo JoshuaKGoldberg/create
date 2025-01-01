@@ -1,4 +1,5 @@
 import * as prompts from "@clack/prompts";
+import chalk from "chalk";
 
 import { Template } from "../../types/templates.js";
 
@@ -30,8 +31,12 @@ export async function promptForPreset(
 		initialValue: template.suggested,
 		message: "Which --preset would you like to create with?",
 		options: template.presets.map((preset) => ({
-			hint: preset.about.description,
-			label: preset.about.name,
+			label: [
+				chalk.bold(preset.about.name),
+				preset.about.description && chalk.gray(preset.about.description),
+			]
+				.filter(Boolean)
+				.join(" "),
 			value: preset,
 		})),
 	});
