@@ -3,16 +3,16 @@
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
 	"workspaces": {
 		"packages/create": {
-			"project": ["src/**/*.ts!"],
-			"entry": ["src/index.ts!"]
+			"entry": ["src/index.ts!"],
+			"project": ["src/**/*.ts!"]
 		},
 		"packages/create-testers": {
-			"project": ["src/**/*.ts!"],
-			"entry": ["src/index.ts!"]
+			"entry": ["src/index.ts!"],
+			"project": ["src/**/*.ts!"]
 		},
 		"packages/site": {
-			"ignoreDependencies": ["sharp"],
-			"entry": ["astro.config.ts"]
+			"entry": ["astro.config.ts", "src/components/*.astro"],
+			"ignoreDependencies": ["sharp"]
 		}
 	}
 }
