@@ -11,7 +11,7 @@
 			"entry": ["src/index.ts!"]
 		},
 		"packages/site": {
-			"ignore": ["sharp"],
+			"ignoreDependencies": ["sharp"],
 			"entry": ["astro.config.ts"]
 		}
 	}
