@@ -5,8 +5,14 @@ import { remarkHeadingId } from "remark-custom-heading-id";
 export default defineConfig({
 	integrations: [
 		starlight({
-			customCss: ["./src/styles.css"],
+			components: {
+				Head: "src/components/Head.astro",
+			},
+			customCss: ["src/styles.css"],
 			favicon: "src/assets/favicon.png",
+			logo: {
+				src: "src/assets/favicon.png",
+			},
 			sidebar: [
 				{ label: "About", link: "about" },
 				{ label: "CLI", link: "cli" },
@@ -58,4 +64,5 @@ export default defineConfig({
 	markdown: {
 		remarkPlugins: [remarkHeadingId],
 	},
+	site: "https://create.bingo",
 });
