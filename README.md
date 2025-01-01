@@ -1,6 +1,6 @@
 <h1 align="center">create</h1>
 
-<p align="center">Composable, testable, type-safe templates. 💝</p>
+<p align="center">Delightful templates for web repositories. 💝</p>
 
 <p align="center">
 	<!-- prettier-ignore-start -->
@@ -17,13 +17,10 @@
 
 <img align="right" alt="Project logo: a sparkling heart emerging from a yellow gift box" height="128" src="./packages/site/src/assets/logo-small.webp" width="128">
 
-## Status
+`create` is a repository templating engine.
+It allows developers to create reusable templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.
 
-`create` is _very_ early stage.
-It is just barely past proof-of-concept stage.
-
-At the moment, it's being developed as an MVP to replace the internals of [create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app).
-See [FAQs > How do I use `create`?](./faqs#how-do-i-use-create).
+See **[create.bingo](https:/create.bingo)** for documentation on getting started with `create`.
 
 ## Contributors
 
