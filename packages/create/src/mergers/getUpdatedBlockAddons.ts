@@ -11,6 +11,7 @@ export interface BlockProduction<
 }
 
 export function getUpdatedBlockAddons<Options extends object>(
+	allowedBlocks: Set<Block<object | undefined, Options>>,
 	blockProductions: Map<
 		Block<object | undefined, Options>,
 		BlockProduction<object, Options>
@@ -20,6 +21,10 @@ export function getUpdatedBlockAddons<Options extends object>(
 	const updated: [BlockWithAddons<object, Options>, object][] = [];
 
 	for (const newAddons of newBlockAddons) {
+		if (!allowedBlocks.has(newAddons.block)) {
+			continue;
+		}
+
 		const existingProduction = blockProductions.get(newAddons.block);
 		if (!existingProduction) {
 			updated.push([newAddons.block, newAddons.addons]);

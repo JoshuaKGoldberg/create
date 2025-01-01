@@ -63,6 +63,14 @@ vi.mock("../createInitialCommit.js", () => ({
 	},
 }));
 
+const mockApplyArgsToSettings = vi.fn();
+
+vi.mock("../parsers/applyArgsToSettings", () => ({
+	get applyArgsToSettings() {
+		return mockApplyArgsToSettings;
+	},
+}));
+
 const mockClearTemplateFiles = vi.fn();
 
 vi.mock("./clearTemplateFiles.js", () => ({
@@ -152,6 +160,21 @@ describe("runModeMigrate", () => {
 		expect(actual).toEqual({
 			status: CLIStatus.Cancelled,
 		});
+	});
+
+	it("returns the error when applyArgsToSettings returns an error", async () => {
+		const message = "Oh no!";
+
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve({ preset }),
+		});
+		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
+
+		const actual = await runModeMigrate({ args: [], configFile: undefined });
+
+		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
 	});
 
 	it("doesn't clear the existing repository when no forked template locator is available", async () => {

@@ -8,6 +8,7 @@ import { createInitialCommit } from "../createInitialCommit.js";
 import { createClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
+import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { CLIStatus } from "../status.js";
@@ -94,13 +95,18 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
+	const mergedSettings = applyArgsToSettings(args, preset, settings);
+	if (mergedSettings instanceof Error) {
+		return { outro: mergedSettings.message, status: CLIStatus.Error };
+	}
+
 	await runSpinnerTask(
 		display,
 		`Running the ${preset.about.name} preset`,
 		`Ran the ${preset.about.name} preset`,
 		async () => {
 			await runPreset(preset, {
-				...settings,
+				...mergedSettings,
 				...system,
 				directory,
 				mode: "migrate",

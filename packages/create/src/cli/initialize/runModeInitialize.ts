@@ -9,6 +9,7 @@ import { createClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
+import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
@@ -61,9 +62,10 @@ export async function runModeInitialize({
 		};
 	}
 
+	const { preset, template } = loaded;
 	const directory = await promptForInitializationDirectory(
 		requestedDirectory,
-		loaded.template,
+		template,
 	);
 	if (prompts.isCancel(directory)) {
 		return {
@@ -75,8 +77,8 @@ export async function runModeInitialize({
 	const system = await createSystemContextWithAuth({ directory, display });
 
 	const options = await promptForBaseOptions({
-		base: loaded.preset.base,
-		existingOptions: parseZodArgs(args, loaded.preset.base.options),
+		base: preset.base,
+		existingOptions: parseZodArgs(args, preset.base.options),
 		system,
 	});
 	if (prompts.isCancel(options)) {
@@ -84,6 +86,11 @@ export async function runModeInitialize({
 	}
 
 	assertOptionsForInitialize(options);
+
+	const settings = applyArgsToSettings(args, preset);
+	if (settings instanceof Error) {
+		return { outro: settings.message, status: CLIStatus.Error };
+	}
 
 	await runSpinnerTask(
 		display,
@@ -93,17 +100,18 @@ export async function runModeInitialize({
 			await createRepositoryOnGitHub(
 				options,
 				system.fetchers.octokit,
-				loaded.preset.base.template,
+				preset.base.template,
 			);
 		},
 	);
 
 	const creation = await runSpinnerTask(
 		display,
-		`Running the ${loaded.preset.about.name} preset`,
-		`Ran the ${loaded.preset.about.name} preset`,
+		`Running the ${preset.about.name} preset`,
+		`Ran the ${preset.about.name} preset`,
 		async () =>
-			await runPreset(loaded.preset, {
+			await runPreset(preset, {
+				...settings,
 				...system,
 				directory,
 				mode: "initialize",

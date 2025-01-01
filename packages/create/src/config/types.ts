@@ -4,7 +4,7 @@ import { Preset } from "../types/presets.js";
 
 export interface BlockModifications<Options extends object = object> {
 	add?: Block<object | undefined, Options>[];
-	remove?: Block<object | undefined, Options>[];
+	exclude?: Block<object | undefined, Options>[];
 }
 
 export interface CreateConfig {

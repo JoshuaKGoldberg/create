@@ -78,6 +78,47 @@ describe("runPreset", () => {
 		});
 	});
 
+	it("doesn't include addons to blocks that aren't defined", () => {
+		const blockKnown = base.createBlock({
+			about: {
+				name: "Known Block",
+			},
+			produce({ options }) {
+				return {
+					addons: [blockUnknown({ extra: "line" })],
+					files: { "README.md": options.value },
+				};
+			},
+		});
+
+		const blockUnknown = base.createBlock({
+			about: {
+				name: "Unknown Block",
+			},
+			addons: {
+				extra: z.string().optional(),
+			},
+			produce({ addons, options }) {
+				return {
+					files: { "UNKNOWN.md": [options.value, addons.extra].join("\n") },
+				};
+			},
+		});
+
+		const result = executePresetBlocks({
+			blocks: [blockKnown],
+			options: { value: "Hello, world!" },
+			presetContext,
+		});
+
+		expect(result).toEqual({
+			addons: [blockUnknown({ extra: "line" })],
+			files: {
+				"README.md": "Hello, world!",
+			},
+		});
+	});
+
 	describe("modes", () => {
 		const block = base.createBlock({
 			about: {

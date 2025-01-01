@@ -10,7 +10,7 @@ The steps [`runPreset`](../apis/producers#producepreset) takes internally are:
    1. Get the Creation from the Block, passing any current known Addons
    2. Store that Block's Creation
    3. If a [runtime mode](#modes) is specified, additionally generate the approprate Block Creations
-   4. If the Block specified new addons for any other Blocks:
+   4. If the Block specified new addons for any defined Blocks:
       1. Add those Blocks to the queue of Blocks to re-run
 3. Merge all Block Creations together
 

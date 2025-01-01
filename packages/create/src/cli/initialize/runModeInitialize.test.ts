@@ -5,7 +5,9 @@ import { createTemplate } from "../../creators/createTemplate.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
-const mockIsCancel = vi.fn();
+const mockCancel = Symbol("");
+
+const mockIsCancel = (value: unknown) => value === mockCancel;
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
@@ -53,6 +55,14 @@ const mockTryImportTemplatePreset = vi.fn();
 vi.mock("../importers/tryImportTemplatePreset.js", () => ({
 	get tryImportTemplatePreset() {
 		return mockTryImportTemplatePreset;
+	},
+}));
+
+const mockApplyArgsToSettings = vi.fn();
+
+vi.mock("../parsers/applyArgsToSettings", () => ({
+	get applyArgsToSettings() {
+		return mockApplyArgsToSettings;
 	},
 }));
 
@@ -121,8 +131,7 @@ describe("runModeInitialize", () => {
 	});
 
 	it("returns the cancellation when tryImportTemplatePreset is cancelled", async () => {
-		mockTryImportTemplatePreset.mockResolvedValueOnce(Symbol(""));
-		mockIsCancel.mockReturnValueOnce(true);
+		mockTryImportTemplatePreset.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
@@ -133,8 +142,7 @@ describe("runModeInitialize", () => {
 
 	it("returns the cancellation when promptForInitializationDirectory is cancelled", async () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(Symbol(""));
-		mockIsCancel.mockReturnValueOnce(false).mockReturnValueOnce(true);
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
@@ -146,17 +154,31 @@ describe("runModeInitialize", () => {
 	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
-		mockPromptForBaseOptions.mockResolvedValueOnce(Symbol(""));
-		mockIsCancel
-			.mockReturnValueOnce(false)
-			.mockReturnValueOnce(false)
-			.mockReturnValueOnce(true);
+		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+	});
+
+	it("returns the error when applyArgsToSettings returns an error", async () => {
+		const message = "Oh no!";
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
 	});
 
 	it("returns a CLI success and makes an absolute directory relative when importing and running the preset succeeds", async () => {
@@ -169,7 +191,6 @@ describe("runModeInitialize", () => {
 			owner: "TestOwner",
 			repository: "test-repository",
 		});
-		mockIsCancel.mockReturnValue(false);
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});
@@ -196,7 +217,6 @@ describe("runModeInitialize", () => {
 			owner: "TestOwner",
 			repository: "test-repository",
 		});
-		mockIsCancel.mockReturnValue(false);
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});

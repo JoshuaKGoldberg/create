@@ -37,7 +37,7 @@ describe("runPreset", () => {
 	it("returns the initial blocks when modifications are empty", () => {
 		const initial = [blockA, blockB];
 
-		const actual = applyBlockModifications(initial, { add: [], remove: [] });
+		const actual = applyBlockModifications(initial, { add: [], exclude: [] });
 
 		expect(actual).toBe(initial);
 	});
@@ -47,7 +47,7 @@ describe("runPreset", () => {
 
 		const actual = applyBlockModifications(initial, {
 			add: [blockC],
-			remove: [blockB],
+			exclude: [blockB],
 		});
 
 		expect(actual).toEqual([blockA, blockC]);

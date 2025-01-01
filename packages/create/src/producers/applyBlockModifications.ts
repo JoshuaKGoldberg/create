@@ -3,9 +3,9 @@ import { Block } from "../types/blocks.js";
 
 export function applyBlockModifications<Options extends object>(
 	initial: Block<object | undefined, Options>[],
-	{ add = [], remove = [] }: BlockModifications<Options> = {},
+	{ add = [], exclude = [] }: BlockModifications<Options> = {},
 ) {
-	if (!add.length && !remove.length) {
+	if (!add.length && !exclude.length) {
 		return initial;
 	}
 
@@ -15,8 +15,8 @@ export function applyBlockModifications<Options extends object>(
 		blocks.add(added);
 	}
 
-	for (const removed of remove) {
-		blocks.delete(removed);
+	for (const excluded of exclude) {
+		blocks.delete(excluded);
 	}
 
 	return Array.from(blocks);

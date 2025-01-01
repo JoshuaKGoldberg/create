@@ -25,6 +25,8 @@ For APIs that only create those objects in memory, see [Producers](./producers).
 
 Given a [Block](../concepts/blocks), executes a [Creation](../runtime/creations) output by running its [`produce()`](../concepts/blocks#production).
 
+See [Producers > `runBlock`](./producers#runblock) for the arguments `runBlock` allows.
+
 For example, given a Block that creates a `README.md`, this would write that file to system:
 
 ```ts
@@ -37,6 +39,8 @@ await runBlock(blockReadme);
 ## `runPreset`
 
 Given a [Preset](../concepts/presets), executes a [Creation](../runtime/creations) output by running each of its Blocks [`produce()`](../concepts/blocks#production).
+
+See [Producers > `produceBlock`](./producers#produceblock) for the arguments `runPreset` allows.
 
 For example, given a Preset containing the previous Block that creates a `README.md`, this would write that file to system:
 
