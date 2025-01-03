@@ -7,6 +7,7 @@ export default defineConfig({
 				"**/.*",
 				"**/*.d.ts",
 				"**/*.js",
+				"**/*.astro",
 				"**/vitest.*.ts",
 				"packages/*/src/index.ts",
 				"packages/site/astro.config.ts",
