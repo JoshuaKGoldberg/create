@@ -3,12 +3,12 @@ description: "Running create on your command line."
 title: CLI
 ---
 
+import { PackageManagers } from "starlight-package-managers";
+
 The `create` CLI is what you run to generate a new repository or migrate an existing one.
 It will interactively prompt you for any options it needs to run that can't be inferred from disk.
 
-```shell
-npx create
-```
+<PackageManagers type="dlx" pkg="create" />
 
 ## Modes
 
@@ -24,9 +24,7 @@ This mode will be used by default if the current directory is empty.
 
 For example, to generate a new repository using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-```shell
-npx create typescript-app
-```
+<PackageManagers type="dlx" pkg="create" args="typescript-app" />
 
 ```plaintext
 ┌  ✨ create ✨
@@ -48,9 +46,7 @@ This mode will be used by default if the current directory is a Git repository a
 
 For example, to update an existing repository to the latest [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-```shell
-npx create typescript-app
-```
+<PackageManagers type="dlx" pkg="create" args="typescript-app" />
 
 ```plaintext
 ┌  ✨ create ✨
@@ -67,13 +63,13 @@ npx create typescript-app
 
 ## Flags
 
-:::note
+The first argument passed to `create` can be a shorthand [`-f` / `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
+A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
+
+:::tip
 The `create` CLI is a general runner to pull in information from templates.
 See the documentation for your specific template for additional flags.
 :::
-
-The first argument passed to `create` can be a shorthand [`-f` / `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
-A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
 
 ### `-d` / `--directory`
 
@@ -88,9 +84,11 @@ If not provided:
 
 For example, creating a new repository in a subdirectory:
 
-```shell
-npx create typescript-app --directory my-fancy-project
-```
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app --directory my-fancy-project"
+/>
 
 ### `-f` / `--from`
 
@@ -106,9 +104,11 @@ This can be either:
 
 For example, using an org-scoped package:
 
-```shell
-npx create --from @joshuakgoldberg/my-fancy-template
-```
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="--from @joshuakgoldberg/my-fancy-template"
+/>
 
 ### `-h` / `--help`
 
@@ -116,9 +116,7 @@ npx create --from @joshuakgoldberg/my-fancy-template
 
 Prints help text.
 
-```shell
-npx create --help
-```
+<PackageManagers type="dlx" pkg="create" args="--help" />
 
 ### `-m` / `--mode`
 
@@ -130,9 +128,11 @@ If not provided, it will be inferred based on whether `create` is being run in a
 
 For example, specifying creating a new repository with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-```shell
-npx create typescript-app --mode initialize
-```
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app --mode initialize"
+/>
 
 ### `-p` / `--preset`
 
@@ -144,9 +144,11 @@ If not provided, and the template defines multiple presets, `create` will prompt
 
 For example, specifying the _common_ preset for [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-```shell
-npx create typescript-app --preset common
-```
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app --preset common"
+/>
 
 ### `-v` / `--version`
 
@@ -154,9 +156,7 @@ npx create typescript-app --preset common
 
 Prints the `create` package version.
 
-```shell
-npx create --version
-```
+<PackageManagers type="dlx" pkg="create" args="--version" />
 
 ## Template Options
 
@@ -164,9 +164,11 @@ The template being generated from may add in additional flags.
 
 For example, if a template defines a `title` option, `--title` will be type `string`:
 
-```shell
-npx create typescript-app --title "My New App"
-```
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app --title 'My New App'"
+/>
 
 Any required options that are not provided will be prompted for by the `create` CLI.
 
