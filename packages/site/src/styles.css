@@ -58,6 +58,23 @@ h2 + h3 {
 
 /* Component style overrides */
 
+:root {
+	--sl-color-gray-8: #211500;
+}
+
+:root,
+:root[data-theme="light"] {
+	--sl-color-gray-8: #fff9f3;
+	--sl-color-green-low: var(--sl-color-accent-low);
+	--sl-color-green: var(--sl-color-accent);
+	--sl-color-orange-low: var(--sl-color-gray-7);
+	--sl-color-orange: var(--sl-color-gray-5);
+	--sl-color-purple-low: var(--sl-color-accent-low);
+	--sl-color-purple: var(--sl-color-accent);
+	--sl-color-red-low: var(--sl-color-gray-7);
+	--sl-color-red: var(--sl-color-gray-5);
+}
+
 :root[data-theme="light"] {
 	--sl-color-gray-8: #fff9f3;
 }
