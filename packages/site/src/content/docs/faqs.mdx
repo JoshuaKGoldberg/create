@@ -2,11 +2,19 @@
 title: FAQs
 ---
 
+`create` is _very_ early stage.
+It is just barely past proof-of-concept stage.
+
+Right now, it's being developed as an MVP to generalize the internals of [create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app).
+Soon it will be more stable and these docs will be updated.
+
 ## Consumption
 
 ### How do I use `create`?
 
-See [CLI](./cli) for running the `create` command.
+If you want to create or update a repository, see [CLI](./cli) for running the `create` command.
+
+If you want to build your own template, see [Templating Engine > About](./engine/about).
 
 ### How do I remove part of a template?
 
@@ -26,39 +34,7 @@ Soon, there will be higher-level scaffolding utilities that will allow packages 
 
 See [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term project vision](https://github.com/JoshuaKGoldberg/create-typescript-app/issues/1181) for more history.
 
-## Development
-
-### Why can't we define Args for Blocks in Presets?
-
-In other words, you might be wondering why the API doesn't allow something like this:
-
-```js
-export const presetExample = base.createPreset({
-	blocks: [
-		myBlock({
-			someArg: "...",
-		}),
-	],
-});
-```
-
-This is because Blocks shouldn't need to be configured.
-Users should be able to turn them off and on at will without any configuration.
-
-Passing Args to a Block in a Preset means users will have no way to override or remove those Args.
-
-### Why do some testers allow `take` and others the individual system pieces?
-
-It depends on what APIs the entities under test conceptually use.
-
-| Entity                        | Mock    | Why                                                                                           |
-| ----------------------------- | ------- | --------------------------------------------------------------------------------------------- |
-| [Bases](./concepts/bases)     | `take`  | Bases should go through Inputs to interact with the system.                                   |
-| [Blocks](./concepts/blocks)   | Neither | Blocks should be synchronous and take any input values from their Base Options.               |
-| [Inputs](./runtime/inputs)    | Both    | Inputs receive system pieces, and can also `take` other Inputs.                               |
-| [Presets](./concepts/presets) | System  | High-level users of Presets should not care about low-level implementation details of Inputs. |
-
-## Tool Comparisons
+## Ecosystem Comparisons
 
 `create` is targeting being a fully complete solution for defining _creating_, _migrating_, and/or _updating_ repositories to use flexible templates.
 Those templates are defined in a feature-by-feature ("Block") basis and with configurable "Presets" using `create` APIs.
@@ -207,3 +183,41 @@ Its architecture and APIs generally work with older, now-outdated JavaScript pra
 - Persistent options are provided in a raw `.yo-rc.json` JSON file rather than type-safe schema definitions
 
 Yeoman has not been actively maintained in several years.
+
+## Template Development
+
+### This Blocks system is a lot of work. Is there a more straightforward system?
+
+Not yet, but there will be.
+Soon, less-heavyweight engines will be available to make authoring straightforward Templates easier.
+See [create#76 🚀 Feature: Switch to a pluggable templating engine system](https://github.com/JoshuaKGoldberg/create/issues/76).
+
+### Why can't we define Args for Blocks in Presets?
+
+In other words, you might be wondering why the API doesn't allow something like this:
+
+```js
+export const presetExample = base.createPreset({
+	blocks: [
+		myBlock({
+			someArg: "...",
+		}),
+	],
+});
+```
+
+This is because Blocks shouldn't need to be configured.
+Users should be able to turn them off and on at will without any configuration.
+
+Passing Args to a Block in a Preset means users will have no way to override or remove those Args.
+
+### Why do some testers allow `take` and others the individual system pieces?
+
+It depends on what APIs the entities under test conceptually use.
+
+| Entity                               | Mock    | Why                                                                                           |
+| ------------------------------------ | ------- | --------------------------------------------------------------------------------------------- |
+| [Bases](./engine/concepts/bases)     | `take`  | Bases should go through Inputs to interact with the system.                                   |
+| [Blocks](./engine/concepts/blocks)   | Neither | Blocks should be synchronous and take any input values from their Base Options.               |
+| [Inputs](./engine/runtime/inputs)    | Both    | Inputs receive system pieces, and can also `take` other Inputs.                               |
+| [Presets](./engine/concepts/presets) | System  | High-level users of Presets should not care about low-level implementation details of Inputs. |

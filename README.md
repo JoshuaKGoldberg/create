@@ -15,7 +15,7 @@
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
 
-<img align="right" alt="Project logo: a sparkling heart emerging from a yellow gift box" height="128" src="./packages/site/src/assets/logo-small.webp" width="128">
+<img align="right" alt="Project logo: a sparkling roseate heart emerging from a yellow gift box" height="128" src="./packages/site/src/assets/logo-small.webp" width="128">
 
 `create` is a repository templating engine.
 It allows developers to create reusable templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.

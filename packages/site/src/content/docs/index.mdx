@@ -22,7 +22,7 @@ hero:
       target: _blank
       variant: minimal
   image:
-    alt: A sparkling heart emerging from a yellow gift box
+    alt: A sparkling roseate heart emerging from a yellow gift box
     dark: ~/assets/logo-dark.webp
     light: ~/assets/logo-light.webp
   tagline: Delightful templates for web repositories.
@@ -31,6 +31,7 @@ title: Delightful templates for web repositories. 💝
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
+import TryItOut from "~/components/TryItOut.astro";
 
 <CardGrid stagger>
 	<Card title="Creation from Templates" icon="add-document">
@@ -50,3 +51,5 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 		individually configurable blocks. It's up to you.
 	</Card>
 </CardGrid>
+
+<TryItOut />
