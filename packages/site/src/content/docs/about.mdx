@@ -3,17 +3,19 @@ description: "About create: delightful templating for web repositories."
 title: About
 ---
 
+import { PackageManagers } from "starlight-package-managers";
+
 `create` is an engine for building repositories from templates.
 It provides tooling for:
 
 - **Initialization**: Creating new repositories from templates with a single CLI command
 - **Migration**: Updating existing repositories to the newest versions of their template
 
-:::tip[Getting Started]
-See **[CLI](./cli)** to generate your first repository from a template with the `create` command.
-:::
+See **[CLI](./cli)** to generate your first repository from a template with the `create` command:
 
-`create` also provides rich scaffolding for building templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.
+<PackageManagers type="dlx" pkg="create" args="typescript-app" />
+
+`create` also provides rich scaffolding for building flexible repostiroy templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.
 
 ## Why?
 
