@@ -64,7 +64,6 @@ h2 + h3 {
 
 :root,
 :root[data-theme="light"] {
-	--sl-color-gray-8: #fff9f3;
 	--sl-color-green-low: var(--sl-color-accent-low);
 	--sl-color-green: var(--sl-color-accent);
 	--sl-color-orange-low: var(--sl-color-gray-7);
@@ -79,7 +78,10 @@ h2 + h3 {
 	--sl-color-gray-8: #fff9f3;
 }
 
-/* Override the default colors with our roseate and yellow */
+a.secondary {
+	background: var(--sl-color-gray-7);
+}
+
 .starlight-aside {
 	--sl-color-asides-text-accent: var(--sl-color-gray-high);
 	--sl-color-asides-border: var(--sl-color-gray);
