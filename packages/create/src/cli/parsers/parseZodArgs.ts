@@ -7,7 +7,6 @@
 
 import { parseArgs, ParseArgsConfig } from "util";
 import {
-	z,
 	ZodBooleanDef,
 	ZodFirstPartyTypeKind,
 	ZodLiteralDef,
