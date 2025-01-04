@@ -7,15 +7,15 @@ export async function applyRequestsToSystem(
 ) {
 	await Promise.all(
 		requests.map(async (request) => {
-			system.display.item("requests", request.id, { start: Date.now() });
+			system.display.item("request", request.id, { start: Date.now() });
 
 			try {
 				await request.send(system.fetchers);
 			} catch (error) {
-				system.display.item("requests", request.id, { error });
+				system.display.item("request", request.id, { error });
 			}
 
-			system.display.item("requests", request.id, { end: Date.now() });
+			system.display.item("request", request.id, { end: Date.now() });
 		}),
 	);
 }

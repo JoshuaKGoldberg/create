@@ -23,9 +23,9 @@ describe("applyCommandsToSystem", () => {
 		await applyScriptsToSystem([command], system);
 
 		expect(system.display.item.mock.calls).toEqual([
-			["scripts", command, { start: expect.any(Number) }],
-			["scripts", command, { end: expect.any(Number) }],
-			["scripts", command, { error }],
+			["script", command, { start: expect.any(Number) }],
+			["script", command, { end: expect.any(Number) }],
+			["script", command, { error }],
 		]);
 	});
 
@@ -39,9 +39,9 @@ describe("applyCommandsToSystem", () => {
 		await applyScriptsToSystem([{ commands: [command], phase: 0 }], system);
 
 		expect(system.display.item.mock.calls).toEqual([
-			["scripts", command, { start: expect.any(Number) }],
-			["scripts", command, { end: expect.any(Number) }],
-			["scripts", command, { error }],
+			["script", command, { start: expect.any(Number) }],
+			["script", command, { end: expect.any(Number) }],
+			["script", command, { error }],
 		]);
 	});
 

@@ -19,12 +19,12 @@ export async function applyScriptsToSystem(
 		.sort();
 
 	async function runCommand(command: string) {
-		system.display.item("scripts", command, { start: Date.now() });
+		system.display.item("script", command, { start: Date.now() });
 		const result = await system.runner(command);
-		system.display.item("scripts", command, { end: Date.now() });
+		system.display.item("script", command, { end: Date.now() });
 
 		if (result instanceof Error) {
-			system.display.item("scripts", command, { error: result });
+			system.display.item("script", command, { error: result });
 		}
 	}
 

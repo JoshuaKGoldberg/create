@@ -33,9 +33,9 @@ describe("applyRequestsToSystem", () => {
 		);
 
 		expect(system.display.item.mock.calls).toEqual([
-			["requests", id, { start: expect.any(Number) }],
-			["requests", id, { error }],
-			["requests", id, { end: expect.any(Number) }],
+			["request", id, { start: expect.any(Number) }],
+			["request", id, { error }],
+			["request", id, { end: expect.any(Number) }],
 		]);
 	});
 });

@@ -4,6 +4,7 @@ import { parseArgs } from "node:util";
 import { z } from "zod";
 
 import { packageData } from "../packageData.js";
+import { createClackDisplay } from "./display/createClackDisplay.js";
 import { runModeInitialize } from "./initialize/runModeInitialize.js";
 import { logHelpText } from "./loggers/logHelpText.js";
 import { logOutro } from "./loggers/logOutro.js";
@@ -101,19 +102,26 @@ export async function runCli(args: string[]) {
 		return CLIStatus.Success;
 	}
 
+	const display = createClackDisplay();
+	console.log({ display });
+	const sharedSettings = {
+		...validatedValues,
+		args,
+		display,
+	};
+
 	const { outro, status, suggestions } =
 		productionSettings.mode === "initialize"
-			? await runModeInitialize({ ...validatedValues, args })
+			? await runModeInitialize(sharedSettings)
 			: await runModeMigrate({
-					...validatedValues,
-					args,
+					...sharedSettings,
 					configFile: productionSettings.configFile,
 				});
 
 	logOutro(
 		outro ??
 			chalk.yellow("Operation cancelled. Exiting - maybe another time? 👋"),
-		suggestions,
+		{ items: display.dumpItems(), suggestions },
 	);
 
 	return status;

@@ -1,11 +1,18 @@
+import chalk from "chalk";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { logOutro } from "./logOutro.js";
 
 const mockOutro = vi.fn();
-const mockLog = vi.fn();
+const mockConsoleLog = vi.fn();
+const mockPromptWarn = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
+	get log() {
+		return {
+			warn: mockPromptWarn,
+		};
+	},
 	get outro() {
 		return mockOutro;
 	},
@@ -13,34 +20,64 @@ vi.mock("@clack/prompts", () => ({
 
 describe("logOutro", () => {
 	beforeEach(() => {
-		console.log = mockLog;
+		console.log = mockConsoleLog;
 	});
 
-	test("no suggestions", () => {
+	test("no errata", () => {
 		logOutro("Bye!");
 
-		expect(mockLog).not.toHaveBeenCalled();
+		expect(mockConsoleLog).not.toHaveBeenCalled();
+		expect(mockPromptWarn).not.toHaveBeenCalled();
 		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
 	});
 
-	test("empty suggestions", () => {
-		logOutro("Bye!", []);
+	describe("items", () => {
+		test("empty items", () => {
+			logOutro("Bye!", { items: {} });
 
-		expect(mockLog).not.toHaveBeenCalled();
-		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+			expect(mockPromptWarn).not.toHaveBeenCalled();
+			expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+		});
+
+		test("items", () => {
+			logOutro("Bye!", {
+				items: {
+					groupA: {
+						itemA: {},
+						itemB: { error: new Error("Oh no!") },
+					},
+				},
+			});
+
+			expect(mockPromptWarn.mock.calls).toEqual([
+				[
+					`The ${chalk.red("itemB")} groupA failed. You should re-run it and fix its complaints.`,
+				],
+			]);
+			expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+		});
 	});
 
-	test("suggestions", () => {
-		logOutro("Bye!", ["a", "b", "c"]);
+	describe("suggestions", () => {
+		test("empty suggestions", () => {
+			logOutro("Bye!", { suggestions: [] });
 
-		expect(mockLog.mock.calls).toEqual([
-			["Be sure to:"],
-			[],
-			["a"],
-			["b"],
-			["c"],
-			[],
-		]);
-		expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+			expect(mockConsoleLog).not.toHaveBeenCalled();
+			expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+		});
+
+		test("suggestions", () => {
+			logOutro("Bye!", { suggestions: ["a", "b", "c"] });
+
+			expect(mockConsoleLog.mock.calls).toEqual([
+				["Be sure to:"],
+				[],
+				["a"],
+				["b"],
+				["c"],
+				[],
+			]);
+			expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
+		});
 	});
 });
