@@ -12,7 +12,7 @@ export interface MockSystems {
 export function createMockSystems(
 	settings: MockSystemOptions = {},
 ): MockSystems {
-	const fetch = settings.fetch ?? createFailingFunction("fetcher", "an input");
+	const fetch = settings.fetch ?? createFailingFunction("fetch", "an input");
 
 	const fetchers = {
 		fetch,

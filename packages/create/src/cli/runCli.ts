@@ -15,6 +15,7 @@ const valuesSchema = z.object({
 	directory: z.string().optional(),
 	from: z.string().optional(),
 	mode: z.union([z.literal("initialize"), z.literal("migrate")]).optional(),
+	offline: z.boolean().optional(),
 	owner: z.string().optional(),
 	preset: z.string().optional(),
 	repository: z.string().optional(),
@@ -35,6 +36,9 @@ export async function runCli(args: string[]) {
 			},
 			mode: {
 				type: "string",
+			},
+			offline: {
+				type: "boolean",
 			},
 			owner: {
 				type: "string",

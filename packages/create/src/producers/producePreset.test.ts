@@ -27,28 +27,28 @@ const system = {
 };
 
 describe("producePreset", () => {
-	const baseWithOption = createBase({
-		options: {
-			value: z.string(),
-		},
-	});
-
-	const blockUsingOption = baseWithOption.createBlock({
-		produce({ options }) {
-			return {
-				files: {
-					"value.txt": options.value,
-				},
-			};
-		},
-	});
-
-	const presetUsingOption = baseWithOption.createPreset({
-		about: { name: "Test" },
-		blocks: [blockUsingOption],
-	});
-
 	it("passes options to the preset when provided via options", async () => {
+		const baseWithOption = createBase({
+			options: {
+				value: z.string(),
+			},
+		});
+
+		const blockUsingOption = baseWithOption.createBlock({
+			produce({ options }) {
+				return {
+					files: {
+						"value.txt": options.value,
+					},
+				};
+			},
+		});
+
+		const presetUsingOption = baseWithOption.createPreset({
+			about: { name: "Test" },
+			blocks: [blockUsingOption],
+		});
+
 		const actual = await producePreset(presetUsingOption, {
 			...system,
 			options: {
@@ -60,6 +60,40 @@ describe("producePreset", () => {
 			...emptyCreation,
 			files: {
 				"value.txt": "abc",
+			},
+		});
+	});
+
+	it("passes offline to the preset when provided", async () => {
+		const baseWithoutOption = createBase({
+			options: {},
+		});
+
+		const blockWithoutOption = baseWithoutOption.createBlock({
+			produce({ offline }) {
+				return {
+					files: {
+						"offline.txt": String(offline),
+					},
+				};
+			},
+		});
+
+		const presetWithoutOption = baseWithoutOption.createPreset({
+			about: { name: "Test" },
+			blocks: [blockWithoutOption],
+		});
+
+		const actual = await producePreset(presetWithoutOption, {
+			...system,
+			offline: true,
+			options: {},
+		});
+
+		expect(actual).toEqual({
+			...emptyCreation,
+			files: {
+				"offline.txt": "true",
 			},
 		});
 	});

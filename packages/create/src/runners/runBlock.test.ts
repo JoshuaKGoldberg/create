@@ -14,7 +14,7 @@ const base = createBase({
 function createSystem() {
 	return {
 		fetchers: {
-			fetch: noop("fetcher"),
+			fetch: noop("fetch"),
 			octokit: {} as Octokit,
 		},
 		fs: {

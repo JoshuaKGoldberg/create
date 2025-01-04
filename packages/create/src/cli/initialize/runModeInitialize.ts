@@ -24,6 +24,7 @@ export interface RunModeInitializeSettings {
 	args: string[];
 	directory?: string;
 	from?: string;
+	offline?: boolean;
 	preset?: string;
 	repository?: string;
 }
@@ -33,6 +34,7 @@ export async function runModeInitialize({
 	repository,
 	directory: requestedDirectory = repository,
 	from = findPositionalFrom(args),
+	offline,
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
 	if (!from) {
@@ -48,6 +50,12 @@ export async function runModeInitialize({
 			`  ${chalk.green(from)}`,
 		].join("\n"),
 	);
+
+	if (offline) {
+		prompts.log.message(
+			"--offline enabled. You'll need to git push any changes manually.",
+		);
+	}
 
 	const loaded = await tryImportTemplatePreset(from, requestedPreset);
 	if (loaded instanceof Error) {
@@ -74,11 +82,15 @@ export async function runModeInitialize({
 	}
 
 	const display = createClackDisplay();
-	const system = await createSystemContextWithAuth({ directory, display });
+	const system = await createSystemContextWithAuth({
+		directory,
+		display,
+		offline,
+	});
 
-	const options = await promptForBaseOptions({
-		base: preset.base,
+	const options = await promptForBaseOptions(preset.base, {
 		existingOptions: parseZodArgs(args, preset.base.options),
+		offline,
 		system,
 	});
 	if (prompts.isCancel(options)) {
@@ -92,18 +104,20 @@ export async function runModeInitialize({
 		return { outro: settings.message, status: CLIStatus.Error };
 	}
 
-	await runSpinnerTask(
-		display,
-		"Creating repository on GitHub",
-		"Created repository on GitHub",
-		async () => {
-			await createRepositoryOnGitHub(
-				options,
-				system.fetchers.octokit,
-				preset.base.template,
-			);
-		},
-	);
+	if (!offline) {
+		await runSpinnerTask(
+			display,
+			"Creating repository on GitHub",
+			"Created repository on GitHub",
+			async () => {
+				await createRepositoryOnGitHub(
+					options,
+					system.fetchers.octokit,
+					preset.base.template,
+				);
+			},
+		);
+	}
 
 	const creation = await runSpinnerTask(
 		display,
@@ -115,6 +129,7 @@ export async function runModeInitialize({
 				...system,
 				directory,
 				mode: "initialize",
+				offline,
 				options,
 			}),
 	);
@@ -125,7 +140,7 @@ export async function runModeInitialize({
 		"Prepared local repository",
 		async () => {
 			await createTrackingBranches(options, system.runner);
-			await createInitialCommit(system.runner);
+			await createInitialCommit(system.runner, { offline });
 			await clearLocalGitTags(system.runner);
 		},
 	);
@@ -134,9 +149,13 @@ export async function runModeInitialize({
 		[
 			"Great, you've got a new repository ready to use in:",
 			`  ${chalk.green(makeRelative(directory))}`,
-			"",
-			"It's also pushed to GitHub on:",
-			`  ${chalk.green(`https://github.com/${options.owner}/${options.repository}`)}`,
+			...(offline
+				? []
+				: [
+						"",
+						"It's also pushed to GitHub on:",
+						`  ${chalk.green(`https://github.com/${options.owner}/${options.repository}`)}`,
+					]),
 		].join("\n"),
 	);
 

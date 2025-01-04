@@ -6,19 +6,16 @@ import { ProductionMode } from "../types/modes.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
 import { applyBlockModifications } from "./applyBlockModifications.js";
-import { executePresetBlocks } from "./executePresetBlocks.js";
+import { produceBlocks } from "./produceBlocks.js";
 
-export interface PresetProductionSettings<OptionsShape extends AnyShape>
-	extends Partial<NativeSystem>,
-		ProductionSettingsBase {
+export interface ProducePresetSettings<OptionsShape extends AnyShape>
+	extends Partial<NativeSystem> {
 	addons?: CreatedBlockAddons<object, InferredObject<OptionsShape>>[];
 	blocks?: BlockModifications<InferredObject<OptionsShape>>;
-	options: InferredObject<OptionsShape>;
-}
-
-export interface ProductionSettingsBase {
 	directory?: string;
 	mode?: ProductionMode;
+	offline?: boolean;
+	options: InferredObject<OptionsShape>;
 }
 
 export async function producePreset<OptionsShape extends AnyShape>(
@@ -28,21 +25,25 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		blocks: blockModifications,
 		directory = ".",
 		mode,
+		offline,
 		options,
 		...providedSystem
-	}: PresetProductionSettings<OptionsShape>,
+	}: ProducePresetSettings<OptionsShape>,
 ): Promise<Creation<InferredObject<OptionsShape>>> {
 	const system = await createSystemContextWithAuth({
 		directory,
+		offline,
 		...providedSystem,
 	});
 
-	const creation = executePresetBlocks({
+	const blocks = applyBlockModifications(preset.blocks, blockModifications);
+
+	const creation = produceBlocks(blocks, {
 		addons,
-		blocks: applyBlockModifications(preset.blocks, blockModifications),
 		mode,
+		offline,
 		options,
-		presetContext: { ...system, directory },
+		system: { ...system, directory },
 	});
 
 	return {

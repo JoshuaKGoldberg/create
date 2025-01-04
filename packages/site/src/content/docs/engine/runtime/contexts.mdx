@@ -116,9 +116,12 @@ export const inputFromFile = createInput({
 
 Unlike that minimal example, Inputs generally use one or more of the following properties to read from the user's file system and/or network.
 
-### `fetcher` {#input-fetcher}
+### `fetchers` {#input-fetchers}
 
-The global `fetch` function, to make network calls.
+An object to make network calls, containing:
+
+- `fetch`: An equivalent to the global `fetch` function
+- `octokit`: [GitHub Octokit](https://github.com/octokit/octokit.js?tab=readme-ov-file#octokit-api-client) that uses the `fetch` internally
 
 For example, an Input that retrieves a random Cat fact:
 
@@ -126,8 +129,8 @@ For example, an Input that retrieves a random Cat fact:
 import { createInput } from "create";
 
 export const inputCatFact = createInput({
-	async produce({ fetcher }) {
-		const response = await fetcher("https://catfact.ninja/fact");
+	async produce({ fetchers }) {
+		const response = await fetchers.fetch("https://catfact.ninja/fact");
 		const data = (await response.json()) as { fact: string };
 
 		return data.fact;
@@ -217,10 +220,10 @@ Doing so just makes that data easier to [mock out in tests](../testing/inputs) l
 
 The Context object provided to [producer APIs](../apis/producers).
 
-### `fetcher` {#system-fetcher}
+### `fetchers` {#system-fetchers}
 
 The global `fetch` function, to make network calls.
-This is the same as [Input Contexts' `fetcher`](#input-fetcher).
+This is the same as [Input Contexts' `fetchers`](#input-fetchers).
 
 ### `fs` {#system-fs}
 

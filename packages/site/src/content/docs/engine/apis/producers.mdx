@@ -62,6 +62,30 @@ await produceBase(base, {
 If the Base does not define a `produce()`, then `settings.options` is returned.
 :::
 
+### `offline` {#producebase-offline}
+
+Whether to hint to the Base not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](../../cli#offline).
+If provided, [Input fetchers](../contexts#input-fetchers) will reject with an Error instead of resolving.
+
+For example, this Base is told to run offline:
+
+```ts
+import { Base } from "create";
+
+declare const base: Base<{}>;
+
+await produceBase(base, {
+	offline: true,
+});
+```
+
+:::caution
+`offline` doesn't prevent Bases from making network requests outside of the Input fetchers.
+If you are finding your template still sends requests offline, file a bug on the template.
+:::
+
 ### `options` {#producebase-options}
 
 Any number of options defined by the base.
@@ -135,6 +159,28 @@ await produceBlock(block, {
 ### `created` {#produceblock-created}
 
 Any [Creations](../runtime/contexts#created) to simulate having been made from previously-produced Blocks.
+
+### `offline` {#produceblock-offline}
+
+Whether to hint to the Block not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](../../cli#offline).
+If provided, [Input fetchers](../contexts#input-fetchers) will reject with an Error instead of resolving.
+
+For example, this Base is told to run offline:
+
+```ts
+import { produceBlock } from "create";
+
+import { base } from "./base";
+
+declare const block: Block<{}, {}>;
+
+await produceBlock(block, {
+	offline: {},
+	options: {},
+});
+```
 
 ### `options` {#produceblock-options}
 
@@ -288,6 +334,32 @@ await producePreset(preset, {
 
 See [Configuration > `blocks`](../../configuration#blocks) for how this is used.
 
+### `offline` {#producepreset-offline}
+
+Whether to hint to the Preset not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](../../cli#offline).
+If provided, [Input fetchers](../contexts#input-fetchers) will reject with an Error instead of resolving.
+
+For example, this Preset is told to run offline:
+
+```ts
+import { Base } from "create";
+import { z } from "zod";
+
+declare const preset: Preset<{}>;
+
+await producePreset(preset, {
+	offline: true,
+	options: {},
+});
+```
+
+:::caution
+`offline` doesn't prevent Presets from making network requests outside of the Input fetchers.
+If you are finding your template still sends requests offline, file a bug on the template.
+:::
+
 ### `options` {#preset-options}
 
 Any options defined by the Preset's [Base](../concepts/bases).
@@ -320,14 +392,20 @@ For example, this Block production adds an authorization header to all network r
 
 ```ts
 import { produceBlock } from "create";
+import { Octokit } from "octokit";
 
 import { blockUsingNetwork } from "./blockUsingNetwork";
 
+const fetch = async (...args) => {
+	const request = new Request(...args);
+	request.headers.set("Authorization", "Bearer ...");
+	return await fetch(request);
+};
+
 await produceBlock(blockUsingNetwork, {
-	fetcher: async (...args) => {
-		const request = new Request(...args);
-		request.headers.set("Authorization", "Bearer ...");
-		return await fetch(request);
+	fetchers: {
+		fetch,
+		octokit: new Octokit({ request: fetch }),
 	},
 });
 ```

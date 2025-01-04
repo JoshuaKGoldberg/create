@@ -1,5 +1,6 @@
 import { TakeInput } from "../types/inputs.js";
 import { NativeSystem, SystemContext, SystemDisplay } from "../types/system.js";
+import { createOfflineFetchers } from "./createOfflineFetchers.js";
 import { createSystemDisplay } from "./createSystemDisplay.js";
 import { createSystemFetchers } from "./createSystemFetchers.js";
 import { createSystemRunner } from "./createSystemRunner.js";
@@ -9,13 +10,18 @@ export interface SystemContextSettings extends Partial<NativeSystem> {
 	auth?: string;
 	directory: string;
 	display?: SystemDisplay;
+	offline?: boolean;
 }
 
 export function createSystemContext(
 	settings: SystemContextSettings,
 ): SystemContext {
 	const system: NativeSystem = {
-		fetchers: settings.fetchers ?? createSystemFetchers(settings),
+		fetchers:
+			settings.fetchers ??
+			(settings.offline
+				? createOfflineFetchers()
+				: createSystemFetchers(settings)),
 		fs: settings.fs ?? createWritingFileSystem(),
 		runner: settings.runner ?? createSystemRunner(settings.directory),
 	};

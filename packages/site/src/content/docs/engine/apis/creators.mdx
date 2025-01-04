@@ -488,8 +488,8 @@ For example, this Input fetches text from a URL:
 import { createInput } from "create";
 
 export const inputNow = createInput({
-	async produce({ fetcher }) {
-		return await (await fetcher("https://example.com")).text();
+	async produce({ fetchers }) {
+		return await (await fetchers.fetch("https://example.com")).text();
 	},
 });
 ```

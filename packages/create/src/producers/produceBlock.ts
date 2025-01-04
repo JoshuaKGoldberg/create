@@ -4,40 +4,40 @@ import {
 	BlockWithAddons,
 	BlockWithoutAddons,
 } from "../types/blocks.js";
-import { Creation, IndirectCreation } from "../types/creations.js";
+import { Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
 
-export type BlockProductionSettings<
+export type ProduceBlockSettings<
 	Addons extends object | undefined,
 	Options extends object,
 > = Addons extends object
-	? BlockProductionSettingsWithAddons<Addons, Options>
-	: BlockProductionSettingsWithoutAddons<Options>;
+	? ProduceBlockSettingsWithAddons<Addons, Options>
+	: ProduceBlockSettingsWithoutAddons<Options>;
 
-export interface BlockProductionSettingsWithAddons<
+export interface ProduceBlockSettingsWithAddons<
 	Addons extends object,
 	Options extends object,
-> extends BlockProductionSettingsWithoutAddons<Options> {
+> extends ProduceBlockSettingsWithoutAddons<Options> {
 	addons?: Addons;
 }
 
-export interface BlockProductionSettingsWithoutAddons<Options extends object> {
-	created?: Partial<IndirectCreation<Options>>;
+export interface ProduceBlockSettingsWithoutAddons<Options extends object> {
 	mode?: ProductionMode;
+	offline?: boolean;
 	options: Options;
 }
 
 export function produceBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,
-	settings: BlockProductionSettingsWithAddons<Addons, Options>,
+	settings: ProduceBlockSettingsWithAddons<Addons, Options>,
 ): Partial<Creation<Options>>;
 export function produceBlock<Options extends object>(
 	block: BlockWithoutAddons<Options>,
-	settings: BlockProductionSettingsWithoutAddons<Options>,
+	settings: ProduceBlockSettingsWithoutAddons<Options>,
 ): Partial<Creation<Options>>;
 export function produceBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
-	settings: BlockProductionSettings<Addons, Options>,
+	settings: ProduceBlockSettings<Addons, Options>,
 ): Partial<Creation<Options>> {
 	let creation = block.produce(
 		settings as BlockContextWithAddons<Addons, Options>,

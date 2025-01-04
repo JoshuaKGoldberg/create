@@ -107,8 +107,8 @@ Each request may be specified as an object with:
 
 - `id` (`string`): Unique ID to know how to deduplicate previous creations during [merging](./merging#requests)
 - `send` (function): Asynchronous method that sends the request, which receives an object parameter containing:
-  - `fetcher`: Equivalent to the global `fetch`
-  - `octokit`: [GitHub Octokit](https://github.com/octokit/octokit.js?tab=readme-ov-file#octokit-api-client) that uses the `fetcher` internally
+  - `fetch`: Equivalent to the global `fetch`
+  - `octokit`: [GitHub Octokit](https://github.com/octokit/octokit.js?tab=readme-ov-file#octokit-api-client) that uses the `fetch` internally
 
 For example, this Block sets a GitHub repository's default branch to `main`:
 

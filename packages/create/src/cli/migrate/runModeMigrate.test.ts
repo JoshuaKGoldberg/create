@@ -5,15 +5,17 @@ import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
 const mockCancel = Symbol("");
-
 const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockMessage = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
 	log: {
-		message: vi.fn(),
+		get message() {
+			return mockMessage;
+		},
 	},
 	spinner: vi.fn(),
 }));
@@ -26,8 +28,14 @@ vi.mock("../../runners/runPreset.js", () => ({
 	},
 }));
 
+const mockSystem = {
+	runner: vi.fn(),
+};
+
 vi.mock("../../system/createSystemContextWithAuth.js", () => ({
-	createSystemContextWithAuth: vi.fn().mockResolvedValue({}),
+	get createSystemContextWithAuth() {
+		return vi.fn().mockResolvedValue(mockSystem);
+	},
 }));
 
 vi.mock("../display/createClackDisplay.js", () => ({
@@ -194,9 +202,11 @@ describe("runModeMigrate", () => {
 		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
 	});
 
-	it("clears the existing repository when a forked template locator is available", async () => {
+	it("clears the existing repository online when a forked template locator is available and online is falsy", async () => {
 		mockParseMigrationSource.mockReturnValueOnce({
+			descriptor: "Test Source",
 			load: () => Promise.resolve({ preset }),
+			type: "template",
 		});
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
@@ -210,7 +220,60 @@ describe("runModeMigrate", () => {
 			outro: "Done. Enjoy your new repository! 💝",
 			status: CLIStatus.Success,
 		});
+		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    "Running with --mode migrate for an existing repository using the template:
+			  Test Source",
+			  ],
+			]
+		`);
 		expect(mockClearTemplateFiles).toHaveBeenCalled();
 		expect(mockClearLocalGitTags).toHaveBeenCalled();
+		expect(mockCreateInitialCommit).toHaveBeenCalledWith(mockSystem.runner, {
+			amend: true,
+			offline: undefined,
+		});
+	});
+
+	it("clears the existing repository offline when a forked template locator is available and online is true", async () => {
+		mockParseMigrationSource.mockReturnValueOnce({
+			descriptor: "Test Source",
+			load: () => Promise.resolve({ preset }),
+			type: "template",
+		});
+		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockGetForkedTemplateLocator.mockResolvedValueOnce({
+			owner: "",
+			repository: "",
+		});
+
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			offline: true,
+		});
+
+		expect(actual).toEqual({
+			outro: "Done. Enjoy your new repository! 💝",
+			status: CLIStatus.Success,
+		});
+		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    "Running with --mode migrate for an existing repository using the template:
+			  Test Source",
+			  ],
+			  [
+			    "--offline enabled. You'll need to git push any changes manually.",
+			  ],
+			]
+		`);
+		expect(mockClearTemplateFiles).toHaveBeenCalled();
+		expect(mockClearLocalGitTags).toHaveBeenCalled();
+		expect(mockCreateInitialCommit).toHaveBeenCalledWith(mockSystem.runner, {
+			amend: true,
+			offline: true,
+		});
 	});
 });

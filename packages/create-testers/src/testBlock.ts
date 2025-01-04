@@ -1,9 +1,9 @@
 import {
-	BlockProductionSettingsWithAddons,
 	BlockWithAddons,
 	BlockWithoutAddons,
 	Creation,
 	produceBlock,
+	ProduceBlockSettingsWithAddons,
 	ProductionMode,
 } from "create";
 
@@ -39,6 +39,6 @@ export function testBlock<Addons extends object, Options extends object>(
 			addons: {},
 			options: createFailingObject("options", "the Block") as Options,
 			...settings,
-		} as BlockProductionSettingsWithAddons<Addons, Options>,
+		} as ProduceBlockSettingsWithAddons<Addons, Options>,
 	);
 }
