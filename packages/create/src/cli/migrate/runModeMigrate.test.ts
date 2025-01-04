@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
@@ -36,15 +37,6 @@ vi.mock("../../system/createSystemContextWithAuth.js", () => ({
 	get createSystemContextWithAuth() {
 		return vi.fn().mockResolvedValue(mockSystem);
 	},
-}));
-
-vi.mock("../display/createClackDisplay.js", () => ({
-	createClackDisplay: () => ({
-		spinner: {
-			start: vi.fn(),
-			stop: vi.fn(),
-		},
-	}),
 }));
 
 const mockPromptForBaseOptions = vi.fn();
@@ -103,6 +95,17 @@ vi.mock("./parseMigrationSource.js", () => ({
 	},
 }));
 
+const display: ClackDisplay = {
+	dumpItems: vi.fn(),
+	item: vi.fn(),
+	log: vi.fn(),
+	spinner: {
+		message: vi.fn(),
+		start: vi.fn(),
+		stop: vi.fn(),
+	},
+};
+
 const base = createBase({
 	options: {},
 	template: {
@@ -122,7 +125,11 @@ describe("runModeMigrate", () => {
 
 		mockParseMigrationSource.mockReturnValueOnce(error);
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			outro: error.message,
@@ -137,7 +144,11 @@ describe("runModeMigrate", () => {
 			load: () => Promise.resolve(error),
 		});
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			outro: error.message,
@@ -150,7 +161,11 @@ describe("runModeMigrate", () => {
 			load: () => Promise.resolve(mockCancel),
 		});
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			status: CLIStatus.Cancelled,
@@ -163,7 +178,11 @@ describe("runModeMigrate", () => {
 		});
 		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			status: CLIStatus.Cancelled,
@@ -180,7 +199,11 @@ describe("runModeMigrate", () => {
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
 	});
@@ -192,7 +215,11 @@ describe("runModeMigrate", () => {
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			outro: "Done. Enjoy your updated repository! 💝",
@@ -214,7 +241,11 @@ describe("runModeMigrate", () => {
 			repository: "",
 		});
 
-		const actual = await runModeMigrate({ args: [], configFile: undefined });
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
 
 		expect(actual).toEqual({
 			outro: "Done. Enjoy your new repository! 💝",
@@ -251,6 +282,7 @@ describe("runModeMigrate", () => {
 		const actual = await runModeMigrate({
 			args: [],
 			configFile: undefined,
+			display,
 			offline: true,
 		});
 

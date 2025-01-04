@@ -5,7 +5,7 @@ import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
-import { createClackDisplay } from "../display/createClackDisplay.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
@@ -23,6 +23,7 @@ import { createTrackingBranches } from "./createTrackingBranches.js";
 export interface RunModeInitializeSettings {
 	args: string[];
 	directory?: string;
+	display: ClackDisplay;
 	from?: string;
 	offline?: boolean;
 	owner?: string;
@@ -34,6 +35,7 @@ export async function runModeInitialize({
 	args,
 	repository,
 	directory: requestedDirectory = repository,
+	display,
 	from = findPositionalFrom(args),
 	offline,
 	preset: requestedPreset,
@@ -83,7 +85,6 @@ export async function runModeInitialize({
 		};
 	}
 
-	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({
 		directory,
 		display,

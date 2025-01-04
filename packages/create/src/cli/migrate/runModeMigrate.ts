@@ -5,7 +5,7 @@ import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
-import { createClackDisplay } from "../display/createClackDisplay.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { findPositionalFrom } from "../findPositionalFrom.js";
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
@@ -21,6 +21,7 @@ export interface RunModeMigrateSettings {
 	args: string[];
 	configFile: string | undefined;
 	directory?: string;
+	display: ClackDisplay;
 	from?: string;
 	offline?: boolean;
 	preset?: string | undefined;
@@ -30,6 +31,7 @@ export async function runModeMigrate({
 	args,
 	configFile,
 	directory = ".",
+	display,
 	from = findPositionalFrom(args),
 	offline,
 	preset: requestedPreset,
@@ -72,7 +74,6 @@ export async function runModeMigrate({
 	}
 
 	const { preset, settings } = loaded;
-	const display = createClackDisplay();
 	const system = await createSystemContextWithAuth({
 		directory,
 		display,

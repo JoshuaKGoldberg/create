@@ -7,6 +7,7 @@
 
 import { parseArgs, ParseArgsConfig } from "util";
 import {
+	z,
 	ZodBooleanDef,
 	ZodFirstPartyTypeKind,
 	ZodLiteralDef,
@@ -53,6 +54,7 @@ function zodValueToArgsOption(
 				type: zodValueTypeToArgsOptionType(zodValue._def),
 			};
 
+		case "ZodDefault":
 		case "ZodOptional":
 			return zodValueToArgsOption(key, zodValue._def.innerType);
 

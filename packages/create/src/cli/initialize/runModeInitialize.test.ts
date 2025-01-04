@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
 import { createTemplate } from "../../creators/createTemplate.js";
+import { ClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
@@ -41,15 +42,6 @@ vi.mock("../createInitialCommit.js", () => ({
 
 vi.mock("../clearLocalGitTags.js", () => ({
 	clearLocalGitTags: vi.fn(),
-}));
-
-vi.mock("../display/createClackDisplay.js", () => ({
-	createClackDisplay: () => ({
-		spinner: {
-			start: vi.fn(),
-			stop: vi.fn(),
-		},
-	}),
 }));
 
 const mockTryImportTemplatePreset = vi.fn();
@@ -96,6 +88,17 @@ vi.mock("./createTrackingBranches.js", () => ({
 	createTrackingBranches: vi.fn(),
 }));
 
+const display: ClackDisplay = {
+	dumpItems: vi.fn(),
+	item: vi.fn(),
+	log: vi.fn(),
+	spinner: {
+		message: vi.fn(),
+		start: vi.fn(),
+		stop: vi.fn(),
+	},
+};
+
 const base = createBase({
 	options: {},
 });
@@ -113,6 +116,7 @@ describe("runModeInitialize", () => {
 	it("returns an error when there is no from", async () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create"],
+			display,
 		});
 
 		expect(actual).toEqual({
@@ -128,6 +132,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({
@@ -141,6 +146,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -152,6 +158,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -164,6 +171,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -182,6 +190,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
@@ -201,9 +210,7 @@ describe("runModeInitialize", () => {
 			suggestions,
 		});
 
-		await runModeInitialize({
-			args: ["node", "create", "my-app"],
-		});
+		await runModeInitialize({ args: ["node", "create", "my-app"], display });
 
 		expect(mockCreateRepositoryOnGitHub).toHaveBeenCalled();
 		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
@@ -239,6 +246,7 @@ describe("runModeInitialize", () => {
 
 		await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 			offline: true,
 		});
 
@@ -276,6 +284,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({
@@ -302,6 +311,7 @@ describe("runModeInitialize", () => {
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
+			display,
 		});
 
 		expect(actual).toEqual({
