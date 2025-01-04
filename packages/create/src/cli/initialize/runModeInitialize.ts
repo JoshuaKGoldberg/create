@@ -12,7 +12,7 @@ import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
-import { promptForInitializationDirectory } from "../prompts/promptForInitializationDirectory.js";
+import { promptForDirectory } from "../prompts/promptForDirectory.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { makeRelative } from "../utils.js";
@@ -25,6 +25,7 @@ export interface RunModeInitializeSettings {
 	directory?: string;
 	from?: string;
 	offline?: boolean;
+	owner?: string;
 	preset?: string;
 	repository?: string;
 }
@@ -71,10 +72,11 @@ export async function runModeInitialize({
 	}
 
 	const { preset, template } = loaded;
-	const directory = await promptForInitializationDirectory(
+	const directory = await promptForDirectory({
 		requestedDirectory,
+		requestedRepository: repository,
 		template,
-	);
+	});
 	if (prompts.isCancel(directory)) {
 		return {
 			status: CLIStatus.Cancelled,
@@ -89,7 +91,11 @@ export async function runModeInitialize({
 	});
 
 	const options = await promptForBaseOptions(preset.base, {
-		existingOptions: parseZodArgs(args, preset.base.options),
+		existingOptions: {
+			directory,
+			repository: repository ?? directory,
+			...parseZodArgs(args, preset.base.options),
+		},
 		offline,
 		system,
 	});

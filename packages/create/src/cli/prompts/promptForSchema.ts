@@ -5,7 +5,11 @@ import { validateNumber, validatorFromSchema } from "./validators.js";
 
 type ZodDef = z.ZodBooleanDef | z.ZodNumberDef | z.ZodStringDef;
 
-export async function promptForSchema(key: string, schema: z.ZodTypeAny) {
+export async function promptForSchema(
+	key: string,
+	schema: z.ZodTypeAny,
+	defaultValue: unknown,
+) {
 	const def = schema._def as ZodDef;
 	const message = schema.description
 		? `What will the ${schema.description} be? (--${key})`
@@ -15,7 +19,10 @@ export async function promptForSchema(key: string, schema: z.ZodTypeAny) {
 	while (value === undefined || value === "") {
 		switch (def.typeName) {
 			case z.ZodFirstPartyTypeKind.ZodBoolean: {
-				value = await prompts.confirm({ message });
+				value = await prompts.confirm({
+					initialValue: defaultValue as boolean,
+					message,
+				});
 				break;
 			}
 
@@ -23,6 +30,7 @@ export async function promptForSchema(key: string, schema: z.ZodTypeAny) {
 				value = Number(
 					await prompts.text({
 						message,
+						placeholder: defaultValue as string,
 						validate: validateNumber,
 					}),
 				);
@@ -33,6 +41,7 @@ export async function promptForSchema(key: string, schema: z.ZodTypeAny) {
 			default: {
 				const text = await prompts.text({
 					message,
+					placeholder: defaultValue as string,
 					validate: validatorFromSchema(schema),
 				});
 

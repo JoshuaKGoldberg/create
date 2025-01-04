@@ -37,6 +37,21 @@ export const base = createBase({
 });
 ```
 
+Options defined in a Base may use the Zod `.default()` property to indicate suggested defaults.
+These will show up as placeholder values in the `create` CLI if the property isn't provided explicitly or by [`produce`](#createbase-produce).
+
+For example, this Base defines a required `description` string that suggests a happy text message:
+
+```ts
+import { createBase } from "create";
+
+export const base = createBase({
+	options: {
+		description: z.string().default("A lovely repository! Hooray! 🙌"),
+	},
+});
+```
+
 ### `produce` {#createbase-produce}
 
 A Base may define a `produce` method to fill in any values that aren't inferred by the system at runtime.

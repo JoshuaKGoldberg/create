@@ -76,11 +76,11 @@ vi.mock("../prompts/promptForBaseOptions.js", () => ({
 	},
 }));
 
-const mockPromptForInitializationDirectory = vi.fn();
+const mockPromptForDirectory = vi.fn();
 
-vi.mock("../prompts/promptForInitializationDirectory.js", () => ({
-	get promptForInitializationDirectory() {
-		return mockPromptForInitializationDirectory;
+vi.mock("../prompts/promptForDirectory.js", () => ({
+	get promptForDirectory() {
+		return mockPromptForDirectory;
 	},
 }));
 
@@ -146,9 +146,9 @@ describe("runModeInitialize", () => {
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
 	});
 
-	it("returns the cancellation when promptForInitializationDirectory is cancelled", async () => {
+	it("returns the cancellation when promptForDirectory is cancelled", async () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(mockCancel);
+		mockPromptForDirectory.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
@@ -159,7 +159,7 @@ describe("runModeInitialize", () => {
 
 	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
+		mockPromptForDirectory.mockResolvedValueOnce(".");
 		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
@@ -173,7 +173,7 @@ describe("runModeInitialize", () => {
 		const message = "Oh no!";
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(".");
+		mockPromptForDirectory.mockResolvedValueOnce(".");
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			owner: "TestOwner",
 			repository: "test-repository",
@@ -192,7 +192,7 @@ describe("runModeInitialize", () => {
 		const suggestions = ["abc"];
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			owner: "TestOwner",
 			repository: "test-repository",
@@ -228,7 +228,7 @@ describe("runModeInitialize", () => {
 		const suggestions = ["abc"];
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			owner: "TestOwner",
 			repository: "test-repository",
@@ -265,7 +265,7 @@ describe("runModeInitialize", () => {
 		const suggestions = ["abc"];
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			owner: "TestOwner",
 			repository: "test-repository",
@@ -291,7 +291,7 @@ describe("runModeInitialize", () => {
 		const suggestions = ["abc"];
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
-		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			owner: "TestOwner",
 			repository: "test-repository",
