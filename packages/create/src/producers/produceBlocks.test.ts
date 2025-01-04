@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
 import { createSystemFetchers } from "../system/createSystemFetchers.js";
-import { executePresetBlocks } from "./executePresetBlocks.js";
+import { produceBlocks } from "./produceBlocks.js";
 
 const presetContext = {
 	directory: ".",
@@ -36,10 +36,9 @@ describe("runPreset", () => {
 			},
 		});
 
-		const result = executePresetBlocks({
-			blocks: [block],
+		const result = produceBlocks([block], {
 			options: { value: "Hello, world!" },
-			presetContext,
+			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -64,11 +63,10 @@ describe("runPreset", () => {
 			},
 		});
 
-		const result = executePresetBlocks({
+		const result = produceBlocks([block], {
 			addons: [block({ extra: "line" })],
-			blocks: [block],
 			options: { value: "Hello, world!" },
-			presetContext,
+			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -105,10 +103,9 @@ describe("runPreset", () => {
 			},
 		});
 
-		const result = executePresetBlocks({
-			blocks: [blockKnown],
+		const result = produceBlocks([blockKnown], {
 			options: { value: "Hello, world!" },
-			presetContext,
+			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -144,10 +141,9 @@ describe("runPreset", () => {
 		});
 
 		it("does not augment creations with a Block's initialize() or migrate() when mode is undefined", () => {
-			const result = executePresetBlocks({
-				blocks: [block],
+			const result = produceBlocks([block], {
 				options: { value: "Hello, world!" },
-				presetContext,
+				system: presetContext,
 			});
 
 			expect(result).toEqual({
@@ -158,11 +154,10 @@ describe("runPreset", () => {
 		});
 
 		it("augments creations with a Block's initialize() when mode is 'initialize'", () => {
-			const result = executePresetBlocks({
-				blocks: [block],
+			const result = produceBlocks([block], {
 				mode: "initialize",
 				options: { value: "Hello, world!" },
-				presetContext,
+				system: presetContext,
 			});
 
 			expect(result).toEqual({
@@ -174,11 +169,10 @@ describe("runPreset", () => {
 		});
 
 		it("augments creations with a Block's migrate() when mode is 'migrate'", () => {
-			const result = executePresetBlocks({
-				blocks: [block],
+			const result = produceBlocks([block], {
 				mode: "migrate",
 				options: { value: "Hello, world!" },
-				presetContext,
+				system: presetContext,
 			});
 
 			expect(result).toEqual({

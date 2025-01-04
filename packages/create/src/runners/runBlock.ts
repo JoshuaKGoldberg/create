@@ -3,56 +3,57 @@ import { createSystemContextWithAuth } from "../system/createSystemContextWithAu
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
 import { IndirectCreation } from "../types/creations.js";
 import { NativeSystem } from "../types/system.js";
-import { applyCreation } from "./applyCreation.js";
+import { runCreation } from "./runCreation.js";
 
-export type BlockRunSettings<
+export type RunBlockSettings<
 	Addons extends object | undefined,
 	Options extends object,
 > = Addons extends object
-	? BlockRunSettingsWithOptionalAddons<Addons, Options>
-	: BlockRunSettingsWithoutAddons<Options>;
+	? RunBlockSettingsWithOptionalAddons<Addons, Options>
+	: RunBlockSettingsWithoutAddons<Options>;
 
-export interface BlockRunSettingsWithOptionalAddons<
+export interface RunBlockSettingsWithOptionalAddons<
 	Addons extends object,
 	Options extends object,
-> extends BlockRunSettingsWithoutAddons<Options> {
+> extends RunBlockSettingsWithoutAddons<Options> {
 	addons?: Addons;
 }
 
-export interface BlockRunSettingsWithoutAddons<Options extends object>
+export interface RunBlockSettingsWithoutAddons<Options extends object>
 	extends Partial<NativeSystem> {
 	created?: Partial<IndirectCreation<Options>>;
 	directory?: string;
+	offline?: boolean;
 	options: Options;
 }
 
-export interface BlockRunSettingsWithRequiredAddons<
+export interface RunBlockSettingsWithRequiredAddons<
 	Addons extends object,
 	Options extends object,
-> extends BlockRunSettingsWithoutAddons<Options> {
+> extends RunBlockSettingsWithoutAddons<Options> {
 	addons: Addons;
 }
 
 export async function runBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,
-	settings: BlockRunSettingsWithOptionalAddons<Addons, Options>,
+	settings: RunBlockSettingsWithOptionalAddons<Addons, Options>,
 ): Promise<void>;
 export async function runBlock<Options extends object>(
 	block: BlockWithoutAddons<Options>,
-	settings: BlockRunSettingsWithoutAddons<Options>,
+	settings: RunBlockSettingsWithoutAddons<Options>,
 ): Promise<void>;
 export async function runBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
-	settings: BlockRunSettings<Addons, Options>,
+	settings: RunBlockSettings<Addons, Options>,
 ): Promise<void> {
-	const { directory = "." } = settings;
+	const { directory = ".", offline } = settings;
 	const system = await createSystemContextWithAuth({ directory, ...settings });
 
 	const creation = produceBlock(
 		// TODO: Why are these assertions necessary?
 		block as BlockWithAddons<Addons, Options>,
-		settings as BlockRunSettingsWithRequiredAddons<Addons, Options>,
+		settings as RunBlockSettingsWithRequiredAddons<Addons, Options>,
 	);
 
-	await applyCreation(creation, system);
+	await runCreation(creation, { offline, system });
 }

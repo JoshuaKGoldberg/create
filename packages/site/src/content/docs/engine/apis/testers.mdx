@@ -264,7 +264,7 @@ As with [`produceInput`](./producers#produceinput), `testInput` returns the data
 However, some properties will cause `testInput` to throw an error if they're not provided and the Input attempts to use them:
 
 - [`args`](#testinput-args): throws an error if accessed at all
-- [`fetcher`](#testinput-fetcher): by default, throws an error if called as a function
+- [`fetchers`](#testinput-fetchers): by default, each throw an error if called as a function
 - [`fs`](#testinput-fs): by default, each method throws an error if called as a function
 - [`runner`](#testinput-runner): by default, throws an error if called as a function
 
@@ -296,7 +296,7 @@ describe("inputFromFile", () => {
 });
 ```
 
-### `fetcher` {#testinput-fetcher}
+### `fetchers` {#testinput-fetchers}
 
 A mock function to act as the global [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
@@ -305,6 +305,7 @@ For example, this test asserts that an `inputCatFact` Input returns the `fact` p
 ```ts
 import { testInput } from "create-testers";
 import { describe, expect, it, vi } from "vitest";
+import { Octokit } from "octokit";
 
 import { inputCatFact } from "./inputCatFact";
 
@@ -313,14 +314,18 @@ describe("inputCatFact", () => {
 		const fact =
 			"Owning a cat is actually proven to be beneficial for your health.";
 
-		const fetcher = vi.fn().mockResolvedValueOnce({
+		const fetch = vi.fn().mockResolvedValueOnce({
 			json: () => Promise.resolve({ fact }),
 		});
+		const fetchers = {
+			fetch,
+			octokit: new Octokit({ request: fetch }),
+		};
 
-		const actual = await testInput(inputCatFact, { fetcher });
+		const actual = await testInput(inputCatFact, { fetchers });
 
 		expect(actual).toEqual(fact);
-		expect(fetcher).toHaveBeenCalledWith("https://catfact.ninja/fact");
+		expect(fetch).toHaveBeenCalledWith("https://catfact.ninja/fact");
 	});
 });
 ```
@@ -449,11 +454,11 @@ Both [Direct Creations](../runtime/creations#direct-creations) and [Indirect Cre
 `settings` and all its properties are optional.
 However, some properties will cause `testPreset` to throw an error if they're not provided and the Block attempts to use them:
 
-- [`fetcher`](#testpreset-fetcher): by default, throws an error if called as a function
+- [`fetchers`](#testpreset-fetchers): by default, throws an error if called as a function
 - [`fs`](#testpreset-fs): by default, each method throws an error if called as a function
 - [`runner`](#testpreset-runner): by default, throws an error if called as a function
 
-### `fetcher` {#testpreset-fetcher}
+### `fetchers` {#testpreset-fetchers}
 
 A mock function to act as the global [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
@@ -461,6 +466,7 @@ For example, this test asserts that a Preset internally fetches cat facts from a
 
 ```ts
 import { testPreset } from "create-testers";
+import { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { presetWithCatFact } from "./presetWithCatFact";
@@ -470,18 +476,21 @@ describe("presetWithCatFact", () => {
 		const fact =
 			"Owning a cat is actually proven to be beneficial for your health.";
 
-		const fetcher = vi.fn().mockResolvedValueOnce({
+		const fetch = vi.fn().mockResolvedValueOnce({
 			json: () => Promise.resolve({ fact }),
 		});
 
-		const actual = await testPreset(presetWithCatFact, { fetcher });
+		const actual = await testPreset(presetWithCatFact, {
+			fetch,
+			octokit: new Octokit({ request: fetch }),
+		});
 
 		expect(actual).toEqual({
 			files: {
 				"fact.txt": fact,
 			},
 		});
-		expect(fetcher).toHaveBeenCalledWith("https://catfact.ninja/fact");
+		expect(fetch).toHaveBeenCalledWith("https://catfact.ninja/fact");
 	});
 });
 ```

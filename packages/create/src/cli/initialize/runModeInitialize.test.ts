@@ -6,15 +6,17 @@ import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
 const mockCancel = Symbol("");
-
 const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockMessage = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
 	log: {
-		message: vi.fn(),
+		get message() {
+			return mockMessage;
+		},
 	},
 	spinner: vi.fn(),
 }));
@@ -82,8 +84,12 @@ vi.mock("../prompts/promptForInitializationDirectory.js", () => ({
 	},
 }));
 
+const mockCreateRepositoryOnGitHub = vi.fn();
+
 vi.mock("./createRepositoryOnGitHub.js", () => ({
-	createRepositoryOnGitHub: vi.fn(),
+	get createRepositoryOnGitHub() {
+		return mockCreateRepositoryOnGitHub;
+	},
 }));
 
 vi.mock("./createTrackingBranches.js", () => ({
@@ -179,6 +185,79 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
+	});
+
+	it("runs createRepositoryOnGitHub when offline is falsy", async () => {
+		const directory = "local-directory";
+		const suggestions = ["abc"];
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockRunPreset.mockResolvedValueOnce({
+			suggestions,
+		});
+
+		await runModeInitialize({
+			args: ["node", "create", "my-app"],
+		});
+
+		expect(mockCreateRepositoryOnGitHub).toHaveBeenCalled();
+		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    "Running with mode --create for a new repository using the template:
+			  create-my-app",
+			  ],
+			  [
+			    "Great, you've got a new repository ready to use in:
+			  ./local-directory
+
+			It's also pushed to GitHub on:
+			  https://github.com/TestOwner/test-repository",
+			  ],
+			]
+		`);
+	});
+
+	it("doesn't run createRepositoryOnGitHub when offline is truthy", async () => {
+		const directory = "local-directory";
+		const suggestions = ["abc"];
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForInitializationDirectory.mockResolvedValueOnce(directory);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockRunPreset.mockResolvedValueOnce({
+			suggestions,
+		});
+
+		await runModeInitialize({
+			args: ["node", "create", "my-app"],
+			offline: true,
+		});
+
+		expect(mockCreateRepositoryOnGitHub).not.toHaveBeenCalled();
+		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    "Running with mode --create for a new repository using the template:
+			  create-my-app",
+			  ],
+			  [
+			    "--offline enabled. You'll need to git push any changes manually.",
+			  ],
+			  [
+			    "Great, you've got a new repository ready to use in:
+			  ./local-directory",
+			  ],
+			]
+		`);
 	});
 
 	it("returns a CLI success and makes an absolute directory relative when importing and running the preset succeeds", async () => {

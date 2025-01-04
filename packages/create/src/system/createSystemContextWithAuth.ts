@@ -9,7 +9,7 @@ export async function createSystemContextWithAuth(
 	settings: SystemContextSettings,
 ) {
 	const authToken =
-		settings.fetchers?.octokit || settings.auth
+		settings.fetchers?.octokit || settings.auth || settings.offline
 			? undefined
 			: await getGitHubAuthToken();
 	const auth = authToken?.succeeded ? authToken.token : settings.auth;

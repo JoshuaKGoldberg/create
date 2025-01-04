@@ -12,7 +12,7 @@ It will interactively prompt you for any options it needs to run that can't be i
 
 ## Modes
 
-The `create` CLI will automatically detect which [`-m`/`--mode`](#-m----mode) it is being run in:
+The `create` CLI will automatically detect which [`--mode`](#-m----mode) it is being run in:
 
 - [Initialization](#initialization-mode): Creating a new repository from a template
 - [Migration](#migration-mode): Updating an existing repositories to a new version of a template
@@ -63,7 +63,7 @@ For example, to update an existing repository to the latest [`create-typescript-
 
 ## Flags
 
-The first argument passed to `create` can be a shorthand [`-f` / `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
+The first argument passed to `create` can be a shorthand `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
 A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
 
 :::tip
@@ -71,7 +71,7 @@ The `create` CLI is a general runner to pull in information from templates.
 See the documentation for your specific template for additional flags.
 :::
 
-### `-d` / `--directory`
+### `--directory`
 
 > Type: `string`
 
@@ -90,7 +90,7 @@ For example, creating a new repository in a subdirectory:
 	args="typescript-app --directory my-fancy-project"
 />
 
-### `-f` / `--from`
+### `--from`
 
 > Type: `string`
 
@@ -110,7 +110,7 @@ For example, using an org-scoped package:
 	args="--from @joshuakgoldberg/my-fancy-template"
 />
 
-### `-h` / `--help`
+### `--help`
 
 > Type: `boolean`
 
@@ -118,7 +118,7 @@ Prints help text.
 
 <PackageManagers type="dlx" pkg="create" args="--help" />
 
-### `-m` / `--mode`
+### `--mode`
 
 > Type: `string`
 
@@ -134,7 +134,26 @@ For example, specifying creating a new repository with [`create-typescript-app`]
 	args="typescript-app --mode initialize"
 />
 
-### `-p` / `--preset`
+### `--offline`
+
+> Type: `boolean`
+
+Whether to run in an "offline" mode that skips network requests.
+
+If provided, templates will be told not to make any network requests.
+That often means they will install from offline caches, skip creating a repository on GitHub, and skip sending GitHub API requests.
+The repository will roughly be a local-only creation.
+
+For example, specifying creating a new repository offline with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+
+<PackageManagers type="dlx" pkg="create" args="typescript-app --offline" />
+
+:::caution
+`--offline` doesn't prevent templates from running scripts that may make network requests.
+If you are finding your template still sends requests offline, file a bug on the template.
+:::
+
+### `--preset`
 
 > Type: `string`
 
@@ -150,7 +169,7 @@ For example, specifying the _common_ preset for [`create-typescript-app`](https:
 	args="typescript-app --preset common"
 />
 
-### `-v` / `--version`
+### `--version`
 
 > Type: `boolean`
 

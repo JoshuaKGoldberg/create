@@ -1,25 +1,20 @@
 import { AnyShape, InferredObject } from "../options.js";
 import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
-import { Base, LazyOptionalOptions } from "../types/bases.js";
+import { Base } from "../types/bases.js";
 import { NativeSystem } from "../types/system.js";
-import {
-	AwaitedLazyProperties,
-	awaitLazyProperties,
-} from "../utils/awaitLazyProperties.js";
+import { awaitLazyProperties } from "../utils/awaitLazyProperties.js";
 
-export type BaseProduction<OptionsShape extends AnyShape> =
-	AwaitedLazyProperties<LazyOptionalOptions<InferredObject<OptionsShape>>>;
-
-export interface BaseProductionSettings<OptionsShape extends AnyShape>
+export interface ProduceBaseSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
 	directory?: string;
+	offline?: boolean;
 	options?: Partial<InferredObject<OptionsShape>>;
 }
 
 export async function produceBase<OptionsShape extends AnyShape>(
 	base: Base<OptionsShape>,
-	settings: BaseProductionSettings<OptionsShape> = {},
-): Promise<Partial<BaseProduction<OptionsShape>>> {
+	settings: ProduceBaseSettings<OptionsShape> = {},
+): Promise<Partial<InferredObject<OptionsShape>>> {
 	if (!base.produce) {
 		return settings.options ?? {};
 	}

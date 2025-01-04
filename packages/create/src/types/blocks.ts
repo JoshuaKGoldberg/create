@@ -41,6 +41,7 @@ export interface BlockContextWithOptionalAddons<
 }
 
 export interface BlockContextWithoutAddons<Options extends object> {
+	offline?: boolean;
 	options: Options;
 }
 

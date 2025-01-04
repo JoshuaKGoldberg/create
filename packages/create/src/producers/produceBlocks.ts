@@ -9,30 +9,25 @@ import { ProductionMode } from "../types/modes.js";
 import { SystemContext } from "../types/system.js";
 import { produceBlock } from "./produceBlock.js";
 
-export interface ExecutePresetBlocksSettings<Options extends object> {
-	// TODO: I don't know what to put here instead of object...
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	addons?: CreatedBlockAddons<any, Options>[];
-	blocks: Block<object | undefined, Options>[];
+export interface ProduceBlocksSettings<Options extends object> {
+	addons?: CreatedBlockAddons<object, Options>[];
 	mode?: ProductionMode;
+	offline?: boolean;
 	options: Options;
-	presetContext: SystemContext;
+	system: SystemContext;
 }
 
-export function executePresetBlocks<Options extends object>({
-	addons,
-	blocks,
-	mode,
-	options,
-	presetContext,
-}: ExecutePresetBlocksSettings<Options>) {
+export function produceBlocks<Options extends object>(
+	blocks: Block<object | undefined, Options>[],
+	{ addons, mode, offline, options, system }: ProduceBlocksSettings<Options>,
+) {
 	// From engine/runtime/execution.md:
 	// This engine continuously re-runs Blocks until no new Args are provided.
 
 	const blockProductions = new Map<
 		Block<object | undefined, Options>,
 		BlockProduction<object, Options>
-	>(addons?.map((addon) => [addon.block, { addons: addon.addons as object }]));
+	>(addons?.map((addon) => [addon.block, { addons: addon.addons }]));
 
 	// 1. Create a queue of Blocks to be run, starting with all defined in the Preset
 	const allowedBlocks = new Set(blocks);
@@ -50,9 +45,10 @@ export function executePresetBlocks<Options extends object>({
 			const blockCreation = produceBlock(
 				currentBlock as BlockWithAddons<object, Options>,
 				{
-					...presetContext,
+					...system,
 					addons: previousAddons,
 					mode,
+					offline,
 					options,
 				},
 			);

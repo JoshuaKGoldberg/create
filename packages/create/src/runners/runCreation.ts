@@ -4,9 +4,14 @@ import { applyFilesToSystem } from "./applyFilesToSystem.js";
 import { applyRequestsToSystem } from "./applyRequestsToSystem.js";
 import { applyScriptsToSystem } from "./applyScriptsToSystem.js";
 
-export async function applyCreation(
+export interface ApplyCreationSettings {
+	offline?: boolean;
+	system: SystemContext;
+}
+
+export async function runCreation(
 	creation: Partial<DirectCreation>,
-	system: SystemContext,
+	{ offline, system }: ApplyCreationSettings,
 ) {
 	if (creation.files) {
 		await applyFilesToSystem(creation.files, system.fs, system.directory);
@@ -14,6 +19,8 @@ export async function applyCreation(
 
 	await Promise.all([
 		creation.scripts && applyScriptsToSystem(creation.scripts, system),
-		creation.requests && applyRequestsToSystem(creation.requests, system),
+		!offline &&
+			creation.requests &&
+			applyRequestsToSystem(creation.requests, system),
 	]);
 }

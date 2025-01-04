@@ -22,6 +22,7 @@ export interface RunModeMigrateSettings {
 	configFile: string | undefined;
 	directory?: string;
 	from?: string;
+	offline?: boolean;
 	preset?: string | undefined;
 }
 
@@ -30,6 +31,7 @@ export async function runModeMigrate({
 	configFile,
 	directory = ".",
 	from = findPositionalFrom(args),
+	offline,
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
 	const source = parseMigrationSource({
@@ -52,6 +54,12 @@ export async function runModeMigrate({
 		].join("\n"),
 	);
 
+	if (offline) {
+		prompts.log.message(
+			"--offline enabled. You'll need to git push any changes manually.",
+		);
+	}
+
 	const loaded = await source.load();
 	if (loaded instanceof Error) {
 		return {
@@ -65,7 +73,11 @@ export async function runModeMigrate({
 
 	const { preset, settings } = loaded;
 	const display = createClackDisplay();
-	const system = await createSystemContextWithAuth({ directory, display });
+	const system = await createSystemContextWithAuth({
+		directory,
+		display,
+		offline,
+	});
 
 	const templateLocator =
 		preset.base.template &&
@@ -83,12 +95,12 @@ export async function runModeMigrate({
 		);
 	}
 
-	const options = await promptForBaseOptions({
-		base: preset.base,
+	const options = await promptForBaseOptions(preset.base, {
 		existingOptions: {
 			...settings?.options,
 			...parseZodArgs(args, preset.base.options),
 		},
+		offline,
 		system,
 	});
 	if (prompts.isCancel(options)) {
@@ -110,6 +122,7 @@ export async function runModeMigrate({
 				...system,
 				directory,
 				mode: "migrate",
+				offline,
 				options,
 			});
 		},
@@ -121,7 +134,7 @@ export async function runModeMigrate({
 			"Creating initial commit",
 			"Created initial commit",
 			async () => {
-				await createInitialCommit(system.runner, true);
+				await createInitialCommit(system.runner, { amend: true, offline });
 			},
 		);
 

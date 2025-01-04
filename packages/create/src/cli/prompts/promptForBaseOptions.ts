@@ -7,22 +7,22 @@ import { SystemContext } from "../../types/system.js";
 import { promptForSchema } from "./promptForSchema.js";
 
 export interface PromptForBaseOptionsSettings {
-	base: Base;
 	existingOptions: Partial<InferredObject<AnyShape>>;
+	offline?: boolean;
 	system: SystemContext;
 }
 
-export async function promptForBaseOptions({
-	base,
-	existingOptions,
-	system,
-}: PromptForBaseOptionsSettings) {
+export async function promptForBaseOptions(
+	base: Base,
+	{ existingOptions, offline, system }: PromptForBaseOptionsSettings,
+) {
 	const { directory } = system;
 	const options: InferredObject<AnyShape> = {
 		directory,
 		...existingOptions,
 		...(await produceBase(base, {
 			...system,
+			offline,
 			options: { ...existingOptions, directory },
 		})),
 	};
