@@ -19,6 +19,18 @@ vi.mock("../packageData.js", () => ({
 	},
 }));
 
+const mockDisplay = {
+	dumpItems: vi.fn(),
+	spinner: {
+		start: vi.fn(),
+		stop: vi.fn(),
+	},
+};
+
+vi.mock("./display/createClackDisplay.js", () => ({
+	createClackDisplay: () => mockDisplay,
+}));
+
 const mockRunModeInitialize = vi.fn();
 
 vi.mock("./initialize/runModeInitialize.js", () => ({
@@ -117,7 +129,10 @@ describe("readProductionSettings", () => {
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeInitialize).toHaveBeenCalledWith({ args });
+		expect(mockRunModeInitialize).toHaveBeenCalledWith({
+			args,
+			display: mockDisplay,
+		});
 		expect(mockRunModeMigrate).not.toHaveBeenCalled();
 	});
 
@@ -135,7 +150,11 @@ describe("readProductionSettings", () => {
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeMigrate).toHaveBeenCalledWith({ args, configFile });
+		expect(mockRunModeMigrate).toHaveBeenCalledWith({
+			args,
+			configFile,
+			display: mockDisplay,
+		});
 		expect(mockRunModeInitialize).not.toHaveBeenCalled();
 	});
 
@@ -148,7 +167,7 @@ describe("readProductionSettings", () => {
 
 		await runCli(["typescript-app"]);
 
-		expect(mockLogOutro).toHaveBeenCalledWith(outro, suggestions);
+		expect(mockLogOutro).toHaveBeenCalledWith(outro, { suggestions });
 	});
 
 	it("logs a cancellation outro when one is not resolved by the mode runner", async () => {
@@ -161,7 +180,7 @@ describe("readProductionSettings", () => {
 
 		expect(mockLogOutro).toHaveBeenCalledWith(
 			chalk.yellow("Operation cancelled. Exiting - maybe another time? 👋"),
-			suggestions,
+			{ suggestions },
 		);
 	});
 });

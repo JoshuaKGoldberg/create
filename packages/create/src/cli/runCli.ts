@@ -103,6 +103,7 @@ export async function runCli(args: string[]) {
 	}
 
 	const display = createClackDisplay();
+	console.log({ display });
 	const sharedSettings = {
 		...validatedValues,
 		args,
