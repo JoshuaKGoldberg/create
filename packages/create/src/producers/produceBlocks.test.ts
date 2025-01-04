@@ -96,11 +96,7 @@ describe("runPreset", () => {
 			addons: {
 				extra: z.string().optional(),
 			},
-			produce({ addons, options }) {
-				return {
-					files: { "UNKNOWN.md": [options.value, addons.extra].join("\n") },
-				};
-			},
+			produce: vi.fn(),
 		});
 
 		const result = produceBlocks([blockKnown], {

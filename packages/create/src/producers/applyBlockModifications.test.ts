@@ -25,7 +25,7 @@ const blockC = base.createBlock({
 	produce: vi.fn(),
 });
 
-describe("runPreset", () => {
+describe("applyBlockModifications", () => {
 	it("returns the initial blocks when no modifications are provided", () => {
 		const initial = [blockA, blockB];
 
