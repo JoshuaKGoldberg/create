@@ -1,4 +1,5 @@
 import * as prompts from "@clack/prompts";
+import { z } from "zod";
 
 import { AnyShape, InferredObject } from "../../options.js";
 import { produceBase } from "../../producers/produceBase.js";
@@ -6,15 +7,21 @@ import { Base } from "../../types/bases.js";
 import { SystemContext } from "../../types/system.js";
 import { promptForSchema } from "./promptForSchema.js";
 
-export interface PromptForBaseOptionsSettings {
-	existingOptions: Partial<InferredObject<AnyShape>>;
+export interface PromptForBaseOptionsSettings<OptionsShape extends AnyShape> {
+	existingOptions: Partial<InferredObject<OptionsShape>>;
 	offline?: boolean;
 	system: SystemContext;
 }
 
-export async function promptForBaseOptions(
-	base: Base,
-	{ existingOptions, offline, system }: PromptForBaseOptionsSettings,
+export async function promptForBaseOptions<
+	OptionsShape extends AnyShape = AnyShape,
+>(
+	base: Base<OptionsShape>,
+	{
+		existingOptions,
+		offline,
+		system,
+	}: PromptForBaseOptionsSettings<OptionsShape>,
 ) {
 	const { directory } = system;
 	const options: InferredObject<AnyShape> = {
@@ -28,11 +35,15 @@ export async function promptForBaseOptions(
 	};
 
 	for (const [key, schema] of Object.entries(base.options)) {
-		if (schema.isOptional() || options[key] !== undefined) {
+		const defaultValue = getSchemaDefaultValue(schema);
+		if (
+			(schema.isOptional() && defaultValue === undefined) ||
+			options[key] !== undefined
+		) {
 			continue;
 		}
 
-		const prompted = await promptForSchema(key, schema);
+		const prompted = await promptForSchema(key, schema, defaultValue);
 		if (prompts.isCancel(prompted)) {
 			return prompted;
 		}
@@ -41,4 +52,8 @@ export async function promptForBaseOptions(
 	}
 
 	return options;
+}
+
+function getSchemaDefaultValue(schema: z.ZodTypeAny) {
+	return (schema._def as Partial<z.ZodDefaultDef>).defaultValue?.() as unknown;
 }
