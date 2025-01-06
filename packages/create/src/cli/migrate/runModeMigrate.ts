@@ -109,11 +109,11 @@ export async function runModeMigrate({
 		return { outro: mergedSettings.message, status: CLIStatus.Error };
 	}
 
-	await runSpinnerTask(
+	const creation = await runSpinnerTask(
 		display,
 		`Running the ${preset.about.name} preset`,
 		`Ran the ${preset.about.name} preset`,
-		async () => {
+		async () =>
 			await runPreset(preset, {
 				...mergedSettings,
 				...system,
@@ -121,9 +121,14 @@ export async function runModeMigrate({
 				mode: "migrate",
 				offline,
 				options,
-			});
-		},
+			}),
 	);
+	if (creation instanceof Error) {
+		return {
+			outro: `Leaving changes to the local directory on disk. 👋`,
+			status: CLIStatus.Error,
+		};
+	}
 
 	if (templateLocator) {
 		await runSpinnerTask(

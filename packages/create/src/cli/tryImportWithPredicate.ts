@@ -6,9 +6,7 @@ export async function tryImportWithPredicate<T>(
 	predicate: (value: unknown) => value is T,
 	typeName: string,
 ): Promise<Error | T> {
-	const templateModule = (await tryCatchError(importer(moduleName))) as
-		| Error
-		| object;
+	const templateModule = await tryCatchError(importer(moduleName));
 	if (templateModule instanceof Error) {
 		return templateModule;
 	}

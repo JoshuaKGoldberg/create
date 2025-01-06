@@ -1,8 +1,8 @@
-export async function tryCatchError(promise: Promise<unknown>) {
+export async function tryCatchError<T>(promise: Promise<T>) {
 	try {
 		return await promise;
 	} catch (error) {
-		return error;
+		return error as Error;
 	}
 }
 

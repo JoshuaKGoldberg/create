@@ -8,16 +8,17 @@ import { runModeInitialize } from "./runModeInitialize.js";
 
 const mockCancel = Symbol("");
 const mockIsCancel = (value: unknown) => value === mockCancel;
-const mockMessage = vi.fn();
+const mockLog = {
+	error: vi.fn(),
+	message: vi.fn(),
+};
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
-	log: {
-		get message() {
-			return mockMessage;
-		},
+	get log() {
+		return mockLog;
 	},
 	spinner: vi.fn(),
 }));
@@ -247,7 +248,7 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(mockCreateRepositoryOnGitHub).toHaveBeenCalled();
-		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+		expect(mockLog.message.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
 			    "Running with mode --initialize using the template:
@@ -286,7 +287,7 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(mockCreateRepositoryOnGitHub).not.toHaveBeenCalled();
-		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
+		expect(mockLog.message.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
 			    "Running with mode --initialize using the template:
@@ -301,6 +302,29 @@ describe("runModeInitialize", () => {
 			  ],
 			]
 		`);
+	});
+
+	it("returns a CLI error when running the Preset rejects", async () => {
+		const directory = "local-directory";
+
+		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
+		mockPromptForDirectory.mockResolvedValueOnce(directory);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			owner: "TestOwner",
+			repository: "test-repository",
+		});
+		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await runModeInitialize({
+			args: ["node", "create", "my-app"],
+			display,
+			from: "create-my-app",
+		});
+
+		expect(actual).toEqual({
+			outro: `Leaving changes to the local directory on disk. 👋`,
+			status: CLIStatus.Error,
+		});
 	});
 
 	it("returns a CLI success and makes an absolute directory relative when importing and running the preset succeeds", async () => {
