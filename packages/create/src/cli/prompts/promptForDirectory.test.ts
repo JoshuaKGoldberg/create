@@ -3,15 +3,12 @@ import { describe, expect, it, vi } from "vitest";
 import { createBase } from "../../creators/createBase.js";
 import { promptForDirectory } from "./promptForDirectory.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockCancel = Symbol("cancel");
 const mockText = vi.fn();
 const mockWarn = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 	get log() {
 		return {
 			warn: mockWarn,

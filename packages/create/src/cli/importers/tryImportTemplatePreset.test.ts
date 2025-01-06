@@ -2,13 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { tryImportTemplatePreset } from "./tryImportTemplatePreset.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockCancel = Symbol("cancel");
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 }));
 
 const mockPromptForPreset = vi.fn();

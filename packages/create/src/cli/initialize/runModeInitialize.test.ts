@@ -6,17 +6,14 @@ import { CLIMessage } from "../messages.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockCancel = Symbol("cancel");
 const mockLog = {
 	error: vi.fn(),
 	message: vi.fn(),
 };
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 	get log() {
 		return mockLog;
 	},
@@ -29,6 +26,14 @@ const mockLogInitializeHelpText = vi.fn().mockResolvedValue(mockHelpTextReturn);
 vi.mock("../loggers/logInitializeHelpText.js", () => ({
 	get logInitializeHelpText() {
 		return mockLogInitializeHelpText;
+	},
+}));
+
+const mockLogRerunSuggestion = vi.fn();
+
+vi.mock("../loggers/logRerunSuggestion.js", () => ({
+	get logRerunSuggestion() {
+		return mockLogRerunSuggestion;
 	},
 }));
 
@@ -122,6 +127,12 @@ const template = base.createTemplate({
 	presets: [],
 });
 
+const args = ["create-my-app"];
+
+const promptedOptions = {
+	abc: "def",
+};
+
 describe("runModeInitialize", () => {
 	it("logs help text when from is undefined", async () => {
 		const actual = await runModeInitialize({
@@ -154,7 +165,7 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -169,7 +180,7 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -182,7 +193,7 @@ describe("runModeInitialize", () => {
 		mockPromptForDirectory.mockResolvedValueOnce(mockCancel);
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -193,15 +204,20 @@ describe("runModeInitialize", () => {
 	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(".");
-		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
+
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			cancelled: true,
+			prompted: promptedOptions,
+		});
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("returns an error when applyArgsToSettings returns an error", async () => {
@@ -210,13 +226,16 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(".");
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -225,6 +244,8 @@ describe("runModeInitialize", () => {
 			outro: message,
 			status: CLIStatus.Error,
 		});
+
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("runs createRepositoryOnGitHub when offline is falsy", async () => {
@@ -234,15 +255,18 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});
 
 		await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -272,15 +296,18 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});
 
 		await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 			offline: true,
@@ -310,13 +337,16 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -325,6 +355,8 @@ describe("runModeInitialize", () => {
 			outro: `Leaving changes to the local directory on disk. 👋`,
 			status: CLIStatus.Error,
 		});
+
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("returns a CLI success and makes an absolute directory relative when importing and running the preset succeeds", async () => {
@@ -334,15 +366,18 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -352,6 +387,8 @@ describe("runModeInitialize", () => {
 			status: CLIStatus.Success,
 			suggestions,
 		});
+
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 	});
 
@@ -362,15 +399,18 @@ describe("runModeInitialize", () => {
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
 		mockPromptForDirectory.mockResolvedValueOnce(directory);
 		mockPromptForBaseOptions.mockResolvedValueOnce({
-			owner: "TestOwner",
-			repository: "test-repository",
+			completed: {
+				owner: "TestOwner",
+				repository: "test-repository",
+			},
+			prompted: promptedOptions,
 		});
 		mockRunPreset.mockResolvedValueOnce({
 			suggestions,
 		});
 
 		const actual = await runModeInitialize({
-			args: ["node", "create", "my-app"],
+			args,
 			display,
 			from: "create-my-app",
 		});
@@ -380,6 +420,8 @@ describe("runModeInitialize", () => {
 			status: CLIStatus.Success,
 			suggestions,
 		});
+
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
 	});
 });

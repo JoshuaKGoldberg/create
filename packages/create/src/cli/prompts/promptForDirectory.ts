@@ -2,6 +2,7 @@ import * as prompts from "@clack/prompts";
 import * as fs from "node:fs/promises";
 
 import { Template } from "../../types/templates.js";
+import { slugify } from "../utils.js";
 import { validateNewDirectory } from "./validators.js";
 
 export interface PromptForDirectorySettings {
@@ -25,9 +26,7 @@ export async function promptForDirectory({
 	}
 
 	const directory = await prompts.text({
-		initialValue:
-			template.about?.name &&
-			`my-${template.about.name.toLowerCase().replaceAll(" ", "-")}`,
+		initialValue: template.about?.name && `my-${slugify(template.about.name)}`,
 		message:
 			"What will the directory and name of the repository be? (--directory)",
 		validate: validateNewDirectory,

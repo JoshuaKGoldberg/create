@@ -1,6 +1,7 @@
 import { CreateConfigSettings } from "../../config/types.js";
 import { AnyShape, InferredObject } from "../../options.js";
 import { Preset } from "../../types/presets.js";
+import { slugify } from "../utils.js";
 
 export function applyArgsToSettings<OptionsShape extends AnyShape>(
 	args: string[],
@@ -14,7 +15,7 @@ export function applyArgsToSettings<OptionsShape extends AnyShape>(
 			.filter((block) => block.about?.name)
 			.map((block) => [
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				block.about!.name!.toLowerCase().replaceAll(/\W+/gu, "-"),
+				slugify(block.about!.name!),
 				block,
 			]),
 	);

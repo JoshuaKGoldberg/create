@@ -5,17 +5,15 @@ import { ClackDisplay } from "../display/createClackDisplay.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
 const mockLog = {
 	error: vi.fn(),
 	message: vi.fn(),
 };
 
+const mockCancel = Symbol("cancel");
+
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 	get log() {
 		return mockLog;
 	},
@@ -27,6 +25,14 @@ const mockLogMigrateHelpText = vi.fn();
 vi.mock("../loggers/logMigrateHelpText.js", () => ({
 	get logMigrateHelpText() {
 		return mockLogMigrateHelpText;
+	},
+}));
+
+const mockLogRerunSuggestion = vi.fn();
+
+vi.mock("../loggers/logRerunSuggestion.js", () => ({
+	get logRerunSuggestion() {
+		return mockLogRerunSuggestion;
 	},
 }));
 
@@ -136,6 +142,8 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
+const args = ["create-my-app"];
+
 const descriptor = "Test Source";
 const type = "template";
 
@@ -145,12 +153,16 @@ const source = {
 	type,
 };
 
+const promptedOptions = {
+	abc: "def",
+};
+
 describe("runModeMigrate", () => {
 	it("logs help text instead of running when help is true", async () => {
 		mockParseMigrationSource.mockReturnValueOnce(source);
 
 		await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 			help: true,
@@ -166,7 +178,7 @@ describe("runModeMigrate", () => {
 		mockParseMigrationSource.mockReturnValueOnce(error);
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -185,7 +197,7 @@ describe("runModeMigrate", () => {
 		});
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -202,7 +214,7 @@ describe("runModeMigrate", () => {
 		});
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -216,10 +228,13 @@ describe("runModeMigrate", () => {
 		mockParseMigrationSource.mockReturnValueOnce({
 			load: () => Promise.resolve({ preset }),
 		});
-		mockPromptForBaseOptions.mockResolvedValueOnce(mockCancel);
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			cancelled: true,
+			prompted: promptedOptions,
+		});
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -227,6 +242,7 @@ describe("runModeMigrate", () => {
 		expect(actual).toEqual({
 			status: CLIStatus.Cancelled,
 		});
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("returns the error when applyArgsToSettings returns an error", async () => {
@@ -235,29 +251,34 @@ describe("runModeMigrate", () => {
 		mockParseMigrationSource.mockReturnValueOnce({
 			load: () => Promise.resolve({ preset }),
 		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			prompted: promptedOptions,
+		});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
 
 		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("returns the error when runPreset resolves with an error", async () => {
 		mockParseMigrationSource.mockReturnValueOnce({
 			load: () => Promise.resolve({ preset }),
 		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			prompted: promptedOptions,
+		});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -266,17 +287,20 @@ describe("runModeMigrate", () => {
 			outro: `Leaving changes to the local directory on disk. 👋`,
 			status: CLIStatus.Error,
 		});
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("doesn't clear the existing repository when no forked template locator is available", async () => {
 		mockParseMigrationSource.mockReturnValueOnce({
 			load: () => Promise.resolve({ preset }),
 		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			prompted: promptedOptions,
+		});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -287,6 +311,7 @@ describe("runModeMigrate", () => {
 		});
 		expect(mockClearTemplateFiles).not.toHaveBeenCalled();
 		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("clears the existing repository online when a forked template locator is available and offline is falsy", async () => {
@@ -294,14 +319,16 @@ describe("runModeMigrate", () => {
 		const type = "template";
 
 		mockParseMigrationSource.mockReturnValueOnce(source);
-		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			prompted: promptedOptions,
+		});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",
 			repository: "",
 		});
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 		});
@@ -322,6 +349,7 @@ describe("runModeMigrate", () => {
 			amend: true,
 			offline: undefined,
 		});
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
 	it("clears the existing repository offline when a forked template locator is available and offline is true", async () => {
@@ -329,14 +357,16 @@ describe("runModeMigrate", () => {
 		const type = "template";
 
 		mockParseMigrationSource.mockReturnValueOnce(source);
-		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockPromptForBaseOptions.mockResolvedValueOnce({
+			prompted: promptedOptions,
+		});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",
 			repository: "",
 		});
 
 		const actual = await runModeMigrate({
-			args: [],
+			args,
 			configFile: undefined,
 			display,
 			offline: true,
@@ -358,5 +388,6 @@ describe("runModeMigrate", () => {
 			amend: true,
 			offline: true,
 		});
+		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 });

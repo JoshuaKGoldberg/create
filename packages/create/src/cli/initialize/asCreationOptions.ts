@@ -3,9 +3,7 @@ export interface CreationOptions {
 	repository: string;
 }
 
-export function assertOptionsForInitialize(
-	options: object,
-): asserts options is CreationOptions {
+export function asCreationOptions(options: object): CreationOptions {
 	for (const key of ["owner", "repository"]) {
 		if (typeof (options as Record<string, unknown>)[key] !== "string") {
 			throw new Error(
@@ -13,4 +11,6 @@ export function assertOptionsForInitialize(
 			);
 		}
 	}
+
+	return options as CreationOptions;
 }
