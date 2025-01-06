@@ -6,23 +6,12 @@ import { CLIMessage } from "../messages.js";
 import { CLIStatus } from "../status.js";
 import { logInitializeHelpText } from "./logInitializeHelpText.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
-const mockSpinner = {
-	start: vi.fn(),
-	stop: vi.fn(),
-};
-
 const mockMessage = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
 	get log() {
 		return { message: mockMessage };
 	},
-	spinner: () => mockSpinner,
 }));
 
 const mockTryImportTemplate = vi.fn();
@@ -64,7 +53,6 @@ describe("logInitializeHelpText", () => {
 			].join("\n"),
 		);
 		expect(mockLogHelpText).not.toHaveBeenCalled();
-		expect(mockSpinner.start).not.toHaveBeenCalled();
 	});
 
 	it("logs general help text without loading when from is undefined and help is true", async () => {
@@ -75,7 +63,6 @@ describe("logInitializeHelpText", () => {
 			status: CLIStatus.Success,
 		});
 		expect(mockLogHelpText).toHaveBeenCalledWith("initialize");
-		expect(mockSpinner.start).not.toHaveBeenCalled();
 	});
 
 	it("returns the error when help is falsy and loading the template is an error", async () => {
@@ -90,10 +77,6 @@ describe("logInitializeHelpText", () => {
 			outro: chalk.red(CLIMessage.Exiting),
 			status: CLIStatus.Error,
 		});
-		expect(mockSpinner.stop).toHaveBeenCalledWith(
-			`Could not load ${from}: ${message}.`,
-			1,
-		);
 	});
 
 	it("returns a success when help is falsy and loading the template succeeds", async () => {
@@ -111,7 +94,6 @@ describe("logInitializeHelpText", () => {
 			outro: CLIMessage.Ok,
 			status: CLIStatus.Success,
 		});
-		expect(mockSpinner.stop).toHaveBeenCalledWith(`Loaded ${from}`);
 		expect(mockLogSchemasHelpOptions).toHaveBeenCalledWith(
 			from,
 			template.options,

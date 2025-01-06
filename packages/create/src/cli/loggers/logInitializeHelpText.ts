@@ -34,22 +34,13 @@ export async function logInitializeHelpText(
 		type: "template",
 	});
 
-	const spinner = prompts.spinner();
-	spinner.start(`Loading ${chalk.blue(from)}`);
-
 	const template = await tryImportTemplate(from);
 	if (template instanceof Error) {
-		spinner.stop(
-			`Could not load ${chalk.blue(from)}: ${chalk.red(template.message)}.`,
-			1,
-		);
 		return {
 			outro: chalk.red(CLIMessage.Exiting),
 			status: CLIStatus.Error,
 		};
 	}
-
-	spinner.stop(`Loaded ${chalk.blue(from)}`);
 
 	logSchemasHelpOptions(from, template.options);
 
