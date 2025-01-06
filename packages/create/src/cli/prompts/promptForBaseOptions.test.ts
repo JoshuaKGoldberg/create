@@ -5,13 +5,10 @@ import { z } from "zod";
 import { createBase } from "../../creators/createBase.js";
 import { promptForBaseOptions } from "./promptForBaseOptions.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockCancel = Symbol("cancel");
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 }));
 
 const mockPromptForSchema = vi.fn();
@@ -53,14 +50,18 @@ describe("promptForBaseOptions", () => {
 		});
 
 		const options = await promptForBaseOptions(base, {
-			existingOptions: { first: 1 },
+			existing: { first: 1 },
 			system,
 		});
 
 		expect(options).toEqual({
-			directory: system.directory,
-			first: 1,
-			second: 1,
+			cancelled: false,
+			completed: {
+				directory: system.directory,
+				first: 1,
+				second: 1,
+			},
+			prompted: {},
 		});
 	});
 
@@ -73,14 +74,17 @@ describe("promptForBaseOptions", () => {
 		});
 
 		const options = await promptForBaseOptions(base, {
-			existingOptions: { first: 1 },
+			existing: { first: 1 },
 			system,
 		});
 
 		expect(options).toEqual({
-			directory: system.directory,
-			first: 1,
-			second: undefined,
+			cancelled: false,
+			completed: {
+				directory: system.directory,
+				first: 1,
+			},
+			prompted: {},
 		});
 	});
 
@@ -97,11 +101,14 @@ describe("promptForBaseOptions", () => {
 			mockPromptForSchema.mockResolvedValueOnce(mockCancel);
 
 			const options = await promptForBaseOptions(base, {
-				existingOptions: { first: 1 },
+				existing: { first: 1 },
 				system,
 			});
 
-			expect(options).toEqual(mockCancel);
+			expect(options).toEqual({
+				cancelled: true,
+				prompted: {},
+			});
 			expect(mockPromptForSchema).toHaveBeenCalledWith("second", zSecond, -1);
 		});
 
@@ -109,14 +116,20 @@ describe("promptForBaseOptions", () => {
 			mockPromptForSchema.mockResolvedValueOnce(2);
 
 			const options = await promptForBaseOptions(base, {
-				existingOptions: { first: 1 },
+				existing: { first: 1 },
 				system,
 			});
 
 			expect(options).toEqual({
-				directory: system.directory,
-				first: 1,
-				second: 2,
+				cancelled: false,
+				completed: {
+					directory: system.directory,
+					first: 1,
+					second: 2,
+				},
+				prompted: {
+					second: 2,
+				},
 			});
 			expect(mockPromptForSchema).toHaveBeenCalledWith("second", zSecond, -1);
 		});

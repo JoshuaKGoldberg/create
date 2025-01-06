@@ -7,6 +7,7 @@ import { createInitialCommit } from "../createInitialCommit.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { logMigrateHelpText } from "../loggers/logMigrateHelpText.js";
+import { logRerunSuggestion } from "../loggers/logRerunSuggestion.js";
 import { logStartText } from "../loggers/logStartText.js";
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
@@ -92,20 +93,22 @@ export async function runModeMigrate({
 		);
 	}
 
-	const options = await promptForBaseOptions(preset.base, {
-		existingOptions: {
+	const baseOptions = await promptForBaseOptions(preset.base, {
+		existing: {
 			...settings?.options,
 			...parseZodArgs(args, preset.base.options),
 		},
 		offline,
 		system,
 	});
-	if (prompts.isCancel(options)) {
+	if (baseOptions.cancelled) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return { status: CLIStatus.Cancelled };
 	}
 
 	const mergedSettings = applyArgsToSettings(args, preset, settings);
 	if (mergedSettings instanceof Error) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return { outro: mergedSettings.message, status: CLIStatus.Error };
 	}
 
@@ -120,10 +123,11 @@ export async function runModeMigrate({
 				directory,
 				mode: "migrate",
 				offline,
-				options,
+				options: baseOptions.completed,
 			}),
 	);
 	if (creation instanceof Error) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return {
 			outro: `Leaving changes to the local directory on disk. 👋`,
 			status: CLIStatus.Error,
@@ -140,12 +144,14 @@ export async function runModeMigrate({
 			},
 		);
 
+		logRerunSuggestion(args, baseOptions.prompted);
 		return {
 			outro: `Done. Enjoy your new repository! 💝`,
 			status: CLIStatus.Success,
 		};
 	}
 
+	logRerunSuggestion(args, baseOptions.prompted);
 	return {
 		outro: `Done. Enjoy your updated repository! 💝`,
 		status: CLIStatus.Success,

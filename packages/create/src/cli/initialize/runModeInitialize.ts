@@ -9,6 +9,7 @@ import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 import { logInitializeHelpText } from "../loggers/logInitializeHelpText.js";
+import { logRerunSuggestion } from "../loggers/logRerunSuggestion.js";
 import { logStartText } from "../loggers/logStartText.js";
 import { CLIMessage } from "../messages.js";
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
@@ -18,7 +19,7 @@ import { promptForDirectory } from "../prompts/promptForDirectory.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { makeRelative } from "../utils.js";
-import { assertOptionsForInitialize } from "./assertOptionsForInitialize.js";
+import { asCreationOptions } from "./asCreationOptions.js";
 import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
 import { createTrackingBranches } from "./createTrackingBranches.js";
 
@@ -77,8 +78,8 @@ export async function runModeInitialize({
 		offline,
 	});
 
-	const options = await promptForBaseOptions(preset.base, {
-		existingOptions: {
+	const baseOptions = await promptForBaseOptions(preset.base, {
+		existing: {
 			directory,
 			repository: repository ?? directory,
 			...parseZodArgs(args, preset.base.options),
@@ -86,14 +87,16 @@ export async function runModeInitialize({
 		offline,
 		system,
 	});
-	if (prompts.isCancel(options)) {
+	if (baseOptions.cancelled) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return { status: CLIStatus.Cancelled };
 	}
 
-	assertOptionsForInitialize(options);
+	const options = asCreationOptions(baseOptions.completed);
 
 	const settings = applyArgsToSettings(args, preset);
 	if (settings instanceof Error) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return { outro: settings.message, status: CLIStatus.Error };
 	}
 
@@ -127,6 +130,7 @@ export async function runModeInitialize({
 			}),
 	);
 	if (creation instanceof Error) {
+		logRerunSuggestion(args, baseOptions.prompted);
 		return {
 			outro: `Leaving changes to the local directory on disk. 👋`,
 			status: CLIStatus.Error,
@@ -144,6 +148,7 @@ export async function runModeInitialize({
 		},
 	);
 
+	logRerunSuggestion(args, baseOptions.prompted);
 	prompts.log.message(
 		[
 			"Great, you've got a new repository ready to use in:",

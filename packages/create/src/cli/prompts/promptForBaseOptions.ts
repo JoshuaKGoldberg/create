@@ -7,8 +7,23 @@ import { SystemContext } from "../../types/system.js";
 import { getSchemaDefaultValue } from "../../utils/getSchemaDefaultValue.js";
 import { promptForSchema } from "./promptForSchema.js";
 
+export type PromptedBaseOptions<Options extends object> =
+	| PromptedBaseOptionsCancelled<Options>
+	| PromptedBaseOptionsProduced<Options>;
+
+export interface PromptedBaseOptionsCancelled<Options extends object> {
+	cancelled: true;
+	prompted: Partial<Options>;
+}
+
+export interface PromptedBaseOptionsProduced<Options extends object> {
+	cancelled: false;
+	completed: Options;
+	prompted: Partial<Options>;
+}
+
 export interface PromptForBaseOptionsSettings<OptionsShape extends AnyShape> {
-	existingOptions: Partial<InferredObject<OptionsShape>>;
+	existing: Partial<InferredObject<OptionsShape>>;
 	offline?: boolean;
 	system: SystemContext;
 }
@@ -17,39 +32,45 @@ export async function promptForBaseOptions<
 	OptionsShape extends AnyShape = AnyShape,
 >(
 	base: Base<OptionsShape>,
-	{
-		existingOptions,
-		offline,
-		system,
-	}: PromptForBaseOptionsSettings<OptionsShape>,
-) {
+	{ existing, offline, system }: PromptForBaseOptionsSettings<OptionsShape>,
+): Promise<PromptedBaseOptions<InferredObject<OptionsShape>>> {
+	type Options = InferredObject<OptionsShape>;
+
 	const { directory } = system;
-	const options: InferredObject<AnyShape> = {
+	const completed: InferredObject<AnyShape> = {
 		directory,
-		...existingOptions,
+		...existing,
 		...(await produceBase(base, {
 			...system,
 			offline,
-			options: { ...existingOptions, directory },
+			options: { ...existing, directory },
 		})),
 	};
+	const prompted: Partial<Options> = {};
 
 	for (const [key, schema] of Object.entries(base.options)) {
 		const defaultValue = getSchemaDefaultValue(schema);
 		if (
 			(schema.isOptional() && defaultValue === undefined) ||
-			options[key] !== undefined
+			completed[key] !== undefined
 		) {
 			continue;
 		}
 
-		const prompted = await promptForSchema(key, schema, defaultValue);
-		if (prompts.isCancel(prompted)) {
-			return prompted;
+		const produced = await promptForSchema(key, schema, defaultValue);
+		if (prompts.isCancel(produced)) {
+			return { cancelled: true, prompted };
 		}
 
-		options[key] = prompted;
+		(prompted as typeof completed)[key] = produced;
 	}
 
-	return options;
+	return {
+		cancelled: false,
+		completed: {
+			...completed,
+			...prompted,
+		} as Options,
+		prompted,
+	};
 }

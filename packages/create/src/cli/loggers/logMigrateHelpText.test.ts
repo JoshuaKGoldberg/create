@@ -7,17 +7,14 @@ import { MigrationSource } from "../migrate/parseMigrationSource.js";
 import { CLIStatus } from "../status.js";
 import { logMigrateHelpText } from "./logMigrateHelpText.js";
 
-const mockCancel = Symbol("");
-const mockIsCancel = (value: unknown) => value === mockCancel;
+const mockCancel = Symbol("cancel");
 const mockSpinner = {
 	start: vi.fn(),
 	stop: vi.fn(),
 };
 
 vi.mock("@clack/prompts", () => ({
-	get isCancel() {
-		return mockIsCancel;
-	},
+	isCancel: (value: unknown) => value === mockCancel,
 	spinner: () => mockSpinner,
 }));
 

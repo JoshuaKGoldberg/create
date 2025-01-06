@@ -1,5 +1,5 @@
 import { SystemRunner } from "../../types/system.js";
-import { CreationOptions } from "./assertOptionsForInitialize.js";
+import { CreationOptions } from "./asCreationOptions.js";
 
 export async function createTrackingBranches(
 	{ owner, repository }: CreationOptions,
