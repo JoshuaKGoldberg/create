@@ -1,5 +1,4 @@
 import * as prompts from "@clack/prompts";
-import chalk from "chalk";
 
 import { runPreset } from "../../runners/runPreset.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
@@ -7,7 +6,8 @@ import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
-import { findPositionalFrom } from "../findPositionalFrom.js";
+import { logMigrateHelpText } from "../loggers/logMigrateHelpText.js";
+import { logStartText } from "../loggers/logStartText.js";
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
@@ -23,6 +23,7 @@ export interface RunModeMigrateSettings {
 	directory?: string;
 	display: ClackDisplay;
 	from?: string;
+	help?: boolean;
 	offline?: boolean;
 	preset?: string | undefined;
 }
@@ -32,7 +33,8 @@ export async function runModeMigrate({
 	configFile,
 	directory = ".",
 	display,
-	from = findPositionalFrom(args),
+	from,
+	help,
 	offline,
 	preset: requestedPreset,
 }: RunModeMigrateSettings): Promise<ModeResults> {
@@ -42,6 +44,11 @@ export async function runModeMigrate({
 		from,
 		requestedPreset,
 	});
+
+	if (help) {
+		return await logMigrateHelpText(source);
+	}
+
 	if (source instanceof Error) {
 		return {
 			outro: source.message,
@@ -49,18 +56,7 @@ export async function runModeMigrate({
 		};
 	}
 
-	prompts.log.message(
-		[
-			`Running with --mode migrate for an existing repository using the ${source.type}:`,
-			`  ${chalk.green(source.descriptor)}`,
-		].join("\n"),
-	);
-
-	if (offline) {
-		prompts.log.message(
-			"--offline enabled. You'll need to git push any changes manually.",
-		);
-	}
+	logStartText("migrate", source.descriptor, source.type, offline);
 
 	const loaded = await source.load();
 	if (loaded instanceof Error) {

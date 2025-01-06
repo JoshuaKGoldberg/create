@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import path from "node:path";
 
 import { tryImportConfig } from "../../config/tryImportConfig.js";
@@ -25,7 +26,7 @@ export function parseMigrationSource({
 }: RequestedMigrationSource): Error | MigrationSource {
 	if (configFile && from) {
 		return new Error(
-			"--mode migrate requires either a config file or a specified template, but not both.",
+			`${chalk.green("--mode migrate")} cannot combine an existing config file (${chalk.blue(configFile)}) with an explicit ${chalk.blue("--from")} (${chalk.blue(from)}).`,
 		);
 	}
 
@@ -47,6 +48,6 @@ export function parseMigrationSource({
 	}
 
 	return new Error(
-		"--mode migrate requires either a config file exist or a template be specified on the CLI.",
+		`Existing repository detected. To migrate an existing repository, either create a create.config file or provide the name or path of a template.`,
 	);
 }

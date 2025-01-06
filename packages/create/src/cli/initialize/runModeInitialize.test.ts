@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
-import { createTemplate } from "../../creators/createTemplate.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";
+import { CLIMessage } from "../messages.js";
 import { CLIStatus } from "../status.js";
 import { runModeInitialize } from "./runModeInitialize.js";
 
@@ -20,6 +20,15 @@ vi.mock("@clack/prompts", () => ({
 		},
 	},
 	spinner: vi.fn(),
+}));
+
+const mockHelpTextReturn = { outro: CLIMessage.Ok, status: CLIStatus.Success };
+const mockLogInitializeHelpText = vi.fn().mockResolvedValue(mockHelpTextReturn);
+
+vi.mock("../loggers/logInitializeHelpText.js", () => ({
+	get logInitializeHelpText() {
+		return mockLogInitializeHelpText;
+	},
 }));
 
 const mockRunPreset = vi.fn();
@@ -108,35 +117,49 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
-const template = createTemplate({
+const template = base.createTemplate({
 	presets: [],
 });
 
 describe("runModeInitialize", () => {
-	it("returns an error when there is no from", async () => {
+	it("logs help text when from is undefined", async () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create"],
 			display,
 		});
 
-		expect(actual).toEqual({
-			outro: "Please specify a package to create from.",
-			status: CLIStatus.Error,
+		expect(mockLogInitializeHelpText).toHaveBeenCalled();
+
+		expect(actual).toBe(mockHelpTextReturn);
+	});
+
+	it("logs help text when from help is true", async () => {
+		const actual = await runModeInitialize({
+			args: ["node", "create"],
+			display,
+			from: "create-typescript-app",
+			help: true,
 		});
+
+		expect(mockLogInitializeHelpText).toHaveBeenCalledWith(
+			"create-typescript-app",
+			true,
+		);
+
+		expect(actual).toBe(mockHelpTextReturn);
 	});
 
 	it("returns the error when importing tryImportTemplatePreset resolves with an error", async () => {
-		const message = "Oh no!";
-
-		mockTryImportTemplatePreset.mockResolvedValueOnce(new Error(message));
+		mockTryImportTemplatePreset.mockResolvedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({
-			outro: message,
+			outro: CLIMessage.Exiting,
 			status: CLIStatus.Error,
 		});
 	});
@@ -147,6 +170,7 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -159,6 +183,7 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
@@ -172,12 +197,13 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({ status: CLIStatus.Cancelled });
 	});
 
-	it("returns the error when applyArgsToSettings returns an error", async () => {
+	it("returns an error when applyArgsToSettings returns an error", async () => {
 		const message = "Oh no!";
 
 		mockTryImportTemplatePreset.mockResolvedValueOnce({ preset, template });
@@ -191,9 +217,13 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
-		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
+		expect(actual).toEqual({
+			outro: message,
+			status: CLIStatus.Error,
+		});
 	});
 
 	it("runs createRepositoryOnGitHub when offline is falsy", async () => {
@@ -210,13 +240,17 @@ describe("runModeInitialize", () => {
 			suggestions,
 		});
 
-		await runModeInitialize({ args: ["node", "create", "my-app"], display });
+		await runModeInitialize({
+			args: ["node", "create", "my-app"],
+			display,
+			from: "create-my-app",
+		});
 
 		expect(mockCreateRepositoryOnGitHub).toHaveBeenCalled();
 		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Running with mode --create for a new repository using the template:
+			    "Running with mode --initialize using the template:
 			  create-my-app",
 			  ],
 			  [
@@ -247,6 +281,7 @@ describe("runModeInitialize", () => {
 		await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 			offline: true,
 		});
 
@@ -254,7 +289,7 @@ describe("runModeInitialize", () => {
 		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Running with mode --create for a new repository using the template:
+			    "Running with mode --initialize using the template:
 			  create-my-app",
 			  ],
 			  [
@@ -285,6 +320,7 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({
@@ -312,6 +348,7 @@ describe("runModeInitialize", () => {
 		const actual = await runModeInitialize({
 			args: ["node", "create", "my-app"],
 			display,
+			from: "create-my-app",
 		});
 
 		expect(actual).toEqual({

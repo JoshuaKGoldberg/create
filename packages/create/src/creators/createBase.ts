@@ -8,6 +8,7 @@ import {
 	BlockWithoutAddons,
 } from "../types/blocks.js";
 import { Preset, PresetDefinition } from "../types/presets.js";
+import { Template, TemplateDefinition } from "../types/templates.js";
 import { assertNoDuplicateBlocks } from "./assertNoDuplicateBlocks.js";
 import { applyZodDefaults, isDefinitionWithAddons } from "./utils.js";
 
@@ -65,10 +66,20 @@ export function createBase<OptionsShape extends AnyShape>(
 		};
 	}
 
+	function createTemplate(
+		templateDefinition: TemplateDefinition<OptionsShape>,
+	): Template<OptionsShape> {
+		return {
+			...templateDefinition,
+			options: base.options,
+		};
+	}
+
 	const base = {
 		...baseDefinition,
 		createBlock,
 		createPreset,
+		createTemplate,
 	};
 
 	return base;

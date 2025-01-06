@@ -2,7 +2,7 @@ import * as fs from "node:fs/promises";
 import path from "node:path";
 
 import { ProductionMode } from "../types/modes.js";
-import { tryCatchAsync } from "../utils/tryCatchAsync.js";
+import { tryCatchSafe } from "../utils/tryCatch.js";
 import { ProductionSettings } from "./types.js";
 
 export interface ReadProductionSettingsOptions {
@@ -14,7 +14,7 @@ export async function readProductionSettings({
 	directory = ".",
 	mode,
 }: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
-	const items = await tryCatchAsync(fs.readdir(directory));
+	const items = await tryCatchSafe(fs.readdir(directory));
 	let defaultMode: ProductionMode = mode ?? "initialize";
 
 	if (!items) {

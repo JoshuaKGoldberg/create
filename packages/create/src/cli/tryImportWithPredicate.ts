@@ -1,10 +1,14 @@
+import { tryCatchError } from "../utils/tryCatch.js";
+
 export async function tryImportWithPredicate<T>(
 	importer: (moduleName: string) => Promise<object>,
 	moduleName: string,
 	predicate: (value: unknown) => value is T,
 	typeName: string,
 ): Promise<Error | T> {
-	const templateModule = await importer(moduleName);
+	const templateModule = (await tryCatchError(importer(moduleName))) as
+		| Error
+		| object;
 	if (templateModule instanceof Error) {
 		return templateModule;
 	}

@@ -21,6 +21,14 @@ vi.mock("@clack/prompts", () => ({
 	spinner: vi.fn(),
 }));
 
+const mockLogMigrateHelpText = vi.fn();
+
+vi.mock("../loggers/logMigrateHelpText.js", () => ({
+	get logMigrateHelpText() {
+		return mockLogMigrateHelpText;
+	},
+}));
+
 const mockRunPreset = vi.fn();
 
 vi.mock("../../runners/runPreset.js", () => ({
@@ -60,6 +68,14 @@ const mockCreateInitialCommit = vi.fn();
 vi.mock("../createInitialCommit.js", () => ({
 	get createInitialCommit() {
 		return mockCreateInitialCommit;
+	},
+}));
+
+const mockLogStartText = vi.fn();
+
+vi.mock("../loggers/logStartText", () => ({
+	get logStartText() {
+		return mockLogStartText;
 	},
 }));
 
@@ -119,7 +135,30 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
+const descriptor = "Test Source";
+const type = "template";
+
+const source = {
+	descriptor,
+	load: () => Promise.resolve({ preset }),
+	type,
+};
+
 describe("runModeMigrate", () => {
+	it("logs help text instead of running when help is true", async () => {
+		mockParseMigrationSource.mockReturnValueOnce(source);
+
+		await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+			help: true,
+		});
+
+		expect(mockLogMigrateHelpText).toHaveBeenCalledWith(source);
+		expect(mockLogStartText).not.toHaveBeenCalled();
+	});
+
 	it("returns the error when parseMigrationSource returns an error", async () => {
 		const error = new Error("Oh no!");
 
@@ -229,12 +268,11 @@ describe("runModeMigrate", () => {
 		expect(mockClearLocalGitTags).not.toHaveBeenCalled();
 	});
 
-	it("clears the existing repository online when a forked template locator is available and online is falsy", async () => {
-		mockParseMigrationSource.mockReturnValueOnce({
-			descriptor: "Test Source",
-			load: () => Promise.resolve({ preset }),
-			type: "template",
-		});
+	it("clears the existing repository online when a forked template locator is available and offline is falsy", async () => {
+		const descriptor = "Test Source";
+		const type = "template";
+
+		mockParseMigrationSource.mockReturnValueOnce(source);
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",
@@ -251,14 +289,12 @@ describe("runModeMigrate", () => {
 			outro: "Done. Enjoy your new repository! 💝",
 			status: CLIStatus.Success,
 		});
-		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Running with --mode migrate for an existing repository using the template:
-			  Test Source",
-			  ],
-			]
-		`);
+		expect(mockLogStartText).toHaveBeenCalledWith(
+			"migrate",
+			descriptor,
+			type,
+			undefined,
+		);
 		expect(mockClearTemplateFiles).toHaveBeenCalled();
 		expect(mockClearLocalGitTags).toHaveBeenCalled();
 		expect(mockCreateInitialCommit).toHaveBeenCalledWith(mockSystem.runner, {
@@ -267,12 +303,11 @@ describe("runModeMigrate", () => {
 		});
 	});
 
-	it("clears the existing repository offline when a forked template locator is available and online is true", async () => {
-		mockParseMigrationSource.mockReturnValueOnce({
-			descriptor: "Test Source",
-			load: () => Promise.resolve({ preset }),
-			type: "template",
-		});
+	it("clears the existing repository offline when a forked template locator is available and offline is true", async () => {
+		const descriptor = "Test Source";
+		const type = "template";
+
+		mockParseMigrationSource.mockReturnValueOnce(source);
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",
@@ -290,17 +325,12 @@ describe("runModeMigrate", () => {
 			outro: "Done. Enjoy your new repository! 💝",
 			status: CLIStatus.Success,
 		});
-		expect(mockMessage.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Running with --mode migrate for an existing repository using the template:
-			  Test Source",
-			  ],
-			  [
-			    "--offline enabled. You'll need to git push any changes manually.",
-			  ],
-			]
-		`);
+		expect(mockLogStartText).toHaveBeenCalledWith(
+			"migrate",
+			descriptor,
+			type,
+			true,
+		);
 		expect(mockClearTemplateFiles).toHaveBeenCalled();
 		expect(mockClearLocalGitTags).toHaveBeenCalled();
 		expect(mockCreateInitialCommit).toHaveBeenCalledWith(mockSystem.runner, {

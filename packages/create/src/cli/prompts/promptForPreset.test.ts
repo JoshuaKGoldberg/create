@@ -2,7 +2,6 @@ import chalk from "chalk";
 import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
-import { createTemplate } from "../../creators/createTemplate.js";
 import { promptForPreset } from "./promptForPreset.js";
 
 const base = createBase({
@@ -19,7 +18,7 @@ const presetB = base.createPreset({
 	blocks: [],
 });
 
-const template = createTemplate({
+const template = base.createTemplate({
 	about: { name: "Test" },
 	presets: [presetA, presetB],
 	suggested: presetA,

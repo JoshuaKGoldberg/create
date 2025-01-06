@@ -8,7 +8,6 @@ export type * from "./config/types.js";
 // Creators
 export * from "./creators/createBase.js";
 export * from "./creators/createInput.js";
-export * from "./creators/createTemplate.js";
 
 // Producers
 export * from "./producers/produceBase.js";

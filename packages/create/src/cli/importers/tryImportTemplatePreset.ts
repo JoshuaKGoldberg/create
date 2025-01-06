@@ -1,20 +1,13 @@
 import * as prompts from "@clack/prompts";
 
-import { isTemplate } from "../../predicates/isTemplate.js";
 import { promptForPreset } from "../prompts/promptForPreset.js";
-import { tryImportWithPredicate } from "../tryImportWithPredicate.js";
-import { tryImportAndInstallIfNecessary } from "./tryImportAndInstallIfNecessary.js";
+import { tryImportTemplate } from "./tryImportTemplate.js";
 
 export async function tryImportTemplatePreset(
 	from: string,
 	requestedPreset?: string,
 ) {
-	const template = await tryImportWithPredicate(
-		tryImportAndInstallIfNecessary,
-		from,
-		isTemplate,
-		"Template",
-	);
+	const template = await tryImportTemplate(from);
 	if (template instanceof Error) {
 		return template;
 	}
