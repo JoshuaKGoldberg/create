@@ -65,8 +65,8 @@ export async function runCli(args: string[]) {
 
 	prompts.intro(
 		[
-			chalk.bgGreenBright.black(`create`),
 			chalk.greenBright(`✨ `),
+			chalk.bgGreenBright.black(`create`),
 			chalk.greenBright(` ✨`),
 		].join(""),
 	);
