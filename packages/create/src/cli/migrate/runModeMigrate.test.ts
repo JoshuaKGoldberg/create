@@ -7,16 +7,17 @@ import { runModeMigrate } from "./runModeMigrate.js";
 
 const mockCancel = Symbol("");
 const mockIsCancel = (value: unknown) => value === mockCancel;
-const mockMessage = vi.fn();
+const mockLog = {
+	error: vi.fn(),
+	message: vi.fn(),
+};
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
-	log: {
-		get message() {
-			return mockMessage;
-		},
+	get log() {
+		return mockLog;
 	},
 	spinner: vi.fn(),
 }));
@@ -245,6 +246,26 @@ describe("runModeMigrate", () => {
 		});
 
 		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
+	});
+
+	it("returns the error when runPreset resolves with an error", async () => {
+		mockParseMigrationSource.mockReturnValueOnce({
+			load: () => Promise.resolve({ preset }),
+		});
+		mockPromptForBaseOptions.mockResolvedValueOnce({});
+		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
+
+		const actual = await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+		});
+
+		expect(actual).toEqual({
+			outro: `Leaving changes to the local directory on disk. 👋`,
+			status: CLIStatus.Error,
+		});
 	});
 
 	it("doesn't clear the existing repository when no forked template locator is available", async () => {

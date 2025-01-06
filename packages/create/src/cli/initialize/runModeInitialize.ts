@@ -126,6 +126,12 @@ export async function runModeInitialize({
 				options,
 			}),
 	);
+	if (creation instanceof Error) {
+		return {
+			outro: `Leaving changes to the local directory on disk. 👋`,
+			status: CLIStatus.Error,
+		};
+	}
 
 	await runSpinnerTask(
 		display,
