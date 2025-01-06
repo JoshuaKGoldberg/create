@@ -67,14 +67,14 @@ describe("logInitializeHelpText", () => {
 		expect(mockSpinner.start).not.toHaveBeenCalled();
 	});
 
-	it("logs help text without loading when from is undefined and help is true", async () => {
+	it("logs general help text without loading when from is undefined and help is true", async () => {
 		const actual = await logInitializeHelpText(undefined, true);
 
 		expect(actual).toEqual({
 			outro: CLIMessage.Ok,
 			status: CLIStatus.Success,
 		});
-		expect(mockLogHelpText).toHaveBeenCalledWith("initialize", undefined);
+		expect(mockLogHelpText).toHaveBeenCalledWith("initialize");
 		expect(mockSpinner.start).not.toHaveBeenCalled();
 	});
 

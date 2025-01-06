@@ -13,15 +13,7 @@ export async function logInitializeHelpText(
 ) {
 	if (!from) {
 		if (help) {
-			logHelpText(
-				"initialize",
-				from
-					? {
-							descriptor: from,
-							type: "template",
-						}
-					: undefined,
-			);
+			logHelpText("initialize");
 		} else {
 			prompts.log.message(
 				[
@@ -37,21 +29,27 @@ export async function logInitializeHelpText(
 		};
 	}
 
-	logHelpText("initialize");
+	logHelpText("initialize", {
+		descriptor: from,
+		type: "template",
+	});
 
 	const spinner = prompts.spinner();
-	spinner.start(`Loading ${from}`);
+	spinner.start(`Loading ${chalk.blue(from)}`);
 
 	const template = await tryImportTemplate(from);
 	if (template instanceof Error) {
-		spinner.stop(`Could not load ${from}: ${template.message}.`, 1);
+		spinner.stop(
+			`Could not load ${chalk.blue(from)}: ${chalk.red(template.message)}.`,
+			1,
+		);
 		return {
 			outro: chalk.red(CLIMessage.Exiting),
 			status: CLIStatus.Error,
 		};
 	}
 
-	spinner.stop(`Loaded ${from}`);
+	spinner.stop(`Loaded ${chalk.blue(from)}`);
 
 	logSchemasHelpOptions(from, template.options);
 

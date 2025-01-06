@@ -10,8 +10,6 @@ export interface HelpOption {
 	type: string;
 }
 
-export type HelpOptions = Record<string, HelpOption>;
-
 export function logHelpOptions(category: string, options: HelpOption[]) {
 	prompts.log.message(
 		[

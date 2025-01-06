@@ -1,5 +1,3 @@
-export type Logger = Pick<Console, "log">;
-
 export interface ModeResults {
 	outro?: string;
 	status: number;

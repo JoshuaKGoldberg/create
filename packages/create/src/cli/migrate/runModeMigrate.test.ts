@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createBase } from "../../creators/createBase.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";
-import { logStartText } from "../loggers/logStartText.js";
 import { CLIStatus } from "../status.js";
 import { runModeMigrate } from "./runModeMigrate.js";
 
@@ -20,6 +19,14 @@ vi.mock("@clack/prompts", () => ({
 		},
 	},
 	spinner: vi.fn(),
+}));
+
+const mockLogMigrateHelpText = vi.fn();
+
+vi.mock("../loggers/logMigrateHelpText.js", () => ({
+	get logMigrateHelpText() {
+		return mockLogMigrateHelpText;
+	},
 }));
 
 const mockRunPreset = vi.fn();
@@ -128,7 +135,30 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
+const descriptor = "Test Source";
+const type = "template";
+
+const source = {
+	descriptor,
+	load: () => Promise.resolve({ preset }),
+	type,
+};
+
 describe("runModeMigrate", () => {
+	it("logs help text instead of running when help is true", async () => {
+		mockParseMigrationSource.mockReturnValueOnce(source);
+
+		await runModeMigrate({
+			args: [],
+			configFile: undefined,
+			display,
+			help: true,
+		});
+
+		expect(mockLogMigrateHelpText).toHaveBeenCalledWith(source);
+		expect(mockLogStartText).not.toHaveBeenCalled();
+	});
+
 	it("returns the error when parseMigrationSource returns an error", async () => {
 		const error = new Error("Oh no!");
 
@@ -242,11 +272,7 @@ describe("runModeMigrate", () => {
 		const descriptor = "Test Source";
 		const type = "template";
 
-		mockParseMigrationSource.mockReturnValueOnce({
-			descriptor,
-			load: () => Promise.resolve({ preset }),
-			type,
-		});
+		mockParseMigrationSource.mockReturnValueOnce(source);
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",
@@ -281,11 +307,7 @@ describe("runModeMigrate", () => {
 		const descriptor = "Test Source";
 		const type = "template";
 
-		mockParseMigrationSource.mockReturnValueOnce({
-			descriptor,
-			load: () => Promise.resolve({ preset }),
-			type,
-		});
+		mockParseMigrationSource.mockReturnValueOnce(source);
 		mockPromptForBaseOptions.mockResolvedValueOnce({});
 		mockGetForkedTemplateLocator.mockResolvedValueOnce({
 			owner: "",

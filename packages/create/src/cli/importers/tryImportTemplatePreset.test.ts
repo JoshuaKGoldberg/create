@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { describe, expect, it, vi } from "vitest";
 
 import { tryImportTemplatePreset } from "./tryImportTemplatePreset.js";
@@ -41,9 +42,14 @@ describe("tryImportTemplatePreset", () => {
 
 		expect(actual).toEqual(error);
 		expect(mockPromptForPreset).not.toHaveBeenCalled();
-		expect(mockSpinner.start.mock.calls).toEqual([["Loading create-my-app"]]);
+		expect(mockSpinner.start.mock.calls).toEqual([
+			[`Loading ${chalk.blue("create-my-app")}`],
+		]);
 		expect(mockSpinner.stop.mock.calls).toEqual([
-			["Could not load create-my-app: Oh no!", 1],
+			[
+				`Could not load ${chalk.blue("create-my-app")}: ${chalk.red(error.message)}`,
+				1,
+			],
 		]);
 	});
 
@@ -70,7 +76,11 @@ describe("tryImportTemplatePreset", () => {
 		const actual = await tryImportTemplatePreset("create-my-app");
 
 		expect(actual).toEqual({ preset, template });
-		expect(mockSpinner.start.mock.calls).toEqual([["Loading create-my-app"]]);
-		expect(mockSpinner.stop.mock.calls).toEqual([["Loaded create-my-app"]]);
+		expect(mockSpinner.start.mock.calls).toEqual([
+			[`Loading ${chalk.blue("create-my-app")}`],
+		]);
+		expect(mockSpinner.stop.mock.calls).toEqual([
+			[`Loaded ${chalk.blue("create-my-app")}`],
+		]);
 	});
 });
