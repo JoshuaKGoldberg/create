@@ -37,7 +37,7 @@ describe("logHelpOptions", () => {
 		`);
 	});
 
-	test("output witho examples and text", () => {
+	test("output without examples and text", () => {
 		logHelpOptions("category", [
 			{
 				examples: ["a", "b"],
