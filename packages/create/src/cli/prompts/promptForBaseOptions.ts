@@ -1,10 +1,10 @@
 import * as prompts from "@clack/prompts";
-import { z } from "zod";
 
 import { AnyShape, InferredObject } from "../../options.js";
 import { produceBase } from "../../producers/produceBase.js";
 import { Base } from "../../types/bases.js";
 import { SystemContext } from "../../types/system.js";
+import { getSchemaDefaultValue } from "../../utils/getSchemaDefaultValue.js";
 import { promptForSchema } from "./promptForSchema.js";
 
 export interface PromptForBaseOptionsSettings<OptionsShape extends AnyShape> {
@@ -52,8 +52,4 @@ export async function promptForBaseOptions<
 	}
 
 	return options;
-}
-
-function getSchemaDefaultValue(schema: z.ZodTypeAny) {
-	return (schema._def as Partial<z.ZodDefaultDef>).defaultValue?.() as unknown;
 }

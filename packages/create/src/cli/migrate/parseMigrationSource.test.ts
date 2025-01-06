@@ -38,7 +38,7 @@ describe("parseMigrationSource", () => {
 
 		expect(actual).toEqual(
 			new Error(
-				"--mode migrate requires either a config file exist or a template be specified on the CLI.",
+				"Existing repository detected. To migrate an existing repository, either create a create.config file or provide the name or path of a template.",
 			),
 		);
 	});
@@ -52,7 +52,7 @@ describe("parseMigrationSource", () => {
 
 		expect(actual).toEqual(
 			new Error(
-				"--mode migrate requires either a config file or a specified template, but not both.",
+				"--mode migrate cannot combine an existing config file (create.config.js) with an explicit --from (my-app).",
 			),
 		);
 	});

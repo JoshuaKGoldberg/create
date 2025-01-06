@@ -8,10 +8,12 @@ import {
 import { TakeContext } from "./context.js";
 import { TakeInput } from "./inputs.js";
 import { Preset, PresetDefinition } from "./presets.js";
+import { Template, TemplateDefinition } from "./templates.js";
 
 export interface Base<OptionsShape extends AnyShape = AnyShape> {
 	createBlock: CreateBlock<InferredObject<OptionsShape>>;
 	createPreset: CreatePreset<OptionsShape>;
+	createTemplate: CreateTemplate<OptionsShape>;
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
 	template?: RepositoryTemplate;
@@ -51,6 +53,10 @@ export interface CreateBlock<Options extends object> {
 export type CreatePreset<OptionsShape extends AnyShape> = (
 	presetDefinition: PresetDefinition<InferredObject<OptionsShape>>,
 ) => Preset<OptionsShape>;
+
+export type CreateTemplate<OptionsShape extends AnyShape> = (
+	templateDefinition: TemplateDefinition<OptionsShape>,
+) => Template<OptionsShape>;
 
 export type LazyOptionalOption<T> =
 	| (() => Promise<T | undefined>)

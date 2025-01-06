@@ -7,7 +7,7 @@ The main driver of `create` is a set of APIs that set up the generators for repo
 - [`createBase`](#createbase): creates a new [Base](../concepts/bases)
   - [`createBlock`](#createblock): creates a new [Block](../concepts/blocks) for the Base
   - [`createPreset`](#createpreset): creates a new [Preset](../concepts/presets) for the Base
-- [`createTemplate`](#createtemplate): creates a new [Template](../concepts/templates)
+  - [`createTemplate`](#createtemplate): creates a new [Template](../concepts/templates) for the Base
 - [`createInput`](#createinput): creates a new [Input](../runtime/inputs)
 
 ## `createBase`
@@ -375,7 +375,8 @@ base.createPreset({
 
 ## `createTemplate`
 
-Given a _Template Definition_, creates a _Template_.
+[Templates](../concepts/templates) can be created by the `createTemplate()` method of a [Base](../concepts/bases).
+`createTemplate()` takes in a _Template Definition_ and returns a _Template_.
 
 A Template Definition is an object containing:
 
@@ -395,9 +396,9 @@ This is an object containing any of:
 For example, this Template describes itself as a solution for TypeScript repositories:
 
 ```ts
-import { createTemplate } from "create";
+import { base } from "./base";
 
-createTemplate({
+base.createTemplate({
 	about: {
 		description:
 			"One-stop shop for the latest and greatest TypeScript tooling.",
@@ -418,12 +419,11 @@ This should be the same string as one of the `labels` under [`presets`](#presets
 For example, this Template defaults to the `"Common"` Preset:
 
 ```ts
-import { createTemplate } from "create";
-
+import { base } from "./base";
 import { presetCommon } from "./presetCommon";
 import { presetEverything } from "./presetEverything";
 
-export const templateTypeScriptApp = createTemplate({
+export const templateTypeScriptApp = base.createTemplate({
 	default: "Common",
 	presets: [
 		{ label: "Common", preset: presetCommon },
@@ -444,12 +444,11 @@ Each element in the array is an object containing:
 For example, this Template allows choosing between two Presets for TypeScript apps:
 
 ```ts
-import { createTemplate } from "create";
-
+import { base } from "./base";
 import { presetCommon } from "./presetCommon";
 import { presetEverything } from "./presetEverything";
 
-export const templateTypeScriptApp = createTemplate({
+export const templateTypeScriptApp = base.createTemplate({
 	about: {
 		name: "TypeScript App",
 	},

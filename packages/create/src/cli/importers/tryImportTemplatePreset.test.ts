@@ -3,11 +3,16 @@ import { describe, expect, it, vi } from "vitest";
 import { tryImportTemplatePreset } from "./tryImportTemplatePreset.js";
 
 const mockIsCancel = vi.fn();
+const mockSpinner = {
+	start: vi.fn(),
+	stop: vi.fn(),
+};
 
 vi.mock("@clack/prompts", () => ({
 	get isCancel() {
 		return mockIsCancel;
 	},
+	spinner: () => mockSpinner,
 }));
 
 const mockPromptForPreset = vi.fn();
@@ -32,10 +37,14 @@ describe("tryImportTemplatePreset", () => {
 
 		mockTryImportWithPredicate.mockResolvedValueOnce(error);
 
-		const actual = await tryImportTemplatePreset("my-app");
+		const actual = await tryImportTemplatePreset("create-my-app");
 
 		expect(actual).toEqual(error);
 		expect(mockPromptForPreset).not.toHaveBeenCalled();
+		expect(mockSpinner.start.mock.calls).toEqual([["Loading create-my-app"]]);
+		expect(mockSpinner.stop.mock.calls).toEqual([
+			["Could not load create-my-app: Oh no!", 1],
+		]);
 	});
 
 	it("returns the cancellation when promptForPreset is cancelled", async () => {
@@ -45,7 +54,7 @@ describe("tryImportTemplatePreset", () => {
 		mockPromptForPreset.mockResolvedValueOnce(preset);
 		mockIsCancel.mockReturnValueOnce(true);
 
-		const actual = await tryImportTemplatePreset("my-app");
+		const actual = await tryImportTemplatePreset("create-my-app");
 
 		expect(actual).toBe(preset);
 	});
@@ -58,8 +67,10 @@ describe("tryImportTemplatePreset", () => {
 		mockPromptForPreset.mockResolvedValueOnce(preset);
 		mockIsCancel.mockReturnValueOnce(false);
 
-		const actual = await tryImportTemplatePreset("my-app");
+		const actual = await tryImportTemplatePreset("create-my-app");
 
 		expect(actual).toEqual({ preset, template });
+		expect(mockSpinner.start.mock.calls).toEqual([["Loading create-my-app"]]);
+		expect(mockSpinner.stop.mock.calls).toEqual([["Loaded create-my-app"]]);
 	});
 });

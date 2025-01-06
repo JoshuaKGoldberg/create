@@ -39,6 +39,7 @@ describe("tryImportConfig", () => {
 			    "base": {
 			      "createBlock": [Function],
 			      "createPreset": [Function],
+			      "createTemplate": [Function],
 			      "options": {},
 			    },
 			    "blocks": [],
@@ -66,6 +67,7 @@ describe("tryImportConfig", () => {
 			    "base": {
 			      "createBlock": [Function],
 			      "createPreset": [Function],
+			      "createTemplate": [Function],
 			      "options": {},
 			    },
 			    "blocks": [],

@@ -1,9 +1,13 @@
 import { describe, expect, test } from "vitest";
 
-import { createTemplate } from "../creators/createTemplate.js";
+import { createBase } from "../creators/createBase.js";
 import { isTemplate } from "./isTemplate.js";
 
-const template = createTemplate({
+const base = createBase({
+	options: {},
+});
+
+const template = base.createTemplate({
 	presets: [],
 });
 

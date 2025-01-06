@@ -7,8 +7,10 @@ import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";
 import { runSpinnerTask } from "../display/runSpinnerTask.js";
-import { findPositionalFrom } from "../findPositionalFrom.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
+import { logInitializeHelpText } from "../loggers/logInitializeHelpText.js";
+import { logStartText } from "../loggers/logStartText.js";
+import { CLIMessage } from "../messages.js";
 import { applyArgsToSettings } from "../parsers/applyArgsToSettings.js";
 import { parseZodArgs } from "../parsers/parseZodArgs.js";
 import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
@@ -25,6 +27,7 @@ export interface RunModeInitializeSettings {
 	directory?: string;
 	display: ClackDisplay;
 	from?: string;
+	help?: boolean;
 	offline?: boolean;
 	owner?: string;
 	preset?: string;
@@ -36,41 +39,26 @@ export async function runModeInitialize({
 	repository,
 	directory: requestedDirectory = repository,
 	display,
-	from = findPositionalFrom(args),
+	from,
+	help,
 	offline,
 	preset: requestedPreset,
 }: RunModeInitializeSettings): Promise<ModeResults> {
-	if (!from) {
-		return {
-			outro: "Please specify a package to create from.",
-			status: CLIStatus.Error,
-		};
+	if (!from || help) {
+		return await logInitializeHelpText(from, help);
 	}
 
-	prompts.log.message(
-		[
-			"Running with mode --create for a new repository using the template:",
-			`  ${chalk.green(from)}`,
-		].join("\n"),
-	);
-
-	if (offline) {
-		prompts.log.message(
-			"--offline enabled. You'll need to git push any changes manually.",
-		);
-	}
+	logStartText("initialize", from, "template", offline);
 
 	const loaded = await tryImportTemplatePreset(from, requestedPreset);
 	if (loaded instanceof Error) {
 		return {
-			outro: loaded.message,
+			outro: chalk.red(CLIMessage.Exiting),
 			status: CLIStatus.Error,
 		};
 	}
 	if (prompts.isCancel(loaded)) {
-		return {
-			status: CLIStatus.Cancelled,
-		};
+		return { status: CLIStatus.Cancelled };
 	}
 
 	const { preset, template } = loaded;
@@ -80,9 +68,7 @@ export async function runModeInitialize({
 		template,
 	});
 	if (prompts.isCancel(directory)) {
-		return {
-			status: CLIStatus.Cancelled,
-		};
+		return { status: CLIStatus.Cancelled };
 	}
 
 	const system = await createSystemContextWithAuth({

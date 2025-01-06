@@ -78,14 +78,6 @@ describe("readProductionSettings", () => {
 		console.log = mockLog;
 	});
 
-	it("logs help text when --help is provided", async () => {
-		const actual = await runCli(["--help"]);
-
-		expect(actual).toBe(CLIStatus.Success);
-		expect(mockLogHelpText).toHaveBeenCalled();
-		expect(mockLog).not.toHaveBeenCalled();
-	});
-
 	it("logs version when --version is provided", async () => {
 		const actual = await runCli(["--version"]);
 
@@ -107,18 +99,6 @@ describe("readProductionSettings", () => {
 		expect(mockLogOutro).toHaveBeenCalledWith(chalk.red(message));
 	});
 
-	it("logs a starting prompt when readProductionSettings resolves with mode: initialize and there are no args", async () => {
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-
-		const actual = await runCli([]);
-
-		expect(actual).toBe(CLIStatus.Success);
-		expect(mockLogHelpText).not.toHaveBeenCalled();
-		expect(mockLog).not.toHaveBeenCalled();
-		expect(mockRunModeInitialize).not.toHaveBeenCalled();
-		expect(mockLogOutro).toHaveBeenCalledWith("Cheers! 💝");
-	});
-
 	it("runs initialize mode when readProductionSettings resolves with mode: initialize", async () => {
 		const args = ["typescript-app"];
 		const status = CLIStatus.Success;
@@ -132,12 +112,13 @@ describe("readProductionSettings", () => {
 		expect(mockRunModeInitialize).toHaveBeenCalledWith({
 			args,
 			display: mockDisplay,
+			from: "create-typescript-app",
 		});
 		expect(mockRunModeMigrate).not.toHaveBeenCalled();
 	});
 
 	it("runs migration mode when readProductionSettings resolves with mode: migrate", async () => {
-		const args = ["typescript-app"];
+		const args: string[] = [];
 		const configFile = "create.config.js";
 		const status = CLIStatus.Success;
 
@@ -154,6 +135,7 @@ describe("readProductionSettings", () => {
 			args,
 			configFile,
 			display: mockDisplay,
+			from: undefined,
 		});
 		expect(mockRunModeInitialize).not.toHaveBeenCalled();
 	});
