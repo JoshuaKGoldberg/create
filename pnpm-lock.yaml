@@ -224,8 +224,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       starlight-package-managers:
-        specifier: ^0.8.1
-        version: 0.8.1(@astrojs/starlight@0.30.3(astro@5.1.1(@types/node@22.10.3)(jiti@2.4.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1)))
+        specifier: ^0.9.0
+        version: 0.9.0(@astrojs/starlight@0.30.3(astro@5.1.1(@types/node@22.10.3)(jiti@2.4.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1)))
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -4387,8 +4387,8 @@ packages:
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
-  starlight-package-managers@0.8.1:
-    resolution: {integrity: sha512-a+zGIOdbN7B4T/VaszuvW8585Aau4LSU8HlVCmBCJJwxkrGAUC9lRya4y0md5tOAFyW/gfhUNJZM8qqyMNTe7Q==}
+  starlight-package-managers@0.9.0:
+    resolution: {integrity: sha512-iDChnj8hCUYH2s5hFMnpEiCYHUAuVivh2jvFgFJvUmViEEOdA24ZXrUhQhA/qg2KULCgn17F2cKWf3vhvIcl0w==}
     engines: {node: '>=18.17.1'}
     peerDependencies:
       '@astrojs/starlight': '>=0.22.0'
@@ -10190,7 +10190,7 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  starlight-package-managers@0.8.1(@astrojs/starlight@0.30.3(astro@5.1.1(@types/node@22.10.3)(jiti@2.4.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))):
+  starlight-package-managers@0.9.0(@astrojs/starlight@0.30.3(astro@5.1.1(@types/node@22.10.3)(jiti@2.4.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))):
     dependencies:
       '@astrojs/starlight': 0.30.3(astro@5.1.1(@types/node@22.10.3)(jiti@2.4.1)(rollup@4.29.1)(typescript@5.7.2)(yaml@2.6.1))
 
