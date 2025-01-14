@@ -1,11 +1,9 @@
+import { CreatedDirectory, WritingFileSystem } from "create-fs";
 import * as path from "node:path";
 import prettier from "prettier";
 
-import { CreatedFiles } from "../types/creations.js";
-import { WritingFileSystem } from "../types/system.js";
-
 export async function applyFilesToSystem(
-	files: CreatedFiles,
+	files: CreatedDirectory,
 	system: WritingFileSystem,
 	directory: string,
 ) {
@@ -45,7 +43,7 @@ function inferParser(fileName: string, text: string) {
 }
 
 async function writeToSystemWorker(
-	files: CreatedFiles,
+	files: CreatedDirectory,
 	system: WritingFileSystem,
 	basePath: string,
 ) {

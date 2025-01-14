@@ -48,9 +48,18 @@ export default defineConfig({
 								{ label: "Creators", link: "engine/apis/creators" },
 								{ label: "Producers", link: "engine/apis/producers" },
 								{ label: "Runners", link: "engine/apis/runners" },
-								{ label: "Testers", link: "engine/apis/testers" },
 							],
 							label: "APIs",
+						},
+						{
+							items: [
+								{ label: "create-fs", link: "engine/packages/create-fs" },
+								{
+									label: "create-testers",
+									link: "engine/packages/create-testers",
+								},
+							],
+							label: "Packages",
 						},
 					],
 					label: "Templating Engine",

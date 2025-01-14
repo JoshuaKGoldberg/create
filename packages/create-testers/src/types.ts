@@ -1,4 +1,5 @@
-import { SystemRunner, TakeInput, WritingFileSystem } from "create";
+import { SystemRunner, TakeInput } from "create";
+import { WritingFileSystem } from "create-fs";
 
 export interface MockSystemOptions {
 	fetch?: typeof fetch;

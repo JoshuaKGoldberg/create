@@ -28,6 +28,7 @@
 		"@clack/prompts": "^0.9.1",
 		"cached-factory": "^0.1.0",
 		"chalk": "^5.4.1",
+		"create-fs": "workspace:^",
 		"execa": "^9.5.2",
 		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
@@ -40,7 +41,8 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@types/hosted-git-info": "3.0.5"
+		"@types/hosted-git-info": "3.0.5",
+		"@types/node": "^22.10.5"
 	},
 	"engines": {
 		"node": ">=18"

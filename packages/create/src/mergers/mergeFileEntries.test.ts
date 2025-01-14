@@ -1,6 +1,6 @@
+import { CreatedFileEntry } from "create-fs";
 import { describe, expect, test } from "vitest";
 
-import { CreatedFileEntry } from "../types/creations.js";
 import { mergeFileEntries } from "./mergeFileEntries.js";
 
 const path = ["test", "path"];

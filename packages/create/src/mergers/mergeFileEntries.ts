@@ -1,4 +1,4 @@
-import { CreatedFileEntry } from "../types/creations.js";
+import { CreatedFileEntry } from "create-fs";
 
 export function mergeFileEntries(
 	first: CreatedFileEntry | undefined,

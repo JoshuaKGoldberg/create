@@ -1,3 +1,5 @@
+import { CreatedDirectory } from "create-fs";
+
 import { BlockWithAddons } from "./blocks.js";
 import { SystemFetchers } from "./system.js";
 
@@ -7,25 +9,6 @@ export interface CreatedBlockAddons<
 > {
 	addons: Addons;
 	block: BlockWithAddons<Addons, Options>;
-}
-
-export type CreatedFileEntry =
-	| [string, CreatedFileOptions]
-	| [string]
-	| CreatedFiles
-	| false
-	| string;
-
-export interface CreatedFileOptions {
-	/**
-	 * File mode (permission and sticky bits) per chmod().
-	 * @example 0o777 for an executable file.
-	 */
-	mode?: number;
-}
-
-export interface CreatedFiles {
-	[i: string]: CreatedFileEntry | undefined;
 }
 
 export interface CreatedRequest {
@@ -46,7 +29,7 @@ export type Creation<Options extends object> = DirectCreation &
 	IndirectCreation<Options>;
 
 export interface DirectCreation {
-	files: CreatedFiles;
+	files: CreatedDirectory;
 	requests: CreatedRequest[];
 	scripts: CreatedScript[];
 }
