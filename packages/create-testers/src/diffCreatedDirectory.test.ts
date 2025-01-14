@@ -1,6 +1,10 @@
+import { CreatedDirectory } from "create-fs";
 import { describe, expect, test } from "vitest";
 
-import { diffCreatedDirectory } from "./diffCreatedDirectory.js";
+import {
+	diffCreatedDirectory,
+	DiffedCreatedDirectory,
+} from "./diffCreatedDirectory.js";
 
 describe("diffCreatedDirectory", () => {
 	test.each([
@@ -123,7 +127,11 @@ describe("diffCreatedDirectory", () => {
 			{ a: { b: { f: "g\n" } } },
 			{ a: { b: { f: "g\n" } } },
 		],
-	])("%j and %j", (actual, created, expected) => {
+	] satisfies [
+		CreatedDirectory,
+		CreatedDirectory,
+		DiffedCreatedDirectory | undefined,
+	][])("%j and %j", (actual, created, expected) => {
 		expect(diffCreatedDirectory(actual, created, (text) => text)).toEqual(
 			expected,
 		);
