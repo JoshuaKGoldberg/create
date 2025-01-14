@@ -116,6 +116,9 @@ importers:
       chalk:
         specifier: ^5.4.0
         version: 5.4.1
+      create-fs:
+        specifier: workspace:^
+        version: link:../create-fs
       execa:
         specifier: ^9.5.2
         version: 9.5.2
@@ -150,8 +153,11 @@ importers:
       '@types/hosted-git-info':
         specifier: 3.0.5
         version: 3.0.5
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.10.5
 
-  packages/create-testers:
+  packages/create-fs:
     dependencies:
       create:
         specifier: workspace:^
@@ -160,6 +166,34 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
     devDependencies:
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.10.5
+      zod:
+        specifier: 3.24.1
+        version: 3.24.1
+
+  packages/create-testers:
+    dependencies:
+      create:
+        specifier: workspace:^
+        version: link:../create
+      create-fs:
+        specifier: workspace:^
+        version: link:../create-fs
+      diff:
+        specifier: ^7.0.0
+        version: 7.0.0
+      octokit:
+        specifier: ^4.0.2
+        version: 4.0.2
+      without-undefined-properties:
+        specifier: ^0.1.1
+        version: 0.1.1
+    devDependencies:
+      '@types/diff':
+        specifier: ^7.0.0
+        version: 7.0.0
       zod:
         specifier: 3.24.1
         version: 3.24.1
@@ -1475,6 +1509,9 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
+  '@types/diff@7.0.0':
+    resolution: {integrity: sha512-sVpkpbnTJL9CYoDf4U+tHaQLe5HiTaHWY7m9FuYA7oMCHwC9ie0Vh9eIGapyzYrU3+pILlSY2fAc4elfw5m4dg==}
+
   '@types/eslint-plugin-markdown@2.0.2':
     resolution: {integrity: sha512-ImmEw5xBVb9vCaFfQ+5kUcVatUO4XPpTvryAmhpKzalUKhDb3EZmeuHvIUO6E1/WDOTw+/b9qlWsZhxULhZdfQ==}
 
@@ -1528,6 +1565,9 @@ packages:
 
   '@types/node@22.10.3':
     resolution: {integrity: sha512-DifAyw4BkrufCILvD3ucnuN8eydUfc/C1GlyrnI+LK6543w5/L3VeVgf05o3B4fqSXP1dKYLOZsKfutpxPzZrw==}
+
+  '@types/node@22.10.5':
+    resolution: {integrity: sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2284,6 +2324,10 @@ packages:
 
   diff@5.2.0:
     resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
+    engines: {node: '>=0.3.1'}
+
+  diff@7.0.0:
+    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
     engines: {node: '>=0.3.1'}
 
   direction@2.0.1:
@@ -6311,6 +6355,8 @@ snapshots:
     dependencies:
       '@types/ms': 0.7.34
 
+  '@types/diff@7.0.0': {}
+
   '@types/eslint-plugin-markdown@2.0.2':
     dependencies:
       '@types/eslint': 9.6.0
@@ -6369,11 +6415,15 @@ snapshots:
     dependencies:
       undici-types: 6.20.0
 
+  '@types/node@22.10.5':
+    dependencies:
+      undici-types: 6.20.0
+
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 22.10.3
+      '@types/node': 22.10.5
 
   '@types/semver@7.5.8': {}
 
@@ -7280,6 +7330,8 @@ snapshots:
       dequal: 2.0.3
 
   diff@5.2.0: {}
+
+  diff@7.0.0: {}
 
   direction@2.0.1: {}
 

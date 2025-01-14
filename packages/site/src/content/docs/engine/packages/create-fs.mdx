@@ -1,0 +1,40 @@
+---
+title: create-fs
+---
+
+import { PackageManagers } from "starlight-package-managers";
+
+The file system used by <a href="https://create.bingo"><code>create</code></a>. 🗄️
+
+<PackageManagers type="add" pkg="create-fs" />
+
+The separate `create-fs` package includes types and utility functions for the file system used in [Runtime > Creations > `files`](https://www.create.bingo/engine/runtime/creations#files).
+
+This file system is a simplified abstraction over the lower-level APIs in Node.js and other platforms.
+APIs and data are optimized for simplicity and ease of use, rather than completeness.
+
+For example, given a structure like:
+
+```plaintext
+/
+└── README.md
+└── src
+    └── index.ts
+```
+
+`create-fs` would represent that structure with an object like:
+
+```json
+{
+	"README.md": "...",
+	"src": {
+		"index.ts": "..."
+	}
+}
+```
+
+## APIs
+
+### `intakeFromDirectory`
+
+Reads in the

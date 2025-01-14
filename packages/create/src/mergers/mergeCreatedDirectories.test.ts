@@ -1,7 +1,7 @@
+import { CreatedDirectory } from "create-fs";
 import { describe, expect, test } from "vitest";
 
-import { CreatedFiles } from "../types/creations.js";
-import { mergeFileCreations } from "./mergeFileCreations.js";
+import { mergeCreatedDirectories } from "./mergeCreatedDirectories.js";
 
 describe("mergeFileCreations", () => {
 	test.each([
@@ -27,13 +27,21 @@ describe("mergeFileCreations", () => {
 			{ a: "" },
 			"Conflicting created directory and file at path: 'a'.",
 		],
-	] satisfies [CreatedFiles, CreatedFiles, CreatedFiles | string][])(
+	] satisfies [
+		CreatedDirectory,
+		CreatedDirectory,
+		CreatedDirectory | string,
+	][])(
 		"%j with %j",
-		(first: CreatedFiles, second: CreatedFiles, expected?: object | string) => {
+		(
+			first: CreatedDirectory,
+			second: CreatedDirectory,
+			expected?: object | string,
+		) => {
 			if (typeof expected === "string") {
-				expect(() => mergeFileCreations(first, second)).toThrow(expected);
+				expect(() => mergeCreatedDirectories(first, second)).toThrow(expected);
 			} else {
-				expect(mergeFileCreations(first, second)).toEqual(expected);
+				expect(mergeCreatedDirectories(first, second)).toEqual(expected);
 			}
 		},
 	);

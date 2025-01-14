@@ -23,7 +23,6 @@ export * from "./runners/runPreset.js";
 // TODO: These might be better as their own packages?
 export * from "./runners/applyFilesToSystem.js";
 export * from "./system/createSystemContext.js";
-export * from "./system/createWritingFileSystem.js";
 export * from "./utils/awaitLazyProperties.js";
 
 // Types

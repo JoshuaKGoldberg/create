@@ -1,7 +1,7 @@
+import { ReadingFileSystem } from "create-fs";
+
 import { TakeContext } from "./context.js";
 import { SystemFetchers, SystemRunner } from "./system.js";
-
-export type FileSystemReadFile = (filePath: string) => Promise<string>;
 
 export type Input<
 	Result,
@@ -15,7 +15,7 @@ export type InputArgsFor<TypeofInput> =
 
 export interface InputContext extends TakeContext {
 	fetchers: SystemFetchers;
-	fs: InputFileSystem;
+	fs: ReadingFileSystem;
 	runner: SystemRunner;
 }
 
@@ -34,10 +34,6 @@ export interface InputContextWithArgs<Args extends object>
 export interface InputContextWithArgs<Args extends object>
 	extends InputContext {
 	args: Args;
-}
-
-export interface InputFileSystem {
-	readFile: FileSystemReadFile;
 }
 
 export type InputWithArgs<Result, Args extends object> = (

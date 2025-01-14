@@ -1,4 +1,5 @@
-import { NativeSystem, TakeInput, WritingFileSystem } from "create";
+import { NativeSystem, TakeInput } from "create";
+import { WritingFileSystem } from "create-fs";
 import { Octokit } from "octokit";
 
 import { MockSystemOptions } from "./types.js";
@@ -20,6 +21,7 @@ export function createMockSystems(
 	};
 
 	const fs: WritingFileSystem = {
+		readDirectory: createFailingFunction("fs.readDirectory", "an input"),
 		readFile: createFailingFunction("fs.readFile", "an input"),
 		writeDirectory: createFailingFunction("fs.writeDirectory", "an input"),
 		writeFile: createFailingFunction("fs.writeFile", "an input"),

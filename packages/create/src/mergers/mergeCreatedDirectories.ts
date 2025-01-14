@@ -1,19 +1,20 @@
-import { CreatedFiles } from "../types/creations.js";
+import { CreatedDirectory } from "create-fs";
+
 import { mergeFileEntries } from "./mergeFileEntries.js";
 
-export function mergeFileCreations(
-	firsts: CreatedFiles,
-	seconds: CreatedFiles,
+export function mergeCreatedDirectories(
+	firsts: CreatedDirectory,
+	seconds: CreatedDirectory,
 ) {
-	return mergeFileCreationsWorker(firsts, seconds, []);
+	return mergeCreatedDirectoriesWorker(firsts, seconds, []);
 }
 
-function mergeFileCreationsWorker(
-	firsts: CreatedFiles,
-	seconds: CreatedFiles,
+function mergeCreatedDirectoriesWorker(
+	firsts: CreatedDirectory,
+	seconds: CreatedDirectory,
 	path: string[],
 ) {
-	const result: CreatedFiles = { ...firsts };
+	const result: CreatedDirectory = { ...firsts };
 
 	for (const i in seconds) {
 		const second = seconds[i];
@@ -36,7 +37,11 @@ function mergeFileCreationsWorker(
 		}
 
 		result[i] = firstIsDirectory
-			? mergeFileCreationsWorker(first, second as CreatedFiles, nextPath)
+			? mergeCreatedDirectoriesWorker(
+					first,
+					second as CreatedDirectory,
+					nextPath,
+				)
 			: mergeFileEntries(first, second, nextPath);
 	}
 

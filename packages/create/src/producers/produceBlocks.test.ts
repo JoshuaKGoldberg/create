@@ -12,7 +12,12 @@ const presetContext = {
 		log: vi.fn(),
 	},
 	fetchers: createSystemFetchers({ fetch: vi.fn() }),
-	fs: { readFile: vi.fn(), writeDirectory: vi.fn(), writeFile: vi.fn() },
+	fs: {
+		readDirectory: vi.fn(),
+		readFile: vi.fn(),
+		writeDirectory: vi.fn(),
+		writeFile: vi.fn(),
+	},
 	runner: vi.fn(),
 	take: vi.fn(),
 };

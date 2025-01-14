@@ -1,11 +1,11 @@
 {
-	"name": "create-testers",
-	"version": "0.1.0-alpha.11",
-	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
+	"name": "create-fs",
+	"version": "0.1.0",
+	"description": "The file system used by create>. 🗄️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
-		"directory": "packages/create-testers"
+		"directory": "packages/create-fs"
 	},
 	"license": "MIT",
 	"author": {
@@ -24,17 +24,14 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"diff": "^7.0.0",
-		"octokit": "^4.0.2",
-		"without-undefined-properties": "^0.1.1"
+		"octokit": "^4.0.2"
 	},
 	"devDependencies": {
-		"@types/diff": "^7.0.0",
+		"@types/node": "^22.10.5",
 		"zod": "3.24.1"
 	},
 	"peerDependencies": {
-		"create": "workspace:^",
-		"create-fs": "workspace:^"
+		"create": "workspace:^"
 	},
 	"engines": {
 		"node": ">=18"

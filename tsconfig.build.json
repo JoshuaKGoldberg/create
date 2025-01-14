@@ -7,6 +7,7 @@
 	"files": [],
 	"references": [
 		{ "path": "./packages/create" },
+		{ "path": "./packages/create-fs" },
 		{ "path": "./packages/create-testers" },
 		{ "path": "./packages/input-from-file" },
 		{ "path": "./packages/input-from-file-json" },

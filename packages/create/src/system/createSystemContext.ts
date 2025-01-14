@@ -1,10 +1,11 @@
+import { createWritingFileSystem } from "create-fs";
+
 import { TakeInput } from "../types/inputs.js";
 import { NativeSystem, SystemContext, SystemDisplay } from "../types/system.js";
 import { createOfflineFetchers } from "./createOfflineFetchers.js";
 import { createSystemDisplay } from "./createSystemDisplay.js";
 import { createSystemFetchers } from "./createSystemFetchers.js";
 import { createSystemRunner } from "./createSystemRunner.js";
-import { createWritingFileSystem } from "./createWritingFileSystem.js";
 
 export interface SystemContextSettings extends Partial<NativeSystem> {
 	auth?: string;

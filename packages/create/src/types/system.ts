@@ -1,20 +1,8 @@
+import { WritingFileSystem } from "create-fs";
 import { ExecaError, Result } from "execa";
 import { Octokit } from "octokit";
 
 import { TakeContext } from "./context.js";
-import { InputFileSystem } from "./inputs.js";
-
-export type FileSystemWriteDirectory = (directoryPath: string) => Promise<void>;
-
-export type FileSystemWriteFile = (
-	filePath: string,
-	contents: string,
-	options?: FileSystemWriteFileOptions,
-) => Promise<void>;
-
-export interface FileSystemWriteFileOptions {
-	mode?: number;
-}
 
 export interface NativeSystem {
 	fetchers: SystemFetchers;
@@ -44,8 +32,3 @@ export interface SystemFetchers {
 }
 
 export type SystemRunner = (command: string) => Promise<ExecaError | Result>;
-
-export interface WritingFileSystem extends InputFileSystem {
-	writeDirectory: FileSystemWriteDirectory;
-	writeFile: FileSystemWriteFile;
-}
