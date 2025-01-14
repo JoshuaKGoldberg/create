@@ -12,8 +12,8 @@ export interface DiffedCreatedDirectory {
 }
 
 export type DiffedCreatedFileEntry =
-	| [string, DiffedCreatedFileOptions]
 	| [string]
+	| [string | undefined, DiffedCreatedFileOptions?]
 	| CreatedFileEntry
 	| DiffedCreatedDirectory
 	| string;
@@ -44,7 +44,7 @@ export function diffCreatedDirectoryWorker(
 
 	for (const [childName, childCreated] of Object.entries(created)) {
 		if (!(childName in actual)) {
-			result[childName] = childCreated;
+			result[childName] = undefinedIfEmpty(childCreated);
 			continue;
 		}
 
@@ -63,9 +63,7 @@ export function diffCreatedDirectoryWorker(
 		}
 	}
 
-	const trimmed = withoutUndefinedProperties(result);
-
-	return Object.keys(trimmed).length === 0 ? undefined : result;
+	return undefinedIfEmpty(withoutUndefinedProperties(result));
 }
 
 function diffCreatedDirectoryChild(
@@ -106,9 +104,8 @@ function diffCreatedDirectoryChild(
 				childCreated[1],
 				pathToChild,
 			);
-			return fileDiff || optionsDiff
-				? [fileDiff ?? "", optionsDiff ?? {}]
-				: undefined;
+
+			return (fileDiff ?? optionsDiff) ? [fileDiff, optionsDiff] : undefined;
 		}
 
 		if (typeof childCreated === "string") {
@@ -120,7 +117,7 @@ function diffCreatedDirectoryChild(
 			);
 		}
 
-		return `Mismatched ${pathToChild}: actual is a created file; created is ${typeof childCreated}.`;
+		return `Mismatched ${pathToChild}: actual is created file; created is ${typeof childCreated}.`;
 	}
 
 	if (Array.isArray(childCreated)) {
@@ -133,7 +130,7 @@ function diffCreatedDirectoryChild(
 			);
 		}
 
-		return `Mismatched ${pathToChild}: actual is ${typeof childActual}; created is a created file.`;
+		return `Mismatched ${pathToChild}: actual is ${typeof childActual}; created is created file.`;
 	}
 
 	if (typeof childActual === "object") {
@@ -164,8 +161,8 @@ function diffCreatedFileText(
 		: createTwoFilesPatch(
 				pathToFile,
 				pathToFile,
-				actualProcessed,
 				createdProcessed,
+				actualProcessed,
 			).replace(/^Index: .+\n=+\n-{3} .+\n\+{3} .+\n/gmu, "");
 }
 
@@ -195,4 +192,12 @@ function diffCreatedFileOptions(
 			(text) => text,
 		),
 	};
+}
+function undefinedIfEmpty<T>(value: T) {
+	return !!value &&
+		typeof value === "object" &&
+		!Array.isArray(value) &&
+		Object.keys(value).length === 0
+		? undefined
+		: value;
 }

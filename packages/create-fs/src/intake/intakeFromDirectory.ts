@@ -11,7 +11,7 @@ export async function intakeFromDirectory(
 	directoryPath: string,
 	settings: IntakeFromDirectorySettings,
 ) {
-	const files: CreatedDirectory = {};
+	const directory: CreatedDirectory = {};
 	const children = await fs.readdir(directoryPath);
 
 	for (const child of children) {
@@ -22,10 +22,10 @@ export async function intakeFromDirectory(
 		const childPath = path.join(directoryPath, child);
 		const stat = await fs.stat(childPath);
 
-		files[child] = stat.isDirectory()
+		directory[child] = stat.isDirectory()
 			? await intakeFromDirectory(childPath, settings)
 			: [(await fs.readFile(childPath)).toString(), { mode: stat.mode }];
 	}
 
-	return files;
+	return directory;
 }
