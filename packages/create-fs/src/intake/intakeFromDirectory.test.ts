@@ -22,16 +22,42 @@ describe("intakeFromDirectory", () => {
 	it("returns an empty object when the directory has no files", async () => {
 		mockReaddir.mockResolvedValueOnce([]);
 
-		const directory = await intakeFromDirectory("from", {
-			exclude: /excluded/,
-		});
+		const directory = await intakeFromDirectory("from");
 
 		expect(directory).toEqual({});
 		expect(mockReaddir.mock.calls).toEqual([["from"]]);
 		expect(mockStat).not.toHaveBeenCalled();
 	});
 
-	it("returns non-excluded files when the directory contains files", async () => {
+	it("returns files when the directory contains files", async () => {
+		mockReaddir.mockResolvedValueOnce(["included-a", "included-b"]);
+		mockReadFile
+			.mockResolvedValueOnce("contents-a")
+			.mockResolvedValueOnce("contents-b");
+		mockStat
+			.mockResolvedValueOnce({
+				isDirectory: () => false,
+				mode: 123,
+			})
+			.mockResolvedValueOnce({
+				isDirectory: () => false,
+				mode: 456,
+			});
+
+		const directory = await intakeFromDirectory("from");
+
+		expect(directory).toEqual({
+			"included-a": ["contents-a", { mode: 123 }],
+			"included-b": ["contents-b", { mode: 456 }],
+		});
+		expect(mockReaddir.mock.calls).toEqual([["from"]]);
+		expect(mockStat.mock.calls).toEqual([
+			["from/included-a"],
+			["from/included-b"],
+		]);
+	});
+
+	it("returns non-excluded files when the directory contains files and excludes is provided", async () => {
 		mockReaddir.mockResolvedValueOnce(["excluded", "included-a", "included-b"]);
 		mockReadFile
 			.mockResolvedValueOnce("contents-a")

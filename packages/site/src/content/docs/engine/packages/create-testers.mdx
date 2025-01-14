@@ -16,6 +16,53 @@ This is intended for use in unit tests that should mock out all [System Context]
 You can use it with any typical testing framework, including [Jest](https://jestjs.io) and [Vitest](https://vitest.dev).
 :::
 
+## `diffCreatedDirectory`
+
+Produces a nested object diff comparing the [`files`](../runtime/creations#files) between an actual directory and produced results from a Creation.
+
+This is most commonly useful in conjunction with the [`create-fs` `intakeFromDirectory` API](./create-fs#intakefromdirectory).
+
+For example, this test snippet runs an integration test for a template repository, making sure its files on disk match its own `everything` Preset:
+
+```ts
+import { producePreset } from "create";
+import { intakeFromDirectory } from "create-fs";
+import { diffCreatedDirectory } from "create-testers";
+
+import { presetEverything } from "./presetEverything.js";
+
+const actual = await intakeFromDirectory(".", {
+	exclude: /node_modules|^\.git$/,
+});
+
+const created = await producePreset(presetEverything);
+
+expect(diffCreatedDirectory(actual, created)).toBeUndefined();
+```
+
+### DiffedCreatedDirectory
+
+`diffCreatedDirectory` will return an object matching a `DiffedCreatedDirectory` type.
+Any files that are different in the `created` argument compared to the `actual` argument will be included in that object.
+
+Differences are computed as:
+
+- If a file exists in `created` but not in `actual`, it will be included as-is
+- If a file exists in both but has different text content and/or `mode`, it will be included as a diff using [`diff`](https://www.npmjs.com/package/diff)'s `createTwoFilesPatch`, omitting headers before the `@@`
+
+For example, if a `src/index.ts` has content `abc` in `actual` but content `bbc` in `created`, the diff would look like:
+
+```js
+{
+	"src": {
+		"index.ts": `@@ -1,1 +1,1 @@
+-abc
++bbc
+`
+	}
+}
+```
+
 ## `testBase`
 
 For [Bases](../concepts/bases), a `testBase` function is exported that is analogous to [`produceBase`](./producers#producebase).

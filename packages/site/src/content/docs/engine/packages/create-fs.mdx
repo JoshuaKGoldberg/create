@@ -37,4 +37,32 @@ For example, given a structure like:
 
 ### `intakeFromDirectory`
 
-Reads in the
+Given a directory path, reads in the directory as to the `create-fs` directory structure.
+
+```ts
+import { intakeFromDirectory } from "create-fs";
+
+// Result: { "index.ts": "..." }
+await intakeFromDirectory("src");
+```
+
+Parameters:
+
+1. `directoryPath: string` _(required)_
+2. `settings: IntakeFromDirectorySettings` _(optional)_:
+   - [`exclude: RegExp`](#intakefromdirectory-exclude)
+
+#### `exclude` {#intakefromdirectory-exclude}
+
+An optional regular expression to filter out directory children.
+
+For example, you may want to avoid `.git` and `node_modules` directories:
+
+```ts
+import { intakeFromDirectory } from "create-fs";
+
+// Result: { README.md: "...", src: { "index.ts": "..." }}
+await intakeFromDirectory(".", {
+	exclude: /node_modules|^\.git$/,
+});
+```

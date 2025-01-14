@@ -4,18 +4,18 @@ import path from "node:path";
 import { CreatedDirectory } from "../types/files.js";
 
 export interface IntakeFromDirectorySettings {
-	exclude: RegExp;
+	exclude?: RegExp;
 }
 
 export async function intakeFromDirectory(
 	directoryPath: string,
-	settings: IntakeFromDirectorySettings,
+	settings: IntakeFromDirectorySettings = {},
 ) {
 	const directory: CreatedDirectory = {};
 	const children = await fs.readdir(directoryPath);
 
 	for (const child of children) {
-		if (settings.exclude.test(child)) {
+		if (settings.exclude?.test(child)) {
 			continue;
 		}
 

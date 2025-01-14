@@ -1,4 +1,4 @@
-import { describe, expect, it, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { diffCreatedDirectory } from "./diffCreatedDirectory.js";
 
@@ -18,6 +18,16 @@ describe("diffCreatedDirectory", () => {
 			},
 		],
 		[{ a: "b\n" }, { a: "b\n" }, undefined],
+		[
+			{ a: "abc\n" },
+			{ a: "bbc\n" },
+			{
+				a: `@@ -1,1 +1,1 @@
+-abc
++bbc
+`,
+			},
+		],
 		[{ a: "b\n" }, {}, undefined],
 		[{ a: "" }, { a: [""] }, undefined],
 		[{ a: "" }, { a: ["", { mode: undefined }] }, undefined],
