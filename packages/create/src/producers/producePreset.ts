@@ -10,7 +10,9 @@ import { produceBlocks } from "./produceBlocks.js";
 
 export interface ProducePresetSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
-	addons?: CreatedBlockAddons<object, InferredObject<OptionsShape>>[];
+	// TODO: Get this to work with object or never...
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	addons?: CreatedBlockAddons<any, InferredObject<OptionsShape>>[];
 	blocks?: BlockModifications<InferredObject<OptionsShape>>;
 	directory?: string;
 	mode?: ProductionMode;
