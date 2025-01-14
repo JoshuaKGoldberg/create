@@ -1,6 +1,3 @@
-// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
-
 import { BlockWithAddons } from "./blocks.js";
 import { SystemFetchers } from "./system.js";
 

@@ -24,7 +24,7 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"octokit": "^4.0.2"
+		"octokit": "^4.1.0"
 	},
 	"devDependencies": {
 		"zod": "3.24.1"
