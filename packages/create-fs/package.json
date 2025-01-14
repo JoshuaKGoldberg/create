@@ -24,7 +24,7 @@
 		"build": "tsc"
 	},
 	"devDependencies": {
-		"@types/node": "^22.10.5"
+		"@types/node": "22.10.6"
 	},
 	"engines": {
 		"node": ">=18"
