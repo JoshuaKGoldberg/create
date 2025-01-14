@@ -33,7 +33,7 @@
 		"get-github-auth-token": "^0.1.0",
 		"hash-object": "^5.0.1",
 		"hosted-git-info": "^8.0.2",
-		"import-local-or-npx": "^0.1.0",
+		"import-local-or-npx": "^0.2.0",
 		"octokit": "^4.1.0",
 		"prettier": "3.4.2",
 		"read-pkg": "^9.0.1",
