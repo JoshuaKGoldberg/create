@@ -34,38 +34,6 @@ export function diffCreatedDirectory(
 	return result && withoutUndefinedProperties(result);
 }
 
-export function diffCreatedDirectoryWorker(
-	actual: CreatedDirectory,
-	created: CreatedDirectory,
-	pathTo: string,
-	processText: ProcessText,
-): DiffedCreatedDirectory | undefined {
-	const result: DiffedCreatedDirectory = {};
-
-	for (const [childName, childCreated] of Object.entries(created)) {
-		if (!(childName in actual)) {
-			result[childName] = undefinedIfEmpty(childCreated);
-			continue;
-		}
-
-		const childActual = actual[childName];
-		const pathToChild = path.join(pathTo, childName);
-
-		const childDiffed = diffCreatedDirectoryChild(
-			childActual,
-			childCreated,
-			pathToChild,
-			processText,
-		);
-
-		if (childDiffed !== undefined) {
-			result[childName] = childDiffed;
-		}
-	}
-
-	return undefinedIfEmpty(withoutUndefinedProperties(result));
-}
-
 function diffCreatedDirectoryChild(
 	childActual: CreatedFileEntry | undefined,
 	childCreated: CreatedFileEntry | undefined,
@@ -145,6 +113,38 @@ function diffCreatedDirectoryChild(
 	}
 
 	return `Mismatched ${pathToChild}: actual is ${typeof childActual}; created is ${typeof childCreated}.`;
+}
+
+function diffCreatedDirectoryWorker(
+	actual: CreatedDirectory,
+	created: CreatedDirectory,
+	pathTo: string,
+	processText: ProcessText,
+): DiffedCreatedDirectory | undefined {
+	const result: DiffedCreatedDirectory = {};
+
+	for (const [childName, childCreated] of Object.entries(created)) {
+		if (!(childName in actual)) {
+			result[childName] = undefinedIfEmpty(childCreated);
+			continue;
+		}
+
+		const childActual = actual[childName];
+		const pathToChild = path.join(pathTo, childName);
+
+		const childDiffed = diffCreatedDirectoryChild(
+			childActual,
+			childCreated,
+			pathToChild,
+			processText,
+		);
+
+		if (childDiffed !== undefined) {
+			result[childName] = childDiffed;
+		}
+	}
+
+	return undefinedIfEmpty(withoutUndefinedProperties(result));
 }
 
 function diffCreatedFileText(
