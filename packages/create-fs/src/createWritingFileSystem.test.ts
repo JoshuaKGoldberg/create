@@ -32,24 +32,20 @@ describe("createWritingFileSystem", () => {
 	});
 
 	describe("writeFile", () => {
-		it("writes with mode 0x644 when options does not exist", async () => {
+		it("writes without mode when options does not exist", async () => {
 			const system = createWritingFileSystem();
 
 			await system.writeFile(filePath, contents);
 
-			expect(mockWriteFile).toHaveBeenCalledWith(filePath, contents, {
-				mode: 0x644,
-			});
+			expect(mockWriteFile).toHaveBeenCalledWith(filePath, contents, undefined);
 		});
 
-		it("writes with mode 0x644 when options.executable is false", async () => {
+		it("writes without mode when options.executable is false", async () => {
 			const system = createWritingFileSystem();
 
 			await system.writeFile(filePath, contents, { executable: false });
 
-			expect(mockWriteFile).toHaveBeenCalledWith(filePath, contents, {
-				mode: 0x644,
-			});
+			expect(mockWriteFile).toHaveBeenCalledWith(filePath, contents, undefined);
 		});
 
 		it("writes with mode 0x755 when options.executable is true", async () => {

@@ -13,9 +13,11 @@ export function createWritingFileSystem() {
 			contents: string,
 			options?: CreatedFileOptions,
 		) => {
-			await fs.writeFile(filePath, contents, {
-				mode: options?.executable ? 0x755 : 0x644,
-			});
+			await fs.writeFile(
+				filePath,
+				contents,
+				options?.executable ? { mode: 0x755 } : undefined,
+			);
 		},
 	};
 }
