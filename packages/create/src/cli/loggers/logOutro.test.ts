@@ -51,7 +51,7 @@ describe("logOutro", () => {
 
 			expect(mockPromptWarn.mock.calls).toEqual([
 				[
-					`The ${chalk.red("itemB")} groupA failed. You should re-run it and fix its complaints.`,
+					`The ${chalk.red("itemB")} groupA failed. You should re-run it and fix its complaints.\nError: Oh no!`,
 				],
 			]);
 			expect(mockOutro.mock.calls).toEqual([["Bye!"]]);
