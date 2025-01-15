@@ -6,13 +6,18 @@ export function mergeScripts(
 	first: CreatedScript[],
 	second: CreatedScript[],
 ): CreatedScript[] {
-	const commandsByPhase = new Map<number, string[][]>();
+	const commandsByPhase = new Map<number | undefined, string[][]>();
 	const commandsWithoutPhase: string[] = [];
+	const nonSilentPhases = new Set<number | undefined>();
 
 	for (const command of [...first, ...second]) {
 		if (typeof command === "string") {
 			commandsWithoutPhase.push(command);
 			continue;
+		}
+
+		if (!command.silent) {
+			nonSilentPhases.add(command.phase);
 		}
 
 		const byPhase = commandsByPhase.get(command.phase);
@@ -39,7 +44,11 @@ export function mergeScripts(
 	return [
 		...Array.from(commandsByPhase).flatMap(([phase, phaseCommands]) =>
 			phaseCommands
-				.map((commands) => ({ commands, phase }))
+				.map((commands) => ({
+					commands,
+					phase,
+					...(!nonSilentPhases.has(phase) && { silent: true }),
+				}))
 				.filter((phaseCommand) => {
 					const hash = hashObject(phaseCommand);
 					if (seenPhaseCommands.has(hash)) {

@@ -26,6 +26,83 @@ describe("mergeScripts", () => {
 			[
 				{
 					commands: ["pnpm build"],
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+				},
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					silent: true,
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+				},
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					silent: true,
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+					silent: true,
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+					silent: true,
+				},
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+				},
+			],
+			[
+				{
+					commands: ["pnpm build"],
+					phase: 0,
+				},
+				{
+					commands: ["pnpm build"],
+				},
+			],
+		],
+		[
+			[
+				{
+					commands: ["pnpm build"],
 					phase: 0,
 				},
 			],
