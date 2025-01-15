@@ -1,6 +1,6 @@
 {
 	"name": "create-fs",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "The file system used by create>. 🗄️",
 	"repository": {
 		"type": "git",
