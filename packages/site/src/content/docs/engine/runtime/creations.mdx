@@ -246,7 +246,7 @@ Scripts may optionally include a `silent: true` option to prevent an error being
 Silent scripts are particularly useful for migration scripts that clean up existing files.
 Some native commands throw an error if a file doesn't yet exist, which might not be a problem for common deletions.
 
-For example, this Block creates a `.github/CONTRIBUTING.md`, and deletes a root-level `CONTRIBUTING.md` during migration if it exists:
+For example, this Block creates a `.github/CONTRIBUTING.md` and deletes a root-level `CONTRIBUTING.md` during migration if it exists:
 
 ```ts
 import { base } from "../base";
