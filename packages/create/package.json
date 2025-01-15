@@ -1,6 +1,6 @@
 {
 	"name": "create",
-	"version": "0.1.0-alpha.14",
+	"version": "0.1.0-alpha.15",
 	"description": "Composable, testable, type-safe templates. 💝",
 	"repository": {
 		"type": "git",
