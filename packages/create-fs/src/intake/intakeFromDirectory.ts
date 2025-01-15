@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import path from "node:path";
 
 import { CreatedDirectory } from "../types/files.js";
+import { isModeExecutable } from "./isModeExecutable.js";
 
 export interface IntakeFromDirectorySettings {
 	exclude?: RegExp;
@@ -24,7 +25,10 @@ export async function intakeFromDirectory(
 
 		directory[child] = stat.isDirectory()
 			? await intakeFromDirectory(childPath, settings)
-			: [(await fs.readFile(childPath)).toString(), { mode: stat.mode }];
+			: [
+					(await fs.readFile(childPath)).toString(),
+					{ executable: isModeExecutable(stat.mode) },
+				];
 	}
 
 	return directory;

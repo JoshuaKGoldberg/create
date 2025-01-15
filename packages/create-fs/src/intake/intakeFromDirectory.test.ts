@@ -37,18 +37,18 @@ describe("intakeFromDirectory", () => {
 		mockStat
 			.mockResolvedValueOnce({
 				isDirectory: () => false,
-				mode: 123,
+				mode: 0x644,
 			})
 			.mockResolvedValueOnce({
 				isDirectory: () => false,
-				mode: 456,
+				mode: 0x755,
 			});
 
 		const directory = await intakeFromDirectory("from");
 
 		expect(directory).toEqual({
-			"included-a": ["contents-a", { mode: 123 }],
-			"included-b": ["contents-b", { mode: 456 }],
+			"included-a": ["contents-a", { executable: false }],
+			"included-b": ["contents-b", { executable: true }],
 		});
 		expect(mockReaddir.mock.calls).toEqual([["from"]]);
 		expect(mockStat.mock.calls).toEqual([
@@ -65,11 +65,11 @@ describe("intakeFromDirectory", () => {
 		mockStat
 			.mockResolvedValueOnce({
 				isDirectory: () => false,
-				mode: 123,
+				mode: 0x644,
 			})
 			.mockResolvedValueOnce({
 				isDirectory: () => false,
-				mode: 456,
+				mode: 0x755,
 			});
 
 		const directory = await intakeFromDirectory("from", {
@@ -77,8 +77,8 @@ describe("intakeFromDirectory", () => {
 		});
 
 		expect(directory).toEqual({
-			"included-a": ["contents-a", { mode: 123 }],
-			"included-b": ["contents-b", { mode: 456 }],
+			"included-a": ["contents-a", { executable: false }],
+			"included-b": ["contents-b", { executable: true }],
 		});
 		expect(mockReaddir.mock.calls).toEqual([["from"]]);
 		expect(mockStat.mock.calls).toEqual([
@@ -98,7 +98,7 @@ describe("intakeFromDirectory", () => {
 			})
 			.mockResolvedValueOnce({
 				isDirectory: () => false,
-				mode: 123,
+				mode: 0x644,
 			});
 
 		const directory = await intakeFromDirectory("from", {
@@ -107,7 +107,7 @@ describe("intakeFromDirectory", () => {
 
 		expect(directory).toEqual({
 			middle: {
-				included: ["contents", { mode: 123 }],
+				included: ["contents", { executable: false }],
 			},
 		});
 		expect(mockReaddir.mock.calls).toEqual([["from"], ["from/middle"]]);

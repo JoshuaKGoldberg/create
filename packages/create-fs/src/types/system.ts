@@ -21,7 +21,7 @@ export type WriteFile = (
 ) => Promise<void>;
 
 export interface WriteFileOptions {
-	mode?: number;
+	executable?: boolean;
 }
 
 export interface WritingFileSystem extends ReadingFileSystem {

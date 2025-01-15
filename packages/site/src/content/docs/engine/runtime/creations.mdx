@@ -79,7 +79,7 @@ Each property in a `files` object may be one of the following:
 - `object`: A directory, whose properties recursively are file creations
 - `string`: A file to be created
 - `[string, CreatedFileOptions]`: A file to be created with [`fsPromises.writeFile` options](https://nodejs.org/api/fs.html#fspromiseswritefilefile-data-options):
-  - `mode`: Integer mode, such as `0o777` to make executable
+  - `executable`: Whether to add permissions to make the file executable
 
 For example, this Block generates an executable `.husky/pre-commit` file:
 
@@ -90,7 +90,7 @@ export const blockPreCommit = base.createBlock({
 	produce() {
 		return {
 			".husky": {
-				"pre-commit": ["npx lint-staged\n", { mode: 0o777 }],
+				"pre-commit": ["npx lint-staged\n", { executable: true }],
 			},
 		};
 	},
