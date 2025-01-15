@@ -26,14 +26,14 @@ describe("mergeFileEntries", () => {
 		[["a", {}], ["a", {}], "a"],
 		[["a", {}], ["a", {}], "a"],
 		[
-			["a", { mode: 0o123 }],
-			["a", { mode: 0o123 }],
-			["a", { mode: 0o123 }],
+			["a", { executable: true }],
+			["a", { executable: true }],
+			["a", { executable: true }],
 		],
 		[
-			["a", { mode: 0o123 }],
-			["a", { mode: 0o456 }],
-			new Error(`Conflicting created file modes at path: 'test/path'.`),
+			["a", { executable: true }],
+			["a", { executable: false }],
+			new Error(`Conflicting created file executable at path: 'test/path'.`),
 		],
 		["a", "b", new Error("Conflicting created files at path: 'test/path'.")],
 		[

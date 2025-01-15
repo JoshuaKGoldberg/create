@@ -19,7 +19,7 @@ export type DiffedCreatedFileEntry =
 	| string;
 
 export interface DiffedCreatedFileOptions {
-	mode?: string;
+	executable?: string;
 }
 
 export type ProcessText = (text: string, filePath: string) => string;
@@ -177,17 +177,17 @@ function diffCreatedFileOptions(
 	pathToFile: string,
 ): DiffedCreatedFileOptions | undefined {
 	if (
-		actual?.mode === undefined ||
-		created?.mode === undefined ||
-		actual.mode === created.mode
+		actual?.executable === undefined ||
+		created?.executable === undefined ||
+		actual.executable === created.executable
 	) {
 		return undefined;
 	}
 
 	return {
-		mode: diffCreatedFileText(
-			actual.mode.toString(16),
-			created.mode.toString(16),
+		executable: diffCreatedFileText(
+			actual.executable.toString(),
+			created.executable.toString(),
 			pathToFile,
 			(text) => text,
 		),

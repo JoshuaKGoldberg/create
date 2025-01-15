@@ -34,30 +34,42 @@ describe("diffCreatedDirectory", () => {
 		],
 		[{ a: "b\n" }, {}, undefined],
 		[{ a: "" }, { a: [""] }, undefined],
-		[{ a: "" }, { a: ["", { mode: undefined }] }, undefined],
-		[{ a: "" }, { a: ["", { mode: 123 }] }, undefined],
-		[{ a: [""] }, { a: ["", { mode: 123 }] }, undefined],
+		[{ a: "" }, { a: ["", { executable: undefined }] }, undefined],
+		[{ a: "" }, { a: ["", { executable: true }] }, undefined],
+		[{ a: [""] }, { a: ["", { executable: true }] }, undefined],
 		[
-			{ a: ["", { mode: undefined }] },
-			{ a: ["", { mode: undefined }] },
+			{ a: ["", { executable: undefined }] },
+			{ a: ["", { executable: undefined }] },
 			undefined,
 		],
-		[{ a: ["", { mode: undefined }] }, { a: ["", { mode: 123 }] }, undefined],
-		[{ a: ["", { mode: 123 }] }, { a: ["", { mode: 123 }] }, undefined],
-		[{ a: ["", { mode: 123 }] }, { a: [""] }, undefined],
-		[{ a: ["", { mode: 123 }] }, { a: ["", {}] }, undefined],
-		[{ a: ["", { mode: 123 }] }, { a: ["", { mode: undefined }] }, undefined],
 		[
-			{ a: ["", { mode: 123 }] },
-			{ a: ["", { mode: 456 }] },
+			{ a: ["", { executable: undefined }] },
+			{ a: ["", { executable: true }] },
+			undefined,
+		],
+		[
+			{ a: ["", { executable: true }] },
+			{ a: ["", { executable: true }] },
+			undefined,
+		],
+		[{ a: ["", { executable: true }] }, { a: [""] }, undefined],
+		[{ a: ["", { executable: true }] }, { a: ["", {}] }, undefined],
+		[
+			{ a: ["", { executable: true }] },
+			{ a: ["", { executable: undefined }] },
+			undefined,
+		],
+		[
+			{ a: ["", { executable: true }] },
+			{ a: ["", { executable: false }] },
 			{
 				a: [
 					undefined,
 					{
-						mode: `@@ -1,1 +1,1 @@
--7b
+						executable: `@@ -1,1 +1,1 @@
+-true
 \\ No newline at end of file
-+1c8
++false
 \\ No newline at end of file
 `,
 					},

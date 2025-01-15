@@ -22,15 +22,15 @@ export function mergeFileEntries(
 		throw new Error(`Conflicting created files at path: '${path.join("/")}'.`);
 	}
 
-	if (firstSettings?.mode !== secondSettings?.mode) {
+	if (firstSettings?.executable !== secondSettings?.executable) {
 		throw new Error(
-			`Conflicting created file modes at path: '${path.join("/")}'.`,
+			`Conflicting created file executable at path: '${path.join("/")}'.`,
 		);
 	}
 
-	const mode = firstSettings?.mode ?? secondSettings?.mode;
+	const executable = firstSettings?.executable ?? secondSettings?.executable;
 
-	return mode ? [firstFile as string, { mode }] : firstFile;
+	return executable ? [firstFile as string, { executable }] : firstFile;
 }
 
 function isBlankEntry(entry: CreatedFileEntry | undefined) {
