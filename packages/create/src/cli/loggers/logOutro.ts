@@ -17,7 +17,7 @@ export function logOutro(
 			for (const [id, item] of Object.entries(groupItems)) {
 				if (item.error) {
 					prompts.log.warn(
-						`The ${chalk.red(id)} ${group} failed. You should re-run it and fix its complaints.`,
+						`The ${chalk.red(id)} ${group} failed. You should re-run it and fix its complaints.\n${item.error as string}`,
 					);
 				}
 			}
