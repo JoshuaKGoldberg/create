@@ -32,7 +32,7 @@ export const blockPnpmDeduplicate = base.createBlock({
 					],
 				}),
 			],
-			scripts: ["pnpm dedupe"],
+			commands: ["pnpm dedupe"],
 		};
 	},
 });
@@ -144,7 +144,8 @@ This can be useful when shell scripts are necessary to apply changes to the repo
 Each script may be specified as either a string or an object with:
 
 - `commands` (`string[]`): Shell scripts to run within the phase, in order
-- `phase` (`number`): What order, relative to any other command groups, to run in
+- `phase` (`number`) _(optional)_: What order, relative to any other command groups, to run in
+- `silent` (`boolean`) _(optional)_: Whether to skip logging errors if the script fails
 
 Commands provided as strings are assumed to not be order-dependent.
 They are run all at the same time.
@@ -163,6 +164,13 @@ export const blockPnpmInstall = base.createBlock({
 });
 ```
 
+#### `phase` {#scripts-phase}
+
+Adding a `phase` to a script indicates when it should run relative to other scripts.
+
+Scripts with `phase` start in ascending order of their `phase`.
+Each script with the same `phase` will start running its commands at the same time.
+
 For example, this Block runs pnpm package installation and duplication in series within a first phase:
 
 ```ts
@@ -173,8 +181,8 @@ export const blockPnpmInstallAndDedupe = base.createBlock({
 		return {
 			scripts: [
 				{
+					commands: ["pnpm install", "pnpm dedupe"],
 					phase: 0,
-					scripts: ["pnpm install", "pnpm dedupe"],
 				},
 			],
 		};
@@ -193,8 +201,8 @@ export const blockPrettier = base.createBlock({
 			// ...
 			scripts: [
 				{
-					phase: 1,
 					commands: ["pnpm format --write"],
+					phase: 1,
 				},
 			],
 		};
@@ -230,6 +238,41 @@ Those commands would be run in the following order:
    - `d` _(after `c` completes)_
    - `f` _(after `e` completes)_
 4. `g` _(after `d` and `f` complete)_
+
+#### `silent` {#scripts-silent}
+
+Scripts may optionally include a `silent: true` option to prevent an error being logged to the console if they fail.
+
+Silent scripts are particularly useful for migration scripts that clean up existing files.
+Some native commands throw an error if a file doesn't yet exist, which might not be a problem for common deletions.
+
+For example, this Block creates a `.github/CONTRIBUTING.md`, and deletes a root-level `CONTRIBUTING.md` during migration if it exists:
+
+```ts
+import { base } from "../base";
+
+export const blockContributingDocs = base.createBlock({
+	migrate() {
+		return {
+			scripts: [
+				{
+					commands: ["rm CONTRIBUTING.md"],
+					silent: true,
+				},
+			],
+		};
+	},
+	produce() {
+		return {
+			files: {
+				".github": {
+					"CONTRIBUTING.md": "...",
+				},
+			},
+		};
+	},
+});
+```
 
 ## Indirect Creations
 

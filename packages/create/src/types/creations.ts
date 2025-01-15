@@ -18,11 +18,12 @@ export interface CreatedRequest {
 
 export type CreatedRequestSender = (fetchers: SystemFetchers) => Promise<void>;
 
-export type CreatedScript = CreatedScriptWithPhase | string;
+export type CreatedScript = CreatedScriptWithOptions | string;
 
-export interface CreatedScriptWithPhase {
+export interface CreatedScriptWithOptions {
 	commands: string[];
-	phase: number;
+	phase?: number;
+	silent?: boolean;
 }
 
 export type Creation<Options extends object> = DirectCreation &

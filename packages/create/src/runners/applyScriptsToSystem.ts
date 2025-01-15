@@ -8,7 +8,7 @@ export async function applyScriptsToSystem(
 ) {
 	const scriptsByPhase = groupBy(
 		scripts.filter((script) => typeof script === "object"),
-		(script) => script.phase,
+		(script) => script.phase ?? Infinity,
 	);
 	const commandsStandalone = scripts.filter(
 		(script) => typeof script === "string",
@@ -18,25 +18,27 @@ export async function applyScriptsToSystem(
 		.map((key) => Number(key))
 		.sort();
 
-	async function runCommand(command: string) {
+	async function runCommand(command: string, silent?: boolean) {
 		system.display.item("script", command, { start: Date.now() });
 		const result = await system.runner(command);
 		system.display.item("script", command, { end: Date.now() });
 
-		if (result instanceof Error) {
+		if (result instanceof Error && !silent) {
 			system.display.item("script", command, { error: result });
 		}
 	}
 
 	const commandsStandaloneTask = Promise.all(
-		commandsStandalone.map(runCommand),
+		commandsStandalone.map(async (command) => {
+			await runCommand(command);
+		}),
 	);
 
 	for (const phase of phaseKeys) {
 		await Promise.all(
 			scriptsByPhase[phase].map(async (script) => {
 				for (const command of script.commands) {
-					await runCommand(command);
+					await runCommand(command, script.silent);
 				}
 			}),
 		);

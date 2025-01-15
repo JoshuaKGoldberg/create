@@ -29,7 +29,7 @@ describe("applyCommandsToSystem", () => {
 		]);
 	});
 
-	it("displays the error when a phased command results in an error", async () => {
+	it("displays the error when a phased command without the silent option results in an error", async () => {
 		const command = "abc";
 		const error = new Error("Oh no!");
 
@@ -42,6 +42,24 @@ describe("applyCommandsToSystem", () => {
 			["script", command, { start: expect.any(Number) }],
 			["script", command, { end: expect.any(Number) }],
 			["script", command, { error }],
+		]);
+	});
+
+	it("does not display the error when a phased command with silent: true results in an error", async () => {
+		const command = "abc";
+		const error = new Error("Oh no!");
+
+		const system = createStubSystem();
+		system.runner.mockReturnValueOnce(error);
+
+		await applyScriptsToSystem(
+			[{ commands: [command], phase: 0, silent: true }],
+			system,
+		);
+
+		expect(system.display.item.mock.calls).toEqual([
+			["script", command, { start: expect.any(Number) }],
+			["script", command, { end: expect.any(Number) }],
 		]);
 	});
 
