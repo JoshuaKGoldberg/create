@@ -282,6 +282,23 @@ const preset = base.createPreset({
 await producePreset(preset, { options: { title: "My App" } });
 ```
 
+### Adding Base Options
+
+Although presets are associated with [Bases](../concepts/bases), running `producePreset` does not automatically run [`produceBase`](#producebase).
+If you want to include the inferred options from a Preset's Base you'll have to call the `produceBase` API first yourself.
+
+For example, this directly passes produced Options from a Base to a Preset:
+
+```ts
+import { base } from "./base";
+import { preset } from "./preset";
+
+const options = await produceBase(base);
+
+// { creation: ... }
+await producePreset(preset, { options });
+```
+
 ### `addons` {#preset-addons}
 
 Any additional [Addons](../concepts/blocks#addons) to provide to Blocks.
