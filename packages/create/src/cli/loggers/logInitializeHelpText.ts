@@ -18,7 +18,7 @@ export async function logInitializeHelpText(
 			prompts.log.message(
 				[
 					`Try it out with:`,
-					`  ${chalk.green("npx create typescript-app")}`,
+					`  ${chalk.green("npx create typescript-app@beta")}`,
 				].join("\n"),
 			);
 		}

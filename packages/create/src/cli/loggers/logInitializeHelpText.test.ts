@@ -49,7 +49,7 @@ describe("logInitializeHelpText", () => {
 		expect(mockMessage).toHaveBeenCalledWith(
 			[
 				`Try it out with:`,
-				`  ${chalk.green("npx create typescript-app")}`,
+				`  ${chalk.green("npx create typescript-app@beta")}`,
 			].join("\n"),
 		);
 		expect(mockLogHelpText).not.toHaveBeenCalled();
