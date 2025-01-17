@@ -2,10 +2,16 @@
 import type { Props } from "@astrojs/starlight/props";
 import Default from "@astrojs/starlight/components/Head.astro";
 
-const ogImageUrl = new URL(`logo.webp`, Astro.site);
+const ogImageUrl = new URL(`social.webp`, Astro.site);
+
+const { data } = Astro.props.entry;
 ---
 
 <Default {...Astro.props}><slot /></Default>
 
 <meta property="og:image" content={ogImageUrl} />
+<meta property="twitter:domain" content={Astro.site} />
+<meta property="twitter:url" content={Astro.site} />
+<meta name="twitter:description" content={data.description} />
 <meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:title" content={data.title} />
