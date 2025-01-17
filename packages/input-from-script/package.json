@@ -1,6 +1,6 @@
 {
 	"name": "input-from-script",
-	"version": "0.1.0-alpha.4",
+	"version": "0.2.0",
 	"description": "create input that runs a script.",
 	"repository": {
 		"type": "git",
