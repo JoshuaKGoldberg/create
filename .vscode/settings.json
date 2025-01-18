@@ -15,6 +15,6 @@
 	],
 	"eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
 	"eslint.useFlatConfig": true,
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"js/ts.implicitProjectConfig.checkJs": false
+	"js/ts.implicitProjectConfig.checkJs": false,
+	"typescript.tsdk": "node_modules/typescript/lib"
 }
