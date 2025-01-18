@@ -20,7 +20,7 @@
 `create` is a repository templating engine.
 It allows developers to create reusable templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.
 
-See **[create.bingo](https:/create.bingo)** for documentation on getting started with `create`.
+See **[create.bingo](https://create.bingo)** for documentation on getting started with `create`.
 
 ## Contributors
 
