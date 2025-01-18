@@ -38,6 +38,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "nas5w",
+      "name": "Nick Scialli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7538045?v=4",
+      "profile": "https://nick.scialli.me",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
