@@ -1,8 +1,8 @@
 import { SystemRunner } from "../../types/system.js";
-import { CreationOptions } from "./asCreationOptions.js";
+import { RepositoryLocator } from "./getRepositoryLocator.js";
 
 export async function createTrackingBranches(
-	{ owner, repository }: CreationOptions,
+	{ owner, repository }: RepositoryLocator,
 	runner: SystemRunner,
 ) {
 	for (const command of [

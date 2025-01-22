@@ -19,9 +19,9 @@ import { promptForDirectory } from "../prompts/promptForDirectory.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { makeRelative } from "../utils.js";
-import { asCreationOptions } from "./asCreationOptions.js";
 import { createRepositoryOnGitHub } from "./createRepositoryOnGitHub.js";
 import { createTrackingBranches } from "./createTrackingBranches.js";
+import { getRepositoryLocator } from "./getRepositoryLocator.js";
 
 export interface RunModeInitializeSettings {
 	args: string[];
@@ -94,7 +94,7 @@ export async function runModeInitialize({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const options = asCreationOptions(baseOptions.completed);
+	const locator = getRepositoryLocator(baseOptions.completed);
 
 	const settings = applyArgsToSettings(args, preset);
 	if (settings instanceof Error) {
@@ -109,7 +109,7 @@ export async function runModeInitialize({
 			"Created repository on GitHub",
 			async () => {
 				await createRepositoryOnGitHub(
-					options,
+					locator,
 					system.fetchers.octokit,
 					preset.base.template,
 				);
@@ -128,7 +128,7 @@ export async function runModeInitialize({
 				directory,
 				mode: "initialize",
 				offline,
-				options,
+				options: baseOptions.completed,
 			}),
 	);
 	if (creation instanceof Error) {
@@ -144,7 +144,7 @@ export async function runModeInitialize({
 		"Preparing local repository",
 		"Prepared local repository",
 		async () => {
-			await createTrackingBranches(options, system.runner);
+			await createTrackingBranches(locator, system.runner);
 			await createInitialCommit(system.runner, { offline });
 			await clearLocalGitTags(system.runner);
 		},
@@ -160,7 +160,7 @@ export async function runModeInitialize({
 				: [
 						"",
 						"It's also pushed to GitHub on:",
-						`  ${chalk.green(`https://github.com/${options.owner}/${options.repository}`)}`,
+						`  ${chalk.green(`https://github.com/${locator.owner}/${locator.repository}`)}`,
 					]),
 		].join("\n"),
 	);
