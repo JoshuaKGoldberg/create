@@ -1,7 +1,5 @@
-import chalk from "chalk";
 import { describe, expect, it, vi } from "vitest";
 
-import { ClackSpinner } from "../display/createClackDisplay.js";
 import { createNpxInstallationConfirm } from "./createNpxInstallationConfirm.js";
 
 const createSpinner = () => ({
@@ -13,7 +11,9 @@ const createSpinner = () => ({
 const mockConfirm = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
-	confirm: () => mockConfirm,
+	get confirm() {
+		return mockConfirm;
+	},
 }));
 
 describe("createNpxInstallationConfirm", () => {
@@ -55,6 +55,15 @@ describe("createNpxInstallationConfirm", () => {
 		)();
 
 		expect(actual).toEqual(new Error("Installation cancelled."));
+		expect(mockConfirm.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    {
+			      "message": "Ok to proceed?",
+			    },
+			  ],
+			]
+		`);
 		expect(spinner.start.mock.calls).toMatchInlineSnapshot(`[]`);
 		expect(spinner.stop.mock.calls).toMatchInlineSnapshot(`
 			[
@@ -67,15 +76,24 @@ describe("createNpxInstallationConfirm", () => {
 
 	it("resolves with undefined if yes is false and the confirm prompt is accepted", async () => {
 		const spinner = createSpinner();
-		mockConfirm.mockResolvedValueOnce(false);
+		mockConfirm.mockResolvedValueOnce(true);
 
 		const actual = await createNpxInstallationConfirm(
 			"../create-my-app",
 			spinner,
-			true,
+			false,
 		)();
 
 		expect(actual).toEqual(undefined);
+		expect(mockConfirm.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    {
+			      "message": "Ok to proceed?",
+			    },
+			  ],
+			]
+		`);
 		expect(spinner.start.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
@@ -86,7 +104,7 @@ describe("createNpxInstallationConfirm", () => {
 		expect(spinner.stop.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "../create-my-app not found locally and --yes specified. ../create-my-app will be fetched with npx. ",
+			    "../create-my-app not found locally and --yes not specified. ../create-my-app will need to be fetched with npx. ",
 			  ],
 			]
 		`);
