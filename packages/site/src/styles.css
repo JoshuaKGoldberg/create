@@ -94,3 +94,37 @@ a.secondary {
 	border-radius: 3px;
 	font-weight: bold;
 }
+
+.sl-markdown-content table.comparison {
+	font-size: 70%;
+}
+
+.sl-markdown-content table.comparison thead td {
+	text-align: center;
+}
+
+.sl-markdown-content table.comparison td {
+	padding-inline: 0.25rem;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.sl-markdown-content table.comparison thead th:first-of-type {
+	font-size: var(--sl-text-base);
+	padding: 0;
+	text-align: left;
+}
+
+.sl-markdown-content table.comparison thead th:not(:first-of-type) {
+	text-align: center;
+}
+
+.sl-markdown-content table.comparison thead th {
+	vertical-align: middle;
+	padding: 0.25rem 0.5rem;
+}
+
+.sl-markdown-content table.comparison tbody tr th {
+	font-size: var(--sl-text-sm);
+	padding-inline: 0;
+}
