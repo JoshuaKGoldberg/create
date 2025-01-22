@@ -7,9 +7,14 @@ import { CLIStatus } from "../status.js";
 import { logHelpText } from "./logHelpText.js";
 import { logSchemasHelpOptions } from "./logSchemasHelpOptions.js";
 
+export interface InitializeHelpTextOptions {
+	help: boolean | undefined;
+	yes: boolean | undefined;
+}
+
 export async function logInitializeHelpText(
 	from: string | undefined,
-	help: boolean | undefined,
+	{ help, yes }: InitializeHelpTextOptions,
 ) {
 	if (!from) {
 		if (help) {
@@ -34,7 +39,9 @@ export async function logInitializeHelpText(
 		type: "template",
 	});
 
-	const template = await tryImportTemplate(from);
+	prompts.log.info(`Loading ${chalk.blue(from)} to display its options...`);
+
+	const template = await tryImportTemplate(from, yes);
 	if (template instanceof Error) {
 		return {
 			outro: chalk.red(CLIMessage.Exiting),

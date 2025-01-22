@@ -3,11 +3,18 @@ import * as prompts from "@clack/prompts";
 import { promptForPreset } from "../prompts/promptForPreset.js";
 import { tryImportTemplate } from "./tryImportTemplate.js";
 
-export async function tryImportTemplatePreset(
-	from: string,
-	requestedPreset?: string,
-) {
-	const template = await tryImportTemplate(from);
+export interface TemplatePresetImportSettings {
+	from: string;
+	requestedPreset: string | undefined;
+	yes: boolean | undefined;
+}
+
+export async function tryImportTemplatePreset({
+	from,
+	requestedPreset,
+	yes,
+}: TemplatePresetImportSettings) {
+	const template = await tryImportTemplate(from, yes);
 	if (template instanceof Error) {
 		return template;
 	}

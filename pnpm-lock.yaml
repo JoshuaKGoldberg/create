@@ -132,8 +132,8 @@ importers:
         specifier: ^8.0.2
         version: 8.0.2
       import-local-or-npx:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       octokit:
         specifier: ^4.1.0
         version: 4.1.0
@@ -2597,8 +2597,8 @@ packages:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
 
-  import-local-or-npx@0.2.0:
-    resolution: {integrity: sha512-K0rFCUuIBX7lmzwp95F4Owg+bRZAUMoiC79fYSRHPG/pi3IFKyMYrc+RE00mC9AWU6J/YZKT8xept5VyLvkvUw==}
+  import-local-or-npx@0.3.0:
+    resolution: {integrity: sha512-H/xGm1bTjVKFZOQUDtACRH0teTzUQMGKrY/W6HMmtLi2tB23eZvfePnxqpPRhN31DvvieFvICNfee7QU87IbjQ==}
     engines: {node: '>=18.3.0'}
 
   import-meta-resolve@4.1.0:
@@ -7079,7 +7079,7 @@ snapshots:
       parent-module: 1.0.1
       resolve-from: 4.0.0
 
-  import-local-or-npx@0.2.0:
+  import-local-or-npx@0.3.0:
     dependencies:
       enhanced-resolve: 5.18.0
       npx-import: 1.1.4

@@ -30,7 +30,11 @@ describe("tryImportTemplatePreset", () => {
 
 		mockTryImportTemplate.mockResolvedValueOnce(error);
 
-		const actual = await tryImportTemplatePreset("create-my-app");
+		const actual = await tryImportTemplatePreset({
+			from: "create-my-app",
+			requestedPreset: undefined,
+			yes: false,
+		});
 
 		expect(actual).toEqual(error);
 		expect(mockPromptForPreset).not.toHaveBeenCalled();
@@ -40,7 +44,11 @@ describe("tryImportTemplatePreset", () => {
 		mockTryImportTemplate.mockResolvedValueOnce({});
 		mockPromptForPreset.mockResolvedValueOnce(mockCancel);
 
-		const actual = await tryImportTemplatePreset("create-my-app");
+		const actual = await tryImportTemplatePreset({
+			from: "create-my-app",
+			requestedPreset: undefined,
+			yes: undefined,
+		});
 
 		expect(actual).toBe(mockCancel);
 	});
@@ -52,7 +60,11 @@ describe("tryImportTemplatePreset", () => {
 		mockTryImportTemplate.mockResolvedValueOnce(template);
 		mockPromptForPreset.mockResolvedValueOnce(preset);
 
-		const actual = await tryImportTemplatePreset("create-my-app");
+		const actual = await tryImportTemplatePreset({
+			from: "create-my-app",
+			requestedPreset: undefined,
+			yes: false,
+		});
 
 		expect(actual).toEqual({ preset, template });
 	});

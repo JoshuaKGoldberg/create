@@ -21,6 +21,7 @@ const valuesSchema = z.object({
 	owner: z.string().optional(),
 	preset: z.string().optional(),
 	repository: z.string().optional(),
+	yes: z.boolean().optional(),
 });
 
 export async function runCli(args: string[]) {
@@ -52,6 +53,9 @@ export async function runCli(args: string[]) {
 				type: "string",
 			},
 			version: {
+				type: "boolean",
+			},
+			yes: {
 				type: "boolean",
 			},
 		},
