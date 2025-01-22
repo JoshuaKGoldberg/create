@@ -6,11 +6,12 @@ import { CLIMessage } from "../messages.js";
 import { CLIStatus } from "../status.js";
 import { logInitializeHelpText } from "./logInitializeHelpText.js";
 
+const mockInfo = vi.fn();
 const mockMessage = vi.fn();
 
 vi.mock("@clack/prompts", () => ({
 	get log() {
-		return { message: mockMessage };
+		return { info: mockInfo, message: mockMessage };
 	},
 }));
 
@@ -39,8 +40,11 @@ vi.mock("./logSchemasHelpOptions.js", () => ({
 }));
 
 describe("logInitializeHelpText", () => {
-	it("logs a straightforward message without loading when from is undefined and help is falsy", async () => {
-		const actual = await logInitializeHelpText(undefined, false);
+	it("logs a straightforward message without loading when from is undefined and help is false", async () => {
+		const actual = await logInitializeHelpText(undefined, {
+			help: false,
+			yes: false,
+		});
 
 		expect(actual).toEqual({
 			outro: CLIMessage.Ok,
@@ -56,7 +60,10 @@ describe("logInitializeHelpText", () => {
 	});
 
 	it("logs general help text without loading when from is undefined and help is true", async () => {
-		const actual = await logInitializeHelpText(undefined, true);
+		const actual = await logInitializeHelpText(undefined, {
+			help: true,
+			yes: false,
+		});
 
 		expect(actual).toEqual({
 			outro: CLIMessage.Ok,
@@ -65,13 +72,16 @@ describe("logInitializeHelpText", () => {
 		expect(mockLogHelpText).toHaveBeenCalledWith("initialize");
 	});
 
-	it("returns the error when help is falsy and loading the template is an error", async () => {
+	it("returns the error when help is false and loading the template is an error", async () => {
 		const message = "Oh no!";
 		const from = "create-my-app";
 
 		mockTryImportTemplate.mockResolvedValueOnce(new Error(message));
 
-		const actual = await logInitializeHelpText(from, false);
+		const actual = await logInitializeHelpText(from, {
+			help: false,
+			yes: false,
+		});
 
 		expect(actual).toEqual({
 			outro: chalk.red(CLIMessage.Exiting),
@@ -79,7 +89,7 @@ describe("logInitializeHelpText", () => {
 		});
 	});
 
-	it("returns a success when help is falsy and loading the template succeeds", async () => {
+	it("returns a success when help is false and loading the template succeeds", async () => {
 		const from = "create-my-app";
 		const base = createBase({ options: {} });
 		const template = base.createTemplate({
@@ -88,7 +98,10 @@ describe("logInitializeHelpText", () => {
 
 		mockTryImportTemplate.mockResolvedValueOnce(template);
 
-		const actual = await logInitializeHelpText(from, false);
+		const actual = await logInitializeHelpText(from, {
+			help: false,
+			yes: false,
+		});
 
 		expect(actual).toEqual({
 			outro: CLIMessage.Ok,

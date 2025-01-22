@@ -1,16 +1,6 @@
-import chalk from "chalk";
 import { describe, expect, it, vi } from "vitest";
 
 import { tryImportTemplate } from "./tryImportTemplate.js";
-
-const mockSpinner = {
-	start: vi.fn(),
-	stop: vi.fn(),
-};
-
-vi.mock("@clack/prompts", () => ({
-	spinner: () => mockSpinner,
-}));
 
 const mockTryImportWithPredicate = vi.fn();
 
@@ -26,18 +16,9 @@ describe("tryImportTemplate", () => {
 
 		mockTryImportWithPredicate.mockResolvedValueOnce(error);
 
-		const actual = await tryImportTemplate("create-my-app");
+		const actual = await tryImportTemplate("create-my-app", false);
 
 		expect(actual).toEqual(error);
-		expect(mockSpinner.start.mock.calls).toEqual([
-			[`Loading ${chalk.blue("create-my-app")}`],
-		]);
-		expect(mockSpinner.stop.mock.calls).toEqual([
-			[
-				`Could not load ${chalk.blue("create-my-app")}: ${chalk.red(error.message)}`,
-				1,
-			],
-		]);
 	});
 
 	it("returns the template when tryImportWithPredicate resolves with a preset", async () => {
@@ -45,14 +26,8 @@ describe("tryImportTemplate", () => {
 
 		mockTryImportWithPredicate.mockResolvedValueOnce(template);
 
-		const actual = await tryImportTemplate("create-my-app");
+		const actual = await tryImportTemplate("create-my-app", false);
 
 		expect(actual).toEqual(template);
-		expect(mockSpinner.start.mock.calls).toEqual([
-			[`Loading ${chalk.blue("create-my-app")}`],
-		]);
-		expect(mockSpinner.stop.mock.calls).toEqual([
-			[`Loaded ${chalk.blue("create-my-app")}`],
-		]);
 	});
 });

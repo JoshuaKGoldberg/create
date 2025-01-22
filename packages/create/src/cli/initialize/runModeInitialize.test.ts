@@ -155,7 +155,24 @@ describe("runModeInitialize", () => {
 
 		expect(mockLogInitializeHelpText).toHaveBeenCalledWith(
 			"create-typescript-app",
-			true,
+			{ help: true, yes: undefined },
+		);
+
+		expect(actual).toBe(mockHelpTextReturn);
+	});
+
+	it("logs help text with yes when from help is true and yes is true", async () => {
+		const actual = await runModeInitialize({
+			args: ["node", "create"],
+			display,
+			from: "create-typescript-app",
+			help: true,
+			yes: true,
+		});
+
+		expect(mockLogInitializeHelpText).toHaveBeenCalledWith(
+			"create-typescript-app",
+			{ help: true, yes: true },
 		);
 
 		expect(actual).toBe(mockHelpTextReturn);

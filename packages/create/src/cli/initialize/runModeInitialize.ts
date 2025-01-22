@@ -33,6 +33,7 @@ export interface RunModeInitializeSettings {
 	owner?: string;
 	preset?: string;
 	repository?: string;
+	yes?: boolean;
 }
 
 export async function runModeInitialize({
@@ -44,14 +45,15 @@ export async function runModeInitialize({
 	help,
 	offline,
 	preset: requestedPreset,
+	yes,
 }: RunModeInitializeSettings): Promise<ModeResults> {
 	if (!from || help) {
-		return await logInitializeHelpText(from, help);
+		return await logInitializeHelpText(from, { help, yes });
 	}
 
 	logStartText("initialize", from, "template", offline);
 
-	const loaded = await tryImportTemplatePreset(from, requestedPreset);
+	const loaded = await tryImportTemplatePreset({ from, requestedPreset, yes });
 	if (loaded instanceof Error) {
 		return {
 			outro: chalk.red(CLIMessage.Exiting),

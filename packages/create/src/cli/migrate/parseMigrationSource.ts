@@ -16,6 +16,7 @@ export interface RequestedMigrationSource {
 	directory: string;
 	from?: string;
 	requestedPreset?: string;
+	yes?: boolean;
 }
 
 export function parseMigrationSource({
@@ -23,6 +24,7 @@ export function parseMigrationSource({
 	directory,
 	from,
 	requestedPreset,
+	yes,
 }: RequestedMigrationSource): Error | MigrationSource {
 	if (configFile && from) {
 		return new Error(
@@ -42,7 +44,8 @@ export function parseMigrationSource({
 	if (from) {
 		return {
 			descriptor: from,
-			load: async () => await tryImportTemplatePreset(from, requestedPreset),
+			load: async () =>
+				await tryImportTemplatePreset({ from, requestedPreset, yes }),
 			type: "template",
 		};
 	}

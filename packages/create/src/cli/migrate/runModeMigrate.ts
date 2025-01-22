@@ -27,6 +27,7 @@ export interface RunModeMigrateSettings {
 	help?: boolean;
 	offline?: boolean;
 	preset?: string | undefined;
+	yes?: boolean;
 }
 
 export async function runModeMigrate({
@@ -38,12 +39,14 @@ export async function runModeMigrate({
 	help,
 	offline,
 	preset: requestedPreset,
+	yes,
 }: RunModeMigrateSettings): Promise<ModeResults> {
 	const source = parseMigrationSource({
 		configFile,
 		directory,
 		from,
 		requestedPreset,
+		yes,
 	});
 
 	if (help) {
