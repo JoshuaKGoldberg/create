@@ -6,5 +6,6 @@
 		},
 		"target": "esnext"
 	},
-	"extends": "astro/tsconfigs/strict"
+	"extends": "astro/tsconfigs/strict",
+	"exclude": ["astro.config.ts"]
 }

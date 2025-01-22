@@ -70,6 +70,7 @@ export default defineConfig({
 								],
 								label: "Packages",
 							},
+							{ label: "Templating FAQs", link: "engine/templating-faqs" },
 						],
 						label: "Templating Engine",
 						link: "/engine/about",

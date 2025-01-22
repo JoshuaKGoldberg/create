@@ -45,13 +45,187 @@ None target the full feature set of `create`.
 
 In general, `create`'s approach is differentiated from previous projects by:
 
+- Allowing sub-templates that can be swapped individually and add to each other ([Blocks](./concepts/blocks))
+- Built-in support for onboarding existing out-of-template repositories ([migration mode](./cli/#migration-mode))
 - Producing outputs -including files and more- in a generalized format ([Direct Creations](./runtime/creations#direct-creations))
-- Allowing sub-templates that can be individually swapped individually and add to each other ([Blocks](./concepts/blocks))
+
+### Comparisons Table
 
 :::danger
 Most of these project comparisons have not yet been vetted by maintainers on the projects.
 They might be wildly inaccurate.
 :::
+
+<table class="comparison">
+	<thead>
+		<tr>
+			<th align="middle" rowspan="2">
+				Tool
+			</th>
+			<th rowspan="2">Ecosystem</th>
+			<th rowspan="2">Project Coupling</th>
+			<th colspan="2">File Descriptions</th>
+			<th colspan="3">Scale</th>
+		</tr>
+		<tr>
+			<td>In-Memory</td>
+			<td>Template Files</td>
+			<td>Initializing Repositories</td>
+			<td>Managed Migrations</td>
+			<td>Reusable Components</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>
+				<code>create</code>
+			</th>
+			<td>Web</td>
+			<td>Decoupled</td>
+			<td>
+				<a
+					href="https://github.com/JoshuaKGoldberg/create/issues/76"
+					target="_blank"
+					title="create/issues/76"
+				>
+					#76
+				</a>
+			</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>
+				<a
+					href="https://github.com/JoshuaKGoldberg/create/issues/39"
+					target="_blank"
+					title="create/issues/39"
+				>
+					#39
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#cookiecutter">Cookiecutter</a>
+			</th>
+			<td>Python</td>
+			<td>Decoupled</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>
+				<a
+					href="https://github.com/cookiecutter/cookiecutter/issues/1004"
+					target="_blank"
+					title="cookiecutter/issues/1004"
+				>
+					#1004
+				</a>
+			</td>
+			<td>
+				<a
+					href="https://github.com/cookiecutter/cookiecutter/issues/1172"
+					target="_blank"
+					title="cookiecutter/issues/1172"
+				>
+					#1172
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#copier">copier</a>
+			</th>
+			<td>Python</td>
+			<td>Decoupled</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#degit">degit</a>
+			</th>
+			<td>Web</td>
+			<td>Decoupled</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#github-template-repositories">GitHub Template Repositories</a>
+			</th>
+			<td>(all)</td>
+			<td>Decoupled</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#hygen">Hygen</a>
+			</th>
+			<td>Web</td>
+			<td>Decoupled</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+			<td>✅</td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#plop">Plop</a>
+			</th>
+			<td>Web</td>
+			<td>Config File</td>
+			<td></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+			<td>✅</td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#projen">projen</a>
+			</th>
+			<td>Web</td>
+			<td>Coupled</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td></td>
+			<td>✅</td>
+		</tr>
+		<tr>
+			<th>
+				<a href="#yeoman">Yeoman</a>
+			</th>
+			<td>Web</td>
+			<td>Decoupled</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>
+				<a
+					href="https://github.com/yeoman/yo/issues/474"
+					target="_blank"
+					title="yo/issues/474"
+				>
+					#474
+				</a>
+			</td>
+			<td>✅</td>
+		</tr>
+	</tbody>
+</table>
 
 ### `create-next-app`, `create-react-app`, `create-typescript-app`, etc
 
@@ -73,7 +247,7 @@ It allows taking in directories written as [Jinja](https://palletsprojects.com/p
 
 - Cookiecutter is a wrapper around a Jinja file templates; `create` allows for full JavaScript logic to generate contents based on provided options
 - Cookiecutter always operates at the scale of one template; `create` provides more granular APIs for areas of features (Blocks and Presets)
-- Cookiecutter supports file changes; `create` additionally supports network calls and arbitrary shell scripts as outputs
+- Cookiecutter supports file changes and execution hooks; `create` additionally supports network calls and arbitrary shell scripts as outputs
 
 Cookiecutter is also written in Python and is installed using tools in the Python ecosystem.
 `create` is written in TypeScript and is set up to work in the web ecosystem.
@@ -116,7 +290,7 @@ Created repositories appear on github.com with a _generated from ..._ notice.
 
 ### Hygen
 
-[Hygen](https://hygen.io) is web ecosystem tool for defining generators to automate common file system tasks.
+[Hygen](https://github.com/jondot/hygen) is a web ecosystem tool for defining generators to automate common file system tasks.
 It encourages building your own generators that include templates built with the [EJS](https://ejs.co) embedded JavaScript templating engine.
 Hygen templates can have conditional rendering, embedded JavaScript, and injected shell scripts.
 
@@ -125,6 +299,7 @@ Hygen templates can have conditional rendering, embedded JavaScript, and injecte
 - Hygen templates are imperative descriptions of files and frontmatter; `create` groups areas into blocks
 - Hygen templates heavily build on EJS and do not have type-safe options; `create` has options explicitly defined with Zod schemas
 - `create` Blocks describe their own outputs and additions to other Blocks, allowing them to be individually toggled
+- Hygen prioritizes granular individual templates; `create` priotizes full repository templates
 
 ### Plop
 
@@ -186,38 +361,6 @@ Yeoman has not been actively maintained in several years.
 
 ## Template Development
 
-### This Blocks system is a lot of work. Is there a more straightforward system?
+[Templating Engine](../engine/about) covers how to develop templates for `create`.
 
-Not yet, but there will be.
-Soon, less-heavyweight engines will be available to make authoring straightforward Templates easier.
-See [create#76 🚀 Feature: Switch to a pluggable templating engine system](https://github.com/JoshuaKGoldberg/create/issues/76).
-
-### Why can't we define Args for Blocks in Presets?
-
-In other words, you might be wondering why the API doesn't allow something like this:
-
-```js
-export const presetExample = base.createPreset({
-	blocks: [
-		myBlock({
-			someArg: "...",
-		}),
-	],
-});
-```
-
-This is because Blocks shouldn't need to be configured.
-Users should be able to turn them off and on at will without any configuration.
-
-Passing Args to a Block in a Preset means users will have no way to override or remove those Args.
-
-### Why do some testers allow `take` and others the individual system pieces?
-
-It depends on what APIs the entities under test conceptually use.
-
-| Entity                               | Mock    | Why                                                                                           |
-| ------------------------------------ | ------- | --------------------------------------------------------------------------------------------- |
-| [Bases](./engine/concepts/bases)     | `take`  | Bases should go through Inputs to interact with the system.                                   |
-| [Blocks](./engine/concepts/blocks)   | Neither | Blocks should be synchronous and take any input values from their Base Options.               |
-| [Inputs](./engine/runtime/inputs)    | Both    | Inputs receive system pieces, and can also `take` other Inputs.                               |
-| [Presets](./engine/concepts/presets) | System  | High-level users of Presets should not care about low-level implementation details of Inputs. |
+See [Templating Engine > FAQs](../engine/faqs) for FAQs on template development.
