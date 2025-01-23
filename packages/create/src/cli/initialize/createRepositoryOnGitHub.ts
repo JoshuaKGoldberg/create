@@ -1,10 +1,10 @@
 import { Octokit } from "octokit";
 
 import { RepositoryTemplate } from "../../types/bases.js";
-import { CreationOptions } from "./asCreationOptions.js";
+import { RepositoryLocator } from "./getRepositoryLocator.js";
 
 export async function createRepositoryOnGitHub(
-	{ owner, repository }: CreationOptions,
+	{ owner, repository }: RepositoryLocator,
 	octokit: Octokit,
 	template?: RepositoryTemplate,
 ) {
