@@ -25,11 +25,10 @@ It's like a modern version of [Yeoman](https://yeoman.io), but:
 
 ## Status
 
-`create` is _very_ early stage.
-It is just barely past proof-of-concept stage.
-
-At the moment, it's being developed as an MVP to replace the internals of [create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app).
-See [FAQs > How do I use `create`?](./faqs#how-do-i-use-create).
+`create` is early stage.
+It runs well but its APIs are still in flux.
+Please try it out and report any issues on GitHub!
+🙏
 
 > 💙 This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app).
 
