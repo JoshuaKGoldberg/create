@@ -96,7 +96,7 @@ export async function runCli(args: string[]) {
 		...validatedValues,
 		args,
 		display,
-		from: findPositionalFrom(positionals),
+		from: validatedValues.from ?? findPositionalFrom(positionals),
 	};
 
 	const { outro, status, suggestions } =
