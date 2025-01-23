@@ -5,10 +5,12 @@ import { CreatedBlockAddons, Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
 import { Preset } from "../types/presets.js";
 import { NativeSystem } from "../types/system.js";
+import { Template } from "../types/templates.js";
+import { getPresetByName } from "../utils/getPresetByName.js";
 import { applyBlockModifications } from "./applyBlockModifications.js";
 import { produceBlocks } from "./produceBlocks.js";
 
-export interface ProducePresetSettings<OptionsShape extends AnyShape>
+export interface ProduceTemplateSettings<OptionsShape extends AnyShape>
 	extends Partial<NativeSystem> {
 	// TODO: Get this to work with object or never...
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,10 +20,11 @@ export interface ProducePresetSettings<OptionsShape extends AnyShape>
 	mode?: ProductionMode;
 	offline?: boolean;
 	options: InferredObject<OptionsShape>;
+	preset: Preset<OptionsShape> | string;
 }
 
-export async function producePreset<OptionsShape extends AnyShape>(
-	preset: Preset<OptionsShape>,
+export async function produceTemplate<OptionsShape extends AnyShape>(
+	template: Template<OptionsShape>,
 	{
 		addons,
 		blocks: blockModifications,
@@ -29,14 +32,20 @@ export async function producePreset<OptionsShape extends AnyShape>(
 		mode,
 		offline,
 		options,
+		preset: requestedPreset,
 		...providedSystem
-	}: ProducePresetSettings<OptionsShape>,
+	}: ProduceTemplateSettings<OptionsShape>,
 ): Promise<Creation<InferredObject<OptionsShape>>> {
 	const system = await createSystemContextWithAuth({
 		directory,
 		offline,
 		...providedSystem,
 	});
+
+	const preset = getPresetByName(template.presets, requestedPreset);
+	if (preset instanceof Error) {
+		throw preset;
+	}
 
 	const blocks = applyBlockModifications(preset.blocks, blockModifications);
 

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
-import { producePreset } from "./producePreset.js";
+import { produceTemplate } from "./produceTemplate.js";
 
 const emptyCreation = {
 	addons: [],
@@ -50,7 +50,7 @@ describe("producePreset", () => {
 			blocks: [blockUsingOption],
 		});
 
-		const actual = await producePreset(presetUsingOption, {
+		const actual = await produceTemplate(presetUsingOption, {
 			...system,
 			options: {
 				value: "abc",
@@ -85,7 +85,7 @@ describe("producePreset", () => {
 			blocks: [blockWithoutOption],
 		});
 
-		const actual = await producePreset(presetWithoutOption, {
+		const actual = await produceTemplate(presetWithoutOption, {
 			...system,
 			offline: true,
 			options: {},

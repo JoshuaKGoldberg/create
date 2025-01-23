@@ -1,6 +1,6 @@
 import * as prompts from "@clack/prompts";
 
-import { runPreset } from "../../runners/runPreset.js";
+import { runTemplate } from "../../runners/runTemplate.js";
 import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
@@ -120,7 +120,7 @@ export async function runModeMigrate({
 		`Running the ${preset.about.name} preset`,
 		`Ran the ${preset.about.name} preset`,
 		async () =>
-			await runPreset(preset, {
+			await runTemplate(preset, {
 				...mergedSettings,
 				...system,
 				directory,
