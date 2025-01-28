@@ -1,7 +1,7 @@
 {
 	"name": "create-fs",
 	"version": "0.2.0",
-	"description": "The file system used by create>. 🗄️",
+	"description": "The file system used by create. 🗄️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/create",
