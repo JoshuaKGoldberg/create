@@ -275,11 +275,17 @@ import { base } from "./base";
 import { blockReadme } from "./blockReadme";
 
 const preset = base.createPreset({
+	name: "Example",
 	blocks: [blockReadme],
 });
 
+const template = base.createTemplate({ presets: [preset] });
+
 // { creation: { files: { "README.md": `# My App` }}, options: { title: "My App" } }
-await produceTemplate(preset, { options: { title: "My App" } });
+await produceTemplate(template, {
+	options: { title: "My App" },
+	preset: "example",
+});
 ```
 
 ### Adding Base Options
