@@ -108,4 +108,82 @@ describe("produceTemplate", () => {
 			},
 		});
 	});
+
+	it("aliases a preset to its name when provided as a string", async () => {
+		const base = createBase({
+			options: {},
+		});
+
+		const blockUsingOption = base.createBlock({
+			produce() {
+				return {
+					files: {
+						"value.txt": "abc",
+					},
+				};
+			},
+		});
+
+		const presetUsingOption = base.createPreset({
+			about: { name: "Test" },
+			blocks: [blockUsingOption],
+		});
+
+		const template = base.createTemplate({
+			presets: [presetUsingOption],
+		});
+
+		const actual = await produceTemplate(template, {
+			...system,
+			options: {
+				value: "abc",
+			},
+			preset: "test",
+		});
+
+		expect(actual).toEqual({
+			...emptyCreation,
+			files: {
+				"value.txt": "abc",
+			},
+		});
+	});
+
+	it("throws an error when a preset string cannot be matched to its name", async () => {
+		const base = createBase({
+			options: {},
+		});
+
+		const blockUsingOption = base.createBlock({
+			produce() {
+				return {
+					files: {
+						"value.txt": "abc",
+					},
+				};
+			},
+		});
+
+		const presetUsingOption = base.createPreset({
+			about: { name: "Test" },
+			blocks: [blockUsingOption],
+		});
+
+		const template = base.createTemplate({
+			presets: [presetUsingOption],
+		});
+
+		const act = async () =>
+			await produceTemplate(template, {
+				...system,
+				options: {
+					value: "abc",
+				},
+				preset: "other",
+			});
+
+		await expect(act).rejects.toMatchInlineSnapshot(
+			`[Error: other is not one of: test]`,
+		);
+	});
 });

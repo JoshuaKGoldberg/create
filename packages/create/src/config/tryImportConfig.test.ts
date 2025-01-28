@@ -1,8 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createBase } from "../creators/createBase.js";
 import { createConfig } from "./createConfig.js";
-import { tryImportConfig } from "./tryImportConfig.js";
 
 const base = createBase({
 	options: {},
@@ -17,39 +16,17 @@ const template = base.createTemplate({
 	presets: [preset],
 });
 
-let mockImportedConfig: unknown;
+describe("createConfig", () => {
+	it("throws an error when the preset cannot be found by name", () => {
+		const act = () => createConfig(template, { preset: "other" });
 
-vi.mock("not-a-config", () => ({
-	get default() {
-		return mockImportedConfig;
-	},
-}));
-
-describe("tryImportConfig", () => {
-	it("returns an error when the module cannot be imported", async () => {
-		const actual = await tryImportConfig("does-not-exist");
-
-		expect(actual).toMatchInlineSnapshot(
-			`[Error: Failed to load url does-not-exist (resolved id: does-not-exist). Does the file exist?]`,
+		expect(act).toThrowErrorMatchingInlineSnapshot(
+			`[Error: other is not one of: test-preset]`,
 		);
 	});
 
-	it("returns an error when the module is imported but is not a config", async () => {
-		mockImportedConfig = {};
-
-		const actual = await tryImportConfig("not-a-config");
-
-		expect(actual).toMatchInlineSnapshot(
-			`[Error: The default export of not-a-config should be a config from createConfig().]`,
-		);
-	});
-
-	it("returns the config when the module is imported and is a config", async () => {
-		mockImportedConfig = createConfig(template, {
-			preset: "test-preset",
-		});
-
-		const actual = await tryImportConfig("not-a-config");
+	it("returns an object when the preset can be found", () => {
+		const actual = createConfig(template, { preset: "test-preset" });
 
 		expect(actual).toEqual({ preset, settings: {}, template });
 	});
