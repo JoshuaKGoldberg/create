@@ -33,7 +33,7 @@ Given a [Base](../concepts/bases), creates an options object by running its [`pr
 For example, given this Base that declares an optional `value` option that defaults to `"default"`, `produceBase` can run its `produce()` with any provided options:
 
 ```ts
-import { createBase, produceBase } from "create";
+import { Template, produceBase } from "create";
 import { z } from "zod";
 
 const base = createBase({
@@ -93,7 +93,7 @@ Any number of options defined by the base.
 For example, this Base is run with a `name` option:
 
 ```ts
-import { Base } from "create";
+import { Template from "create";
 import { z } from "zod";
 
 declare const base: Base<{ name: z.ZodString }>;
@@ -231,7 +231,7 @@ await produceInput(inputDataJson);
 For example, this Input production reads data from a JSON file on disk by path:
 
 ```ts
-import { createInput } from "create";
+import { Template } from "create";
 import { z } from "zod";
 
 const inputJsonFile = createInput({
@@ -254,7 +254,7 @@ Given a [Template](../concepts/template) and the name of one of its [Presets](..
 
 `produceTemplate` takes in up to two arguments:
 
-1. `preset` _(required)_: a Preset
+1. `template` _(required)_: a Template
 2. `settings` _(required)_:
    - `addons` _(optional)_: any additional [Addons](../concepts/blocks#addons) to provide to Blocks
    - `blocks` _(optional)_: any additions and/or removals of Blocks
@@ -263,10 +263,10 @@ Given a [Template](../concepts/template) and the name of one of its [Presets](..
 
 `produceTemplate` returns a Promise for an object containing:
 
-- `creation`: The Preset's [`Creation`](../runtime/creations), including both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations)
+- `creation`: The Template's [`Creation`](../runtime/creations), including both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations)
 - `options`: The full merged options that production ran with
 
-For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `produceTemplate` can run its `produce()` with any provided options:
+For example, given this Template with a Preset that includes the block from [`produceBlock`](#produceblock), `produceTemplate` can run its `produce()` with any provided options:
 
 ```ts
 import { produceTemplate } from "create";
@@ -290,61 +290,62 @@ await produceTemplate(template, {
 
 ### Adding Base Options
 
-Although presets are associated with [Bases](../concepts/bases), running `produceTemplate` does not automatically run [`produceBase`](#producebase).
-If you want to include the inferred options from a Preset's Base you'll have to call the `produceBase` API first yourself.
+Although Templates are associated with [Bases](../concepts/bases), running `produceTemplate` does not automatically run [`produceBase`](#producebase).
+If you want to include the inferred options from a Template's Base you'll have to call the `produceBase` API first yourself.
 
-For example, this directly passes produced Options from a Base to a Preset:
+For example, this directly passes produced Options from a Base to a Template:
 
 ```ts
 import { base } from "./base";
-import { preset } from "./preset";
+import { template } from "./template";
 
 const options = await produceBase(base);
 
 // { creation: ... }
-await produceTemplate(preset, { options });
+await produceTemplate(template, { options });
 ```
 
-### `addons` {#preset-addons}
+### `addons` {#template-addons}
 
 Any additional [Addons](../concepts/blocks#addons) to provide to Blocks.
 
 For example, this production adds a `"generated"` Addon to a Prettier Block:
 
 ```ts
-import { Preset, produceTemplate } from "create";
+import { Template, produceTemplate } from "create";
 import { z } from "zod";
 
 import { blockPrettier } from "./blockPrettier";
 
-declare const preset: Preset<{ name: z.ZodString }>;
+declare const template: Template;
 
-await produceTemplate(preset, {
+await produceTemplate(template, {
 	addons: [blockPrettier({ ignores: ["generated"] })],
 	options: {
 		name: "My Production",
 	},
+	preset: "example",
 });
 ```
 
 See [Configuration > `addons`](../../configuration#addons) for how this is used.
 
-### `blocks` {#preset-blocks}
+### `blocks` {#template-blocks}
 
 Any Blocks to `add` and/or `remove`.
 
 For example, this production swaps in a Jest Block instead of a Vitest Block:
 
 ```ts
-import { Preset, produceTemplate } from "create";
+import { Template, produceTemplate } from "create";
 import { z } from "zod";
 
 import { blockJest } from "./blockJest";
 import { blockVitest } from "./blockVitest";
 
-declare const preset: Preset<{ name: z.ZodString }>;
+declare const template: Template;
 
-await produceTemplate(preset, {
+await produceTemplate(template, {
 	blocks: {
 		add: [blockJest],
 		exclude: [blockVitest],
@@ -352,6 +353,7 @@ await produceTemplate(preset, {
 	options: {
 		name: "My Production",
 	},
+	preset: "example",
 });
 ```
 
@@ -359,49 +361,51 @@ See [Configuration > `blocks`](../../configuration#blocks) for how this is used.
 
 ### `offline` {#produceTemplate-offline}
 
-Whether to hint to the Preset not to make network requests.
+Whether to hint to the Template not to make network requests.
 
 This is equivalent to the [`--offline` CLI flag](../../cli#offline).
 If provided, [Input fetchers](../contexts#input-fetchers) will reject with an Error instead of resolving.
 
-For example, this Preset is told to run offline:
+For example, this Template is told to run offline:
 
 ```ts
-import { Base } from "create";
+import { Template from "create";
 import { z } from "zod";
 
-declare const preset: Preset<{}>;
+declare const template: Template;
 
-await produceTemplate(preset, {
+await produceTemplate(template, {
 	offline: true,
 	options: {},
+	preset: "example"
 });
 ```
 
 :::caution
-`offline` doesn't prevent Presets from making network requests outside of the Input fetchers.
+`offline` doesn't prevent Templates from making network requests outside of the Input fetchers.
 If you are finding your template still sends requests offline, file a bug on the template.
 :::
 
-### `options` {#preset-options}
+### `options` {#template-options}
 
-Any options defined by the Preset's [Base](../concepts/bases).
+Any options defined by the Template's [Base](../concepts/bases).
 
 This must include all required Options from the Base.
 It may also include any other optional Options.
 
-For example, this Preset is run with a `name` option:
+For example, this Template is run with a `name` option:
 
 ```ts
-import { Preset, produceTemplate } from "create";
+import { Template, produceTemplate } from "create";
 import { z } from "zod";
 
-declare const preset: Preset<{ name: z.ZodString }>;
+declare const template: Template<{ name: z.ZodString }>;
 
-await produceTemplate(preset, {
+await produceTemplate(template, {
 	options: {
 		name: "My Production",
 	},
+	preset: "example",
 });
 ```
 
