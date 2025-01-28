@@ -25,17 +25,17 @@ This is most commonly useful in conjunction with the [`create-fs` `intakeFromDir
 For example, this test snippet runs an integration test for a template repository, making sure its files on disk match its own `everything` Preset:
 
 ```ts
-import { producePreset } from "create";
+import { produceTemplate } from "create";
 import { intakeFromDirectory } from "create-fs";
 import { diffCreatedDirectory } from "create-testers";
 
-import { presetEverything } from "./presetEverything.js";
+import { template } from "./template.js";
 
 const actual = await intakeFromDirectory(".", {
 	exclude: /node_modules|^\.git$/,
 });
 
-const created = await producePreset(presetEverything);
+const created = await produceTemplate(template, { preset: "everything" });
 
 expect(diffCreatedDirectory(actual, created)).toBeUndefined();
 ```
@@ -466,28 +466,29 @@ describe("inputNpmUsername", () => {
 });
 ```
 
-## `testPreset`
+## `testTemplate`
 
-For [Presets](../concepts/presets), a `testPreset` function is exported that is analogous to [`producePreset`](./producers#producepreset).
+For [Templates](../concepts/templates), a `testTemplate` function is exported that is analogous to [`produceTemplate`](./producers#producetemplate).
 It takes in similar arguments:
 
-1. `preset` _(required)_: a [Preset](../concepts/presets)
-2. `settings` _(optional)_: production settings including the Preset's [Options](../concepts/presets#options) and any [Args](../concepts/presets#args)
+1. `template` _(required)_: a [Template](../concepts/templates)
+2. `settings` _(optional)_: production settings including the `preset`, [Options](../concepts/presets#options), and any [Args](../concepts/presets#args)
 
-For example, this test asserts that a Preset using an nvmrc Block creates an `".nvmrc"` file with content equal to its `version` option:
+For example, this test asserts that a Template Preset using an nvmrc Block creates an `".nvmrc"` file with content equal to its `version` option:
 
 ```ts
-import { testPreset } from "create-testers";
+import { testTemplate } from "create-testers";
 import { describe, expect, it } from "vitest";
 
-import { presetWithNvmrc } from "./presetWithNvmrc";
+import { template } from "./template";
 
-describe("presetWithNvmrc", () => {
+describe("nvmrc preset", () => {
 	it("returns an .nvmrc", async () => {
-		const actual = await testPreset(presetWithNvmrc, {
+		const actual = await testTemplate(template, {
 			options: {
 				version: "20.12.2",
 			},
+			preset: "nvmrc",
 		});
 
 		expect(actual).toEqual({
@@ -497,31 +498,31 @@ describe("presetWithNvmrc", () => {
 });
 ```
 
-As with [`producePreset`](./producers#producepreset), `testPreset` returns a Promise for the Preset's [Creation](../runtime/creations).
+As with [`produceTemplate`](./producers#produceTemplate), `testTemplate` returns a Promise for the Template's [Creation](../runtime/creations).
 Both [Direct Creations](../runtime/creations#direct-creations) and [Indirect Creations](../runtime/creations#indirect-creations) will be present.
 
 `settings` and all its properties are optional.
-However, some properties will cause `testPreset` to throw an error if they're not provided and the Block attempts to use them:
+However, some properties will cause `testTemplate` to throw an error if they're not provided and the Block attempts to use them:
 
-- [`fetchers`](#testpreset-fetchers): by default, throws an error if called as a function
-- [`fs`](#testpreset-fs): by default, each method throws an error if called as a function
-- [`runner`](#testpreset-runner): by default, throws an error if called as a function
+- [`fetchers`](#testTemplate-fetchers): by default, throws an error if called as a function
+- [`fs`](#testTemplate-fs): by default, each method throws an error if called as a function
+- [`runner`](#testTemplate-runner): by default, throws an error if called as a function
 
-### `fetchers` {#testpreset-fetchers}
+### `fetchers` {#testTemplate-fetchers}
 
 A mock function to act as the global [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 For example, this test asserts that a Preset internally fetches cat facts from an API and stores them in a file:
 
 ```ts
-import { testPreset } from "create-testers";
+import { testTemplate } from "create-testers";
 import { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
-import { presetWithCatFact } from "./presetWithCatFact";
+import { template } from "./template";
 
-describe("presetWithCatFact", () => {
-	it("prints the cat fact from the API in fact.txt file", async () => {
+describe("cat-fact preset", () => {
+	it("prints the cat fact from the API in a fact.txt file", async () => {
 		const fact =
 			"Owning a cat is actually proven to be beneficial for your health.";
 
@@ -529,9 +530,10 @@ describe("presetWithCatFact", () => {
 			json: () => Promise.resolve({ fact }),
 		});
 
-		const actual = await testPreset(presetWithCatFact, {
+		const actual = await testTemplate(template, {
 			fetch,
 			octokit: new Octokit({ request: fetch }),
+			preset: "cat-fact",
 		});
 
 		expect(actual).toEqual({
@@ -544,25 +546,26 @@ describe("presetWithCatFact", () => {
 });
 ```
 
-### `fs` {#testpreset-fs}
+### `fs` {#testTemplate-fs}
 
 An object containing mocks to act as a file system.
 
 For example, this test asserts that a Preset internally copies a `backup.txt` file to an `current.txt` file:
 
 ```ts
-import { testPreset } from "create-testers";
+import { testTemplate } from "create-testers";
 import { describe, expect, it, vi } from "vitest";
 
-import { presetWithBackup } from "./inputCatFact";
+import { template } from "./template";
 
-describe("presetWithBackup", () => {
+describe("backup preset", () => {
 	it("copies backup.txt to current.txt when backup.txt exists", async () => {
 		const contents = "abc123";
 		const readFile = vi.fn().mockResolvedValue(contents);
 
-		const actual = await testPreset(presetWithBackup, {
+		const actual = await testTemplate(template, {
 			fs: { readFile },
+			preset: "backup",
 		});
 
 		expect(actual).toEqual({
@@ -575,19 +578,19 @@ describe("presetWithBackup", () => {
 });
 ```
 
-### `runner` {#testpreset-runner}
+### `runner` {#testTemplate-runner}
 
 A mock function to act as [`execa`](https://github.com/sindresorhus/execa/blob/main/docs/execution.md).
 
 For example, this test asserts that Preset includes the running user's email in an `AUTHORS.md` file:
 
 ```ts
-import { testPreset } from "create-testers";
+import { testTemplate } from "create-testers";
 import { describe, expect, it, vi } from "vitest";
 
-import { presetAuthorship } from "./presetAuthorship";
+import { template } from "./template";
 
-describe("presetAuthorship", () => {
+describe("authorship preset", () => {
 	it("puts the running user's git config user.email in AUTHORS.md", async () => {
 		const email = "rick.astley@example.com";
 
@@ -595,7 +598,10 @@ describe("presetAuthorship", () => {
 			stdout: email,
 		});
 
-		const actual = await testPreset(presetAuthorship, { runner });
+		const actual = await testTemplate(template, {
+			runner,
+			preset: "authorship",
+		});
 
 		expect(actual).toEqual({
 			files: {

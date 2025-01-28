@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
-import { runPreset } from "./runPreset.js";
+import { runTemplate } from "./runTemplate.js";
 
 const base = createBase({
 	options: {
@@ -31,7 +31,7 @@ function noop(label: string) {
 	return vi.fn().mockReturnValue(`Not implemented: ${label}`);
 }
 
-describe("runPreset", () => {
+describe("runTemplate", () => {
 	test("Preset with one Block", async () => {
 		const block = base.createBlock({
 			produce({ options }) {
@@ -48,10 +48,15 @@ describe("runPreset", () => {
 			blocks: [block],
 		});
 
+		const template = base.createTemplate({
+			presets: [preset],
+		});
+
 		const system = createSystem();
 
-		await runPreset(preset, {
+		await runTemplate(template, {
 			options: { title: "abc" },
+			preset: "test",
 			...system,
 		});
 
@@ -107,10 +112,15 @@ describe("runPreset", () => {
 			blocks: [blockProvidingAddon, blockWithAddon],
 		});
 
+		const template = base.createTemplate({
+			presets: [preset],
+		});
+
 		const system = createSystem();
 
-		await runPreset(preset, {
+		await runTemplate(template, {
 			options: { title: "abc" },
+			preset: "test",
 			...system,
 		});
 

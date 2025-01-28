@@ -2,12 +2,12 @@ import chalk from "chalk";
 import path from "node:path";
 
 import { tryImportConfig } from "../../config/tryImportConfig.js";
-import { CreateConfig } from "../../config/types.js";
+import { CreatedConfig } from "../../config/types.js";
 import { tryImportTemplatePreset } from "../importers/tryImportTemplatePreset.js";
 
 export interface MigrationSource {
 	descriptor: string;
-	load: () => Promise<CreateConfig | Error | symbol>;
+	load: () => Promise<CreatedConfig | Error | symbol>;
 	type: "config file" | "template";
 }
 

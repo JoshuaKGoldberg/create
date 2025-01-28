@@ -2,29 +2,20 @@ import * as prompts from "@clack/prompts";
 import chalk from "chalk";
 
 import { Template } from "../../types/templates.js";
+import { getPresetByName } from "../../utils/getPresetByName.js";
 
 export async function promptForPreset(
 	requested: string | undefined,
 	template: Template,
 ) {
-	const presetsByName = new Map(
-		Array.from(
-			template.presets.map((preset) => [
-				preset.about.name.toLowerCase(),
-				preset,
-			]),
-		),
-	);
-
 	if (requested) {
-		const found = presetsByName.get(requested.toLowerCase());
-		if (found) {
+		const found = getPresetByName(template.presets, requested);
+
+		if (!(found instanceof Error)) {
 			return found;
 		}
 
-		prompts.log.error(
-			`${requested} is not one of: ${Array.from(presetsByName.keys()).join(", ")}`,
-		);
+		prompts.log.error(found.message);
 	}
 
 	return await prompts.select({

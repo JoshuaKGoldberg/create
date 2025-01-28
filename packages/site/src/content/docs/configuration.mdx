@@ -6,15 +6,15 @@ title: Configuration
 Running the [Migration mode](./cli#migration-mode) in an existing repository will re-run `create` on that repository.
 
 You can store persistent customizations to the repository's template in a configuration file named `create.config.js`.
-It should `export default` a call to a `createConfig()` function that takes in a preset imported from a template.
+It should `export default` a call to a `createConfig()` function that takes in a template and which preset to use.
 
 For example, keeping a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app)'s _everything_ preset:
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
-import { presetEverything } from "create-typescript-app";
+import { template } from "create-typescript-app";
 
-export default createConfig(presetEverything);
+export default createConfig(template, { preset: "everything" });
 ```
 
 Running `npx create` in a repository with that `create.config.js` would be the equivalent of running `npx create typescript-app@beta --preset everything`.
@@ -35,14 +35,15 @@ For example, this configuration file adds the word `"arethetypeswrong"` to a CSp
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
-import { blockCSpell, presetEverything } from "create-typescript-app";
+import { blockCSpell, template } from "create-typescript-app";
 
-export default createConfig(presetEverything, {
+export default createConfig(template, {
 	addons: [
 		blockCSpell({
 			words: ["arethetypeswrong"],
 		}),
 	],
+	preset: "everything",
 });
 ```
 
@@ -60,12 +61,13 @@ For example, this configuration file adds in an "arethetypeswrong" Block alongsi
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
-import { blockAreTheTypesWrong, presetEverything } from "create-typescript-app";
+import { blockAreTheTypesWrong, template } from "create-typescript-app";
 
-export default createConfig(presetEverything, {
+export default createConfig(template, {
 	blocks: {
 		add: [blockAreTheTypesWrong],
 	},
+	preset: "everything",
 });
 ```
 
@@ -79,12 +81,13 @@ For example, this configuration file omits the default _"This package was templa
 
 ```ts title="create.config.js"
 import { createConfig } from "create";
-import { blockTemplatedBy, presetEverything } from "create-typescript-app";
+import { blockTemplatedBy, template } from "create-typescript-app";
 
-export default createConfig(presetEverything, {
+export default createConfig(template, {
 	blocks: {
 		exclude: [blockTemplatedBy],
 	},
+	preset: "everything",
 });
 ```
 
@@ -125,14 +128,15 @@ export const blockWallabyConfig = base.createBlock({
 ```ts
 // create.config.js
 import { createConfig } from "create";
-import { presetEverything } from "create-typescript-app";
+import { template } from "create-typescript-app";
 
 import { blockWallabyConfig } from "./blockWallabyConfig.js";
 
-export default createConfig(presetEverything, {
+export default createConfig(template, {
 	blocks: {
 		add: [blockWallabyConfig],
 	},
+	preset: "everything",
 });
 ```
 
@@ -173,14 +177,15 @@ export const blockLintAreTheTypesWrong = base.createBlock({
 ```ts
 // create.config.js
 import { createConfig } from "create";
-import { presetEverything } from "create-typescript-app";
+import { template } from "create-typescript-app";
 
 import { blockLintAreTheTypesWrong } from "./blockLintAreTheTypesWrong.js";
 
-export default createConfig(presetEverything, {
+export default createConfig(template, {
 	blocks: {
 		add: [blockLintAreTheTypesWrong],
 	},
+	preset: "everything",
 });
 ```
 

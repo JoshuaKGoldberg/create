@@ -37,11 +37,11 @@ vi.mock("../loggers/logRerunSuggestion.js", () => ({
 	},
 }));
 
-const mockRunPreset = vi.fn();
+const mockRunTemplate = vi.fn();
 
-vi.mock("../../runners/runPreset.js", () => ({
-	get runPreset() {
-		return mockRunPreset;
+vi.mock("../../runners/runTemplate.js", () => ({
+	get runTemplate() {
+		return mockRunTemplate;
 	},
 }));
 
@@ -124,7 +124,7 @@ const preset = base.createPreset({
 });
 
 const template = base.createTemplate({
-	presets: [],
+	presets: [preset],
 });
 
 const args = ["create-my-app"];
@@ -278,7 +278,7 @@ describe("runModeInitialize", () => {
 			},
 			prompted: promptedOptions,
 		});
-		mockRunPreset.mockResolvedValueOnce({
+		mockRunTemplate.mockResolvedValueOnce({
 			suggestions,
 		});
 
@@ -319,7 +319,7 @@ describe("runModeInitialize", () => {
 			},
 			prompted: promptedOptions,
 		});
-		mockRunPreset.mockResolvedValueOnce({
+		mockRunTemplate.mockResolvedValueOnce({
 			suggestions,
 		});
 
@@ -360,7 +360,7 @@ describe("runModeInitialize", () => {
 			},
 			prompted: promptedOptions,
 		});
-		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
+		mockRunTemplate.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeInitialize({
 			args,
@@ -389,7 +389,7 @@ describe("runModeInitialize", () => {
 			},
 			prompted: promptedOptions,
 		});
-		mockRunPreset.mockResolvedValueOnce({
+		mockRunTemplate.mockResolvedValueOnce({
 			suggestions,
 		});
 
@@ -406,7 +406,10 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
-		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
+		expect(mockRunTemplate).toHaveBeenCalledWith(
+			template,
+			expect.objectContaining({ mode: "initialize", preset }),
+		);
 	});
 
 	it("returns a CLI success and keeps a relative directory when importing and running the preset succeeds", async () => {
@@ -422,7 +425,7 @@ describe("runModeInitialize", () => {
 			},
 			prompted: promptedOptions,
 		});
-		mockRunPreset.mockResolvedValueOnce({
+		mockRunTemplate.mockResolvedValueOnce({
 			suggestions,
 		});
 
@@ -439,6 +442,9 @@ describe("runModeInitialize", () => {
 		});
 
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
-		expect(mockRunPreset).toHaveBeenCalledWith(preset, expect.any(Object));
+		expect(mockRunTemplate).toHaveBeenCalledWith(
+			template,
+			expect.objectContaining({ mode: "initialize", preset }),
+		);
 	});
 });

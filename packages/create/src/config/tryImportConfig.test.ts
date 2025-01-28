@@ -1,8 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createBase } from "../creators/createBase.js";
 import { createConfig } from "./createConfig.js";
-import { tryImportConfig } from "./tryImportConfig.js";
 
 const base = createBase({
 	options: {},
@@ -13,68 +12,22 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
-describe("tryImportConfig", () => {
-	it("returns an error when the module cannot be imported", async () => {
-		const actual = await tryImportConfig("does-not-exist");
+const template = base.createTemplate({
+	presets: [preset],
+});
 
-		expect(actual).toMatchInlineSnapshot(
-			`[Error: Failed to load url does-not-exist (resolved id: does-not-exist). Does the file exist?]`,
+describe("createConfig", () => {
+	it("throws an error when the preset cannot be found by name", () => {
+		const act = () => createConfig(template, { preset: "other" });
+
+		expect(act).toThrowErrorMatchingInlineSnapshot(
+			`[Error: other is not one of: test-preset]`,
 		);
 	});
 
-	it("returns an error when the module is imported but is not a config", async () => {
-		vi.mock("not-a-config", () => ({
-			default: {},
-		}));
+	it("returns an object when the preset can be found", () => {
+		const actual = createConfig(template, { preset: "test-preset" });
 
-		const actual = await tryImportConfig("not-a-config");
-
-		expect(actual).toMatchInlineSnapshot(
-			`
-			{
-			  "preset": {
-			    "about": {
-			      "name": "Test Preset",
-			    },
-			    "base": {
-			      "createBlock": [Function],
-			      "createPreset": [Function],
-			      "createTemplate": [Function],
-			      "options": {},
-			    },
-			    "blocks": [],
-			  },
-			  "settings": undefined,
-			}
-		`,
-		);
-	});
-
-	it("returns the config when the module is imported and is a config", async () => {
-		vi.mock("not-a-config", () => ({
-			default: createConfig(preset),
-		}));
-
-		const actual = await tryImportConfig("not-a-config");
-
-		expect(actual).toMatchInlineSnapshot(
-			`
-			{
-			  "preset": {
-			    "about": {
-			      "name": "Test Preset",
-			    },
-			    "base": {
-			      "createBlock": [Function],
-			      "createPreset": [Function],
-			      "createTemplate": [Function],
-			      "options": {},
-			    },
-			    "blocks": [],
-			  },
-			  "settings": undefined,
-			}
-		`,
-		);
+		expect(actual).toEqual({ preset, settings: {}, template });
 	});
 });

@@ -7,7 +7,7 @@ Production APIs can be used to create [Creations](../runtime/creations):
 - [`produceBase`](#producebase): generates [Base](../concepts/bases) options
 - [`produceBlock`](#produceblock): runs a [Block](../concepts/blocks) production
 - [`produceInput`](#produceinput): runs an [Input](../concepts/inputs)
-- [`producePreset`](#producepreset): runs a [Preset](../concepts/presets) production
+- [`produceTemplate`](#producetemplate): runs a [Template](../concepts/templates) production
 
 Each production API takes in up to two arguments:
 
@@ -248,11 +248,11 @@ await produceInput(inputJsonFile, {
 });
 ```
 
-## `producePreset`
+## `produceTemplate`
 
 Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations) output by running each of its Blocks [`produce()`](../concepts/blocks#production).
 
-`producePreset` takes in up to two arguments:
+`produceTemplate` takes in up to two arguments:
 
 1. `preset` _(required)_: a Preset
 2. `settings` _(required)_:
@@ -261,15 +261,15 @@ Given a [Preset](../concepts/presets), creates a [Creation](../runtime/creations
    - `options` _(required)_: [Base](../concepts/bases) options to run with
    - _(optional)_ any other properties from a [Block Context](../runtime/contexts#block-contexts)
 
-`producePreset` returns a Promise for an object containing:
+`produceTemplate` returns a Promise for an object containing:
 
 - `creation`: The Preset's [`Creation`](../runtime/creations), including both [direct creations](../runtime/creations#direct-creations) and [indirect creations](../runtime/creations#indirect-creations)
 - `options`: The full merged options that production ran with
 
-For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `producePreset` can run its `produce()` with any provided options:
+For example, given this Preset that includes the block from [`produceBlock`](#produceblock), `produceTemplate` can run its `produce()` with any provided options:
 
 ```ts
-import { producePreset } from "create";
+import { produceTemplate } from "create";
 
 import { base } from "./base";
 import { blockReadme } from "./blockReadme";
@@ -279,12 +279,12 @@ const preset = base.createPreset({
 });
 
 // { creation: { files: { "README.md": `# My App` }}, options: { title: "My App" } }
-await producePreset(preset, { options: { title: "My App" } });
+await produceTemplate(preset, { options: { title: "My App" } });
 ```
 
 ### Adding Base Options
 
-Although presets are associated with [Bases](../concepts/bases), running `producePreset` does not automatically run [`produceBase`](#producebase).
+Although presets are associated with [Bases](../concepts/bases), running `produceTemplate` does not automatically run [`produceBase`](#producebase).
 If you want to include the inferred options from a Preset's Base you'll have to call the `produceBase` API first yourself.
 
 For example, this directly passes produced Options from a Base to a Preset:
@@ -296,7 +296,7 @@ import { preset } from "./preset";
 const options = await produceBase(base);
 
 // { creation: ... }
-await producePreset(preset, { options });
+await produceTemplate(preset, { options });
 ```
 
 ### `addons` {#preset-addons}
@@ -306,14 +306,14 @@ Any additional [Addons](../concepts/blocks#addons) to provide to Blocks.
 For example, this production adds a `"generated"` Addon to a Prettier Block:
 
 ```ts
-import { Preset, producePreset } from "create";
+import { Preset, produceTemplate } from "create";
 import { z } from "zod";
 
 import { blockPrettier } from "./blockPrettier";
 
 declare const preset: Preset<{ name: z.ZodString }>;
 
-await producePreset(preset, {
+await produceTemplate(preset, {
 	addons: [blockPrettier({ ignores: ["generated"] })],
 	options: {
 		name: "My Production",
@@ -330,7 +330,7 @@ Any Blocks to `add` and/or `remove`.
 For example, this production swaps in a Jest Block instead of a Vitest Block:
 
 ```ts
-import { Preset, producePreset } from "create";
+import { Preset, produceTemplate } from "create";
 import { z } from "zod";
 
 import { blockJest } from "./blockJest";
@@ -338,7 +338,7 @@ import { blockVitest } from "./blockVitest";
 
 declare const preset: Preset<{ name: z.ZodString }>;
 
-await producePreset(preset, {
+await produceTemplate(preset, {
 	blocks: {
 		add: [blockJest],
 		exclude: [blockVitest],
@@ -351,7 +351,7 @@ await producePreset(preset, {
 
 See [Configuration > `blocks`](../../configuration#blocks) for how this is used.
 
-### `offline` {#producepreset-offline}
+### `offline` {#produceTemplate-offline}
 
 Whether to hint to the Preset not to make network requests.
 
@@ -366,7 +366,7 @@ import { z } from "zod";
 
 declare const preset: Preset<{}>;
 
-await producePreset(preset, {
+await produceTemplate(preset, {
 	offline: true,
 	options: {},
 });
@@ -387,12 +387,12 @@ It may also include any other optional Options.
 For example, this Preset is run with a `name` option:
 
 ```ts
-import { Preset, producePreset } from "create";
+import { Preset, produceTemplate } from "create";
 import { z } from "zod";
 
 declare const preset: Preset<{ name: z.ZodString }>;
 
-await producePreset(preset, {
+await produceTemplate(preset, {
 	options: {
 		name: "My Production",
 	},

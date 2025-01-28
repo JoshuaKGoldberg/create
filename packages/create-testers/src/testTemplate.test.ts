@@ -2,7 +2,7 @@ import { createBase } from "create";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { testPreset } from "./testPreset.js";
+import { testTemplate } from "./testTemplate.js";
 
 const emptyCreation = {
 	addons: [],
@@ -18,7 +18,7 @@ const base = createBase({
 	},
 });
 
-describe("testPreset", () => {
+describe("testTemplate", () => {
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
 			produce({ options }) {
@@ -35,9 +35,12 @@ describe("testPreset", () => {
 			blocks: [blockUsingOptions],
 		});
 
+		const template = base.createTemplate({ presets: [presetUsingOptions] });
+
 		it("passes options to the block when provided via options", async () => {
-			const actual = await testPreset(presetUsingOptions, {
+			const actual = await testTemplate(template, {
 				options: { value: "abc" },
+				preset: presetUsingOptions,
 			});
 
 			expect(actual).toEqual({
