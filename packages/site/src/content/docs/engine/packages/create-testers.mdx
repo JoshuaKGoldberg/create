@@ -25,7 +25,7 @@ This is most commonly useful in conjunction with the [`create-fs` `intakeFromDir
 For example, this test snippet runs an integration test for a template repository, making sure its files on disk match its own `everything` Preset:
 
 ```ts
-import { producePreset } from "create";
+import { produceTemplate } from "create";
 import { intakeFromDirectory } from "create-fs";
 import { diffCreatedDirectory } from "create-testers";
 
@@ -35,7 +35,7 @@ const actual = await intakeFromDirectory(".", {
 	exclude: /node_modules|^\.git$/,
 });
 
-const created = await producePreset(presetEverything);
+const created = await produceTemplate(template, { preset: "everything" });
 
 expect(diffCreatedDirectory(actual, created)).toBeUndefined();
 ```

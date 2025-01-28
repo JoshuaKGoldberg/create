@@ -18,7 +18,7 @@ const base = createBase({
 	},
 });
 
-describe("testPreset", () => {
+describe("testTemplate", () => {
 	describe("options", () => {
 		const blockUsingOptions = base.createBlock({
 			produce({ options }) {
