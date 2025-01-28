@@ -1,6 +1,6 @@
 {
 	"name": "create-testers",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
