@@ -28,7 +28,7 @@ const base = createBase({
 	},
 });
 
-describe("runPreset", () => {
+describe("produceBlocks", () => {
 	test("files from one block", () => {
 		const block = base.createBlock({
 			about: {

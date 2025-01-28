@@ -42,7 +42,10 @@ export async function produceTemplate<OptionsShape extends AnyShape>(
 		...providedSystem,
 	});
 
-	const preset = getPresetByName(template.presets, requestedPreset);
+	const preset =
+		typeof requestedPreset === "string"
+			? getPresetByName(template.presets, requestedPreset)
+			: requestedPreset;
 	if (preset instanceof Error) {
 		throw preset;
 	}

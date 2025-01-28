@@ -15,7 +15,7 @@ import { promptForBaseOptions } from "../prompts/promptForBaseOptions.js";
 import { CLIStatus } from "../status.js";
 import { ModeResults } from "../types.js";
 import { clearTemplateFiles } from "./clearTemplateFiles.js";
-import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
+import { getForkedRepositoryLocator } from "./getForkedRepositoryLocator.js";
 import { parseMigrationSource } from "./parseMigrationSource.js";
 
 export interface RunModeMigrateSettings {
@@ -73,22 +73,22 @@ export async function runModeMigrate({
 		return { status: CLIStatus.Cancelled };
 	}
 
-	const { preset, settings } = loaded;
+	const { preset, settings, template } = loaded;
 	const system = await createSystemContextWithAuth({
 		directory,
 		display,
 		offline,
 	});
 
-	const templateLocator =
+	const repositoryLocator =
 		preset.base.template &&
-		(await getForkedTemplateLocator(directory, preset.base.template));
+		(await getForkedRepositoryLocator(directory, preset.base.template));
 
-	if (templateLocator) {
+	if (repositoryLocator) {
 		await runSpinnerTask(
 			display,
-			`Clearing from ${templateLocator}`,
-			`Cleared from ${templateLocator}`,
+			`Clearing from ${repositoryLocator}`,
+			`Cleared from ${repositoryLocator}`,
 			async () => {
 				await clearTemplateFiles(directory);
 				await clearLocalGitTags(system.runner);
@@ -120,13 +120,14 @@ export async function runModeMigrate({
 		`Running the ${preset.about.name} preset`,
 		`Ran the ${preset.about.name} preset`,
 		async () =>
-			await runTemplate(preset, {
+			await runTemplate(template, {
 				...mergedSettings,
 				...system,
 				directory,
 				mode: "migrate",
 				offline,
 				options: baseOptions.completed,
+				preset,
 			}),
 	);
 	if (creation instanceof Error) {
@@ -137,7 +138,7 @@ export async function runModeMigrate({
 		};
 	}
 
-	if (templateLocator) {
+	if (repositoryLocator) {
 		await runSpinnerTask(
 			display,
 			"Creating initial commit",

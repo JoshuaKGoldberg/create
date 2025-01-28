@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { getForkedTemplateLocator } from "./getForkedTemplateLocator.js";
+import { getForkedRepositoryLocator } from "./getForkedRepositoryLocator.js";
 
 const mockFromUrl = vi.fn();
 
@@ -29,7 +29,7 @@ describe("getForkedTemplateLocator", () => {
 	it("returns undefined when there is no package repository url", async () => {
 		mockReadPackage.mockResolvedValueOnce({});
 
-		const actual = await getForkedTemplateLocator(".", template);
+		const actual = await getForkedRepositoryLocator(".", template);
 
 		expect(actual).toBeUndefined();
 		expect(mockFromUrl).not.toHaveBeenCalled();
@@ -42,7 +42,7 @@ describe("getForkedTemplateLocator", () => {
 
 		mockFromUrl.mockReturnValueOnce(undefined);
 
-		const actual = await getForkedTemplateLocator(".", template);
+		const actual = await getForkedRepositoryLocator(".", template);
 
 		expect(actual).toBeUndefined();
 	});
@@ -57,7 +57,7 @@ describe("getForkedTemplateLocator", () => {
 			user: "other",
 		});
 
-		const actual = await getForkedTemplateLocator(".", template);
+		const actual = await getForkedRepositoryLocator(".", template);
 
 		expect(actual).toBeUndefined();
 	});
@@ -72,7 +72,7 @@ describe("getForkedTemplateLocator", () => {
 			user: template.owner,
 		});
 
-		const actual = await getForkedTemplateLocator(".", template);
+		const actual = await getForkedRepositoryLocator(".", template);
 
 		expect(actual).toBeUndefined();
 	});
@@ -87,7 +87,7 @@ describe("getForkedTemplateLocator", () => {
 			user: template.owner,
 		});
 
-		const actual = await getForkedTemplateLocator(".", template);
+		const actual = await getForkedRepositoryLocator(".", template);
 
 		expect(actual).toBe(`TestOwner/test-repository`);
 	});

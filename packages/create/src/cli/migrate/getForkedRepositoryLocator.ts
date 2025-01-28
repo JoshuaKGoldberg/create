@@ -3,7 +3,7 @@ import { readPackage } from "read-pkg";
 
 import { RepositoryTemplate } from "../../types/bases.js";
 
-export async function getForkedTemplateLocator(
+export async function getForkedRepositoryLocator(
 	directory: string,
 	template: RepositoryTemplate,
 ) {

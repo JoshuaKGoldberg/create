@@ -5,7 +5,7 @@ title: Runner APIs
 Runner APIs can be used to execute and apply [Creations](../runtime/creations) on disk:
 
 - [`runBlock`](#runblock): applies a [Block](../concepts/blocks) production
-- [`runPreset`](#runpreset): applies a [Preset](../concepts/presets) production
+- [`runTemplate`](#runtemplate): applies a [Template](../concepts/templates) production
 
 Each runner API takes in up to two arguments:
 
@@ -36,21 +36,22 @@ import { blockReadme } from "./blockReadme.js";
 await runBlock(blockReadme);
 ```
 
-## `runPreset`
+## `runTemplate`
 
-Given a [Preset](../concepts/presets), executes a [Creation](../runtime/creations) output by running each of its Blocks [`produce()`](../concepts/blocks#production).
+Given a [Template](../concepts/templates) and the name of one of its [Preset](../concepts/presets), executes a [Creation](../runtime/creations) output by running each of the Preset's Blocks' [`produce()`](../concepts/blocks#production).
 
-See [Producers > `produceBlock`](./producers#produceblock) for the arguments `runPreset` allows.
+See [Producers > `produceBlock`](./producers#produceblock) for the arguments `runTemplate` allows.
 
-For example, given a Preset containing the previous Block that creates a `README.md`, this would write that file to system:
+For example, given a Template and Preset containing the previous Block that creates a `README.md`, this would write that file to system:
 
 ```ts
 import { runBlock } from "create";
-import { presetWithReadme } from "./presetWithReadme.js";
+import { template } from "./template.js";
 
-await runPreset(presetWithReadme, {
+await runTemplate(presetWithReadme, {
 	options: {
 		// ...
 	},
+	preset: "my-preset",
 });
 ```

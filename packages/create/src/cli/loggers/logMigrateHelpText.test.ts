@@ -81,10 +81,11 @@ describe("logMigrateHelpText", () => {
 			about: { name },
 			blocks: [],
 		});
+		const template = base.createTemplate({ presets: [preset] });
 		const descriptor = "create-test-app";
 		const source: MigrationSource = {
 			descriptor,
-			load: () => Promise.resolve({ preset }),
+			load: () => Promise.resolve({ preset, template }),
 			type: "template",
 		};
 

@@ -122,13 +122,14 @@ export async function runModeInitialize({
 		`Running the ${preset.about.name} preset`,
 		`Ran the ${preset.about.name} preset`,
 		async () =>
-			await runTemplate(preset, {
+			await runTemplate(template, {
 				...settings,
 				...system,
 				directory,
 				mode: "initialize",
 				offline,
 				options: baseOptions.completed,
+				preset,
 			}),
 	);
 	if (creation instanceof Error) {

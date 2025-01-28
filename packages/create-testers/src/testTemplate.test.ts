@@ -35,9 +35,12 @@ describe("testPreset", () => {
 			blocks: [blockUsingOptions],
 		});
 
+		const template = base.createTemplate({ presets: [presetUsingOptions] });
+
 		it("passes options to the block when provided via options", async () => {
-			const actual = await testTemplate(presetUsingOptions, {
+			const actual = await testTemplate(template, {
 				options: { value: "abc" },
+				preset: presetUsingOptions,
 			});
 
 			expect(actual).toEqual({

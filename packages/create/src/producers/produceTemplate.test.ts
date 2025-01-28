@@ -27,7 +27,7 @@ const system = {
 	runner: vi.fn(),
 };
 
-describe("producePreset", () => {
+describe("produceTemplate", () => {
 	it("passes options to the preset when provided via options", async () => {
 		const baseWithOption = createBase({
 			options: {
@@ -50,11 +50,16 @@ describe("producePreset", () => {
 			blocks: [blockUsingOption],
 		});
 
-		const actual = await produceTemplate(presetUsingOption, {
+		const template = baseWithOption.createTemplate({
+			presets: [presetUsingOption],
+		});
+
+		const actual = await produceTemplate(template, {
 			...system,
 			options: {
 				value: "abc",
 			},
+			preset: presetUsingOption,
 		});
 
 		expect(actual).toEqual({
@@ -85,10 +90,15 @@ describe("producePreset", () => {
 			blocks: [blockWithoutOption],
 		});
 
-		const actual = await produceTemplate(presetWithoutOption, {
+		const template = baseWithoutOption.createTemplate({
+			presets: [presetWithoutOption],
+		});
+
+		const actual = await produceTemplate(template, {
 			...system,
 			offline: true,
 			options: {},
+			preset: presetWithoutOption,
 		});
 
 		expect(actual).toEqual({

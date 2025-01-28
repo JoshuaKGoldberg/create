@@ -13,6 +13,18 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
+const template = base.createTemplate({
+	presets: [preset],
+});
+
+let mockImportedConfig: unknown;
+
+vi.mock("not-a-config", () => ({
+	get default() {
+		return mockImportedConfig;
+	},
+}));
+
 describe("tryImportConfig", () => {
 	it("returns an error when the module cannot be imported", async () => {
 		const actual = await tryImportConfig("does-not-exist");
@@ -23,58 +35,22 @@ describe("tryImportConfig", () => {
 	});
 
 	it("returns an error when the module is imported but is not a config", async () => {
-		vi.mock("not-a-config", () => ({
-			default: {},
-		}));
+		mockImportedConfig = {};
 
 		const actual = await tryImportConfig("not-a-config");
 
 		expect(actual).toMatchInlineSnapshot(
-			`
-			{
-			  "preset": {
-			    "about": {
-			      "name": "Test Preset",
-			    },
-			    "base": {
-			      "createBlock": [Function],
-			      "createPreset": [Function],
-			      "createTemplate": [Function],
-			      "options": {},
-			    },
-			    "blocks": [],
-			  },
-			  "settings": undefined,
-			}
-		`,
+			`[Error: The default export of not-a-config should be a config from createConfig().]`,
 		);
 	});
 
 	it("returns the config when the module is imported and is a config", async () => {
-		vi.mock("not-a-config", () => ({
-			default: createConfig(preset),
-		}));
+		mockImportedConfig = createConfig(template, {
+			preset: "test-preset",
+		});
 
 		const actual = await tryImportConfig("not-a-config");
 
-		expect(actual).toMatchInlineSnapshot(
-			`
-			{
-			  "preset": {
-			    "about": {
-			      "name": "Test Preset",
-			    },
-			    "base": {
-			      "createBlock": [Function],
-			      "createPreset": [Function],
-			      "createTemplate": [Function],
-			      "options": {},
-			    },
-			    "blocks": [],
-			  },
-			  "settings": undefined,
-			}
-		`,
-		);
+		expect(actual).toEqual({ preset, settings: {}, template });
 	});
 });

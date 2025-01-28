@@ -36,11 +36,11 @@ vi.mock("../loggers/logRerunSuggestion.js", () => ({
 	},
 }));
 
-const mockRunPreset = vi.fn();
+const mockRunTemplate = vi.fn();
 
-vi.mock("../../runners/runPreset.js", () => ({
-	get runPreset() {
-		return mockRunPreset;
+vi.mock("../../runners/runTemplate.js", () => ({
+	get runTemplate() {
+		return mockRunTemplate;
 	},
 }));
 
@@ -102,11 +102,11 @@ vi.mock("./clearTemplateFiles.js", () => ({
 	},
 }));
 
-const mockGetForkedTemplateLocator = vi.fn();
+const mockGetForkedRepositoryLocator = vi.fn();
 
-vi.mock("./getForkedTemplateLocator.js", () => ({
-	get getForkedTemplateLocator() {
-		return mockGetForkedTemplateLocator;
+vi.mock("./getForkedRepositoryLocator.js", () => ({
+	get getForkedRepositoryLocator() {
+		return mockGetForkedRepositoryLocator;
 	},
 }));
 
@@ -142,6 +142,8 @@ const preset = base.createPreset({
 	blocks: [],
 });
 
+const template = base.createTemplate({ presets: [preset] });
+
 const args = ["create-my-app"];
 
 const descriptor = "Test Source";
@@ -149,7 +151,7 @@ const type = "template";
 
 const source = {
 	descriptor,
-	load: () => Promise.resolve({ preset }),
+	load: () => Promise.resolve({ preset, template }),
 	type,
 };
 
@@ -254,7 +256,7 @@ describe("runModeMigrate", () => {
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
 		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
 
 		const actual = await runModeMigrate({
@@ -267,15 +269,15 @@ describe("runModeMigrate", () => {
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
-	it("returns the error when runPreset resolves with an error", async () => {
+	it("returns the error when runTemplate resolves with an error", async () => {
 		mockParseMigrationSource.mockReturnValueOnce({
 			load: () => Promise.resolve({ preset }),
 		});
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
-		mockRunPreset.mockRejectedValueOnce(new Error("Oh no!"));
+		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
+		mockRunTemplate.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeMigrate({
 			args,
@@ -297,7 +299,7 @@ describe("runModeMigrate", () => {
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedTemplateLocator.mockResolvedValueOnce(undefined);
+		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
 
 		const actual = await runModeMigrate({
 			args,
@@ -322,7 +324,7 @@ describe("runModeMigrate", () => {
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedTemplateLocator.mockResolvedValueOnce({
+		mockGetForkedRepositoryLocator.mockResolvedValueOnce({
 			owner: "",
 			repository: "",
 		});
@@ -360,7 +362,7 @@ describe("runModeMigrate", () => {
 		mockPromptForBaseOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedTemplateLocator.mockResolvedValueOnce({
+		mockGetForkedRepositoryLocator.mockResolvedValueOnce({
 			owner: "",
 			repository: "",
 		});

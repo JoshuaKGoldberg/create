@@ -1,4 +1,4 @@
-import { CreateConfigSettings } from "../../config/types.js";
+import { CreatedConfigSettings } from "../../config/types.js";
 import { AnyShape, InferredObject } from "../../options.js";
 import { Preset } from "../../types/presets.js";
 import { slugify } from "../utils.js";
@@ -6,7 +6,7 @@ import { slugify } from "../utils.js";
 export function applyArgsToSettings<OptionsShape extends AnyShape>(
 	args: string[],
 	preset: Preset<OptionsShape>,
-	settings: CreateConfigSettings<InferredObject<OptionsShape>> = {},
+	settings: CreatedConfigSettings<InferredObject<OptionsShape>> = {},
 ): Error | typeof settings {
 	const blocks = settings.blocks ?? {};
 	const remove = new Set(blocks.exclude);

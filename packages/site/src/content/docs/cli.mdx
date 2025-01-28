@@ -85,7 +85,7 @@ For example, creating a new repository in a subdirectory:
 <PackageManagers
 	type="dlx"
 	pkg="create"
-	args="typescript-app --directory my-fancy-project"
+	args="typescript-app@beta --directory my-fancy-project"
 />
 
 ### `--from`
@@ -129,7 +129,7 @@ For example, specifying creating a new repository with [`create-typescript-app`]
 <PackageManagers
 	type="dlx"
 	pkg="create"
-	args="typescript-app --mode initialize"
+	args="typescript-app@beta --mode initialize"
 />
 
 ### `--offline`
@@ -144,7 +144,7 @@ The repository will roughly be a local-only creation.
 
 For example, specifying creating a new repository offline with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
-<PackageManagers type="dlx" pkg="create" args="typescript-app --offline" />
+<PackageManagers type="dlx" pkg="create" args="typescript-app@beta --offline" />
 
 :::caution
 `--offline` doesn't prevent templates from running scripts that may make network requests.
@@ -157,14 +157,14 @@ If you are finding your template still sends requests offline, file a bug on the
 
 Which [Preset](./engine/concepts/presets) to use from the template.
 
-If not provided, and the template defines multiple presets, `create` will prompt the user to select one.
+If not provided, `create` will prompt the user to select one.
 
 For example, specifying the _common_ preset for [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
 <PackageManagers
 	type="dlx"
 	pkg="create"
-	args="typescript-app --preset common"
+	args="typescript-app@beta --preset common"
 />
 
 ### `--version`
@@ -184,7 +184,7 @@ For example, if a template defines a `title` option, `--title` will be type `str
 <PackageManagers
 	type="dlx"
 	pkg="create"
-	args="typescript-app --title 'My New App'"
+	args="typescript-app@beta --title 'My New App'"
 />
 
 Any required options that are not provided will be prompted for by the `create` CLI.
