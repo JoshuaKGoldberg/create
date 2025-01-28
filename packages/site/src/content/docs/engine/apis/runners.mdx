@@ -40,7 +40,7 @@ await runBlock(blockReadme);
 
 Given a [Template](../concepts/templates) and the name of one of its [Presets](../concepts/presets), executes a [Creation](../runtime/creations) output by running each of the Preset's Blocks' [`produce()`](../concepts/blocks#production).
 
-See [Producers > `produceBlock`](./producers#produceblock) for the arguments `runTemplate` allows.
+See [Producers > `producePreset`](./producers#producepreset) for the arguments `runTemplate` allows.
 
 For example, given a Template and Preset containing the previous Block that creates a `README.md`, this would write that file to system:
 
@@ -48,7 +48,7 @@ For example, given a Template and Preset containing the previous Block that crea
 import { runBlock } from "create";
 import { template } from "./template.js";
 
-await runTemplate(presetWithReadme, {
+await runTemplate(template, {
 	options: {
 		// ...
 	},
