@@ -48,8 +48,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(eslint@9.18.0(jiti@2.4.2))
       eslint-plugin-package-json:
-        specifier: 0.20.0
-        version: 0.20.0(eslint@9.18.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0)
+        specifier: 0.21.0
+        version: 0.21.0(eslint@9.18.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0)
       eslint-plugin-perfectionist:
         specifier: 4.7.0
         version: 4.7.0(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3)
@@ -2187,8 +2187,8 @@ packages:
     peerDependencies:
       eslint: '>=8'
 
-  eslint-plugin-package-json@0.20.0:
-    resolution: {integrity: sha512-t3ZogrfSrjiDbwyZ9tqeeSVfc/UP3Yaw6RdyLC8JjXa483EiyuUvRySErogA0Zq/lVasjjvNDV8KsFVxzr82xQ==}
+  eslint-plugin-package-json@0.21.0:
+    resolution: {integrity: sha512-CYWtNYr8V0J+RfgbfhsPxaHjbMqOuZtemUKdYps177qHseIqQCHNiCRmJYKO8CRsrvyD9COyupYmpkxzcGLCWQ==}
     engines: {node: '>=18'}
     peerDependencies:
       eslint: '>=8.0.0'
@@ -3271,9 +3271,10 @@ packages:
   package-json-from-dist@1.0.0:
     resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
 
-  package-json-validator@0.7.0:
-    resolution: {integrity: sha512-ufEJ03cPLVxZCHuypSJjmUC2t0xDy0Eru4AfPFe2MfPw14BqedavayQqd49H2/VCrcWONmXsJ47Tp7kzaElX2w==}
+  package-json-validator@0.8.0:
+    resolution: {integrity: sha512-Tkk4C4gQLSfSOwJLAGvJ1VGq1UN8SFzJszkPOqQXu0aMiZPHZ0iteAc30Ui6cgcdBwY5Z5kKCkLVd8RSJLzGsA==}
     engines: {node: '>=18'}
+    hasBin: true
 
   pagefind@1.3.0:
     resolution: {integrity: sha512-8KPLGT5g9s+olKMRTU9LFekLizkVIu9tes90O1/aigJ0T5LmyPqTzGJrETnSw3meSYg58YH7JTzhTTW/3z6VAw==}
@@ -6464,14 +6465,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-package-json@0.20.0(eslint@9.18.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0):
+  eslint-plugin-package-json@0.21.0(eslint@9.18.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0):
     dependencies:
       '@altano/repository-tools': 0.1.1
       detect-indent: 6.1.0
       detect-newline: 3.1.0
       eslint: 9.18.0(jiti@2.4.2)
       jsonc-eslint-parser: 2.4.0
-      package-json-validator: 0.7.0
+      package-json-validator: 0.8.0
       semver: 7.6.3
       sort-object-keys: 1.1.3
       sort-package-json: 2.12.0
@@ -8038,7 +8039,7 @@ snapshots:
 
   package-json-from-dist@1.0.0: {}
 
-  package-json-validator@0.7.0:
+  package-json-validator@0.8.0:
     dependencies:
       yargs: 17.7.2
 
