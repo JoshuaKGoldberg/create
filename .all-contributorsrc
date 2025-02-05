@@ -49,6 +49,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "demianparkhomenko",
+      "name": "Demian Parkhomenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/95881717?v=4",
+      "profile": "https://demian.click",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
