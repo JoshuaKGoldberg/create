@@ -1,0 +1,74 @@
+---
+description: "How create templates define ."
+title: Templates
+---
+
+A _Template_ is a description of how to setup or transition a repository given a set of options.
+
+Each `create` template defines:
+
+1. The options it takes in, defined as Zod schemas
+2. A "producer" function that takes in those options and outputs a description of a repository
+
+:::tip
+`create` templates are conventionally stored in packages whose names start with `create-`.
+See [JoshuaKGoldberg/create-example](https://github.com/JoshuaKGoldberg/create-example) for an example starter repository template.
+:::
+
+## Defining Templates
+
+`create` templates are defined with the [`createTemplate`](/build/apis/create-template) function exported by the `create` npm package.
+It takes in an object with properties for those options and producer function.
+It returns a [`Creation`](/build/concepts/creations) object.
+
+The following example template takes in a `repository` option and produces a `README.md` file with a heading:
+
+```ts title="example-template.js"
+import { createTemplate } from "create";
+import { z } from "zod";
+
+export default createTemplate({
+	options: {
+		title: z.string(),
+	},
+	produce({ options }) {
+		return {
+			files: {
+				"README.md": `# ${options.title}`,
+			},
+		};
+	},
+});
+```
+
+If someone were to run `npx create ./example-template.js`, it would know to ask for a `title`:
+
+```plaintext title="npx create ./example-template.js"
+┌  ✨ create ✨
+│
+│  Welcome to create: a delightful repository templating engine.
+│
+│  Learn more about create on:
+│    https://create.bingo
+│
+│  Running with mode --setup for a new repository using the template:
+│    ./example-template.js
+|
+| What will the title be? (--title)
+```
+
+If someone were to run `npx create ./example-template.js --title "Hello World"`, a `README.md` file would be created with that title as a heading:
+
+```md title="README.md"
+# Hello World
+```
+
+## Template Systems
+
+A single `produce()` function generally doesn't scale well beyond small straightforward repositories.
+Templates generally end up using one or more template systems for defining files.
+
+1. [Handlebars]: allows defining files as [handlebars](https://handlebarsjs.com) templates.
+   Generally recommended for straightforward templates that have more than a dozen files.
+2. [Blocks]: a rich system to define each feature of a template as an independent "blocks".
+   Recommended for templates that want to allow rich logic and/or multiple starting presets.

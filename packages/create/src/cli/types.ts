@@ -5,14 +5,14 @@ export interface ModeResults {
 }
 
 export type ProductionSettings =
-	| ProductionSettingsInitialize
-	| ProductionSettingsMigrate;
+	| ProductionSettingsSetup
+	| ProductionSettingsTransition;
 
-export interface ProductionSettingsInitialize {
-	mode: "initialize";
+export interface ProductionSettingsSetup {
+	mode: "setup";
 }
 
-export interface ProductionSettingsMigrate {
+export interface ProductionSettingsTransition {
 	configFile?: string;
-	mode: "migrate";
+	mode: "transition";
 }

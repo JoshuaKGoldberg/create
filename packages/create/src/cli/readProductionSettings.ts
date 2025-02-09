@@ -15,12 +15,12 @@ export async function readProductionSettings({
 	mode,
 }: ReadProductionSettingsOptions = {}): Promise<Error | ProductionSettings> {
 	const items = await tryCatchSafe(fs.readdir(directory));
-	let defaultMode: ProductionMode = mode ?? "initialize";
+	let defaultMode: ProductionMode = mode ?? "setup";
 
 	if (!items) {
-		return defaultMode === "migrate"
+		return defaultMode === "transition"
 			? new Error(
-					"Cannot run with --mode migrate on a directory that does not yet exist.",
+					"Cannot run with --mode transition on a directory that does not yet exist.",
 				)
 			: { mode: defaultMode };
 	}
@@ -29,12 +29,12 @@ export async function readProductionSettings({
 		if (/create\.config\.\w+/.test(item)) {
 			return {
 				configFile: path.join(directory, item),
-				mode: "migrate",
+				mode: "transition",
 			};
 		}
 
-		if (item === ".git" && mode !== "initialize") {
-			defaultMode = "migrate";
+		if (item === ".git" && mode !== "setup") {
+			defaultMode = "transition";
 		}
 	}
 

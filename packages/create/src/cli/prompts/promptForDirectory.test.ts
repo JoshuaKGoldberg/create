@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createBase } from "../../creators/createBase.js";
+import { createTemplate } from "../../creators/createTemplate.js";
 import { promptForDirectory } from "./promptForDirectory.js";
 
 const mockCancel = Symbol("cancel");
@@ -27,17 +27,16 @@ vi.mock("node:fs/promises", () => ({
 	},
 }));
 
-const base = createBase({
-	options: {},
-});
-
-const templateWithoutAbout = base.createTemplate({
-	presets: [],
-});
-
-const templateWithName = base.createTemplate({
+const templateWithoutAbout = createTemplate({
 	about: { name: "Test Template" },
-	presets: [],
+	options: {},
+	produce: vi.fn(),
+});
+
+const templateWithName = createTemplate({
+	about: { name: "Test Template" },
+	options: {},
+	produce: vi.fn(),
 });
 
 const mockValidateNewDirectory = vi.fn();

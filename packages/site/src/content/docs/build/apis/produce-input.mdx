@@ -1,0 +1,51 @@
+---
+title: produceTemplate
+---
+
+Given an [Input](/build/concepts/inputs), runs its `produce()` with any provided args.
+
+`produceInput` takes in up to two arguments:
+
+1. `input` _(required)_: an Input
+2. `settings` _(required)_: at least `args`, as well as any other properties from an [Input Context](/build/details/contexts#input-context) other than `take`
+
+`produceInput` returns the result of the Input's [`produce()`](/build/apis/create-input#produce).
+
+For example, this Input production reads data from an existing `data.json` file on disk:
+
+```ts
+import { createInput, produceInput } from "create";
+
+const inputDataJson = createInput({
+	async produce({ fs }) {
+		return await JSON.parse(await fs.readFile("data.json"));
+	},
+});
+
+// Type: string
+await produceInput(inputDataJson);
+```
+
+### `args`
+
+Any args to provide to [`produce()`](/build/apis/create-input#produce), as defined by the input's [`args` schema](/build/apis/create-input#args).
+
+For example, this Input production reads data from a JSON file on disk by path:
+
+```ts
+import { Template } from "create";
+import { z } from "zod";
+
+const inputJsonFile = createInput({
+	args: {
+		path: z.string(),
+	},
+	async produce({ args, fs }) {
+		return await JSON.parse(await fs.readFile(args.path));
+	},
+});
+
+await produceInput(inputJsonFile, {
+	args: "data.json",
+});
+```

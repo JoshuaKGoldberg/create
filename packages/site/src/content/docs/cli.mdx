@@ -12,15 +12,24 @@ It will interactively prompt you for any options it needs to run that can't be i
 
 ## Modes
 
-The `create` CLI will automatically detect which [`--mode`](#-m----mode) it is being run in:
+The `create` CLI will automatically detect which [`--mode`](#--mode) it is being run in:
 
-- [Initialization](#initialization-mode): Creating a new repository from a template
-- [Migration](#migration-mode): Updating an existing repositories to a new version of a template
+- [Setup](#setup-mode): Creating a new repository from a template
+- [Transition](#transition-mode): Updating an existing repository to a new version of a template
 
-### Initialization Mode
+### Setup Mode
 
 Creates a new repository from a template.
 This mode will be used by default if the current directory is empty.
+
+When running `create` on the CLI in setup mode, it will:
+
+1. Create a new repository on GitHub
+   - If the template defines an [`about.repository`](/build/apis/create-template#about), the repository will include a _generated from_ notice pointing to that template repository
+2. Run the template to generate a list of files, network requests, and shell commands
+3. Add that new repository as the `origin` remote
+4. Apply the template's creations to the repository
+5. Force-push a single commit with the new repository contents to that origin
 
 For example, to generate a new repository using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
@@ -34,14 +43,30 @@ For example, to generate a new repository using [`create-typescript-app`](https:
 │  Learn more about create on:
 │    https://create.bingo
 │
-│  Running with mode --initialize for a new repository using the template:
+│  Running with mode --setup for a new repository using the template:
 │    create-typescript-app
 ```
 
-### Migration Mode
+You can force running in setup mode in a non-empty directory with `--mode setup`:
+
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app@beta --mode setup"
+/>
+
+### Transition Mode
 
 Updates an existing repository to a new version of a template.
-This mode will be used by default if the current directory is a Git repository and/or contains a [`create.config.*` configuration file](./configuration).
+This mode will be used by default if the current directory is a Git repository and/or contains a [`create.config.*` configuration file](/configuration).
+
+When running `create` on the CLI in transition mode, it will:
+
+1. Check if the repository is freshly cloned from the template's [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+   - If it is, remove all local files and Git history
+2. Run the template to generate a list of files, network requests, and shell commands
+   - If this was a fresh template repository clone, create and push an initial commit
+3. Apply the template's creations to the repository
 
 For example, to update an existing repository to the latest [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
@@ -55,13 +80,21 @@ For example, to update an existing repository to the latest [`create-typescript-
 │  Learn more about create on:
 │    https://create.bingo
 │
-│  Running with mode --migrate for an existing repository using the template:
+│  Running with mode --transition for an existing repository using the template:
 │    create-typescript-app
 ```
 
+You can force running in transition mode in a non-Git directory with `--mode transition`:
+
+<PackageManagers
+	type="dlx"
+	pkg="create"
+	args="typescript-app@beta --mode transition"
+/>
+
 ## Flags
 
-The first argument passed to `create` can be a shorthand `--from`](#-f----from) for an npm package default-exporting a [Template](./concepts/templates).
+The first argument passed to `create` can be a shorthand [`--from`](#--from) for an npm package default-exporting a template.
 A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
 
 :::tip
@@ -129,7 +162,7 @@ For example, specifying creating a new repository with [`create-typescript-app`]
 <PackageManagers
 	type="dlx"
 	pkg="create"
-	args="typescript-app@beta --mode initialize"
+	args="typescript-app@beta --mode setup"
 />
 
 ### `--offline`
@@ -147,25 +180,9 @@ For example, specifying creating a new repository offline with [`create-typescri
 <PackageManagers type="dlx" pkg="create" args="typescript-app@beta --offline" />
 
 :::caution
-`--offline` doesn't prevent templates from running scripts that may make network requests.
-If you are finding your template still sends requests offline, file a bug on the template.
+`--offline` doesn't prevent templates from accidentally running scripts that make network requests.
+If you are finding your template still sends requests with `--offline`, file a bug on the template.
 :::
-
-### `--preset`
-
-> Type: `string`
-
-Which [Preset](./engine/concepts/presets) to use from the template.
-
-If not provided, `create` will prompt the user to select one.
-
-For example, specifying the _common_ preset for [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
-
-<PackageManagers
-	type="dlx"
-	pkg="create"
-	args="typescript-app@beta --preset common"
-/>
 
 ### `--version`
 
@@ -190,13 +207,3 @@ For example, if a template defines a `title` option, `--title` will be type `str
 Any required options that are not provided will be prompted for by the `create` CLI.
 
 See the documentation for your specific template for additional flags.
-
-### Block Exclusions
-
-Individual [Blocks](./engine/concepts/blocks) from a template may be excluded with `--exclude-*` flags, where `*` is the `kebab-case` name of the Block.
-
-For example, if a Block is named `Vitest`, its exclusion flag would be `--exclude-vitest`:
-
-```ts
-npx create typescript-app@beta --exclude-vitest
-```

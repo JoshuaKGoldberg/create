@@ -1,4 +1,4 @@
-import { DirectCreation } from "../types/creations.js";
+import { Creation } from "../types/creations.js";
 import { SystemContext } from "../types/system.js";
 import { applyFilesToSystem } from "./applyFilesToSystem.js";
 import { applyRequestsToSystem } from "./applyRequestsToSystem.js";
@@ -10,7 +10,7 @@ export interface ApplyCreationSettings {
 }
 
 export async function runCreation(
-	creation: Partial<DirectCreation>,
+	creation: Partial<Creation>,
 	{ offline, system }: ApplyCreationSettings,
 ) {
 	if (creation.files) {

@@ -1,1 +1,1 @@
-export type ProductionMode = "initialize" | "migrate";
+export type ProductionMode = "setup" | "transition";

@@ -21,7 +21,7 @@ describe("tryImportTemplate", () => {
 		expect(actual).toEqual(error);
 	});
 
-	it("returns the template when tryImportWithPredicate resolves with a preset", async () => {
+	it("returns the template when tryImportWithPredicate resolves with a template", async () => {
 		const template = { isTemplate: true };
 
 		mockTryImportWithPredicate.mockResolvedValueOnce(template);

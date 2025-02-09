@@ -33,24 +33,18 @@ export function logHelpText(mode: string, source?: Error | HelpSource) {
 		},
 		{
 			examples: [
-				"typescript-app --mode initialize",
-				"typescript-app --mode migrate",
+				"typescript-app --mode setup",
+				"typescript-app --mode transition",
 			],
 			flag: "mode",
 			text: "Which mode to run in.",
-			type: '"initialize" | "migrate"',
+			type: '"setup" | "transition"',
 		},
 		{
 			examples: ["typescript-app --offline"],
 			flag: "offline",
 			text: 'Whether to run in an "offline" mode that skips network requests.',
 			type: "boolean",
-		},
-		{
-			examples: ["typescript-app --preset common"],
-			flag: "preset",
-			text: "Which preset to use from the template.",
-			type: "string",
 		},
 		{
 			examples: ["--version"],

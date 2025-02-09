@@ -6,20 +6,19 @@ import { z } from "zod";
 import { packageData } from "../packageData.js";
 import { createClackDisplay } from "./display/createClackDisplay.js";
 import { findPositionalFrom } from "./findPositionalFrom.js";
-import { runModeInitialize } from "./initialize/runModeInitialize.js";
 import { logOutro } from "./loggers/logOutro.js";
-import { runModeMigrate } from "./migrate/runModeMigrate.js";
 import { readProductionSettings } from "./readProductionSettings.js";
+import { runModeSetup } from "./setup/runModeSetup.js";
 import { CLIStatus } from "./status.js";
+import { runModeTransition } from "./transition/runModeTransition.js";
 
 const valuesSchema = z.object({
 	directory: z.string().optional(),
 	from: z.string().optional(),
 	help: z.boolean().optional(),
-	mode: z.union([z.literal("initialize"), z.literal("migrate")]).optional(),
+	mode: z.union([z.literal("setup"), z.literal("transition")]).optional(),
 	offline: z.boolean().optional(),
 	owner: z.string().optional(),
-	preset: z.string().optional(),
 	repository: z.string().optional(),
 	yes: z.boolean().optional(),
 });
@@ -44,9 +43,6 @@ export async function runCli(args: string[]) {
 				type: "boolean",
 			},
 			owner: {
-				type: "string",
-			},
-			preset: {
 				type: "string",
 			},
 			repository: {
@@ -100,9 +96,9 @@ export async function runCli(args: string[]) {
 	};
 
 	const { outro, status, suggestions } =
-		productionSettings.mode === "initialize"
-			? await runModeInitialize(sharedSettings)
-			: await runModeMigrate({
+		productionSettings.mode === "setup"
+			? await runModeSetup(sharedSettings)
+			: await runModeTransition({
 					...sharedSettings,
 					configFile: productionSettings.configFile,
 				});

@@ -1,6 +1,7 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import { remarkHeadingId } from "remark-custom-heading-id";
+import starlightLinksValidator from "starlight-links-validator";
 import starlightSidebarTopics from "starlight-sidebar-topics";
 
 export default defineConfig({
@@ -16,69 +17,90 @@ export default defineConfig({
 				src: "src/assets/favicon.png",
 			},
 			plugins: [
+				starlightLinksValidator(),
 				starlightSidebarTopics([
 					{
 						icon: "open-book",
 						items: [
-							{ label: "About", link: "about" },
+							{ label: "About Create", link: "about" },
 							{ label: "CLI", link: "cli" },
 							{ label: "Configuration", link: "configuration" },
 							{ label: "FAQs", link: "faqs" },
-							{ label: "Glossary", link: "glossary" },
 						],
-						label: "Get Started",
+						label: "About",
 						link: "/about",
 					},
 					{
-						icon: "information",
+						icon: "pen",
 						items: [
-							{ label: "About", link: "engine/about" },
+							{ label: "About", link: "build/about" },
 							{
 								items: [
-									{ label: "Bases", link: "engine/concepts/bases" },
-									{ label: "Blocks", link: "engine/concepts/blocks" },
-									{ label: "Presets", link: "engine/concepts/presets" },
-									{ label: "Templates", link: "engine/concepts/templates" },
+									{ label: "Creations", link: "build/concepts/creations" },
+									{ label: "Inputs", link: "build/concepts/inputs" },
+									{ label: "Modes", link: "build/concepts/modes" },
+									{ label: "Templates", link: "build/concepts/templates" },
 								],
 								label: "Concepts",
 							},
 							{
 								items: [
-									{ label: "Contexts", link: "engine/runtime/contexts" },
-									{ label: "Creations", link: "engine/runtime/creations" },
-									{ label: "Execution", link: "engine/runtime/execution" },
-									{ label: "Inputs", link: "engine/runtime/inputs" },
-									{ label: "Merging", link: "engine/runtime/merging" },
+									{ label: "Contexts", link: "build/details/contexts" },
+									{ label: "Merging", link: "build/details/merging" },
 								],
-								label: "Runtime",
+								label: "Details",
 							},
 							{
 								items: [
-									{ label: "Creators", link: "engine/apis/creators" },
-									{ label: "Producers", link: "engine/apis/producers" },
-									{ label: "Runners", link: "engine/apis/runners" },
+									{
+										label: "createInput",
+										link: "build/apis/create-input",
+									},
+									{
+										label: "createTemplate",
+										link: "build/apis/create-template",
+									},
+									{
+										label: "produceInput",
+										link: "build/apis/produce-input",
+									},
+									{
+										label: "produceOptions",
+										link: "build/apis/produce-options",
+									},
+									{
+										label: "produceTemplate",
+										link: "build/apis/produce-template",
+									},
+									{
+										label: "runTemplate",
+										link: "build/apis/run-template",
+									},
 								],
 								label: "APIs",
 							},
 							{
 								items: [
-									{ label: "create-fs", link: "engine/packages/create-fs" },
+									{ label: "create-fs", link: "build/packages/create-fs" },
 									{
 										label: "create-testers",
-										link: "engine/packages/create-testers",
+										link: "build/packages/create-testers",
 									},
 								],
 								label: "Packages",
 							},
-							{ label: "Templating FAQs", link: "engine/templating-faqs" },
+							{ label: "FAQs", link: "build/faqs" },
 						],
-						label: "Templating Engine",
-						link: "/engine/about",
+						label: "Building Templates",
+						link: "/build/about",
 					},
 				]),
 			],
 			social: {
 				github: "https://github.com/JoshuaKGoldberg/create",
+			},
+			tableOfContents: {
+				maxHeadingLevel: 4,
 			},
 			title: "create",
 		}),

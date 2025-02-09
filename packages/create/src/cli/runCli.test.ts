@@ -31,11 +31,11 @@ vi.mock("./display/createClackDisplay.js", () => ({
 	createClackDisplay: () => mockDisplay,
 }));
 
-const mockRunModeInitialize = vi.fn();
+const mockRunModeSetup = vi.fn();
 
-vi.mock("./initialize/runModeInitialize.js", () => ({
-	get runModeInitialize() {
-		return mockRunModeInitialize;
+vi.mock("./setup/runModeSetup.js", () => ({
+	get runModeSetup() {
+		return mockRunModeSetup;
 	},
 }));
 
@@ -55,11 +55,11 @@ vi.mock("./loggers/logOutro.js", () => ({
 	},
 }));
 
-const mockRunModeMigrate = vi.fn();
+const mockRunModeTransition = vi.fn();
 
-vi.mock("./migrate/runModeMigrate.js", () => ({
-	get runModeMigrate() {
-		return mockRunModeMigrate;
+vi.mock("./transition/runModeTransition.js", () => ({
+	get runModeTransition() {
+		return mockRunModeTransition;
 	},
 }));
 
@@ -99,89 +99,89 @@ describe("readProductionSettings", () => {
 		expect(mockLogOutro).toHaveBeenCalledWith(chalk.red(message));
 	});
 
-	it("runs initialize mode when readProductionSettings resolves with mode: initialize and no --from is specified", async () => {
+	it("runs setup mode when readProductionSettings resolves with mode: setup and no --from is specified", async () => {
 		const args: string[] = [];
 		const status = CLIStatus.Success;
 
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-		mockRunModeInitialize.mockResolvedValueOnce({ status });
+		mockReadProductionSettings.mockResolvedValueOnce({ mode: "setup" });
+		mockRunModeSetup.mockResolvedValueOnce({ status });
 
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeInitialize).toHaveBeenCalledWith({
+		expect(mockRunModeSetup).toHaveBeenCalledWith({
 			args,
 			display: mockDisplay,
 			from: undefined,
 		});
-		expect(mockRunModeMigrate).not.toHaveBeenCalled();
+		expect(mockRunModeTransition).not.toHaveBeenCalled();
 	});
 
-	it("runs initialize mode when readProductionSettings resolves with mode: initialize and an explicit --from is specified", async () => {
+	it("runs setup mode when readProductionSettings resolves with mode: setup and an explicit --from is specified", async () => {
 		const args = ["--from", "../create-typescript-app"];
 		const status = CLIStatus.Success;
 
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-		mockRunModeInitialize.mockResolvedValueOnce({ status });
+		mockReadProductionSettings.mockResolvedValueOnce({ mode: "setup" });
+		mockRunModeSetup.mockResolvedValueOnce({ status });
 
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeInitialize).toHaveBeenCalledWith({
+		expect(mockRunModeSetup).toHaveBeenCalledWith({
 			args,
 			display: mockDisplay,
 			from: "../create-typescript-app",
 		});
-		expect(mockRunModeMigrate).not.toHaveBeenCalled();
+		expect(mockRunModeTransition).not.toHaveBeenCalled();
 	});
 
-	it("runs initialize mode when readProductionSettings resolves with mode: initialize and an implicit --from is specified", async () => {
+	it("runs setup mode when readProductionSettings resolves with mode: setup and an implicit --from is specified", async () => {
 		const args = ["typescript-app"];
 		const status = CLIStatus.Success;
 
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-		mockRunModeInitialize.mockResolvedValueOnce({ status });
+		mockReadProductionSettings.mockResolvedValueOnce({ mode: "setup" });
+		mockRunModeSetup.mockResolvedValueOnce({ status });
 
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeInitialize).toHaveBeenCalledWith({
+		expect(mockRunModeSetup).toHaveBeenCalledWith({
 			args,
 			display: mockDisplay,
 			from: "create-typescript-app",
 		});
-		expect(mockRunModeMigrate).not.toHaveBeenCalled();
+		expect(mockRunModeTransition).not.toHaveBeenCalled();
 	});
 
-	it("runs migration mode when readProductionSettings resolves with mode: migrate", async () => {
+	it("runs transition mode when readProductionSettings resolves with mode: transition", async () => {
 		const args: string[] = [];
 		const configFile = "create.config.js";
 		const status = CLIStatus.Success;
 
 		mockReadProductionSettings.mockResolvedValueOnce({
 			configFile,
-			mode: "migrate",
+			mode: "transition",
 		});
-		mockRunModeMigrate.mockResolvedValueOnce({ status });
+		mockRunModeTransition.mockResolvedValueOnce({ status });
 
 		const actual = await runCli(args);
 
 		expect(actual).toEqual(status);
-		expect(mockRunModeMigrate).toHaveBeenCalledWith({
+		expect(mockRunModeTransition).toHaveBeenCalledWith({
 			args,
 			configFile,
 			display: mockDisplay,
 			from: undefined,
 		});
-		expect(mockRunModeInitialize).not.toHaveBeenCalled();
+		expect(mockRunModeSetup).not.toHaveBeenCalled();
 	});
 
 	it("logs the outro when resolved by the mode runner", async () => {
 		const outro = "Goodbye.";
 		const suggestions = ["abc"];
 
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-		mockRunModeInitialize.mockResolvedValueOnce({ outro, suggestions });
+		mockReadProductionSettings.mockResolvedValueOnce({ mode: "setup" });
+		mockRunModeSetup.mockResolvedValueOnce({ outro, suggestions });
 
 		await runCli(["typescript-app"]);
 
@@ -191,8 +191,8 @@ describe("readProductionSettings", () => {
 	it("logs a cancellation outro when one is not resolved by the mode runner", async () => {
 		const suggestions = ["abc"];
 
-		mockReadProductionSettings.mockResolvedValueOnce({ mode: "initialize" });
-		mockRunModeInitialize.mockResolvedValueOnce({ suggestions });
+		mockReadProductionSettings.mockResolvedValueOnce({ mode: "setup" });
+		mockRunModeSetup.mockResolvedValueOnce({ suggestions });
 
 		await runCli(["typescript-app"]);
 

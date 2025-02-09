@@ -4,7 +4,10 @@ export function isTemplate(value: unknown): value is Template {
 	return (
 		!!value &&
 		typeof value === "object" &&
-		"presets" in value &&
-		Array.isArray(value.presets)
+		"options" in value &&
+		!!value.options &&
+		typeof value.options === "object" &&
+		"produce" in value &&
+		typeof value.produce === "function"
 	);
 }

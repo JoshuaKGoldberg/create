@@ -1,0 +1,97 @@
+---
+title: FAQs
+---
+
+## Options
+
+### Why are options defined as an object with Zod schemas as properties, not a Zod object schema itself?
+
+Or: why not allow non-object types for options schemas, such as the following `z.union()`?
+
+```ts
+export default createTemplate({
+	about: { name: "My Template" },
+	options: z.union([
+		z.object({ a: z.string(), b: z.number() }),
+		z.object({ c: z.number(), d: z.string() }),
+	]),
+	produce({ options }) {
+		// ...
+	},
+});
+```
+
+Template options are converted to CLI flags before templates are run.
+Having the `create` CLI map from complex conditional Zod types to CLI flags is a difficult task.
+Soon, `create`-specific tooling will be able to describe full documentation websites that will also need to parse CLI flags.
+
+Conditional CLI flags are also more confusing for users.
+Having to understand union types or other concepts to know which flags are available adds cognitive burden to using a template.
+
+Instead of describing a schema as a complex type itself, consider moving the complex type to a property of the options object:
+
+```ts
+export default createTemplate({
+	about: { name: "My Template" },
+	options: {
+		letters: z.union([
+			z.object({ a: z.string(), b: z.number() }),
+			z.object({ c: z.number(), d: z.string() }),
+		]),
+	},
+	produce({ options }) {
+		// ...
+	},
+});
+```
+
+If you have a use case for root-level flags that shouldn't be made into an options object property, please [file a feature request issue on `create`](https://github.com/JoshuaKGoldberg/create/issues/new?template=03-feature.yml).
+
+### Why do templates define a separate `prepare()`, not Zod methods like `refine` or `transform`?
+
+`create` intentionally does not use any Zod features beyond creating and describing schemas.
+This is for two reasons:
+
+- Bases often need data to be shared between multiple -even many- different Options.
+  Loading implementations become much cleaner when all data loaders can be declared once in a `prepare()` function,
+  wrapped in a caching [`lazyValue`](https://github.com/sindresorhus/lazy-value), then used as needed across any number of Options.
+- Long-term, the engine should not be locked into any one schema engine.
+  Adopting Zod-specific features will make it harder to swap between other implementers of [standard-schema](https://github.com/standard-schema/standard-schema) in the future if needed.
+
+See the [`create-example` Base `prepare()` implementation](https://github.com/JoshuaKGoldberg/create-example/blob/c6714eeb02a5106eb5e4e4694f1e8b590444030d/src/base.ts#L138) (TODO: FIX LINK) for an example of values used across Options.
+
+### Why is the template `prepare()` method synchronous?
+
+Or: why must options defaults be provided as asynchronous functions, rather than having `prepare()` itself `await` for their values?
+
+Option values might be provided by the user.
+When an option is provided via an explicit CLI flag or in a producer API, its default logic shouldn't be awaited.
+
+If a user provides explicit values for all options then the `prepare()` function should take as little time as possible: i.e. it should be synchronous.
+
+### Why should we use `take` and Inputs in `prepare()`?
+
+Or: why not directly call to `fetch()`, `fs.readFile`, and other external resource APIs in [`createTemplate` > `prepare()`](/build/apis/create-template#asynchronous-defaults)?
+
+You can certainly use those APIs in your `prepare()` functions.
+However, mocking out resources during unit testing is much harder if you do.
+
+[`create-testers`](/build/packages/create-testers) functions allow injecting mock versions of [context properties](/build/details/contexts).
+They will also throw an error if you accidentally call to a context property without providing a mock function for it.
+This can prevent accidental file writes, network calls, and script commands when running unit tests.
+
+### Why is the `produceOptions()` API not a part of `produceTemplate()` or `runTemplate()`?
+
+Not every caller of [`produceTemplate()`](/build/apis/produce-template) or [`runTemplate()`](/build/apis/run-template) may want to asynchronously load in options.
+Some callers might have separately loaded in all required options, and not want to allow any to run their defaults logic.
+
+## Production Methods
+
+### Why are `produce()`, `setup()` and `transition()` synchronous?
+
+Or: why not allow these methods to be asynchronous, so they can read information from disk or network requests?
+
+Any information that you would want to read asynchronously should be taken in as options.
+Options allow defining important intake information with well-typed Zod schemas and `prepare()` logic to efficiently infer default values.
+
+If you have a use case for information that should be asynchronously loaded but cannot be an option, please [file a feature request issue on `create`](https://github.com/JoshuaKGoldberg/create/issues/new?template=03-feature.yml).

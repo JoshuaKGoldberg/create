@@ -7,21 +7,18 @@ It runs well but its APIs are still in flux.
 Please try it out and report any issues on GitHub!
 🙏
 
+:::warning
+TODO: This still needs to be updated post-76.
+I'm going to write docs on the template systems, then link to them here.
+:::
+
 ## Consumption
 
 ### How do I use `create`?
 
-If you want to create or update a repository, see [CLI](./cli) for running the `create` command.
+If you want to create or update a repository, see [CLI](/cli) for running the `create` command.
 
-If you want to build your own template, see [Templating Engine > About](./engine/about).
-
-### How do I remove part of a template?
-
-Go ahead and change your repository!
-After you create a repository, you can customize it however you see fit.
-
-If you'd like to keep a repository updated with a template, you can customize your tooling with a [configuration file](./configuration).
-See [Configuration > Blocks](./configuration#blocks) for how to add or remove pieces of tooling.
+If you want to build your own template, see [Templating Engine > About](/build/about).
 
 ### What else can `create` do?
 
@@ -35,18 +32,13 @@ See [JoshuaKGoldberg/create-typescript-app#1181 📝 Documentation: Long-term pr
 
 ## Ecosystem Comparisons
 
-`create` is targeting being a fully complete solution for defining _creating_, _migrating_, and/or _updating_ repositories to use flexible templates.
-Those templates are defined in a feature-by-feature ("Block") basis and with configurable "Presets" using `create` APIs.
-`create` templates go beyond just file system copying with network requests, shell commands, and versioned migrations.
+`create` is targeting being a fully complete solution for:
 
-Other ecosystem tools exist for part of that feature set.
-None target the full feature set of `create`.
+- Repository management: _creating_ repositories with templates and _migrating_ existing repositories to new versions of templates
+- Templates: allowing straightforward templates and scaling to complex multi-faceted ones
 
-In general, `create`'s approach is differentiated from previous projects by:
-
-- Allowing sub-templates that can be swapped individually and add to each other ([Blocks](./concepts/blocks))
-- Built-in support for onboarding existing out-of-template repositories ([migration mode](./cli/#migration-mode))
-- Producing outputs -including files and more- in a generalized format ([Direct Creations](./runtime/creations#direct-creations))
+`create` templates go beyond just file system copying.
+They also support network requests, shell commands, and versioned migrations.
 
 ### Comparisons Table
 
@@ -70,7 +62,7 @@ They might be wildly inaccurate.
 			<td>In-Memory</td>
 			<td>Template Files</td>
 			<td>Initializing Repositories</td>
-			<td>Managed Migrations</td>
+			<td>Managed Transitions</td>
 			<td>Reusable Components</td>
 		</tr>
 	</thead>
@@ -81,15 +73,7 @@ They might be wildly inaccurate.
 			</th>
 			<td>Web</td>
 			<td>Decoupled</td>
-			<td>
-				<a
-					href="https://github.com/JoshuaKGoldberg/create/issues/76"
-					target="_blank"
-					title="create/issues/76"
-				>
-					#76
-				</a>
-			</td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>✅</td>
 			<td>✅</td>
@@ -356,10 +340,8 @@ Its architecture and APIs generally work with older, now-outdated JavaScript pra
 - System interactions such as installing dependencies and writing files are done by imperatively calling Yeoman APIs, as opposed to producing outputs that are managed by `create`
 - Persistent options are provided in a raw `.yo-rc.json` JSON file rather than type-safe schema definitions
 
-Yeoman has not been actively maintained in several years.
-
 ## Template Development
 
-[Templating Engine](../engine/about) covers how to develop templates for `create`.
+[Templating Engine](/build/about) covers how to develop templates for `create`.
 
-See [Templating Engine > FAQs](../engine/faqs) for FAQs on template development.
+See [Templating Engine > FAQs](/build/faqs) for FAQs on template development.

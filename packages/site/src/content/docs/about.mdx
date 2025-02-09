@@ -1,21 +1,29 @@
 ---
 description: "About create: delightful templating for web repositories."
-title: About
+title: About Create
 ---
 
 import { PackageManagers } from "starlight-package-managers";
 
-`create` is an engine for building repositories from templates.
-It provides tooling for:
-
-- **Initialization**: Creating new repositories from templates with a single CLI command
-- **Migration**: Updating existing repositories to the newest versions of their template
-
-See **[CLI](./cli)** to generate your first repository from a template with the `create` command:
+`create` makes it straightforward to create new repositories from templates.
+Pass the name of a template to the `create` CLI command, and it'll make a new repository for you.
 
 <PackageManagers type="dlx" pkg="create" args="typescript-app@beta" />
 
-`create` also provides rich scaffolding for building flexible repository templates that describe the files and settings for projects, as well as configurable, type-safe options for customizations.
+With `create` templates, you can have fully-formed, wonderful dev tooling in your repositories -- without setting all those tools up from scratch yourself.
+
+> See **[CLI](/cli)** to generate your first repository from a template with the `create` command:
+
+## What?
+
+`create` provides tooling for:
+
+- **Setup**: Creating new repositories from templates with a single CLI command
+- **Transition**: Updating existing repositories to the newest versions of their template
+
+The `create` project also provides rich scaffolding for building flexible repository templates that describe the files and settings for projects.
+
+> See **[Templating Engine](/build/about)** to learn how to write your own templates.
 
 ## Why?
 
@@ -27,7 +35,7 @@ Keeping up to date with the latest and greatest in web development tooling is _h
 `create` helps with both of those problems.
 
 It allows you to pull in great tooling from templates such as [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) -- without needing to configure it all from scratch.
-Templates can define both the raw files on disk as well as GitHub repository settings.
+Templates can define both the raw files on disk as well as GitHub repository settings and commands to run that initialize templates.
 
 `create` additionally includes great support for updating your repositories as templates change.
 Existing template options are inferred from your existing repository.

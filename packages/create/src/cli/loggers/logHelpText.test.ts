@@ -21,7 +21,7 @@ describe("logHelpText", () => {
 	it("logs the error when source is an error", () => {
 		const message = "Oh no!";
 
-		logHelpText("migrate", new Error(message));
+		logHelpText("transition", new Error(message));
 
 		expect(mockError).toHaveBeenCalledWith(message);
 		expect(mockInfo).not.toHaveBeenCalled();
@@ -31,12 +31,12 @@ describe("logHelpText", () => {
 		const descriptor = "place";
 		const type = "thing";
 
-		logHelpText("migrate", { descriptor, type });
+		logHelpText("transition", { descriptor, type });
 
 		expect(mockError).not.toHaveBeenCalled();
 		expect(mockInfo).toHaveBeenCalledWith(
 			[
-				chalk.green(`--mode migrate`),
+				chalk.green(`--mode transition`),
 				` detected with the `,
 				chalk.blue(descriptor),
 				" ",

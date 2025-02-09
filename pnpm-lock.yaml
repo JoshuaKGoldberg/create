@@ -157,6 +157,22 @@ importers:
         specifier: 22.10.6
         version: 22.10.6
 
+  packages/create-blocks:
+    dependencies:
+      hash-object:
+        specifier: ^5.0.1
+        version: 5.0.1
+      octokit:
+        specifier: ^4.1.0
+        version: 4.1.0
+    devDependencies:
+      '@types/node':
+        specifier: 22.10.6
+        version: 22.10.6
+      create:
+        specifier: workspace:^
+        version: link:../create
+
   packages/create-fs:
     devDependencies:
       '@types/node':
@@ -247,6 +263,9 @@ importers:
       remark-custom-heading-id:
         specifier: ^2.0.0
         version: 2.0.0
+      starlight-links-validator:
+        specifier: ^0.14.2
+        version: 0.14.2(@astrojs/starlight@0.31.0(astro@5.1.6(@types/node@22.10.6)(jiti@2.4.2)(rollup@4.29.1)(typescript@5.7.3)(yaml@2.7.0)))
       starlight-package-managers:
         specifier: ^0.9.0
         version: 0.9.0(@astrojs/starlight@0.31.0(astro@5.1.6(@types/node@22.10.6)(jiti@2.4.2)(rollup@4.29.1)(typescript@5.7.3)(yaml@2.7.0)))
@@ -1490,6 +1509,9 @@ packages:
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
+  '@types/picomatch@3.0.2':
+    resolution: {integrity: sha512-n0i8TD3UDB7paoMMxA3Y65vUncFJXjcUf7lQY7YyKGl6031FNjfsLs6pdLFCy2GNFxItPJG8GvvpbZc2skH7WA==}
+
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
 
@@ -2637,6 +2659,10 @@ packages:
   iron-webcrypto@1.2.1:
     resolution: {integrity: sha512-feOM6FaSr6rEABp/eDfVseKyTMDt+KGpeB35SkVn9Tyn0CqvVsY3EwI0v5i8nMHyJnzCIQf7nsy3p41TPkJZhg==}
 
+  is-absolute-url@4.0.1:
+    resolution: {integrity: sha512-/51/TKE88Lmm7Gc4/8btclNXWS+g50wXhYJq8HWIBAGUBnoAdRu1aXeh364t/O7wXDAcTJDP8PNuNKWUDWie+A==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   is-alphabetical@1.0.4:
     resolution: {integrity: sha512-DwzsA04LQ10FHTZuL0/grVDk4rFoVH1pjAToYwBrHSxcrBIGQuXrQMtD5U1b0U2XVgKZCTLLP8u2Qxqhy3l2Vg==}
 
@@ -3730,6 +3756,12 @@ packages:
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
+
+  starlight-links-validator@0.14.2:
+    resolution: {integrity: sha512-OsPngajtW4kB/oxiW3Kt1Fd+rY3opdIWbD/n5pGQMzil03QujT6rAeHEBR4tXRdjQW4HnFZYIy/ANhBu4kUNfQ==}
+    engines: {node: '>=18.17.1'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.15.0'
 
   starlight-package-managers@0.9.0:
     resolution: {integrity: sha512-iDChnj8hCUYH2s5hFMnpEiCYHUAuVivh2jvFgFJvUmViEEOdA24ZXrUhQhA/qg2KULCgn17F2cKWf3vhvIcl0w==}
@@ -5573,6 +5605,8 @@ snapshots:
 
   '@types/normalize-package-data@2.4.4': {}
 
+  '@types/picomatch@3.0.2': {}
+
   '@types/sax@1.2.7':
     dependencies:
       '@types/node': 22.10.6
@@ -7082,6 +7116,8 @@ snapshots:
   inline-style-parser@0.2.3: {}
 
   iron-webcrypto@1.2.1: {}
+
+  is-absolute-url@4.0.1: {}
 
   is-alphabetical@1.0.4: {}
 
@@ -8637,6 +8673,19 @@ snapshots:
   sprintf-js@1.0.3: {}
 
   stackback@0.0.2: {}
+
+  starlight-links-validator@0.14.2(@astrojs/starlight@0.31.0(astro@5.1.6(@types/node@22.10.6)(jiti@2.4.2)(rollup@4.29.1)(typescript@5.7.3)(yaml@2.7.0))):
+    dependencies:
+      '@astrojs/starlight': 0.31.0(astro@5.1.6(@types/node@22.10.6)(jiti@2.4.2)(rollup@4.29.1)(typescript@5.7.3)(yaml@2.7.0))
+      '@types/picomatch': 3.0.2
+      github-slugger: 2.0.0
+      hast-util-from-html: 2.0.3
+      hast-util-has-property: 3.0.0
+      is-absolute-url: 4.0.1
+      kleur: 4.1.5
+      mdast-util-to-string: 4.0.0
+      picomatch: 4.0.2
+      unist-util-visit: 5.0.0
 
   starlight-package-managers@0.9.0(@astrojs/starlight@0.31.0(astro@5.1.6(@types/node@22.10.6)(jiti@2.4.2)(rollup@4.29.1)(typescript@5.7.3)(yaml@2.7.0))):
     dependencies:

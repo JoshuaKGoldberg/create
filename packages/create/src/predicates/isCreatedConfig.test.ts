@@ -1,20 +1,13 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { createConfig } from "../config/createConfig.js";
-import { createBase } from "../creators/createBase.js";
+import { createTemplate } from "../creators/createTemplate.js";
 import { isCreatedConfig } from "./isCreatedConfig.js";
 
-const base = createBase({
+const template = createTemplate({
+	about: { name: "Test Template" },
 	options: {},
-});
-
-const preset = base.createPreset({
-	about: { name: "Test Preset" },
-	blocks: [],
-});
-
-const template = base.createTemplate({
-	presets: [preset],
+	produce: vi.fn(),
 });
 
 describe("isCreatedConfig", () => {
@@ -26,17 +19,18 @@ describe("isCreatedConfig", () => {
 		[{}, false],
 		[{ template: null }, false],
 		[{ template: {} }, false],
-		[{ settings: { preset: "test" }, template: {} }, false],
+		[{ settings: { options: {} }, template: {} }, false],
 		[{ settings: null }, false],
 		[{ settings: {} }, false],
 		[{ settings: {}, template: {} }, false],
-		[{ settings: { preset: "test" }, template: {} }, false],
+		[{ settings: { options: {} }, template: {} }, false],
 		[{ template }, false],
 		[{ settings: null, template }, false],
 		[{ settings: {}, template }, false],
-		[{ settings: { preset: null }, template }, false],
-		[{ settings: { preset: "test" }, template }, false],
-		[createConfig(template, { preset: "test preset" }), true],
+		[{ settings: { options: {}, template } }, false],
+		[{ settings: { options: {} }, template }, false],
+		[createConfig(template), true],
+		[createConfig(template, {}), true],
 	])("%j", (input, expected) => {
 		const actual = isCreatedConfig(input);
 

@@ -29,49 +29,49 @@ describe("readProductionSettings", () => {
 		expect(mockReaddir).toHaveBeenCalledWith(directory);
 	});
 
-	it("returns mode: initialize when the directory does not exist and mode is not provided", async () => {
+	it("returns mode: setup when the directory does not exist and mode is not provided", async () => {
 		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await readProductionSettings({
 			directory: "other",
 		});
 
-		expect(actual).toEqual({ mode: "initialize" });
+		expect(actual).toEqual({ mode: "setup" });
 	});
 
-	it("returns mode: initialize when the directory does not exist and mode is initialize", async () => {
+	it("returns mode: setup when the directory does not exist and mode is setup", async () => {
 		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await readProductionSettings({
 			directory: "other",
-			mode: "initialize",
+			mode: "setup",
 		});
 
-		expect(actual).toEqual({ mode: "initialize" });
+		expect(actual).toEqual({ mode: "setup" });
 	});
 
-	it("returns an error when the directory does not exist and mode is migrate", async () => {
+	it("returns an error when the directory does not exist and mode is transition", async () => {
 		mockReaddir.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await readProductionSettings({
 			directory: "other",
-			mode: "migrate",
+			mode: "transition",
 		});
 
 		expect(actual).toEqual(
 			new Error(
-				"Cannot run with --mode migrate on a directory that does not yet exist.",
+				"Cannot run with --mode transition on a directory that does not yet exist.",
 			),
 		);
 	});
 
-	it("returns the config file and mode: migrate when a config file is found without a mode", async () => {
+	it("returns the config file and mode: transition when a config file is found without a mode", async () => {
 		const configFile = "create.config.ts";
 		mockReaddir.mockResolvedValueOnce([configFile]);
 
 		const actual = await readProductionSettings();
 
-		expect(actual).toEqual({ configFile, mode: "migrate" });
+		expect(actual).toEqual({ configFile, mode: "transition" });
 	});
 
 	it("returns the config file relative to the directory when a config file is found with a directory", async () => {
@@ -82,39 +82,39 @@ describe("readProductionSettings", () => {
 
 		expect(actual).toEqual({
 			configFile: path.join("path/to", configFile),
-			mode: "migrate",
+			mode: "transition",
 		});
 	});
 
-	it("returns mode migrate when only a .git is is found with mode migrate", async () => {
+	it("returns mode transition when only a .git is is found with mode transition", async () => {
 		mockReaddir.mockResolvedValueOnce([".git"]);
 
-		const actual = await readProductionSettings({ mode: "migrate" });
+		const actual = await readProductionSettings({ mode: "transition" });
 
-		expect(actual).toEqual({ mode: "migrate" });
+		expect(actual).toEqual({ mode: "transition" });
 	});
 
-	it("returns mode initialize when only a .git is is found with mode initialize", async () => {
+	it("returns mode setup when only a .git is is found with mode setup", async () => {
 		mockReaddir.mockResolvedValueOnce([".git"]);
 
-		const actual = await readProductionSettings({ mode: "initialize" });
+		const actual = await readProductionSettings({ mode: "setup" });
 
-		expect(actual).toEqual({ mode: "initialize" });
+		expect(actual).toEqual({ mode: "setup" });
 	});
 
-	it("returns mode migrate when only a .git is is found without a mode", async () => {
+	it("returns mode transition when only a .git is is found without a mode", async () => {
 		mockReaddir.mockResolvedValueOnce([".git"]);
 
 		const actual = await readProductionSettings();
 
-		expect(actual).toEqual({ mode: "migrate" });
+		expect(actual).toEqual({ mode: "transition" });
 	});
 
-	it("returns mode initialize when no config file or .git is found without a mode", async () => {
+	it("returns mode setup when no config file or .git is found without a mode", async () => {
 		mockReaddir.mockResolvedValueOnce([]);
 
 		const actual = await readProductionSettings();
 
-		expect(actual).toEqual({ mode: "initialize" });
+		expect(actual).toEqual({ mode: "setup" });
 	});
 });

@@ -1,6 +1,6 @@
-<h1 align="center">create-fs</h1>
+<h1 align="center">create-blocks</h1>
 
-<p align="center">The file system used by <a href="https://create.bingo"><code>create</code></a>. 🗄️</p>
+<p align="center">A rich <a href="https://create.bingo"><code>create</code></a> templating engine for comprehensive, configurable templates. 🧱</p>
 
 <p align="center">
 	<a href="https://github.com/JoshuaKGoldberg/create/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>
@@ -11,7 +11,3 @@
 </p>
 
 See **[create.bingo](https://create.bingo)** for documentation.
-Specifically:
-
-- [Packages > `create-fs`](https://www.create.bingo/engine/packages/create-fs): for this package's documentation
-- [Runtime > Creations > `files`](https://www.create.bingo/engine/runtime/creations#files): for where these are used
