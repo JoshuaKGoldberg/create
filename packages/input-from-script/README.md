@@ -21,15 +21,11 @@ await take(inputFromFetch, { resource: "npm whoami" });
 
 ## Options
 
-`inputFromFetch` defines two parameters:
+`inputFromScript` takes a single argument, `command`, of type `string`.
 
-- `resource` _(required)_: the `string` or [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) to be passed to [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-- `options` _(optional)_: the [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/RequestInit) object to be passed to [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+It runs the `command` with [`execa`](https://www.npmjs.com/package/execa) and returns either:
 
-It sends a request to the `resource` with [Input Context `fetch`](https://create.bingo/build/details/contexts#input-fetchers) and returns either:
-
-- `undefined`: If the [`offline`](https://create.bingo/cli#--offline) flag is enabled
-- [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error): If an error was caught running the fetch
-- [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response): The awaited response from `fetch()`
+- [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error): If an error was caught running the script
+- `Result`: The type from `execa`, including the `stdout` property
 
 See **[create.bingo > Templates > Concepts > Inputs](https://create.bingo/build/concepts/inputs)** for more documentation on Inputs.

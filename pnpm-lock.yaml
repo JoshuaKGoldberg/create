@@ -204,6 +204,19 @@ importers:
         specifier: 3.24.1
         version: 3.24.1
 
+  packages/input-from-fetch:
+    dependencies:
+      create:
+        specifier: workspace:^
+        version: link:../create
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      create-testers:
+        specifier: workspace:^
+        version: link:../create-testers
+
   packages/input-from-file:
     dependencies:
       create:

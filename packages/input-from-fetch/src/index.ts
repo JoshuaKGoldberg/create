@@ -3,9 +3,22 @@ import { z } from "zod";
 
 export const inputFromScript = createInput({
 	args: {
-		command: z.string(),
+		options: z
+			.object({
+				// TODO: fill out!
+			})
+			.optional(),
+		resource: z.string(),
 	},
-	async produce({ args, runner }) {
-		return await runner(args.command);
+	async produce({ args, fetchers, offline }) {
+		if (offline) {
+			return undefined;
+		}
+
+		try {
+			return await fetchers.fetch(args.resource, args.options);
+		} catch (error) {
+			return error as Error;
+		}
 	},
 });
