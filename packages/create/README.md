@@ -1,4 +1,4 @@
-<h1 align="center">create</h1>
+<h1 align="center">Bingo</h1>
 
 <p align="center">Composable, testable, type-safe templates. 💝</p>
 
@@ -12,20 +12,20 @@
 
 👉 See **[create.bingo](https://create.bingo)**.
 
-`create` is a new scaffolding engine for describing repository templates.
+Bingo is a new scaffolding engine for describing repository templates.
 It's like a modern version of [Yeoman](https://yeoman.io), but:
 
 - **Composable**: Individual blocks in your templates can be mix-and-matched together
 - **Testable**: Each layer of your templates can be individually unit or end-to-end tested
 - **Type-Safe**: Fully typed from the ground up, including [Zod](https://zod.dev)-based options schemas
 
-`create` also provides scaffolding to turn templates into a repository generator akin to a `create-next-app` or `create-typescript-app`.
+Bingo also provides scaffolding to turn templates into a repository generator akin to a `create-next-app` or `create-typescript-app`.
 
 👉 See **[create.bingo](https://create.bingo)**.
 
 ## Status
 
-`create` is early stage.
+Bingo is early stage.
 It runs well but its APIs are still in flux.
 Please try it out and report any issues on GitHub!
 🙏

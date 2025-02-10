@@ -78,9 +78,9 @@ export default defineConfig({
 				]),
 			],
 			social: {
-				github: "https://github.com/JoshuaKGoldberg/create",
+				github: "https://github.com/JoshuaKGoldberg/bingo",
 			},
-			title: "create",
+			title: "Bingo",
 		}),
 	],
 	markdown: {
