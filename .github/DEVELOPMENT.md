@@ -28,7 +28,7 @@ pnpm build --watch
 Alternately, you can build an individual package from within its folder:
 
 ```shell
-cd packages/create
+cd packages/bingo
 pnpm build
 ```
 

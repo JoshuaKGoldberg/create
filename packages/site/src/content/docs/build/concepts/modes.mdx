@@ -3,22 +3,22 @@ description: "The two runtime execution modes create may run in."
 title: Modes
 ---
 
-The `create` engine can optionally be told to run in one the following "modes":
+The Bingo engine can optionally be told to run in one the following "modes":
 
 - `"setup"`: Indicating the production is being used to create a new repository
 - `"transition"`: Indicating the production is migrating an existing repository
 
-Running `create` on the CLI will always infer one of the modes.
+Running the `bingo` CLI will always infer one of the modes.
 The [`produceTemplate`](/build/apis/produce-template) and [`runTemplate`](/build/apis/run-template) may optionally specify a mode.
 
 ## Setup
 
 This mode creates a new repository on GitHub.
 
-As the production is run, the `create` engine will add in additional creations from the template's [`setup()` method](/build/apis/create-template#transition), if it exists.
+As the production is run, the Bingo engine will add in additional creations from the template's [`setup()` method](/build/apis/create-template#transition), if it exists.
 Those creations typically includes example starter files or one-time API registrations.
 
-When running `create` on the CLI in setup mode, it will:
+When running Bingo in setup mode, it will:
 
 1. Create a new repository on GitHub
    - If the template defines an [`about.repository`](/build/apis/create-template#about), the repository will include a _generated from_ notice pointing to that template repository
@@ -31,10 +31,10 @@ When running `create` on the CLI in setup mode, it will:
 
 This mode migrates an existing repository onto the provided template.
 
-As the production is run, the `create` engine will add in additional creations from the template's [`transition()` method](/build/apis/create-template#transition), if it exists.
+As the production is run, the Bingo engine will add in additional creations from the template's [`transition()` method](/build/apis/create-template#transition), if it exists.
 Those creations typically includes scripts that delete files from known no-longer-used pieces of tooling.
 
-When running `create` on the CLI in transition mode, it will:
+When running Bingo on the CLI in transition mode, it will:
 
 1. Check if the repository is freshly cloned from the template's [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
    - If it is, remove all local files and Git history

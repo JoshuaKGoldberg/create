@@ -22,7 +22,7 @@ export default defineConfig({
 					{
 						icon: "open-book",
 						items: [
-							{ label: "About Create", link: "about" },
+							{ label: "About Bingo", link: "about" },
 							{ label: "CLI", link: "cli" },
 							{ label: "Configuration", link: "configuration" },
 							{ label: "FAQs", link: "faqs" },
@@ -81,10 +81,10 @@ export default defineConfig({
 							},
 							{
 								items: [
-									{ label: "create-fs", link: "build/packages/create-fs" },
+									{ label: "bingo-fs", link: "build/packages/bingo-fs" },
 									{
-										label: "create-testers",
-										link: "build/packages/create-testers",
+										label: "bingo-testers",
+										link: "build/packages/bingo-testers",
 									},
 								],
 								label: "Packages",
@@ -94,15 +94,26 @@ export default defineConfig({
 						label: "Building Templates",
 						link: "/build/about",
 					},
+					{
+						icon: "setting",
+						items: [
+							{ label: "About", link: "engines/about" },
+							{ label: "Handlebars", link: "engines/handlebars/about" },
+							{ label: "Blocks", link: "engines/blocks/about" },
+							{ label: "Custom Engines", link: "engines/custom" },
+						],
+						label: "Templating Engines",
+						link: "/engines/about",
+					},
 				]),
 			],
 			social: {
-				github: "https://github.com/JoshuaKGoldberg/create",
+				github: "https://github.com/JoshuaKGoldberg/Bingo",
 			},
 			tableOfContents: {
 				maxHeadingLevel: 4,
 			},
-			title: "create",
+			title: "Bingo",
 		}),
 	],
 	markdown: {

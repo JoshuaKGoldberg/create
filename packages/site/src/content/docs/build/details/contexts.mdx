@@ -21,7 +21,7 @@ Any manually provided values as described by the [Input's `args`](/build/apis/cr
 For example, this input takes in an `roundTo` number that defaults to `1000`:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { z } from "zod";
 
 export const inputCurrentTime = createInput({
@@ -41,10 +41,10 @@ An object to make network calls, containing:
 - `fetch`: An equivalent to the global `fetch` function
 - `octokit`: [GitHub Octokit](https://github.com/octokit/octokit.js?tab=readme-ov-file#octokit-api-client) that uses the `fetch` internally
 
-For example, an Input that retrieves a random Cat fact:
+For example, this input retrieves a random Cat fact:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 
 export const inputCatFact = createInput({
 	async produce({ fetchers }) {
@@ -67,7 +67,7 @@ For now, the `fs` object contains a single property:
 For example, this input reads the contents of a file from disk as a string:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { z } from "zod";
 
 export const inputFromFile = createInput({
@@ -82,7 +82,24 @@ export const inputFromFile = createInput({
 
 ### `offline` {#input-offline}
 
-TODO
+Whether to hint to the input not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+If provided, [Input Context `fetchers`](/build/details/contexts#input-fetchers) will reject with an Error instead of resolving.
+
+For example, this input resolves with `undefined` instead of sending a request when `offline` is true:
+
+```ts
+import { createInput } from "bingo";
+
+export const inputGitUserEmail = createInput({
+	async produce({ fetchers, offline }) {
+		return offline
+			? undefined
+			: await fetchers.fetch(args.resource, args.options);
+	},
+});
+```
 
 ### `runner` {#input-runner}
 
@@ -90,10 +107,10 @@ An `execa` shell script to run commands.
 
 This is useful for data that's easiest to pull from the CLI.
 
-For example, an Input that retrieves the current Git user's email:
+For example, this input retrieves the current Git user's email:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 
 export const inputGitUserEmail = createInput({
 	async produce({ runner }) {
@@ -116,7 +133,7 @@ It returns the result of calling the `input` with the `args`.
 For example, this input uses `take` to read in data from a file from another input:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { inputFromFile } from "input-from-file";
 
 export const inputFromFileJSON = createInput({
@@ -147,6 +164,13 @@ Other properties from the current context will be forwarded to the provided inpu
 This context object is provided to:
 
 - [`produceOptions`](/build/apis/produce-options)
+
+### `offline` {#options-offline}
+
+Whether to hint to the template not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+If provided, [Input Context `fetchers`](/build/details/contexts#input-fetchers) will reject with an Error instead of resolving.
 
 ### `options` {#options-options}
 
@@ -189,7 +213,7 @@ It returns the result of calling the `input` with the `args`.
 For example, this template uses `take` to default an option to the contents of a file:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 import { inputFromFile } from "input-from-file";
 
 export default createTemplate({
@@ -216,6 +240,33 @@ This context object is provided to:
 
 - [`produceTemplate`](/build/apis/produce-template)
 - [`runTemplate`](/build/apis/run-template)
+
+### `offline` {#template-offline}
+
+Whether to hint to the template not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+
+For example, this template adds an `--offline` flag to its installation script if `offline` is true:
+
+```ts
+import { createTemplate, produceTemplate, take } from "bingo";
+import { z } from "zod";
+
+const template = createTemplate({
+	produce({ offline }) {
+		return {
+			scripts: [offline ? "pnpm install --offline" : "pnpm install"],
+		};
+	},
+});
+
+// { scripts: ["pnpm install"] }
+produceTemplate(template);
+
+// { scripts: ["pnpm install --offline"] }
+produceTemplate(template, { offline: true });
+```
 
 ### `options` {#template-options}
 

@@ -4,7 +4,7 @@
 	"description": "create input that runs a script.",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JoshuaKGoldberg/create",
+		"url": "https://github.com/JoshuaKGoldberg/Bingo",
 		"directory": "packages/input-from-script"
 	},
 	"license": "MIT",
@@ -27,10 +27,10 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"create-testers": "workspace:^"
+		"bingo-testers": "workspace:^"
 	},
 	"peerDependencies": {
-		"create": "workspace:^"
+		"bingo": "workspace:^"
 	},
 	"engines": {
 		"node": ">=18"

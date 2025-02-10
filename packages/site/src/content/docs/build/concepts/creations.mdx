@@ -10,13 +10,13 @@ It may contain any of the following properties:
   - [`files`](#files): Files to create or modify on disk
   - [`requests`](#requests): Network requests to send after files are created
   - [`scripts`](#scripts): Terminal commands to run after files are created
-- ["Indirect" creations](#indirect-creations) to hint to the `create` CLI:
+- ["Indirect" creations](#indirect-creations) to hint to the Bingo CLI:
   - [`suggestions`](#suggestions): Printed tips for the next steps the user should take
 
 For example, this template both creates a Prettier config and runs Prettier:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -46,7 +46,7 @@ Properties whose values are objects represent a directory.
 For example, this template generates a `.github/CODE_OF_CONDUCT.md` file:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -61,7 +61,7 @@ export default createTemplate({
 });
 ```
 
-That would instruct the `create` engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
+That would instruct the Bingo engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
 
 #### File Creations
 
@@ -76,7 +76,7 @@ Each property in a `files` object may be one of the following:
 For example, this template an executable `.husky/pre-commit` file:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -89,7 +89,7 @@ export default createTemplate({
 });
 ```
 
-See [Packages > `create-fs`](/build/packages/create-fs) for more information on the `files` format.
+See [Packages > `bingo-fs`](/build/packages/bingo-fs) for more information on the `files` format.
 
 ### `requests`
 
@@ -107,7 +107,7 @@ Each request may be specified as an object with:
 For example, this template a GitHub repository's default branch to `main`:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce({ options }) {
@@ -147,7 +147,7 @@ They are run all at the same time.
 For example, this template runs pnpm package installation:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -168,7 +168,7 @@ Each script with the same `phase` will start running its commands at the same ti
 For example, this template runs pnpm package installation and duplication in series within a first phase, then Prettier formatting in a subsequent phase after dependencies are done resolving:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -227,7 +227,7 @@ Some native commands throw an error if a file doesn't yet exist, which might not
 For example, this template a `.github/CONTRIBUTING.md` and deletes a root-level `CONTRIBUTING.md` during transition if it exists:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -254,14 +254,14 @@ export default createTemplate({
 
 ## Indirect Creations
 
-These Creation properties produce information purely for the `create` CLI, not for the new repository.
+These Creation properties produce information purely for the Bingo CLI, not for the new repository.
 
 ### `suggestions`
 
 Tips for next steps the running user should take.
 
 Some templates require additional setup that users will have to take action on.
-These will be logged to users after running `npx create`.
+These will be logged to users after running `npx bingo`.
 
 For example, this template directs the user to create an automation token:
 

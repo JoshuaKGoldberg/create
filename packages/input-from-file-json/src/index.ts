@@ -1,4 +1,4 @@
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { inputFromFile } from "input-from-file";
 
 export const inputFromFileJSON = createInput({

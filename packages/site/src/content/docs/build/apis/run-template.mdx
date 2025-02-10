@@ -24,7 +24,7 @@ It applies those creations, then returns an object with:
 For example, given this template that creates a README.md file, `runTemplate` would write that file to disk:
 
 ```ts
-import { createTemplate, runTemplate } from "create";
+import { createTemplate, runTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
@@ -58,7 +58,7 @@ It may also include any other optional options.
 For example, this Template is run with a `title` option:
 
 ```ts
-import { createTemplate, runTemplate } from "create";
+import { createTemplate, runTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
@@ -91,7 +91,7 @@ Creations from the production methods will be merged per [Details > Merging](/bu
 For example, this template creates a starter `index.js` file on setup:
 
 ```ts
-import { createTemplate, runTemplate } from "create";
+import { createTemplate, runTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({

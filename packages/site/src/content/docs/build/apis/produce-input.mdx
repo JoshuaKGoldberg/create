@@ -14,7 +14,7 @@ Given an [Input](/build/concepts/inputs), runs its `produce()` with any provided
 For example, this Input production reads data from an existing `data.json` file on disk:
 
 ```ts
-import { createInput, produceInput } from "create";
+import { createInput, produceInput } from "bingo";
 
 const inputDataJson = createInput({
 	async produce({ fs }) {
@@ -33,7 +33,7 @@ Any args to provide to [`produce()`](/build/apis/create-input#produce), as defin
 For example, this Input production reads data from a JSON file on disk by path:
 
 ```ts
-import { Template } from "create";
+import { Template } from "bingo";
 import { z } from "zod";
 
 const inputJsonFile = createInput({

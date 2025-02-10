@@ -14,7 +14,7 @@ It returns a Promise for the resultant options for the template.
 For example, given this template that declares an optional `value` option that defaults to `"default"`, `produceOptions` can be run to generate its options object:
 
 ```ts
-import { createTemplate, produceOptions } from "create";
+import { createTemplate, produceOptions } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
@@ -48,10 +48,10 @@ Whether to hint to the template not to make network requests.
 This is equivalent to the [`--offline` CLI flag](/cli#--offline).
 If provided, [Input Context `fetchers`](/build/details/contexts#input-fetchers) will reject with an Error instead of resolving.
 
-For example, this template is told to run offline:
+For example, this template uses [`inputFromFetch`](https://www.npmjs.com/package/input-from-fetch), which resolves with `undefined` for an option when `offline` is true:
 
 ```ts
-import { createTemplate, produceOptions, take } from "create";
+import { createTemplate, produceOptions, take } from "bingo";
 import { inputFromFetch } from "input-from-fetch";
 import { z } from "zod";
 
@@ -76,13 +76,8 @@ const template = createTemplate({
 await produceOptions(template);
 
 // { fact: undefined }
-await produceOptions(template, {
-	offline: true,
-});
+await produceOptions(template, { offline: true });
 ```
-
-:::tip
-:::
 
 :::caution
 Inputs that rely on a `fetcher` should by convention return `undefined` if `offline` is specified.
@@ -100,7 +95,7 @@ For example, the following template declares an optional `value` option that def
 Passing in a `value` prevents that default value from being used:
 
 ```ts
-import { createTemplate, produceOptions } from "create";
+import { createTemplate, produceOptions } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({

@@ -17,7 +17,7 @@ Whenever an Input with args is passed to [`take`](/build/details/contexts#input-
 For example, this Input defines a required `filePath` string:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { z } from "zod";
 
 export const inputFromFile = createInput({
@@ -33,7 +33,7 @@ export const inputFromFile = createInput({
 Calling this input in a production method would require passing a `filePath` string:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 import { inputFromFile } from "input-from-file";
 
 export const inputFromFileJSON = createInput({
@@ -54,7 +54,7 @@ Input Definitions must include a `produce()` method for their core logic.
 For example, this Input fetches text from a URL:
 
 ```ts
-import { createInput } from "create";
+import { createInput } from "bingo";
 
 export const inputFromExampleURL = createInput({
 	async produce({ fetchers }) {

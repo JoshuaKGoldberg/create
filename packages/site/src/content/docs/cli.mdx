@@ -5,14 +5,14 @@ title: CLI
 
 import { PackageManagers } from "starlight-package-managers";
 
-The `create` CLI is what you run to generate a new repository or migrate an existing one.
+The `bingo` CLI is what you run to generate a new repository or migrate an existing one.
 It will interactively prompt you for any options it needs to run that can't be inferred from disk.
 
-<PackageManagers type="dlx" pkg="create" args="typescript-app@beta" />
+<PackageManagers type="dlx" pkg="bingo" args="typescript-app@beta" />
 
 ## Modes
 
-The `create` CLI will automatically detect which [`--mode`](#--mode) it is being run in:
+The Bingo CLI will automatically detect which [`--mode`](#--mode) it is being run in:
 
 - [Setup](#setup-mode): Creating a new repository from a template
 - [Transition](#transition-mode): Updating an existing repository to a new version of a template
@@ -22,7 +22,7 @@ The `create` CLI will automatically detect which [`--mode`](#--mode) it is being
 Creates a new repository from a template.
 This mode will be used by default if the current directory is empty.
 
-When running `create` on the CLI in setup mode, it will:
+When running Bingo in setup mode, it will:
 
 1. Create a new repository on GitHub
    - If the template defines an [`about.repository`](/build/apis/create-template#about), the repository will include a _generated from_ notice pointing to that template repository
@@ -31,16 +31,16 @@ When running `create` on the CLI in setup mode, it will:
 4. Apply the template's creations to the repository
 5. Force-push a single commit with the new repository contents to that origin
 
-For example, to generate a new repository using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, to generate a new repository using [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
 
-<PackageManagers type="dlx" pkg="create" args="typescript-app@beta" />
+<PackageManagers type="dlx" pkg="bingo" args="typescript-app@beta" />
 
 ```plaintext
 ┌  ✨ create ✨
 │
 │  Welcome to create: a delightful repository templating engine.
 │
-│  Learn more about create on:
+│  Learn more about Bingo on:
 │    https://create.bingo
 │
 │  Running with mode --setup for a new repository using the template:
@@ -51,16 +51,16 @@ You can force running in setup mode in a non-empty directory with `--mode setup`
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="typescript-app@beta --mode setup"
 />
 
 ### Transition Mode
 
 Updates an existing repository to a new version of a template.
-This mode will be used by default if the current directory is a Git repository and/or contains a [`create.config.*` configuration file](/configuration).
+This mode will be used by default if the current directory is a Git repository and/or contains a [`bingo.config.*` configuration file](/configuration).
 
-When running `create` on the CLI in transition mode, it will:
+When running Bingo in transition mode, it will:
 
 1. Check if the repository is freshly cloned from the template's [GitHub template repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
    - If it is, remove all local files and Git history
@@ -68,16 +68,16 @@ When running `create` on the CLI in transition mode, it will:
    - If this was a fresh template repository clone, create and push an initial commit
 3. Apply the template's creations to the repository
 
-For example, to update an existing repository to the latest [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, to update an existing repository to the latest [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
 
-<PackageManagers type="dlx" pkg="create" args="typescript-app@beta" />
+<PackageManagers type="dlx" pkg="bingo" args="typescript-app@beta" />
 
 ```plaintext
 ┌  ✨ create ✨
 │
 │  Welcome to create: a delightful repository templating engine.
 │
-│  Learn more about create on:
+│  Learn more about Bingo on:
 │    https://create.bingo
 │
 │  Running with mode --transition for an existing repository using the template:
@@ -88,17 +88,17 @@ You can force running in transition mode in a non-Git directory with `--mode tra
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="typescript-app@beta --mode transition"
 />
 
 ## Flags
 
-The first argument passed to `create` can be a shorthand [`--from`](#--from) for an npm package default-exporting a template.
+The first argument passed to Bingo can be a shorthand [`--from`](#--from) for an npm package default-exporting a template.
 A shorthand name excludes the `create-` prefix to an npm package name that starts with `create-`.
 
 :::tip
-The `create` CLI is a general runner to pull in information from templates.
+The Bingo CLI is a general runner to pull in information from templates.
 See the documentation for your specific template for additional flags.
 :::
 
@@ -117,7 +117,7 @@ For example, creating a new repository in a subdirectory:
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="typescript-app@beta --directory my-fancy-project"
 />
 
@@ -131,13 +131,13 @@ This can be either:
 
 - A full npm package name, such as `create-typescript-app`
   - Use this if you'd like to specify a package name that doesn't begin with `create-`
-- A relative path to import from: such as `npx create --from ./path/to/repository`
+- A relative path to import from: such as `npx bingo --from ./path/to/repository`
 
 For example, using an org-scoped package:
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="--from @joshuakgoldberg/my-fancy-template"
 />
 
@@ -147,7 +147,7 @@ For example, using an org-scoped package:
 
 Prints help text.
 
-<PackageManagers type="dlx" pkg="create" args="--help" />
+<PackageManagers type="dlx" pkg="bingo" args="--help" />
 
 ### `--mode`
 
@@ -155,13 +155,13 @@ Prints help text.
 
 Which [mode](#modes) to run in.
 
-If not provided, it will be inferred based on whether `create` is being run in an existing repository.
+If not provided, it will be inferred based on whether Bingo is being run in an existing repository.
 
-For example, specifying creating a new repository with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, specifying creating a new repository with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="typescript-app@beta --mode setup"
 />
 
@@ -175,9 +175,9 @@ If provided, templates will be told not to make any network requests.
 That often means they will install from offline caches, skip creating a repository on GitHub, and skip sending GitHub API requests.
 The repository will roughly be a local-only creation.
 
-For example, specifying creating a new repository offline with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, specifying creating a new repository offline with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
 
-<PackageManagers type="dlx" pkg="create" args="typescript-app@beta --offline" />
+<PackageManagers type="dlx" pkg="bingo" args="typescript-app@beta --offline" />
 
 :::caution
 `--offline` doesn't prevent templates from accidentally running scripts that make network requests.
@@ -188,9 +188,9 @@ If you are finding your template still sends requests with `--offline`, file a b
 
 > Type: `boolean`
 
-Prints the `create` package version.
+Prints the Bingo package version.
 
-<PackageManagers type="dlx" pkg="create" args="--version" />
+<PackageManagers type="dlx" pkg="bingo" args="--version" />
 
 ## Template Options
 
@@ -200,10 +200,10 @@ For example, if a template defines a `title` option, `--title` will be type `str
 
 <PackageManagers
 	type="dlx"
-	pkg="create"
+	pkg="bingo"
 	args="typescript-app@beta --title 'My New App'"
 />
 
-Any required options that are not provided will be prompted for by the `create` CLI.
+Any required options that are not provided will be prompted for by the Bingo CLI.
 
 See the documentation for your specific template for additional flags.

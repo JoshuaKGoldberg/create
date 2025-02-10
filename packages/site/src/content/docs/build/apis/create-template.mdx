@@ -18,14 +18,19 @@ A template definition may optionally contain:
 
 ## `produce`
 
-A synchronous function that receives a [Template Context](/build/details/contexts) and returns a [`Creation`](/build/concepts/creations).
+A synchronous function that receives up two two parameters:
 
-The `produce` function of a template is run when a new repository is being setup with the template or an existing repository is being transitioned to the template.
+1. `context`: a [Template Context](/build/details/contexts#template-context)
+2. `settings`: any additional template-specific properties
+
+`produce()` returns a [`Creation`](/build/concepts/creations).
+
+The `produce()` function of a template is run when a new repository is being setup with the template or an existing repository is being transitioned to the template.
 
 For example, this template defines a [`files` Creation](/build/concepts/creations#files) for a `knip.json`:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	produce() {
@@ -42,6 +47,81 @@ export default createTemplate({
 
 See [Creations](/build/concepts/creations) for what can be produced.
 
+### `context`
+
+A [Template Context](/build/details/contexts#template-context) used to inform the production.
+
+For example, this template defines a `title` option used in its `README.md` file creation:
+
+```ts
+import { createTemplate } from "bingo";
+import { z } from "zod";
+
+export default createTemplate({
+	options: {
+		title: z.string(),
+	},
+	produce({ options }) {
+		return {
+			files: {
+				"README.md": `# ${options.title}`,
+			},
+		};
+	},
+});
+```
+
+### `settings`
+
+Any additional template-specific properties.
+
+These must be manually provided by users, such as through a [configuration file](/cli#settings)
+
+```ts title="myTemplate.ts"
+import { createTemplate } from "bingo";
+import { z } from "zod";
+
+export interface MyTemplateSettings {
+	getDocumentation: () => string;
+}
+
+export const myTemplate = createTemplate({
+	options: {
+		title: z.string(),
+	},
+	produce({ options }, settings: MySettings) {
+		return {
+			files: {
+				"README.md": [
+					`# ${options.title}`,
+					"",
+					settings.getDocumentation(),
+					"",
+				].join("\n"),
+			},
+		};
+	},
+});
+```
+
+```ts title="bingo.config.ts"
+import { createConfig } from "bingo";
+import { myTemplate } from "./myTemplate.ts";
+
+export default createConfig(template, {
+	getDocumentation: () => "Hello, world!",
+	options: { title: "My App" },
+});
+```
+
+Settings are typically used by [Templating Engines](/engines/about) to provide rich values to template producers.
+For example, the [Blocks engine](/engine/blocks/about) uses them to allow passing in custom pieces of tooling.
+
+:::note
+Template settings should only be used for values that cannot be serialized into options as Zod schemas.
+Prefer [`options`](#options) when possible so that values can have defaults set by [`prepare()`](#prepare).
+:::
+
 ## Optional Properties
 
 ### `about`
@@ -54,10 +134,10 @@ This is an object containing any of:
 - `name`: what to refer to the template as
 - `repository`: the `owner` and `repository` of a [GitHub Template Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository)
 
-For example, this template describes itself as a solution for TypeScript repositories generated from [`JoshuaKGoldberg/create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
+For example, this template describes itself as a solution for TypeScript repositories generated from [`JoshuaKGoldberg/Bingo-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	about: {
@@ -66,7 +146,7 @@ export default createTemplate({
 		name: "Create TypeScript App",
 		repository: {
 			owner: "JoshuaKGoldberg",
-			repository: "create-typescript-app",
+			repository: "bingo-typescript-app",
 		},
 	},
 	produce() {
@@ -75,7 +155,7 @@ export default createTemplate({
 });
 ```
 
-Repositories generated from that template would indicate _generated from [JoshuaKGoldberg/create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app)_ under their name on the GitHub website.
+Repositories generated from that template would indicate _generated from [JoshuaKGoldberg/Bingo-typescript-app](https://github.com/JoshuaKGoldberg/Bingo-typescript-app)_ under their name on the GitHub website.
 
 ### `options`
 
@@ -84,7 +164,7 @@ The [Zod](https://zod.dev) values for options that will be made available to the
 For example, this template defines a required `name` string and optional `value` number:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	options: {
@@ -98,12 +178,12 @@ export default createTemplate({
 ```
 
 Options defined in a template may use the Zod `.default()` property to indicate suggested defaults.
-These will show up as placeholder values in the `create` CLI if the property isn't provided explicitly or inferred by [`prepare()`](#prepare).
+These will show up as placeholder values in the Bingo CLI if the property isn't provided explicitly or inferred by [`prepare()`](#prepare).
 
 For example, this template defines a required `description` string that suggests a happy text message:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	options: {
@@ -126,7 +206,7 @@ However, in order to be used with [Setup mode](/cli#setup-mode), two options mus
 For example, this template that defines `owner` and `repository` as strings:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	options: {
@@ -152,7 +232,7 @@ Those values will be used if the user doesn't provide explicit values during cre
 For example, this template defaults its `value` option to `"default"` if not provided:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 
 export default createTemplate({
 	options: {
@@ -183,7 +263,7 @@ The [`take` function](/build/details/contexts#options-take) can be used with [In
 For example, this template defaults a `--author` option to the result of running `npm whoami` with [`input-from-script`](https://www.npmjs.com/package/input-from-script):
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 import { inputFromScript } from "input-from-script";
 
 export default createTemplate({
@@ -214,7 +294,7 @@ For example, the following template defaults its `--author` and `--owner` option
 Both shell commands are cached and run no more than once each:
 
 ```ts
-import { createTemplate } from "create";
+import { createTemplate } from "bingo";
 import lazyValue from "lazy-value";
 
 export default createTemplate({
@@ -244,17 +324,49 @@ export default createTemplate({
 
 :::note
 Soon, these option defaults will be streamlined to need less syntax.
-See [create#190 🚀 Feature: More succinct option defaults with Inputs](https://github.com/JoshuaKGoldberg/create/issues/190).
+See [create#190 🚀 Feature: More succinct option defaults with Inputs](https://github.com/JoshuaKGoldberg/Bingo/issues/190).
 :::
 
 ### `setup`
 
 Additional production function for initializing a new repository with the template.
 
-TODO
+For example, this template creates a starter `index.js` file when first run:
+
+```ts
+import { createTemplate } from "bingo";
+
+export default createTemplate({
+	setup({ addons }) {
+		return {
+			files: {
+				"index.js": `console.log("Hello, world!");`,
+			},
+		};
+	},
+	produce() {
+		// ...
+	},
+});
+```
 
 ### `transition`
 
 Additional production function for migrating an existing repository to the template.
 
-TODO
+For example, this template deletes any already-existing test config files when run on an existing repository:
+
+```ts
+import { createTemplate } from "bingo";
+
+export default createTemplate({
+	setup({ addons }) {
+		return {
+			commands: ["rm .mocha* jest.config.* vitest.config.*"],
+		};
+	},
+	produce() {
+		// ...
+	},
+});
+```

@@ -1,11 +1,11 @@
 {
-	"name": "create",
+	"name": "bingo",
 	"version": "0.0.0",
 	"private": true,
 	"description": "Composable, testable, type-safe templates. 💝",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JoshuaKGoldberg/create"
+		"url": "https://github.com/JoshuaKGoldberg/Bingo"
 	},
 	"license": "MIT",
 	"author": {

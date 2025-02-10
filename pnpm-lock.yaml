@@ -105,20 +105,20 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(@types/node@22.13.0)(jiti@2.4.2)(yaml@2.7.0)
 
-  packages/create:
+  packages/bingo:
     dependencies:
       '@clack/prompts':
         specifier: ^0.9.1
         version: 0.9.1
+      bingo-fs:
+        specifier: workspace:^
+        version: link:../bingo-fs
       cached-factory:
         specifier: ^0.1.0
         version: 0.1.0
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      create-fs:
-        specifier: workspace:^
-        version: link:../create-fs
       execa:
         specifier: ^9.5.2
         version: 9.5.2
@@ -157,7 +157,7 @@ importers:
         specifier: 22.13.0
         version: 22.13.0
 
-  packages/create-blocks:
+  packages/bingo-blocks:
     dependencies:
       hash-object:
         specifier: ^5.0.1
@@ -169,24 +169,24 @@ importers:
       '@types/node':
         specifier: 22.10.6
         version: 22.10.6
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
+        version: link:../bingo
 
-  packages/create-fs:
+  packages/bingo-fs:
     devDependencies:
       '@types/node':
         specifier: 22.13.0
         version: 22.13.0
 
-  packages/create-testers:
+  packages/bingo-testers:
     dependencies:
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
-      create-fs:
+        version: link:../bingo
+      bingo-fs:
         specifier: workspace:^
-        version: link:../create-fs
+        version: link:../bingo-fs
       diff:
         specifier: ^7.0.0
         version: 7.0.0
@@ -206,35 +206,35 @@ importers:
 
   packages/input-from-fetch:
     dependencies:
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
+        version: link:../bingo
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
-      create-testers:
+      bingo-testers:
         specifier: workspace:^
-        version: link:../create-testers
+        version: link:../bingo-testers
 
   packages/input-from-file:
     dependencies:
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
+        version: link:../bingo
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
-      create-testers:
+      bingo-testers:
         specifier: workspace:^
-        version: link:../create-testers
+        version: link:../bingo-testers
 
   packages/input-from-file-json:
     dependencies:
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
+        version: link:../bingo
       input-from-file:
         specifier: workspace:^
         version: link:../input-from-file
@@ -242,22 +242,22 @@ importers:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
-      create-testers:
+      bingo-testers:
         specifier: workspace:^
-        version: link:../create-testers
+        version: link:../bingo-testers
 
   packages/input-from-script:
     dependencies:
-      create:
+      bingo:
         specifier: workspace:^
-        version: link:../create
+        version: link:../bingo
       zod:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
-      create-testers:
+      bingo-testers:
         specifier: workspace:^
-        version: link:../create-testers
+        version: link:../bingo-testers
 
   packages/site:
     dependencies:

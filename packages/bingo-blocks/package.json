@@ -1,0 +1,40 @@
+{
+	"name": "bingo-blocks",
+	"version": "0.2.0",
+	"description": "The file system used by Bingo. 🗄️",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/JoshuaKGoldberg/Bingo",
+		"directory": "packages/bingo-blocks"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Josh Goldberg ✨",
+		"email": "npm@joshuakgoldberg.com"
+	},
+	"type": "module",
+	"main": "./lib/index.js",
+	"files": [
+		"lib/",
+		"package.json",
+		"LICENSE.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"hash-object": "^5.0.1",
+		"octokit": "^4.1.0"
+	},
+	"devDependencies": {
+		"@types/node": "22.10.6",
+		"bingo": "workspace:^"
+	},
+	"peerDependencies": {
+		"bingo": "workspace:^"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}

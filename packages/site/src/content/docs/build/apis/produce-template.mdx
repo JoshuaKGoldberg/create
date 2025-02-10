@@ -25,7 +25,7 @@ It returns an object with:
 For example, given this template that creates a README.md file, `produceTemplate` would generate an creation object with that file:
 
 ```ts
-import { createTemplate, produceTemplate } from "create";
+import { createTemplate, produceTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
@@ -59,7 +59,7 @@ It may also include any other optional options.
 For example, this Template is run with a `title` option:
 
 ```ts
-import { createTemplate, produceTemplate } from "create";
+import { createTemplate, produceTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
@@ -92,7 +92,7 @@ Creations from the production methods will be merged per [Details > Merging](/bu
 For example, this template creates a starter `index.js` file on setup:
 
 ```ts
-import { createTemplate, produceTemplate } from "create";
+import { createTemplate, produceTemplate } from "bingo";
 import { z } from "zod";
 
 const template = createTemplate({
