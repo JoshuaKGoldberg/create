@@ -74,7 +74,7 @@ For [Inputs](/build/concepts/inputs), a `testInput` function is exported that is
 It takes in similar arguments:
 
 1. `input` _(required)_: an [Input](/build/concepts/inputs)
-2. `settings` _(optional)_: any properties from an [Input Context](/build/details/contexts#input-context)
+2. `context` _(optional)_: any properties from an [Input Context](/build/details/contexts#input-contexts)
 
 For example, this test asserts that an `inputNow` returns a numeric timestamp:
 
@@ -257,11 +257,11 @@ describe("inputNpmUsername", () => {
 
 ## `testOptions`
 
-For [Template `prepare()` methods](/build/apis/create-template#prepare), a `testOptions` function is exported that is analogous to [`produceOptions`](/build/apis/produce-options).
+For [Template `prepare()` functions](/build/apis/create-template#prepare), a `testOptions` function is exported that is analogous to [`prepareOptions`](/build/apis/prepare-options).
 It takes in similar arguments:
 
 1. `template` _(required)_: a [Template](/build/concepts/templates)
-2. `settings` _(optional)_: any properties from an [Options Context](/build/details/contexts#options-context)
+2. `context` _(optional)_: any properties from an [Options Context](/build/details/contexts#options-contexts)
 
 For example, this test asserts that a template defaults its `value` option to `"default"` when not provided:
 
@@ -284,7 +284,7 @@ describe("exampleTemplate", () => {
 });
 ```
 
-As with [`produceOptions`](/build/apis/produce-options), `testOptions` returns a Promise for the template's options.
+As with [`prepareOptions`](/build/apis/prepare-options), `testOptions` returns a Promise for the template's options.
 
 `settings` and all its properties are optional.
 However, some properties will cause `testOptions` to throw an error if they're not provided and the template attempts to use them:
@@ -360,7 +360,7 @@ For [Templates](/build/concepts/templates), a `testTemplate` function is exporte
 It takes in similar arguments:
 
 1. `template` _(required)_: a [Template](/build/concepts/templates)
-2. `settings` _(optional)_: any properties from a [Template Context](/build/details/contexts#template-context)
+2. `context` _(optional)_: any properties from a [Template Context](/build/details/contexts#template-contexts)
 
 For example, this test asserts that a template creates an `.nvmrc` file:
 

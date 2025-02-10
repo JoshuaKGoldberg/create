@@ -1,5 +1,5 @@
 ---
-description: "Configuring create from a config file."
+description: "Configuring Bingo from a config file."
 title: Configuration
 ---
 
@@ -8,7 +8,7 @@ Running the [Transition mode](/cli#transition-mode) in an existing repository wi
 You can store persistent customizations to the repository's template in a configuration file named `bingo.config.js`.
 It should `export default` a call to a `createConfig()` function that takes in a template and which preset to use.
 
-For example, this configuration keeps a repository up-to-date with [`create-example`](https://github.com/JoshuaKGoldberg/Bingo-example):
+For example, this configuration keeps a repository up-to-date with [`create-example`](https://github.com/JoshuaKGoldberg/bingo-example):
 
 ```ts title="bingo.config.js"
 import { createConfig } from "bingo";
@@ -35,11 +35,11 @@ See the documentation for your specific template for additional `options` and `s
 
 Any type-safe options the template has declared.
 
-For example, this configuration keeps a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app), which requires a `preset` option to be specified:
+For example, this configuration keeps a repository up-to-date with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app), which requires a `preset` option to be specified:
 
 ```ts title="bingo.config.js"
 import { createConfig } from "bingo";
-import { template } from "bingo-typescript-app";
+import { template } from "create-typescript-app";
 
 export default createConfig(template, {
 	options: {
@@ -54,11 +54,11 @@ Running `npx bingo` in a repository with that `bingo.config.js` would be the equ
 
 Any custom settings specified by the template.
 
-For example, this configuration customizes the preset list of blocks in [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app)'s _Everything_ `preset`:
+For example, this configuration customizes the preset list of blocks in [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app)'s _Everything_ `preset`:
 
 ```ts title="bingo.config.js"
 import { createConfig } from "bingo";
-import { blockCSpell, template } from "bingo-typescript-app";
+import { blockCSpell, template } from "create-typescript-app";
 
 export default createConfig(template, {
 	options: {

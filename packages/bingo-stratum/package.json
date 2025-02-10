@@ -1,11 +1,11 @@
 {
-	"name": "bingo-blocks",
+	"name": "bingo-stratum",
 	"version": "0.2.0",
-	"description": "The file system used by Bingo. 🗄️",
+	"description": "Highly composable, customizable templating engine for Bingo. 🚛",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JoshuaKGoldberg/Bingo",
-		"directory": "packages/bingo-blocks"
+		"url": "https://github.com/JoshuaKGoldberg/bingo",
+		"directory": "packages/bingo-stratum"
 	},
 	"license": "MIT",
 	"author": {

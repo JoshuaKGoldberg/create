@@ -61,12 +61,12 @@ export default defineConfig({
 										link: "build/apis/create-template",
 									},
 									{
-										label: "produceInput",
-										link: "build/apis/produce-input",
+										label: "prepareOptions",
+										link: "build/apis/prepare-options",
 									},
 									{
-										label: "produceOptions",
-										link: "build/apis/produce-options",
+										label: "produceInput",
+										link: "build/apis/produce-input",
 									},
 									{
 										label: "produceTemplate",
@@ -99,7 +99,69 @@ export default defineConfig({
 						items: [
 							{ label: "About", link: "engines/about" },
 							{ label: "Handlebars", link: "engines/handlebars/about" },
-							{ label: "Blocks", link: "engines/blocks/about" },
+							{
+								collapsed: true,
+								items: [
+									{ label: "About", link: "engines/stratum/about" },
+									{
+										items: [
+											{
+												label: "Bases",
+												link: "engines/stratum/concepts/bases",
+											},
+											{
+												label: "Blocks",
+												link: "engines/stratum/concepts/blocks",
+											},
+											{
+												label: "Presets",
+												link: "engines/stratum/concepts/presets",
+											},
+											{
+												label: "Templates",
+												link: "engines/stratum/concepts/templates",
+											},
+										],
+										label: "Concepts",
+									},
+									{
+										items: [
+											{
+												label: "Contexts",
+												link: "engines/stratum/details/contexts",
+											},
+											{
+												label: "Execution",
+												link: "engines/stratum/details/execution",
+											},
+										],
+										label: "Details",
+									},
+									{
+										items: [
+											{
+												label: "Creators",
+												link: "engines/stratum/apis/creators",
+											},
+											{
+												label: "Producers",
+												link: "engines/stratum/apis/producers",
+											},
+											{
+												label: "Runners",
+												link: "engines/stratum/apis/runners",
+											},
+											{
+												label: "Testers",
+												link: "engines/stratum/apis/testers",
+											},
+										],
+										label: "APIs",
+									},
+									{ label: "FAQs", link: "engines/stratum/faqs" },
+								],
+								label: "Stratum",
+							},
 							{ label: "Custom Engines", link: "engines/custom" },
 						],
 						label: "Templating Engines",
@@ -108,7 +170,7 @@ export default defineConfig({
 				]),
 			],
 			social: {
-				github: "https://github.com/JoshuaKGoldberg/Bingo",
+				github: "https://github.com/JoshuaKGoldberg/bingo",
 			},
 			tableOfContents: {
 				maxHeadingLevel: 4,

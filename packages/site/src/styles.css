@@ -1,19 +1,17 @@
 details details .group-label .large {
 	display: block;
 	font-size: 15px;
-	font-weight: 500;
 	padding-top: 2px;
-}
-details details .group-label .large {
-	display: block;
-	font-size: 15px;
-	font-weight: 600;
 }
 
 details details ul li a {
 	padding-bottom: 3px;
 	padding-top: 3px;
 	font-size: 14px;
+}
+
+details ul li details summary .group-label .large {
+	font-weight: 500;
 }
 
 .hero {

@@ -3,7 +3,7 @@ title: produceTemplate
 ---
 
 :::note
-Production APIs only generate objects in memory.
+Production APIs only generate creations in memory.
 For the API to apply those objects, see [`runTemplate`](/build/apis/run-template).
 :::
 
@@ -15,7 +15,7 @@ Given a [Template](/build/concepts/templates) and any settings, creates a [Creat
 2. A settings object, only required if the template includes required options.
    It may contain:
    - `options`: any options matching the template's [`options` schema](/build/apis/create-template#options)
-   - _(optional)_ any other properties from a [Template Context](/build/details/contexts#template-context)
+   - _(optional)_ any other properties from a [Template Context](/build/details/contexts#template-contexts)
 
 It returns an object with:
 
@@ -44,7 +44,7 @@ produceTemplate(template);
 
 :::note
 `produceTemplate()` is synchronous and will not run a template's [`prepare()`](/build/apis/create-template#prepare) method to infer option defaults.
-Use the asynchronous [`produceOptions`](/build/apis/produce-options) API to generate options that can be passed as [settings `options`](#options).
+Use the asynchronous [`prepareOptions`](/build/apis/prepare-options) API to generate options that can be passed as [settings `options`](#options).
 :::
 
 ## Settings
@@ -130,4 +130,31 @@ produceTemplate(template);
 //   },
 // }
 produceTemplate(template, { mode: "setup" });
+```
+
+### `offline`
+
+Whether to hint to the template not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+
+For example, this template adds an `--offline` flag to its installation script if `offline` is true:
+
+```ts
+import { createTemplate, produceTemplate } from "bingo";
+import { z } from "zod";
+
+const template = createTemplate({
+	produce({ offline }) {
+		return {
+			scripts: [offline ? "pnpm install --offline" : "pnpm install"],
+		};
+	},
+});
+
+// { scripts: ["pnpm install"] }
+produceTemplate(template);
+
+// { scripts: ["pnpm install --offline"] }
+produceTemplate(template, { offline: true });
 ```

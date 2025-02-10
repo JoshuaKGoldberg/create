@@ -13,7 +13,7 @@ Given a [Template](/build/concepts/templates) and any settings, creates and appl
 
 1. A template
 2. A settings object, only required if the template includes required options.
-   It may contain properties from a [Template Context](/build/details/contexts#template-context):
+   It may contain properties from a [Template Context](/build/details/contexts#template-contexts):
    - `options`: any options matching the template's [`options` schema](/build/apis/create-template#options)
 
 It applies those creations, then returns an object with:
@@ -43,7 +43,7 @@ await writeTemplate(template);
 
 :::note
 `runTemplate()` will not run a template's [`prepare()`](/build/apis/create-template#prepare) method to infer option defaults.
-Use the asynchronous [`produceOptions`](/build/apis/produce-options) API to generate options that can be passed as [settings `options`](#options).
+Use the asynchronous [`prepareOptions`](/build/apis/prepare-options) API to generate options that can be passed as [settings `options`](#options).
 :::
 
 ## Settings
@@ -129,4 +129,31 @@ await runTemplate(template);
 //   },
 // }
 await runTemplate(template, { mode: "setup" });
+```
+
+### `offline`
+
+Whether to hint to the template not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+
+For example, this template adds an `--offline` flag to its installation script if `offline` is true:
+
+```ts
+import { createTemplate, runTemplate } from "bingo";
+import { z } from "zod";
+
+const template = createTemplate({
+	produce({ offline }) {
+		return {
+			scripts: [offline ? "pnpm install --offline" : "pnpm install"],
+		};
+	},
+});
+
+// { scripts: ["pnpm install"] }
+await runTemplate(template);
+
+// { scripts: ["pnpm install --offline"] }
+await runTemplate(template, { offline: true });
 ```

@@ -7,7 +7,7 @@ Given an [Input](/build/concepts/inputs), runs its `produce()` with any provided
 `produceInput` takes in up to two arguments:
 
 1. `input` _(required)_: an Input
-2. `settings` _(required)_: at least `args`, as well as any other properties from an [Input Context](/build/details/contexts#input-context) other than `take`
+2. `context` _(optional)_: any properties from an [Input Context](/build/details/contexts#input-contexts)
 
 `produceInput` returns the result of the Input's [`produce()`](/build/apis/create-input#produce).
 
@@ -48,4 +48,36 @@ const inputJsonFile = createInput({
 await produceInput(inputJsonFile, {
 	args: "data.json",
 });
+```
+
+### `offline`
+
+Whether to hint to the input not to make network requests.
+
+This is equivalent to the [`--offline` CLI flag](/cli#--offline).
+
+For example, this input returns `undefined` instead of fetching a cat fact when `offline` is enabled:
+
+```ts
+import { createInput, produceInput } from "bingo";
+import { z } from "zod";
+
+export const inputCatFact = createInput({
+	async produce({ fetchers, offline }) {
+		if (offline) {
+			return undefined;
+		}
+
+		const response = await fetchers.fetch("https://catfact.ninja/fact");
+		const data = (await response.json()) as { fact: string };
+
+		return data.fact;
+	},
+});
+
+// "Cats can jump up to 7 times their tail length."
+await produceInput(inputCatFact);
+
+// undefined
+await produceInput(inputCatFact, { offline: true });
 ```

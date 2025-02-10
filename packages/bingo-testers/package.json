@@ -4,7 +4,7 @@
 	"description": "Test utilities for composable, testable, type-safe templates. ⚗️",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JoshuaKGoldberg/Bingo",
+		"url": "https://github.com/JoshuaKGoldberg/bingo",
 		"directory": "packages/bingo-testers"
 	},
 	"license": "MIT",

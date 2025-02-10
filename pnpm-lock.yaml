@@ -157,7 +157,7 @@ importers:
         specifier: 22.13.0
         version: 22.13.0
 
-  packages/bingo-blocks:
+  packages/bingo-stratum:
     dependencies:
       hash-object:
         specifier: ^5.0.1

@@ -3,9 +3,9 @@
 <p align="center">Composable, testable, type-safe templates. 💝</p>
 
 <p align="center">
-	<a href="https://github.com/JoshuaKGoldberg/Bingo/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>
-	<a href="https://codecov.io/gh/JoshuaKGoldberg/Bingo" target="_blank"><img alt="🧪 Coverage" src="https://img.shields.io/codecov/c/github/JoshuaKGoldberg/Bingo?label=%F0%9F%A7%AA%20coverage" /></a>
-	<a href="https://github.com/JoshuaKGoldberg/Bingo/blob/main/LICENSE.md" target="_blank"><img alt="📝 License: MIT" src="https://img.shields.io/badge/%F0%9F%93%9D_license-MIT-21bb42.svg"></a>
+	<a href="https://github.com/JoshuaKGoldberg/bingo/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>
+	<a href="https://codecov.io/gh/JoshuaKGoldberg/bingo" target="_blank"><img alt="🧪 Coverage" src="https://img.shields.io/codecov/c/github/JoshuaKGoldberg/bingo?label=%F0%9F%A7%AA%20coverage" /></a>
+	<a href="https://github.com/JoshuaKGoldberg/bingo/blob/main/LICENSE.md" target="_blank"><img alt="📝 License: MIT" src="https://img.shields.io/badge/%F0%9F%93%9D_license-MIT-21bb42.svg"></a>
 	<a href="http://npmjs.com/package/bingo"><img alt="📦 npm version" src="https://img.shields.io/npm/v/create?color=21bb42&label=%F0%9F%93%A6%20npm" /></a>
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
@@ -30,6 +30,6 @@ It runs well but its APIs are still in flux.
 Please try it out and report any issues on GitHub!
 🙏
 
-> 💙 This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app).
+> 💙 This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/bingo-typescript-app).
 
 > Special thanks to [@rumpl](https://github.com/rumpl) for granting use of the `bingo` package name. 🙏

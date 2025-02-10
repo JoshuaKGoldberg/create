@@ -20,7 +20,7 @@ A template definition may optionally contain:
 
 A synchronous function that receives up two two parameters:
 
-1. `context`: a [Template Context](/build/details/contexts#template-context)
+1. `context`: a [Template Context](/build/details/contexts#template-contexts)
 2. `settings`: any additional template-specific properties
 
 `produce()` returns a [`Creation`](/build/concepts/creations).
@@ -49,7 +49,7 @@ See [Creations](/build/concepts/creations) for what can be produced.
 
 ### `context`
 
-A [Template Context](/build/details/contexts#template-context) used to inform the production.
+A [Template Context](/build/details/contexts#template-contexts) used to inform the production.
 
 For example, this template defines a `title` option used in its `README.md` file creation:
 
@@ -75,7 +75,7 @@ export default createTemplate({
 
 Any additional template-specific properties.
 
-These must be manually provided by users, such as through a [configuration file](/cli#settings)
+These must be manually provided by users, such as through a [configuration file](/configuration#settings)
 
 ```ts title="myTemplate.ts"
 import { createTemplate } from "bingo";
@@ -115,7 +115,7 @@ export default createConfig(template, {
 ```
 
 Settings are typically used by [Templating Engines](/engines/about) to provide rich values to template producers.
-For example, the [Blocks engine](/engine/blocks/about) uses them to allow passing in custom pieces of tooling.
+For example, the [Stratum engine](/engines/stratum/about) uses them to allow passing in custom pieces of tooling.
 
 :::note
 Template settings should only be used for values that cannot be serialized into options as Zod schemas.
@@ -134,7 +134,7 @@ This is an object containing any of:
 - `name`: what to refer to the template as
 - `repository`: the `owner` and `repository` of a [GitHub Template Repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository)
 
-For example, this template describes itself as a solution for TypeScript repositories generated from [`JoshuaKGoldberg/Bingo-typescript-app`](https://github.com/JoshuaKGoldberg/Bingo-typescript-app):
+For example, this template describes itself as a solution for TypeScript repositories generated from [`JoshuaKGoldberg/create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app):
 
 ```ts
 import { createTemplate } from "bingo";
@@ -146,7 +146,7 @@ export default createTemplate({
 		name: "Create TypeScript App",
 		repository: {
 			owner: "JoshuaKGoldberg",
-			repository: "bingo-typescript-app",
+			repository: "create-typescript-app",
 		},
 	},
 	produce() {
@@ -155,7 +155,7 @@ export default createTemplate({
 });
 ```
 
-Repositories generated from that template would indicate _generated from [JoshuaKGoldberg/Bingo-typescript-app](https://github.com/JoshuaKGoldberg/Bingo-typescript-app)_ under their name on the GitHub website.
+Repositories generated from that template would indicate _generated from [JoshuaKGoldberg/create-typescript-app](https://github.com/JoshuaKGoldberg/create-typescript-app)_ under their name on the GitHub website.
 
 ### `options`
 
@@ -224,7 +224,7 @@ Requiring the `owner` and `repository` fields be string-like allows [Setup mode]
 ### `prepare`
 
 Creates lazily loaded default values for options.
-Receives an [Options Context](/build/details/contexts#options-context) and returns a [`Creation`](/build/concepts/creations).
+Receives an [Options Context](/build/details/contexts#options-contexts) and returns a [`Creation`](/build/concepts/creations).
 
 Templates can optionally define a `prepare()` function that provides fallback values for options.
 Those values will be used if the user doesn't provide explicit values during creation.
@@ -324,7 +324,7 @@ export default createTemplate({
 
 :::note
 Soon, these option defaults will be streamlined to need less syntax.
-See [create#190 🚀 Feature: More succinct option defaults with Inputs](https://github.com/JoshuaKGoldberg/Bingo/issues/190).
+See [create#190 🚀 Feature: More succinct option defaults with Inputs](https://github.com/JoshuaKGoldberg/bingo/issues/190).
 :::
 
 ### `setup`

@@ -3,7 +3,7 @@ description: "The pieces of a repository as described by templates."
 title: Creations
 ---
 
-A _Creation_ is what's returned by a template's `produce()` method.
+A _Creation_ is what's returned by a template's `produce()` function.
 It may contain any of the following properties:
 
 - ["Direct" creations](#direct-creations) that always cause changes to the repository:
@@ -63,33 +63,7 @@ export default createTemplate({
 
 That would instruct the Bingo engine to create a `.github/` directory if it doesn't exist yet, then create a `.github/CODE_OF_CONDUCT.md` file.
 
-#### File Creations
-
-Each property in a `files` object may be one of the following:
-
-- `false` or `undefined`: Ignored
-- `object`: A directory, whose properties recursively are file creations
-- `string`: A file to be created
-- `[string, CreatedFileOptions]`: A file to be created with [`fsPromises.writeFile` options](https://nodejs.org/api/fs.html#fspromiseswritefilefile-data-options):
-  - `executable`: Whether to add permissions to make the file executable
-
-For example, this template an executable `.husky/pre-commit` file:
-
-```ts
-import { createTemplate } from "bingo";
-
-export default createTemplate({
-	produce() {
-		return {
-			".husky": {
-				"pre-commit": ["npx lint-staged\n", { executable: true }],
-			},
-		};
-	},
-});
-```
-
-See [Packages > `bingo-fs`](/build/packages/bingo-fs) for more information on the `files` format.
+See [Packages > `bingo-fs` > Files](/build/packages/bingo-fs#files) for more information on the `files` format.
 
 ### `requests`
 

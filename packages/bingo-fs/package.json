@@ -4,7 +4,7 @@
 	"description": "The file system used by Bingo. 🗄️",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JoshuaKGoldberg/Bingo",
+		"url": "https://github.com/JoshuaKGoldberg/bingo",
 		"directory": "packages/bingo-fs"
 	},
 	"license": "MIT",

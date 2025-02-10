@@ -1,7 +1,7 @@
 import { createInput } from "bingo";
 import { z } from "zod";
 
-export const inputFromScript = createInput({
+export const inputFromFetch = createInput({
 	args: {
 		options: z
 			.object({

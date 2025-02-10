@@ -1,5 +1,5 @@
 ---
-description: "How create templates define ."
+description: "How Bingo templates define their options and producer functions."
 title: Templates
 ---
 
@@ -12,7 +12,7 @@ Each Bingo template defines:
 
 :::tip
 Bingo templates are conventionally stored in packages whose names start with `create-`.
-See [JoshuaKGoldberg/Bingo-example](https://github.com/JoshuaKGoldberg/Bingo-example) for an example starter repository template.
+See [JoshuaKGoldberg/bingo-example](https://github.com/JoshuaKGoldberg/bingo-example) for an example starter repository template.
 :::
 
 ## Defining Templates
@@ -44,7 +44,7 @@ export default createTemplate({
 If someone were to run `npx bingo ./example-template.js`, it would know to ask for a `title`:
 
 ```plaintext title="npx bingo ./example-template.js"
-┌  ✨ create ✨
+┌  ✨ bingo ✨
 │
 │  Welcome to create: a delightful repository templating engine.
 │
@@ -70,7 +70,7 @@ Templates generally end up using one or more template systems for defining files
 
 1. [Handlebars](/engines/handlebars/about): allows defining files as [handlebars](https://handlebarsjs.com) templates.
    Generally recommended for straightforward templates that have more than a half dozen files.
-2. [Blocks](/engines/blocks/about): a rich system to define each feature of a template as an independent "blocks".
+2. [Stratum](/engines/stratum/about): a rich system to define each feature of a template as an independent "Blocks".
    Recommended for templates that want to allow rich logic and/or multiple starting presets.
 
 See [Templating Engines](/engines/about) for more information.

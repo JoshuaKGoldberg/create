@@ -45,7 +45,7 @@ export default createTemplate({
 });
 ```
 
-If you have a use case for root-level flags that shouldn't be made into an options object property, please [file a feature request issue on Bingo](https://github.com/JoshuaKGoldberg/Bingo/issues/new?template=03-feature.yml).
+If you have a use case for root-level flags that shouldn't be made into an options object property, please [file a feature request issue on Bingo](https://github.com/JoshuaKGoldberg/bingo/issues/new?template=03-feature.yml).
 
 ### Why do templates define a separate `prepare()`, not Zod methods like `refine` or `transform`?
 
@@ -58,9 +58,9 @@ This is for two reasons:
 - Long-term, the engine should not be locked into any one schema engine.
   Adopting Zod-specific features will make it harder to swap between other implementers of [standard-schema](https://github.com/standard-schema/standard-schema) in the future if needed.
 
-See the [`create-example` Base `prepare()` implementation](https://github.com/JoshuaKGoldberg/Bingo-example/blob/c6714eeb02a5106eb5e4e4694f1e8b590444030d/src/base.ts#L138) (TODO: FIX LINK) for an example of values used across Options.
+See the [`create-example` Base `prepare()` implementation](https://github.com/JoshuaKGoldberg/bingo-example/blob/c6714eeb02a5106eb5e4e4694f1e8b590444030d/src/base.ts#L138) (TODO: FIX LINK) for an example of values used across Options.
 
-### Why is the template `prepare()` method synchronous?
+### Why is the template `prepare()` function synchronous?
 
 Or: why must options defaults be provided as asynchronous functions, rather than having `prepare()` itself `await` for their values?
 
@@ -80,7 +80,7 @@ However, mocking out resources during unit testing is much harder if you do.
 They will also throw an error if you accidentally call to a context property without providing a mock function for it.
 This can prevent accidental file writes, network calls, and script commands when running unit tests.
 
-### Why is the `produceOptions()` API not a part of `produceTemplate()` or `runTemplate()`?
+### Why is the `prepareOptions()` API not a part of `produceTemplate()` or `runTemplate()`?
 
 Not every caller of [`produceTemplate()`](/build/apis/produce-template) or [`runTemplate()`](/build/apis/run-template) may want to asynchronously load in options.
 Some callers might have separately loaded in all required options, and not want to allow any to run their defaults logic.
@@ -94,4 +94,4 @@ Or: why not allow these methods to be asynchronous, so they can read information
 Any information that you would want to read asynchronously should be taken in as options.
 Options allow defining important intake information with well-typed Zod schemas and `prepare()` logic to efficiently infer default values.
 
-If you have a use case for information that should be asynchronously loaded but cannot be an option, please [file a feature request issue on Bingo](https://github.com/JoshuaKGoldberg/Bingo/issues/new?template=03-feature.yml).
+If you have a use case for information that should be asynchronously loaded but cannot be an option, please [file a feature request issue on Bingo](https://github.com/JoshuaKGoldberg/bingo/issues/new?template=03-feature.yml).
