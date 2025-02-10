@@ -34,6 +34,11 @@ Blocks and Presets made with that `base` will have access to the `name` option o
 
 > `options` on a Base works the same as [`createTemplate` > `options`](/build/apis/create-template#options).
 
+### Disallowed Option Names
+
+The only option name that may not be used is `preset`.
+That option is set automatically per [Templates > Options](/engines/stratum/concepts/templates#options).
+
 ## Preparation
 
 Bases can optionally define a `prepare()` function that provides default fallback values for options.

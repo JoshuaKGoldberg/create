@@ -17,7 +17,7 @@ import { presetCommon } from "./presetCommon";
 import { presetEverything } from "./presetEverything";
 import { presetMinimal } from "./presetMinimal";
 
-export const templateTypeScriptApp = createTemplate({
+export const template = createTemplate({
 	about: {
 		name: "TypeScript App",
 	},
@@ -51,6 +51,20 @@ The Presets used in a Template don't need to all be from the same shared [Base](
 This allows more comprehensive Presets to come with a larger set of required Options.
 :::
 
-## Additional Blocks
+## Options
 
-Any number of [Blocks](/engines/stratum/concepts/blocks) can also be made available for consumers.
+Stratum Templates source their `options` from their [Base](/engines/stratum/concepts/bases).
+Options declared on a Template's Base are what may be set in a configuration's `options`.
+
+The only added option is `preset`, which is a required string option.
+It is a union of the lowercased labels provided under `presets`.
+
+For example, given the earlier `template` with three Presets, the `preset` option would be type `"common" | "everything" | "minimal"`:
+
+```ts title="bingo.config.js"
+import { template } from "create-typescript-app";
+
+export default createConfig(template, {
+	options: { preset: "everything" },
+});
+```

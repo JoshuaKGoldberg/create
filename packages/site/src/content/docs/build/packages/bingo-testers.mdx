@@ -354,6 +354,44 @@ describe("exampleTemplate", () => {
 });
 ```
 
+### Custom Engine Testing
+
+`testOptions` can be given any object in place of a template as long as the object contains:
+
+- `options`: an object mapping keys to [Zod](https://zod.dev) schemas
+- `prepare`: a function that returns an object whose properties are default values for those options
+
+For example, the [Stratum engine's Bases](/engines/stratum/concepts/bases) can be tested with `testOptions`:
+
+```ts
+import { testOptions } from "bingo-testers";
+import { createBase } from "bingo-stratum";
+import { z } from "zod";
+
+const base = createBase({
+	options: {
+		value: z.string().optional(),
+	},
+	prepare(options) {
+		return {
+			value: "default",
+		};
+	},
+});
+
+describe("base", () => {
+	describe("value", () => {
+		it("defaults to 'default' when not provided", async () => {
+			const actual = await testOptions(base);
+
+			expect(actual).toEqual({
+				value: "default",
+			});
+		});
+	});
+});
+```
+
 ## `testTemplate`
 
 For [Templates](/build/concepts/templates), a `testTemplate` function is exported that is analogous to [`produceTemplate`](/build/apis/produce-template).

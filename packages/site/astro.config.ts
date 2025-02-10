@@ -127,6 +127,10 @@ export default defineConfig({
 									{
 										items: [
 											{
+												label: "Configurations",
+												link: "engines/stratum/details/configurations",
+											},
+											{
 												label: "Contexts",
 												link: "engines/stratum/details/contexts",
 											},

@@ -2,7 +2,7 @@
 title: Stratum Producer APIs
 ---
 
-Stratum generally resuses existing Bingo producer APIs when possible:
+Stratum generally reuses existing Bingo producer APIs when possible:
 
 - [Base](/engines/stratum/concepts/bases) options can be prepared using the same API as Templates: [`prepareOptions` > Custom Engine Preparations](/build/apis/prepare-options#custom-engine-preparations).
 - [Templates](/engines/stratum/concepts/templates) are standard Bingo templates, and so can be provided to [`produceTemplate`](/build/apis/produce-template) and [`runTemplate`](/build/apis/run-template).
@@ -157,7 +157,7 @@ Given a [Preset](/engines/stratum/concepts/presets) and the name of one of its [
 `producePreset` allows up to two parameters:
 
 1. `preset` _(required)_: a Preset
-2. `context` _(optional)_: any properties from a [Preset Context](/engines/stratum/details/contexts#preset-contexts)
+2. `context` _(optional)_: any of the following properties
 
 `producePreset` returns the Preset's [`Creation`](/build/concepts/creations), including both [direct creations](/build/concepts/creations#direct-creations) and [indirect creations](/build/concepts/creations#indirect-creations).
 
@@ -230,7 +230,7 @@ producePreset(preset, {
 });
 ```
 
-See [Configuration > `blocks`](../../configuration#blocks) for how this is used.
+See [Configurations > `blocks`](/engines/stratum/details/configurations#blocks) for how this is used.
 
 ### `offline` {#preset-offline}
 
@@ -284,8 +284,8 @@ producePreset(preset, {
 
 #### Adding Base Options
 
-Although Presets are associated with [Bases](/engines/stratum/concepts/bases), running `producePreset` does not automatically run [`prepareBase`](#preparebase).
-If you want to include the inferred options from a Preset's Base you'll have to call the `prepareBase` API first yourself.
+Although Presets are associated with [Bases](/engines/stratum/concepts/bases), running `producePreset` does not automatically infer default option values.
+If you want to include the inferred options from a Preset's Base you'll have to call the [`prepareOptions`](/build/apis/prepare-options) API first yourself.
 
 For example, this directly passes produced Options from a Base to a Preset:
 

@@ -50,6 +50,10 @@ export default createConfig(template, {
 
 Running `npx bingo` in a repository with that `bingo.config.js` would be the equivalent of running `npx bingo typescript-app@beta --preset everything`.
 
+:::note
+See the documentation of your Template for what `options` are available.
+:::
+
 ### `settings`
 
 Any custom settings specified by the template.
@@ -71,3 +75,9 @@ export default createConfig(template, {
 	},
 });
 ```
+
+Running `npx bingo` in a repository with that `bingo.config.js` would be the equivalent of running `npx bingo typescript-app@beta --preset everything`, except all CSpell-related files and scripts would be skipped.
+
+:::note
+See the documentation of your Template for what `settings` are available.
+:::
