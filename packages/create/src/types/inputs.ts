@@ -16,7 +16,7 @@ export type InputArgsFor<TypeofInput> =
 export interface InputContext extends TakeContext {
 	fetchers: SystemFetchers;
 	fs: ReadingFileSystem;
-	offline: boolean;
+	offline?: boolean;
 	runner: SystemRunner;
 }
 
