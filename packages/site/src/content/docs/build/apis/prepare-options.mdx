@@ -1,8 +1,9 @@
 ---
+description: Bingo API to infer default option values.
 title: prepareOptions
 ---
 
-Given a [Template](/build/concepts/templates) and any existing options, loads inferred values for any remaining options.
+Given a [Template](/build/concepts/templates) <sup><a href="#custom-engine-preparations">\*</a></sup> and any existing options, loads inferred values for any remaining options.
 
 `prepareOptions` takes in up to two argument:
 
@@ -176,7 +177,7 @@ For testing options preparation in fully isolated environments, see [Packages > 
 - `options`: an object mapping keys to [Zod](https://zod.dev) schemas
 - `prepare`: a function that returns an object whose properties are default values for those options
 
-For example, the [Stratum engine's Bases](/engines/stratum/concepts/bases) can be produced with `prepareOptions`:
+For example, the [Stratum engine's Bases](/engines/stratum/concepts/bases) can have options inferred with `prepareOptions`:
 
 ```ts
 import { prepareOptions } from "bingo";

@@ -1,7 +1,7 @@
 {
 	"name": "bingo",
 	"version": "0.3.0",
-	"description": "Composable, testable, type-safe templates. 💝",
+	"description": "Delightful templates for web repositories. 💝",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/bingo",

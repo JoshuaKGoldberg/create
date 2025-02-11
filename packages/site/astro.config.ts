@@ -81,6 +81,7 @@ export default defineConfig({
 							},
 							{
 								items: [
+									{ label: "bingo", link: "build/packages/bingo" },
 									{ label: "bingo-fs", link: "build/packages/bingo-fs" },
 									{
 										label: "bingo-testers",
@@ -155,12 +156,21 @@ export default defineConfig({
 												label: "Runners",
 												link: "engines/stratum/apis/runners",
 											},
-											{
-												label: "Testers",
-												link: "engines/stratum/apis/testers",
-											},
 										],
 										label: "APIs",
+									},
+									{
+										items: [
+											{
+												label: "bingo-stratum",
+												link: "engines/stratum/packages/bingo-stratum",
+											},
+											{
+												label: "bingo-stratum-testers",
+												link: "engines/stratum/packages/bingo-stratum-testers",
+											},
+										],
+										label: "Packages",
 									},
 									{ label: "FAQs", link: "engines/stratum/faqs" },
 								],

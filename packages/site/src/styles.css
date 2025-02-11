@@ -10,7 +10,9 @@ details details ul li a {
 	font-size: 14px;
 }
 
-details ul li details summary .group-label .large {
+details ul li details summary .group-label .large,
+details ul li:has(details) + li > a,
+li:has(+ li > details) > a {
 	font-weight: 500;
 }
 

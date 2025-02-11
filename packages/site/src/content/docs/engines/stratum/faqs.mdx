@@ -14,3 +14,22 @@ That's thematically tied to how the engine works:
 
 It also looks and sounds sophisticated.
 _"Stratum"_.
+
+## Why can't we define Addons for Blocks in Presets?
+
+In other words, you might be wondering why the API doesn't allow something like this:
+
+```js
+export const presetExample = base.createPreset({
+	blocks: [
+		myBlock({
+			someArg: "...",
+		}),
+	],
+});
+```
+
+This is because Blocks shouldn't need to be configured.
+Users should be able to turn them off and on at will without any configuration.
+
+Passing Addons to a Block in a Preset means users will have no way to override or remove those Addons.
