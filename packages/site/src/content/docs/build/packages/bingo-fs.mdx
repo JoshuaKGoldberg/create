@@ -41,7 +41,7 @@ Each property in a `files` object may be one of the following:
 - `false` or `undefined`: Ignored
 - `object`: A directory, whose properties recursively are file creations
 - `string`: A file to be created
-- `[string, CreatedFileOptions]`: A file to be created with [`fsPromises.writeFile` options](https://nodejs.org/api/fs.html#fspromiseswritefilefile-data-options):
+- `[string, CreatedFileOptions]`: A file to be created with options:
   - `executable`: Whether to add permissions to make the file executable
 
 For example, this Bingo template produces an executable `.husky/pre-commit` file:

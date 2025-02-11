@@ -10,4 +10,4 @@
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
 
-See **[create.bingo](https://create.bingo/build/apis/testers)** for documentation.
+See **[create.bingo > Building Templates > Packages > bingo-testers](https://create.bingo/build/packages/bingo-testers)** for documentation.

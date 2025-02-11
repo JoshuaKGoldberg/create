@@ -230,7 +230,7 @@ It allows taking in directories written as [Jinja](https://palletsprojects.com/p
 Bingo has several key differences from what Cookiecutter supports:
 
 - Cookiecutter is a wrapper around a Jinja file templates; Bingo allows for full JavaScript logic to generate contents based on provided options
-- Cookiecutter always operates at the scale of one template; Bingo provides more granular APIs for areas of features (Blocks and Presets)
+- Cookiecutter always operates at the scale of one template; Bingo's Stratum engine provides more granular APIs for areas of features (Blocks and Presets)
 - Cookiecutter supports file changes and execution hooks; Bingo additionally supports network calls and arbitrary shell scripts as outputs
 
 Cookiecutter is also written in Python and is installed using tools in the Python ecosystem.
@@ -245,7 +245,7 @@ Bingo has several key additions on top of what Copier supports:
 
 - Copier is a wrapper around a straightforward file templates; Bingo allows for dynamic logic for generating contents based on provided options
 - Copier only supports file templates; Bingo allows for sending network requests and running shell scripts
-- Copier always operates at the scale of one template; Bingo provides more granular APIs for areas of features (Blocks and Presets)
+- Copier always operates at the scale of one template; Bingo's Stratum engine provides more granular APIs for areas of features (Blocks and Presets)
 
 Copier is also written in Python and is installed using tools in the Python ecosystem.
 Bingo is written in TypeScript and is set up to work in the web ecosystem.
@@ -259,7 +259,7 @@ Bingo has several key additions on top of what degit supports:
 
 - degit is a wrapper around a straightforward `git clone`; Bingo allows for dynamic logic for generating contents based on provided options
 - degit only supports limited post-clone actions; Bingo allows for sending network requests and running shell scripts
-- degit always operates at the scale of a full repository; Bingo provides more granular APIs for areas of features (Blocks and Presets)
+- degit always operates at the scale of a full repository; Bingo's Stratum engine provides more granular APIs for areas of features (Blocks and Presets)
 
 ### GitHub Template Repositories
 
@@ -270,7 +270,7 @@ Bingo will include treating sources as templates, and additionally adds features
 
 - Template Repositories are a wrapper around a straightforward `git clone`; Bingo allows for changing generated file contents based on provided options
 - Template Repositories don't support post-clone actions; Bingo allows for sending network requests and running shell scripts
-- Template Repositories always operate at the scale of a full repository; Bingo provides more granular APIs for areas of features (Blocks and Presets)
+- Template Repositories always operate at the scale of a full repository; Bingo's Stratum engine provides more granular APIs for areas of features (Blocks and Presets)
 
 ### Hygen
 
@@ -280,7 +280,7 @@ Hygen templates can have conditional rendering, embedded JavaScript, and injecte
 
 Bingo takes a different architectural approach than Hygen:
 
-- Hygen templates are imperative descriptions of files and frontmatter; Bingo groups areas into blocks
+- Hygen templates are imperative descriptions of files and frontmatter; Bingo's Stratum engine supports grouping areas into blocks
 - Hygen templates heavily build on EJS and do not have type-safe options; Bingo has options explicitly defined with Zod schemas
 - Bingo Blocks describe their own outputs and additions to other Blocks, allowing them to be individually toggled
 - Hygen prioritizes granular individual templates; Bingo priotizes full repository templates
@@ -334,7 +334,7 @@ For more details on how Bingo compares to Projen, see [JoshuaKGoldberg/create-ty
 
 ### Yeoman
 
-[Yeoman](https://yeoman.io) is a much older tool in the web ecosystem for templating.
+[Yeoman](https://yeoman.io) is an older tool in the web ecosystem for templating.
 Its architecture and APIs generally work with older, now-outdated JavaScript practices:
 
 - Project generators must extend `yeoman-generator`'s Generator and define methods that are dynamically discovered and called at runtime

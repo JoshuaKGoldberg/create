@@ -9,6 +9,8 @@
 		{ "path": "./packages/bingo-fs" },
 		{ "path": "./packages/bingo" },
 		{ "path": "./packages/bingo-testers" },
+		{ "path": "./packages/bingo-stratum" },
+		{ "path": "./packages/bingo-stratum-testers" },
 		{ "path": "./packages/input-from-fetch" },
 		{ "path": "./packages/input-from-file" },
 		{ "path": "./packages/input-from-file-json" },
