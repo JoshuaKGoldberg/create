@@ -79,7 +79,10 @@ export function produceBlocks<Options extends object>(
 	}
 
 	// 3. Merge all Block Creations together
-	return Array.from(blockProductions.values()).reduce<
-		Partial<BlockCreation<Options>>
-	>((created, next) => mergeBlockCreations(created, next.creation ?? {}), {});
+	return (
+		Array.from(blockProductions.values()) as BlockProduction<Options>[]
+	).reduce(
+		(created, next) => mergeBlockCreations(created, next.creation ?? {}),
+		{},
+	);
 }
