@@ -1,5 +1,6 @@
-import { mergeCreations, ProductionMode, SystemContext } from "bingo";
+import { ProductionMode, SystemContext } from "bingo";
 
+import { mergeBlockCreations } from "../mergers/mergeBlockCreations.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
 import { BlockCreation, CreatedBlockAddons } from "../types/creations.js";
 import {
@@ -80,5 +81,5 @@ export function produceBlocks<Options extends object>(
 	// 3. Merge all Block Creations together
 	return Array.from(blockProductions.values()).reduce<
 		Partial<BlockCreation<Options>>
-	>((created, next) => mergeCreations(created, next.creation ?? {}), {});
+	>((created, next) => mergeBlockCreations(created, next.creation ?? {}), {});
 }

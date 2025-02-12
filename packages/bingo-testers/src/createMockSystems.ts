@@ -14,7 +14,7 @@ export interface MockSystems {
 export function createMockSystems(
 	settings: MockSystemOptions = {},
 ): MockSystems {
-	const fetchers = createMockFetchers(fetch);
+	const fetchers = settings.fetchers ?? createMockFetchers(fetch);
 	const fs = createMockFileSystem(settings.fs);
 	const runner = settings.runner ?? createFailingFunction("runner", "an input");
 

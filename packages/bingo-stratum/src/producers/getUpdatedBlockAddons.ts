@@ -1,8 +1,8 @@
 import { Creation } from "bingo";
 
+import { mergeAddonsIfUpdated } from "../mergers/mergeAddonsIfUpdated.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
 import { CreatedBlockAddons } from "../types/creations.js";
-import { mergeAddonsIfUpdated } from "./mergeAddonsIfUpdated.js";
 
 export interface BlockProduction<Addons extends object | undefined> {
 	addons: Addons;

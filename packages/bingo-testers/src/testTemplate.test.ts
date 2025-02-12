@@ -4,14 +4,6 @@ import { z } from "zod";
 
 import { testTemplate } from "./testTemplate.js";
 
-const emptyCreation = {
-	addons: [],
-	files: {},
-	requests: [],
-	scripts: [],
-	suggestions: [],
-};
-
 describe("testTemplate", () => {
 	describe("options", () => {
 		const template = createTemplate({
@@ -33,7 +25,6 @@ describe("testTemplate", () => {
 			});
 
 			expect(actual).toEqual({
-				...emptyCreation,
 				files: { "value.txt": "abc" },
 			});
 		});
