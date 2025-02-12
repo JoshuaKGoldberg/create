@@ -23,13 +23,7 @@
 	"scripts": {
 		"build": "tsc"
 	},
-	"dependencies": {
-		"diff": "^7.0.0",
-		"octokit": "^4.1.0",
-		"without-undefined-properties": "^0.1.1"
-	},
 	"devDependencies": {
-		"@types/diff": "7.0.0",
 		"zod": "3.24.1"
 	},
 	"peerDependencies": {

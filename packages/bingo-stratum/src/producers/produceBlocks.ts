@@ -2,7 +2,7 @@ import { ProductionMode, SystemContext } from "bingo";
 
 import { mergeBlockCreations } from "../mergers/mergeBlockCreations.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
-import { BlockCreation, CreatedBlockAddons } from "../types/creations.js";
+import { CreatedBlockAddons } from "../types/creations.js";
 import {
 	BlockProduction,
 	getUpdatedBlockAddons,

@@ -21,6 +21,7 @@ export default tseslint.config(
 			"coverage",
 			"lib",
 			"node_modules",
+			"packages/*/dist",
 			"packages/*/lib",
 			"packages/*/tsconfig.tsbuildinfo",
 			"packages/site/.astro",

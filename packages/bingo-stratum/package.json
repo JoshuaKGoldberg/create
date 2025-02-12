@@ -35,7 +35,8 @@
 	"peerDependencies": {
 		"bingo": "workspace:^",
 		"bingo-fs": "workspace:^",
-		"bingo-systems": "workspace:^"
+		"bingo-systems": "workspace:^",
+		"zod": "^3.24.1"
 	},
 	"engines": {
 		"node": ">=18"

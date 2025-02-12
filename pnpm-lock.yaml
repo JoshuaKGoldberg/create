@@ -183,6 +183,9 @@ importers:
       without-undefined-properties:
         specifier: ^0.1.1
         version: 0.1.1
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       '@types/node':
         specifier: 22.10.6
@@ -208,19 +211,7 @@ importers:
       bingo-testers:
         specifier: workspace:^
         version: link:../bingo-testers
-      diff:
-        specifier: ^7.0.0
-        version: 7.0.0
-      octokit:
-        specifier: ^4.1.0
-        version: 4.1.0
-      without-undefined-properties:
-        specifier: ^0.1.1
-        version: 0.1.1
     devDependencies:
-      '@types/diff':
-        specifier: 7.0.0
-        version: 7.0.0
       zod:
         specifier: 3.24.1
         version: 3.24.1
