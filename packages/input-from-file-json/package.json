@@ -24,14 +24,14 @@
 		"build": "tsc"
 	},
 	"dependencies": {
-		"input-from-file": "workspace:^",
-		"zod": "^3.24.2"
+		"input-from-file": "workspace:^"
 	},
 	"devDependencies": {
 		"bingo-testers": "workspace:^"
 	},
 	"peerDependencies": {
-		"bingo": "workspace:^"
+		"bingo": "workspace:^",
+		"zod": "^3.24.2"
 	},
 	"engines": {
 		"node": ">=18"
