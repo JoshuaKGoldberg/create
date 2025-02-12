@@ -43,8 +43,6 @@ export function produceBlock<Addons extends object, Options extends object>(
 		settings as BlockContextWithAddons<Addons, Options>,
 	);
 
-	// From engine/runtime/execution.md:
-	// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
 	const augment = settings.mode && block[settings.mode];
 	if (augment) {
 		creation = mergeCreations(

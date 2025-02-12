@@ -31,8 +31,6 @@ export async function produceTemplate<OptionsShape extends AnyShape>(
 
 	let creation = template.produce(context);
 
-	// From engine/runtime/execution.md:
-	// 2.2. If a mode is specified, additionally generate the appropriate Block Creations
 	const augmenter = settings.mode && template[settings.mode];
 	if (augmenter) {
 		creation = mergeCreations(creation, augmenter(context));

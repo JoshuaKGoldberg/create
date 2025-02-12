@@ -12,6 +12,7 @@ import { Preset } from "./presets.js";
 export interface StratumTemplate<OptionsShape extends AnyShape = AnyShape>
 	extends Template<OptionsShape> {
 	base: Base<OptionsShape>;
+	presets: Preset<OptionsShape>[];
 }
 
 export interface StratumTemplateDefinition<
