@@ -25,11 +25,11 @@
 	},
 	"dependencies": {
 		"hash-object": "^5.0.1",
-		"octokit": "^4.1.0",
+		"octokit": "^4.1.1",
 		"without-undefined-properties": "^0.1.1"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.6",
+		"@types/node": "22.13.1",
 		"bingo": "workspace:^"
 	},
 	"peerDependencies": {
