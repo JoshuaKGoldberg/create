@@ -43,14 +43,15 @@
 	--sl-color-hairline: var(--sl-color-gray-6);
 	--sl-color-hairline-shade: var(--sl-color-black);
 	--sl-color-backdrop-overlay: hsla(223, 13%, 10%, 0.66);
-	--sl-shadow-sm: 0px 1px 1px hsla(0, 0%, 0%, 0.12),
-		0px 2px 1px hsla(0, 0%, 0%, 0.24);
-	--sl-shadow-md: 0px 8px 4px hsla(0, 0%, 0%, 0.08),
-		0px 5px 2px hsla(0, 0%, 0%, 0.08), 0px 3px 2px hsla(0, 0%, 0%, 0.12),
-		0px 1px 1px hsla(0, 0%, 0%, 0.15);
-	--sl-shadow-lg: 0px 25px 7px hsla(0, 0%, 0%, 0.03),
-		0px 16px 6px hsla(0, 0%, 0%, 0.1), 0px 9px 5px hsla(223, 13%, 10%, 0.33),
-		0px 4px 4px hsla(0, 0%, 0%, 0.75), 0px 4px 2px hsla(0, 0%, 0%, 0.25);
+	--sl-shadow-sm:
+		0px 1px 1px hsla(0, 0%, 0%, 0.12), 0px 2px 1px hsla(0, 0%, 0%, 0.24);
+	--sl-shadow-md:
+		0px 8px 4px hsla(0, 0%, 0%, 0.08), 0px 5px 2px hsla(0, 0%, 0%, 0.08),
+		0px 3px 2px hsla(0, 0%, 0%, 0.12), 0px 1px 1px hsla(0, 0%, 0%, 0.15);
+	--sl-shadow-lg:
+		0px 25px 7px hsla(0, 0%, 0%, 0.03), 0px 16px 6px hsla(0, 0%, 0%, 0.1),
+		0px 9px 5px hsla(223, 13%, 10%, 0.33), 0px 4px 4px hsla(0, 0%, 0%, 0.75),
+		0px 4px 2px hsla(0, 0%, 0%, 0.25);
 	--sl-text-2xs: 0.75rem;
 	--sl-text-xs: 0.8125rem;
 	--sl-text-sm: 0.875rem;
@@ -73,14 +74,16 @@
 	--sl-text-h5: var(--sl-text-lg);
 	--sl-line-height: 1.75;
 	--sl-line-height-headings: 1.2;
-	--sl-font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-		"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+	--sl-font-system:
+		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--sl-font-system-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-		"Liberation Mono", "Courier New", monospace;
+	--sl-font-system-mono:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+		"Courier New", monospace;
 	--__sl-font: var(--sl-font, var(--sl-font-system)), var(--sl-font-system);
-	--__sl-font-mono: var(--sl-font-mono, var(--sl-font-system-mono)),
-		var(--sl-font-system-mono);
+	--__sl-font-mono:
+		var(--sl-font-mono, var(--sl-font-system-mono)), var(--sl-font-system-mono);
 	--sl-nav-height: 3.5rem;
 	--sl-nav-pad-x: 1rem;
 	--sl-nav-pad-y: 0.75rem;
@@ -135,14 +138,15 @@
 	--sl-color-hairline-light: var(--sl-color-gray-6);
 	--sl-color-hairline-shade: var(--sl-color-gray-6);
 	--sl-color-backdrop-overlay: hsla(225, 9%, 36%, 0.66);
-	--sl-shadow-sm: 0px 1px 1px hsla(0, 0%, 0%, 0.06),
-		0px 2px 1px hsla(0, 0%, 0%, 0.06);
-	--sl-shadow-md: 0px 8px 4px hsla(0, 0%, 0%, 0.03),
-		0px 5px 2px hsla(0, 0%, 0%, 0.03), 0px 3px 2px hsla(0, 0%, 0%, 0.06),
-		0px 1px 1px hsla(0, 0%, 0%, 0.06);
-	--sl-shadow-lg: 0px 25px 7px rgba(0, 0, 0, 0.01),
-		0px 16px 6px hsla(0, 0%, 0%, 0.03), 0px 9px 5px hsla(223, 13%, 10%, 0.08),
-		0px 4px 4px hsla(0, 0%, 0%, 0.16), 0px 4px 2px hsla(0, 0%, 0%, 0.04);
+	--sl-shadow-sm:
+		0px 1px 1px hsla(0, 0%, 0%, 0.06), 0px 2px 1px hsla(0, 0%, 0%, 0.06);
+	--sl-shadow-md:
+		0px 8px 4px hsla(0, 0%, 0%, 0.03), 0px 5px 2px hsla(0, 0%, 0%, 0.03),
+		0px 3px 2px hsla(0, 0%, 0%, 0.06), 0px 1px 1px hsla(0, 0%, 0%, 0.06);
+	--sl-shadow-lg:
+		0px 25px 7px rgba(0, 0, 0, 0.01), 0px 16px 6px hsla(0, 0%, 0%, 0.03),
+		0px 9px 5px hsla(223, 13%, 10%, 0.08), 0px 4px 4px hsla(0, 0%, 0%, 0.16),
+		0px 4px 2px hsla(0, 0%, 0%, 0.04);
 }
 @media (min-width: 50em) {
 	:root {
@@ -805,9 +809,10 @@ legend.svelte-1v2r7ls.svelte-1v2r7ls {
 	--pagefind-ui-border-radius: 8px;
 	--pagefind-ui-image-border-radius: 8px;
 	--pagefind-ui-image-box-ratio: 3 / 2;
-	--pagefind-ui-font: system, -apple-system, "BlinkMacSystemFont",
-		".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI",
-		"Helvetica Neue", "Lucida Grande", "Ubuntu", "arial", sans-serif;
+	--pagefind-ui-font:
+		system, -apple-system, "BlinkMacSystemFont", ".SFNSText-Regular",
+		"San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande",
+		"Ubuntu", "arial", sans-serif;
 }
 .pagefind-ui.svelte-e9gkc3 {
 	width: 100%;

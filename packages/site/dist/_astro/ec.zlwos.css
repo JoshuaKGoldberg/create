@@ -286,7 +286,8 @@
 }
 .expressive-code .frame.has-title:not(.is-terminal) .header {
 	display: flex;
-	background: linear-gradient(
+	background:
+		linear-gradient(
 			to top,
 			var(--ec-frm-edTabBarBrdBtmCol) var(--ec-brdWd),
 			transparent var(--ec-brdWd)

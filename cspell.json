@@ -5,8 +5,9 @@
 		"*.tsbuildinfo",
 		"CHANGELOG.md",
 		"coverage",
-		"lib",
 		"node_modules",
+		"packages/*/dist",
+		"packages/*/lib",
 		"packages/*/tsconfig.tsbuildinfo",
 		"packages/site/src/content",
 		"pnpm-lock.yaml"
