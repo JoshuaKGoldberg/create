@@ -1,9 +1,11 @@
 {
 	"name": "bingo-site",
+	"version": "0.0.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
+		"prebuild": "astro sync",
 		"build": "astro check && astro build",
 		"dev": "astro dev",
 		"preview": "astro preview",
