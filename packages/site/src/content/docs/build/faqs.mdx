@@ -3,6 +3,24 @@ description: Frequently asked questions about building templates with Bingo.
 title: FAQs
 ---
 
+## Engines
+
+### What should I do if my template has many files and/or options?
+
+> Or: how do I scale the template's `produce()` function?
+
+It depends on how many files and/or options your template includes.
+In increasing order of scale:
+
+1. If your template produces fewer than ~10 files, consider keeping them all inline in `produce()`
+2. Up to around ~20 files, consider splitting helper functions out for `produce()`'s readabability
+3. After ~20 files, consider onboarding to one of the [Templating Engines](/engines/about):
+   1. If there are many files but not many options, consider the [Handlebars engine](/engines/handlebars/about)
+   2. If there are many files and many options, consider the [Stratum engine](/engines/stratum/about)
+
+If you're writing your first template, it's recommended to go through that list in order.
+Start small and learn Bingo on its own before moving up to a more rich templating engine.
+
 ## Options
 
 ### Why are options defined as an object with Zod schemas as properties, not a Zod object schema itself?
