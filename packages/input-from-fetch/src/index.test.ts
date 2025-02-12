@@ -1,20 +1,20 @@
-import { testInput } from "bingo-testers";
+import { createMockFetchers, testInput } from "bingo-testers";
 import { describe, expect, it, vi } from "vitest";
 
-import { inputFromScript } from "./index.js";
+import { inputFromFetch } from "./index.js";
 
-describe("inputFromScript", () => {
+describe("inputFromFetch", () => {
 	it("returns the result from running the command", async () => {
-		const command = "echo 123";
+		const resource = "https://example.com";
 		const expected = { stdout: "123" };
-		const runner = vi.fn().mockResolvedValue(expected);
+		const fetch = vi.fn().mockResolvedValue(expected);
 
-		const actual = await testInput(inputFromScript, {
-			args: { command },
-			runner,
+		const actual = await testInput(inputFromFetch, {
+			args: { resource },
+			fetchers: createMockFetchers(fetch),
 		});
 
 		expect(actual).toBe(expected);
-		expect(runner).toHaveBeenCalledWith(command);
+		expect(fetch).toHaveBeenCalledWith(resource);
 	});
 });

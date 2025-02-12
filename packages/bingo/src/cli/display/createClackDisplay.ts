@@ -1,7 +1,6 @@
 import * as prompts from "@clack/prompts";
+import { SystemDisplay, SystemDisplayItem } from "bingo-systems";
 import { CachedFactory } from "cached-factory";
-
-import { SystemDisplay, SystemDisplayItem } from "../../types/system.js";
 
 export interface ClackDisplay extends SystemDisplay {
 	dumpItems(): SystemItemsDump;

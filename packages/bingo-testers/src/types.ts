@@ -1,8 +1,10 @@
-import { SystemRunner, TakeInput } from "bingo";
-import { WritingFileSystem } from "bingo-fs";
+import { TakeInput } from "bingo";
+import { SystemFetchers, SystemRunner, WritingFileSystem } from "bingo-systems";
+
+export type Fetch = typeof fetch;
 
 export interface MockSystemOptions {
-	fetch?: typeof fetch;
+	fetchers?: SystemFetchers;
 	fs?: Partial<WritingFileSystem>;
 	runner?: SystemRunner;
 	take?: TakeInput;

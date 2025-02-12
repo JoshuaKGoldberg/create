@@ -2,7 +2,7 @@ import * as prompts from "@clack/prompts";
 import chalk from "chalk";
 
 import { runTemplate } from "../../runners/runTemplate.js";
-import { createSystemContextWithAuth } from "../../system/createSystemContextWithAuth.js";
+import { createSystemContextWithAuth } from "../../contexts/createSystemContextWithAuth.js";
 import { clearLocalGitTags } from "../clearLocalGitTags.js";
 import { createInitialCommit } from "../createInitialCommit.js";
 import { ClackDisplay } from "../display/createClackDisplay.js";

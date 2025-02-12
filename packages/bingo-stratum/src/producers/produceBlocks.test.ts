@@ -1,8 +1,8 @@
-import { createBase } from "create/src/creators/createBase.js";
-import { createSystemFetchers } from "create/src/system/createSystemFetchers.js";
+import { createSystemFetchers } from "bingo-systems";
 import { describe, expect, it, test, vi } from "vitest";
 import { z } from "zod";
 
+import { createBase } from "../creators/createBase.js";
 import { produceBlocks } from "./produceBlocks.js";
 
 const presetContext = {

@@ -35,7 +35,9 @@
 	"peerDependencies": {
 		"bingo": "workspace:^",
 		"bingo-fs": "workspace:^",
-		"bingo-stratum": "workspace:^"
+		"bingo-stratum": "workspace:^",
+		"bingo-systems": "workspace:^",
+		"bingo-testers": "workspace:^"
 	},
 	"engines": {
 		"node": ">=18"

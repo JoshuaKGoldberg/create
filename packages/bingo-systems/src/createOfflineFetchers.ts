@@ -1,5 +1,5 @@
-import { SystemFetchers } from "../types/system.js";
 import { createSystemFetchers } from "./createSystemFetchers.js";
+import { SystemFetchers } from "./types.js";
 
 export function createOfflineFetchers(): SystemFetchers {
 	return createSystemFetchers({

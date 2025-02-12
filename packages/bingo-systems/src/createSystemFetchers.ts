@@ -1,6 +1,6 @@
 import { Octokit } from "octokit";
 
-import { SystemFetchers } from "../types/system.js";
+import { SystemFetchers } from "./types.js";
 
 export interface SystemFetchersSettings {
 	auth?: string;

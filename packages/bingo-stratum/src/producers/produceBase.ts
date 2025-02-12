@@ -3,8 +3,8 @@ import {
 	awaitLazyProperties,
 	createSystemContextWithAuth,
 	InferredObject,
-	NativeSystem,
 } from "bingo";
+import { NativeSystem } from "bingo-systems";
 
 import { Base } from "../types/bases.js";
 

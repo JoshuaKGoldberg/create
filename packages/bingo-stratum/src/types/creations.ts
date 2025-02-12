@@ -8,7 +8,6 @@ export interface BlockCreation<Options extends object> extends Creation {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	addons: CreatedBlockAddons<any, Options>[];
 }
-
 export interface CreatedBlockAddons<
 	Addons extends object = object,
 	Options extends object = object,

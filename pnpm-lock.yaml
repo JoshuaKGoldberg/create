@@ -113,15 +113,15 @@ importers:
       bingo-fs:
         specifier: workspace:^
         version: link:../bingo-fs
+      bingo-systems:
+        specifier: workspace:^
+        version: link:../bingo-systems
       cached-factory:
         specifier: ^0.1.0
         version: 0.1.0
       chalk:
         specifier: ^5.4.1
         version: 5.4.1
-      execa:
-        specifier: ^9.5.2
-        version: 9.5.2
       get-github-auth-token:
         specifier: ^0.1.1
         version: 0.1.1
@@ -134,15 +134,15 @@ importers:
       import-local-or-npx:
         specifier: ^0.3.0
         version: 0.3.0
-      octokit:
-        specifier: ^4.1.0
-        version: 4.1.0
       prettier:
         specifier: 3.4.2
         version: 3.4.2
       read-pkg:
         specifier: ^9.0.1
         version: 9.0.1
+      slugify:
+        specifier: ^1.6.6
+        version: 1.6.6
       without-undefined-properties:
         specifier: ^0.1.1
         version: 0.1.1
@@ -156,15 +156,33 @@ importers:
       '@types/node':
         specifier: 22.13.0
         version: 22.13.0
+      octokit:
+        specifier: ^4.1.0
+        version: 4.1.0
+
+  packages/bingo-fs:
+    devDependencies:
+      '@types/node':
+        specifier: 22.13.0
+        version: 22.13.0
 
   packages/bingo-stratum:
     dependencies:
+      bingo-fs:
+        specifier: workspace:^
+        version: link:../bingo-fs
+      bingo-systems:
+        specifier: workspace:^
+        version: link:../bingo-systems
       hash-object:
         specifier: ^5.0.1
         version: 5.0.1
       octokit:
         specifier: ^4.1.0
         version: 4.1.0
+      slugify:
+        specifier: ^1.6.6
+        version: 1.6.6
     devDependencies:
       '@types/node':
         specifier: 22.10.6
@@ -173,7 +191,51 @@ importers:
         specifier: workspace:^
         version: link:../bingo
 
-  packages/bingo-fs:
+  packages/bingo-stratum-testers:
+    dependencies:
+      bingo:
+        specifier: workspace:^
+        version: link:../bingo
+      bingo-fs:
+        specifier: workspace:^
+        version: link:../bingo-fs
+      bingo-stratum:
+        specifier: workspace:^
+        version: link:../bingo-stratum
+      bingo-systems:
+        specifier: workspace:^
+        version: link:../bingo-systems
+      bingo-testers:
+        specifier: workspace:^
+        version: link:../bingo-testers
+      diff:
+        specifier: ^7.0.0
+        version: 7.0.0
+      octokit:
+        specifier: ^4.1.0
+        version: 4.1.0
+      without-undefined-properties:
+        specifier: ^0.1.1
+        version: 0.1.1
+    devDependencies:
+      '@types/diff':
+        specifier: 7.0.0
+        version: 7.0.0
+      zod:
+        specifier: 3.24.1
+        version: 3.24.1
+
+  packages/bingo-systems:
+    dependencies:
+      bingo-fs:
+        specifier: workspace:^
+        version: link:../bingo-fs
+      execa:
+        specifier: ^9.5.2
+        version: 9.5.2
+      octokit:
+        specifier: ^4.1.0
+        version: 4.1.0
     devDependencies:
       '@types/node':
         specifier: 22.13.0
@@ -187,6 +249,9 @@ importers:
       bingo-fs:
         specifier: workspace:^
         version: link:../bingo-fs
+      bingo-systems:
+        specifier: workspace:^
+        version: link:../bingo-systems
       diff:
         specifier: ^7.0.0
         version: 7.0.0
@@ -3560,6 +3625,10 @@ packages:
   slice-ansi@7.1.0:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
+
+  slugify@1.6.6:
+    resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
+    engines: {node: '>=8.0.0'}
 
   smol-toml@1.3.1:
     resolution: {integrity: sha512-tEYNll18pPKHroYSmLLrksq233j021G0giwW7P3D24jC54pQ5W5BXMsQ/Mvw1OJCmEYDgY+lrzT+3nNUtoNfXQ==}
@@ -8396,6 +8465,8 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
+
+  slugify@1.6.6: {}
 
   smol-toml@1.3.1: {}
 

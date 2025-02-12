@@ -9,6 +9,10 @@ import {
 	BlockWithoutAddons,
 } from "../types/blocks.js";
 import { Preset, PresetDefinition } from "../types/presets.js";
+import {
+	StratumTemplate,
+	StratumTemplateDefinition,
+} from "../types/templates.js";
 import { assertNoDuplicateBlocks } from "./assertNoDuplicateBlocks.js";
 import { applyZodDefaults, isDefinitionWithAddons } from "./utils.js";
 
@@ -66,10 +70,25 @@ export function createBase<OptionsShape extends AnyShape>(
 		};
 	}
 
+	function createStratumTemplate(
+		templateDefinition: StratumTemplateDefinition<OptionsShape>,
+	): StratumTemplate<OptionsShape> {
+		return {
+			...templateDefinition,
+			base,
+			options: {} as OptionsShape,
+			produce() {
+				// TODO: implement this!
+				return {};
+			},
+		};
+	}
+
 	const base = {
 		...baseDefinition,
 		createBlock,
 		createPreset,
+		createTemplate: createStratumTemplate,
 	};
 
 	return base;

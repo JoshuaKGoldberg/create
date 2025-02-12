@@ -1,6 +1,6 @@
 import { AboutBase, AnyOptionalShape, Creation, InferredObject } from "bingo";
 
-import { BlockCreation } from "./creations.js";
+import { BlockCreation, CreatedBlockAddons } from "./creations.js";
 
 export type Block<
 	Addons extends object | undefined = object | undefined,

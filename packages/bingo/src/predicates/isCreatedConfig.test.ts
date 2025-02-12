@@ -31,6 +31,9 @@ describe("isCreatedConfig", () => {
 		[{ settings: { options: {} }, template }, false],
 		[createConfig(template), true],
 		[createConfig(template, {}), true],
+		[createConfig(template, { options: {} }), true],
+		[createConfig(template, { settings: {} }), true],
+		[createConfig(template, { options: {}, settings: {} }), true],
 	])("%j", (input, expected) => {
 		const actual = isCreatedConfig(input);
 

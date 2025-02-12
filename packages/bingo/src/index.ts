@@ -17,19 +17,18 @@ export * from "./producers/produceInput.js";
 export * from "./producers/produceTemplate.js";
 
 // Runners
+export * from "./runners/runCreation.js";
 export * from "./runners/runTemplate.js";
 
 // Runtime (Miscellaneous)
-// TODO: These might be better as their own packages?
+export * from "./contexts/createSystemContext.js";
+export * from "./contexts/createSystemContextWithAuth.js";
 export * from "./runners/applyFilesToSystem.js";
-export * from "./system/createSystemContext.js";
-export * from "./system/createSystemContextWithAuth.js";
 export * from "./utils/awaitLazyProperties.js";
 
 // Types
 export type * from "./options.js";
 export type * from "./types/about.js";
-export type * from "./types/context.js";
 export type * from "./types/creations.js";
 export type * from "./types/inputs.js";
 export type * from "./types/modes.js";

@@ -1,10 +1,21 @@
 import { AnyShape, InferredObject } from "../options.js";
 import { Template } from "../types/templates.js";
-import { CreateConfigSettings, CreatedConfig } from "./types.js";
+import { CreatedConfig } from "./types.js";
 
-export function createConfig<OptionsShape extends AnyShape = AnyShape>(
+export interface CreateConfigArgs<
+	OptionsShape extends AnyShape = AnyShape,
+	Settings extends object = object,
+> {
+	options?: InferredObject<OptionsShape>;
+	settings?: Settings;
+}
+
+export function createConfig<
+	OptionsShape extends AnyShape = AnyShape,
+	Settings extends object = object,
+>(
 	template: Template<OptionsShape>,
-	settings: CreateConfigSettings<InferredObject<OptionsShape>> = {},
+	{ options, settings }: CreateConfigArgs<OptionsShape, Settings> = {},
 ): CreatedConfig<OptionsShape> {
-	return { settings, template };
+	return { options, settings, template };
 }

@@ -1,7 +1,6 @@
 import {
 	AnyShape,
 	InferredObject,
-	Preset,
 	produceTemplate,
 	SystemContext,
 	Template,
@@ -16,7 +15,6 @@ export interface TestProductionSettingsBase {
 export interface TestTemplateProductionSettings<OptionsShape extends AnyShape>
 	extends TestProductionSettingsBase {
 	options: InferredObject<OptionsShape>;
-	preset: Preset<OptionsShape> | string;
 }
 
 export async function testTemplate<OptionsShape extends AnyShape>(

@@ -1,7 +1,7 @@
+import { CreatedFileOptions } from "bingo-fs";
 import * as fs from "node:fs/promises";
 
 import { createReadingFileSystem } from "./createReadingFileSystem.js";
-import { CreatedFileOptions } from "./types/files.js";
 
 export function createWritingFileSystem() {
 	return {

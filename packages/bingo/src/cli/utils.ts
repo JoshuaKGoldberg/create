@@ -5,7 +5,3 @@ export function isLocalPath(from: string) {
 export function makeRelative(item: string) {
 	return item.startsWith(".") ? item : `./${item}`;
 }
-
-export function slugify(text: string) {
-	return text.toLowerCase().replaceAll(/\W+/gu, "-");
-}

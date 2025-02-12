@@ -1,4 +1,4 @@
-import { createBase } from "bingo";
+import { createTemplate } from "bingo";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
@@ -12,15 +12,12 @@ const emptyCreation = {
 	suggestions: [],
 };
 
-const base = createBase({
-	options: {
-		value: z.string(),
-	},
-});
-
 describe("testTemplate", () => {
 	describe("options", () => {
-		const blockUsingOptions = base.createBlock({
+		const template = createTemplate({
+			options: {
+				value: z.string(),
+			},
 			produce({ options }) {
 				return {
 					files: {
@@ -30,17 +27,9 @@ describe("testTemplate", () => {
 			},
 		});
 
-		const presetUsingOptions = base.createPreset({
-			about: { name: "Test" },
-			blocks: [blockUsingOptions],
-		});
-
-		const template = base.createTemplate({ presets: [presetUsingOptions] });
-
 		it("passes options to the block when provided via options", async () => {
 			const actual = await testTemplate(template, {
 				options: { value: "abc" },
-				preset: presetUsingOptions,
 			});
 
 			expect(actual).toEqual({

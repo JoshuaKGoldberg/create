@@ -1,10 +1,10 @@
 import {
 	AnyShape,
 	awaitLazyProperties,
-	Base,
 	InferredObject,
 	TakeInput,
 } from "bingo";
+import { Base } from "bingo-stratum";
 
 import { createFailingFunction, createFailingObject } from "./utils.js";
 

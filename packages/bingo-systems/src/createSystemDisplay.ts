@@ -1,4 +1,4 @@
-import { SystemDisplay } from "../types/system.js";
+import { SystemDisplay } from "./types.js";
 
 export function createSystemDisplay(): SystemDisplay {
 	return {

@@ -1,11 +1,14 @@
-import { createWritingFileSystem } from "bingo-fs";
+import {
+	createOfflineFetchers,
+	createSystemDisplay,
+	createSystemFetchers,
+	createSystemRunner,
+	createWritingFileSystem,
+	NativeSystem,
+	SystemDisplay,
+} from "bingo-systems";
 
 import { TakeInput } from "../types/inputs.js";
-import { NativeSystem, SystemContext, SystemDisplay } from "../types/system.js";
-import { createOfflineFetchers } from "./createOfflineFetchers.js";
-import { createSystemDisplay } from "./createSystemDisplay.js";
-import { createSystemFetchers } from "./createSystemFetchers.js";
-import { createSystemRunner } from "./createSystemRunner.js";
 
 export interface SystemContextSettings extends Partial<NativeSystem> {
 	auth?: string;
@@ -14,9 +17,7 @@ export interface SystemContextSettings extends Partial<NativeSystem> {
 	offline?: boolean;
 }
 
-export function createSystemContext(
-	settings: SystemContextSettings,
-): SystemContext {
+export function createSystemContext(settings: SystemContextSettings) {
 	const system: NativeSystem = {
 		fetchers:
 			settings.fetchers ??

@@ -1,7 +1,7 @@
+import { createSystemFetchers } from "bingo-systems";
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
 
-import { createSystemFetchers } from "../system/createSystemFetchers.js";
 import { createInput } from "./createInput.js";
 
 describe("createInput", () => {

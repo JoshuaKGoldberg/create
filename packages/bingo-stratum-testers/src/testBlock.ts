@@ -1,11 +1,11 @@
+import { ProductionMode } from "bingo";
 import {
 	BlockWithAddons,
 	BlockWithoutAddons,
-	Creation,
 	produceBlock,
 	ProduceBlockSettingsWithAddons,
-	ProductionMode,
-} from "bingo";
+} from "bingo-stratum";
+import { BlockCreation } from "bingo-stratum/lib/types/creations.js";
 
 import { createFailingObject } from "./utils.js";
 
@@ -24,15 +24,15 @@ export interface BlockContextSettingsWithoutAddons<Options extends object> {
 export function testBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options>,
 	settings: BlockContextSettingsWithOptionalAddons<Addons, Options>,
-): Partial<Creation<Options>>;
+): Partial<BlockCreation<Options>>;
 export function testBlock<Options extends object>(
 	block: BlockWithoutAddons<Options>,
 	settings?: BlockContextSettingsWithoutAddons<Options>,
-): Partial<Creation<Options>>;
+): Partial<BlockCreation<Options>>;
 export function testBlock<Addons extends object, Options extends object>(
 	block: BlockWithAddons<Addons, Options> | BlockWithoutAddons<Options>,
 	settings: BlockContextSettingsWithOptionalAddons<Addons, Options> = {},
-): Partial<Creation<Options>> {
+): Partial<BlockCreation<Options>> {
 	return produceBlock(
 		block as BlockWithAddons<Addons, Options>,
 		{

@@ -1,4 +1,5 @@
 import { createInput } from "bingo";
+import { createBase } from "bingo-stratum";
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 

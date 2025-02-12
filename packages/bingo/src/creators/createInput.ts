@@ -1,48 +1,55 @@
 import { z } from "zod";
 
 import { AnyShape, InferredObject } from "../options.js";
-import { Input, InputContext, InputContextWithArgs } from "../types/inputs.js";
+import {
+	Input,
+	InputContext,
+	InputContextWithArgs,
+	InputProducerWithArgs,
+	InputProducerWithoutArgs,
+} from "../types/inputs.js";
 import { isDefinitionWithArgs } from "./utils.js";
 
 export type InputDefinition<
 	Result,
-	ArgsSchema extends AnyShape | undefined = undefined,
-> = ArgsSchema extends object
-	? InputDefinitionWithArgs<Result, ArgsSchema>
+	ArgsShape extends AnyShape | undefined = undefined,
+> = ArgsShape extends object
+	? InputDefinitionWithArgs<Result, ArgsShape>
 	: InputDefinitionWithoutArgs<Result>;
 
-export interface InputDefinitionWithArgs<
-	Result,
-	ArgsSchema extends AnyShape | undefined,
-> {
-	args: ArgsSchema;
-	produce: Input<Result, InferredObject<ArgsSchema>>;
+export interface InputDefinitionWithArgs<Result, ArgsShape extends AnyShape> {
+	args: ArgsShape;
+	produce: InputProducerWithArgs<Result, ArgsShape>;
 }
 
 export interface InputDefinitionWithoutArgs<Result> {
-	produce: Input<Result>;
+	produce: InputProducerWithoutArgs<Result>;
 }
 
 export function createInput<
 	Result,
-	ArgsSchema extends AnyShape | undefined = undefined,
+	ArgsShape extends AnyShape | undefined = undefined,
 >(
-	inputDefinition: InputDefinition<Result, ArgsSchema>,
-): Input<Result, InferredObject<ArgsSchema>> {
+	inputDefinition: InputDefinition<Result, ArgsShape>,
+): Input<Result, ArgsShape> {
 	if (!isDefinitionWithArgs(inputDefinition)) {
 		return ((context: InputContext) => {
 			return inputDefinition.produce(context);
-		}) as Input<Result, InferredObject<ArgsSchema>>;
+		}) as Input<Result, ArgsShape>;
 	}
 
-	const base = z.object(inputDefinition.args);
+	const argsShape = z.object(inputDefinition.args);
 
-	return ((
-		context: InputContextWithArgs<InferredObject<NonNullable<ArgsSchema>>>,
-	) => {
+	function input(
+		context: InputContextWithArgs<InferredObject<NonNullable<ArgsShape>>>,
+	) {
 		return inputDefinition.produce({
 			...context,
-			args: base.parse(context.args),
+			args: argsShape.parse(context.args),
 		});
-	}) as Input<Result, InferredObject<ArgsSchema>>;
+	}
+
+	input.args = inputDefinition.args;
+
+	return input as Input<Result, ArgsShape>;
 }

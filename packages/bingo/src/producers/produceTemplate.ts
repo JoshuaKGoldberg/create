@@ -1,9 +1,10 @@
+import { NativeSystem } from "bingo-systems";
+
+import { createSystemContextWithAuth } from "../contexts/createSystemContextWithAuth.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
 import { AnyShape, InferredObject } from "../options.js";
-import { createSystemContextWithAuth } from "../system/createSystemContextWithAuth.js";
 import { Creation } from "../types/creations.js";
 import { ProductionMode } from "../types/modes.js";
-import { NativeSystem } from "../types/system.js";
 import { Template } from "../types/templates.js";
 
 export interface ProduceTemplateSettings<OptionsShape extends AnyShape>

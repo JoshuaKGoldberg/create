@@ -1,7 +1,8 @@
-import { NativeSystem, TakeInput } from "bingo";
-import { WritingFileSystem } from "bingo-fs";
-import { Octokit } from "octokit";
+import { TakeInput } from "bingo";
+import { NativeSystem } from "bingo-systems";
 
+import { createMockFetchers } from "./createMockFetchers.js";
+import { createMockFileSystem } from "./createMockFileSystem.js";
 import { MockSystemOptions } from "./types.js";
 import { createFailingFunction } from "./utils.js";
 
@@ -13,21 +14,8 @@ export interface MockSystems {
 export function createMockSystems(
 	settings: MockSystemOptions = {},
 ): MockSystems {
-	const fetch = settings.fetch ?? createFailingFunction("fetch", "an input");
-
-	const fetchers = {
-		fetch,
-		octokit: new Octokit({ request: fetch }),
-	};
-
-	const fs: WritingFileSystem = {
-		readDirectory: createFailingFunction("fs.readDirectory", "an input"),
-		readFile: createFailingFunction("fs.readFile", "an input"),
-		writeDirectory: createFailingFunction("fs.writeDirectory", "an input"),
-		writeFile: createFailingFunction("fs.writeFile", "an input"),
-		...settings.fs,
-	};
-
+	const fetchers = createMockFetchers(fetch);
+	const fs = createMockFileSystem(settings.fs);
 	const runner = settings.runner ?? createFailingFunction("runner", "an input");
 
 	const system = { fetchers, fs, runner };

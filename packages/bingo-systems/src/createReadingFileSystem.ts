@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 
-import { ReadingFileSystem } from "./types/system.js";
+import { ReadingFileSystem } from "./types.js";
 
 export function createReadingFileSystem(): ReadingFileSystem {
 	return {

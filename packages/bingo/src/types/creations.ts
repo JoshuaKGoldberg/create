@@ -1,6 +1,5 @@
 import { CreatedDirectory } from "bingo-fs";
-
-import { SystemFetchers } from "./system.js";
+import { SystemFetchers } from "bingo-systems";
 
 export interface CreatedRequest {
 	id: string;

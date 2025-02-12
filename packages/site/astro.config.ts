@@ -84,6 +84,10 @@ export default defineConfig({
 									{ label: "bingo", link: "build/packages/bingo" },
 									{ label: "bingo-fs", link: "build/packages/bingo-fs" },
 									{
+										label: "bingo-systems",
+										link: "build/packages/bingo-systems",
+									},
+									{
 										label: "bingo-testers",
 										link: "build/packages/bingo-testers",
 									},
@@ -127,6 +131,10 @@ export default defineConfig({
 									},
 									{
 										items: [
+											{
+												label: "Block Creations",
+												link: "engines/stratum/details/block-creations",
+											},
 											{
 												label: "Configurations",
 												link: "engines/stratum/details/configurations",

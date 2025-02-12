@@ -1,4 +1,5 @@
-import { SystemRunner } from "../../types/system.js";
+import { SystemRunner } from "bingo-systems";
+
 import { RepositoryLocator } from "./getRepositoryLocator.js";
 
 export async function createTrackingBranches(

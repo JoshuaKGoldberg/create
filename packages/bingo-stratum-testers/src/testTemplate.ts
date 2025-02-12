@@ -1,13 +1,12 @@
 import {
 	AnyShape,
 	InferredObject,
-	Preset,
 	produceTemplate,
 	SystemContext,
 	Template,
 } from "bingo";
-
-import { createMockSystems } from "./createMockSystems.js";
+import { Preset } from "bingo-stratum";
+import { createMockSystems } from "bingo-testers";
 
 export interface TestProductionSettingsBase {
 	system?: Omit<Partial<SystemContext>, "take">;

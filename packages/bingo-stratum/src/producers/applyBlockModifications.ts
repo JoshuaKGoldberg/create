@@ -1,5 +1,5 @@
 import { Block } from "../types/blocks.js";
-import { BlockModifications } from "../types/configs.js";
+import { BlockModifications } from "../types/settings.js";
 
 export function applyBlockModifications<Options extends object>(
 	initial: Block<object | undefined, Options>[],

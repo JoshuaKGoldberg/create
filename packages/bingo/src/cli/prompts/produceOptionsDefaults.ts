@@ -1,9 +1,7 @@
-import { SystemContext } from "../../types/system.js";
 import { TemplatePrepare } from "../../types/templates.js";
 import { awaitLazyProperties } from "../../utils/awaitLazyProperties.js";
 
-export interface ProduceOptionsDefaultsSettings<Options extends object>
-	extends SystemContext {
+export interface ProduceOptionsDefaultsSettings<Options extends object> {
 	existing: Partial<Options>;
 	offline?: boolean;
 }

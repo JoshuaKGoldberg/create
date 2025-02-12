@@ -1,8 +1,8 @@
 import * as prompts from "@clack/prompts";
 import * as fs from "node:fs/promises";
+import slugify from "slugify";
 
 import { Template } from "../../types/templates.js";
-import { slugify } from "../utils.js";
 import { validateNewDirectory } from "./validators.js";
 
 export interface PromptForDirectorySettings {
@@ -26,6 +26,7 @@ export async function promptForDirectory({
 	}
 
 	const directory = await prompts.text({
+		// @ts-expect-error -- https://github.com/simov/slugify/issues/196
 		initialValue: template.about?.name && `my-${slugify(template.about.name)}`,
 		message:
 			"What will the directory and name of the repository be? (--directory)",

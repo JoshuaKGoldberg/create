@@ -1,4 +1,4 @@
-import { Input, TakeInput } from "bingo";
+import { AnyShape, InferredObject, Input, TakeInput } from "bingo";
 
 import { createMockSystems } from "./createMockSystems.js";
 import { MockSystemOptions } from "./types.js";
@@ -12,14 +12,16 @@ export interface InputContextSettingsWithoutArgs extends MockSystemOptions {
 	take?: TakeInput;
 }
 
-export function testInput<Result, Args extends object>(
-	input: Input<Result, Args>,
-	settings: Partial<InputContextSettingsWithArgs<Args>> = {},
+export function testInput<Result, ArgsShape extends AnyShape>(
+	input: Input<Result, ArgsShape>,
+	settings: Partial<
+		InputContextSettingsWithArgs<InferredObject<ArgsShape>>
+	> = {},
 ) {
 	const { system, take } = createMockSystems(settings);
 
 	return input({
-		...(settings as InputContextSettingsWithArgs<Args>),
+		...(settings as InputContextSettingsWithArgs<InferredObject<ArgsShape>>),
 		...system,
 		take,
 	});

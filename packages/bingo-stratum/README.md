@@ -1,6 +1,6 @@
 <h1 align="center">bingo-stratum</h1>
 
-<p align="center">Highly composable, customizable templating engine for <a href="https://create.bingo"><code>Bingo</code></a>. 🏭</p>
+<p align="center">Highly composable, customizable templating engine for <a href="https://create.bingo">Bingo</a>. 🏭</p>
 
 <p align="center">
 	<a href="https://github.com/JoshuaKGoldberg/bingo/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>

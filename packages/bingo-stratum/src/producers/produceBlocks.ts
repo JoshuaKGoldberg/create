@@ -1,7 +1,7 @@
-import { Creation, mergeCreations, ProductionMode, SystemContext } from "bingo";
+import { mergeCreations, ProductionMode, SystemContext } from "bingo";
 
 import { Block, BlockWithAddons } from "../types/blocks.js";
-import { CreatedBlockAddons } from "../types/creations.js";
+import { BlockCreation, CreatedBlockAddons } from "../types/creations.js";
 import {
 	BlockProduction,
 	getUpdatedBlockAddons,
@@ -20,8 +20,8 @@ export function produceBlocks<Options extends object>(
 	blocks: Block<object | undefined, Options>[],
 	{ addons, mode, offline, options, system }: ProduceBlocksSettings<Options>,
 ) {
-	// From engine/runtime/execution.md:
-	// This engine continuously re-runs Blocks until no new Args are provided.
+	// From Templating Engines > Stratum > Details > Execution:
+	// This engine continuously re-runs Blocks until no new Addons are provided.
 
 	const blockProductions = new Map<
 		Block<object | undefined, Options>,
@@ -79,6 +79,6 @@ export function produceBlocks<Options extends object>(
 
 	// 3. Merge all Block Creations together
 	return Array.from(blockProductions.values()).reduce<
-		Partial<Creation<Options>>
+		Partial<BlockCreation<Options>>
 	>((created, next) => mergeCreations(created, next.creation ?? {}), {});
 }

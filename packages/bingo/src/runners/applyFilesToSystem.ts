@@ -1,4 +1,5 @@
-import { CreatedDirectory, WritingFileSystem } from "bingo-fs";
+import { CreatedDirectory } from "bingo-fs";
+import { WritingFileSystem } from "bingo-systems";
 import * as path from "node:path";
 import prettier from "prettier";
 

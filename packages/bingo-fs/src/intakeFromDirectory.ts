@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import { CreatedDirectory } from "../types/files.js";
 import { isModeExecutable } from "./isModeExecutable.js";
+import { CreatedDirectory } from "./types.js";
 
 export interface IntakeFromDirectorySettings {
 	exclude?: RegExp;
