@@ -26,7 +26,7 @@ export async function readProductionSettings({
 	}
 
 	for (const item of items) {
-		if (/create\.config\.\w+/.test(item)) {
+		if (/bingo\.config\.\w+/.test(item)) {
 			return {
 				configFile: path.join(directory, item),
 				mode: "transition",

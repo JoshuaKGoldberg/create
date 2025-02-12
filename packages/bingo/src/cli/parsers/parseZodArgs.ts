@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 // TODO: Add fancy TS types to convert from Zod to parseArgs
 
-import { parseArgs, ParseArgsConfig } from "util";
+import { parseArgs, ParseArgsConfig } from "node:util";
 import {
 	ZodBooleanDef,
 	ZodFirstPartyTypeKind,
@@ -15,6 +15,8 @@ import {
 } from "zod";
 
 import { AnyShape, InferredObject } from "../../options.js";
+
+// TODO: Send issue/PR to DefinitelyTyped to export these from node:util...
 
 type ParseArgsOptionsConfig = NonNullable<ParseArgsConfig["options"]>;
 

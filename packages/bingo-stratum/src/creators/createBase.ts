@@ -78,7 +78,9 @@ export function createBase<OptionsShape extends AnyShape>(
 			base,
 			options: {} as OptionsShape,
 			produce() {
-				// TODO: implement this!
+				// TODO: implement:
+				// - blocks engine in general
+				// - settings.blocks.(add,remove)
 				return {};
 			},
 		};

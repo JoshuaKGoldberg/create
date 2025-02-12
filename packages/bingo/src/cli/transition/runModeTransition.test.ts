@@ -20,22 +20,6 @@ vi.mock("@clack/prompts", () => ({
 	spinner: vi.fn(),
 }));
 
-const mockLogTransitionHelpText = vi.fn();
-
-vi.mock("../loggers/logTransitionHelpText.js", () => ({
-	get logTransitionHelpText() {
-		return mockLogTransitionHelpText;
-	},
-}));
-
-const mockLogRerunSuggestion = vi.fn();
-
-vi.mock("../loggers/logRerunSuggestion.js", () => ({
-	get logRerunSuggestion() {
-		return mockLogRerunSuggestion;
-	},
-}));
-
 const mockRunTemplate = vi.fn();
 
 vi.mock("../../runners/runTemplate.js", () => ({
@@ -48,17 +32,17 @@ const mockSystem = {
 	runner: vi.fn(),
 };
 
-vi.mock("../../system/createSystemContextWithAuth.js", () => ({
+vi.mock("../../contexts/createSystemContextWithAuth.js", () => ({
 	get createSystemContextWithAuth() {
 		return vi.fn().mockResolvedValue(mockSystem);
 	},
 }));
 
-const mockPromptForBaseOptions = vi.fn();
+const mockPromptForOptions = vi.fn();
 
-vi.mock("../prompts/promptForBaseOptions.js", () => ({
-	get promptForBaseOptions() {
-		return mockPromptForBaseOptions;
+vi.mock("../prompts/promptForOptions.js", () => ({
+	get promptForOptions() {
+		return mockPromptForOptions;
 	},
 }));
 
@@ -78,19 +62,27 @@ vi.mock("../createInitialCommit.js", () => ({
 	},
 }));
 
+const mockLogTransitionHelpText = vi.fn();
+
+vi.mock("../loggers/logTransitionHelpText.js", () => ({
+	get logTransitionHelpText() {
+		return mockLogTransitionHelpText;
+	},
+}));
+
+const mockLogRerunSuggestion = vi.fn();
+
+vi.mock("../loggers/logRerunSuggestion.js", () => ({
+	get logRerunSuggestion() {
+		return mockLogRerunSuggestion;
+	},
+}));
+
 const mockLogStartText = vi.fn();
 
 vi.mock("../loggers/logStartText", () => ({
 	get logStartText() {
 		return mockLogStartText;
-	},
-}));
-
-const mockApplyArgsToSettings = vi.fn();
-
-vi.mock("../parsers/applyArgsToSettings", () => ({
-	get applyArgsToSettings() {
-		return mockApplyArgsToSettings;
 	},
 }));
 
@@ -135,6 +127,12 @@ const template = createTemplate({
 	produce: vi.fn(),
 });
 
+const templateWithRepository = createTemplate({
+	about: { name: "Test Template", repository: { owner: "a", repository: "b" } },
+	options: {},
+	produce: vi.fn(),
+});
+
 const args = ["bingo-my-app"];
 
 const descriptor = "Test Source";
@@ -142,7 +140,13 @@ const type = "template";
 
 const source = {
 	descriptor,
-	load: () => Promise.resolve({ template }),
+	load: () => Promise.resolve(template),
+	type,
+};
+
+const sourceWithRepository = {
+	descriptor,
+	load: () => Promise.resolve(templateWithRepository),
 	type,
 };
 
@@ -217,11 +221,9 @@ describe("runModeTransition", () => {
 		});
 	});
 
-	it("returns the cancellation when promptForBaseOptions is cancelled", async () => {
-		mockParseTransitionSource.mockReturnValueOnce({
-			load: () => Promise.resolve({ template }),
-		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({
+	it("returns the cancellation when promptForOptions is cancelled", async () => {
+		mockParseTransitionSource.mockReturnValueOnce(source);
+		mockPromptForOptions.mockResolvedValueOnce({
 			cancelled: true,
 			prompted: promptedOptions,
 		});
@@ -238,36 +240,11 @@ describe("runModeTransition", () => {
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
-	it("returns the error when applyArgsToSettings returns an error", async () => {
-		const message = "Oh no!";
-
-		mockParseTransitionSource.mockReturnValueOnce({
-			load: () => Promise.resolve({ template }),
-		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({
-			prompted: promptedOptions,
-		});
-		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
-		mockApplyArgsToSettings.mockReturnValueOnce(new Error(message));
-
-		const actual = await runModeTransition({
-			args,
-			configFile: undefined,
-			display,
-		});
-
-		expect(actual).toEqual({ outro: message, status: CLIStatus.Error });
-		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
-	});
-
 	it("returns the error when runTemplate resolves with an error", async () => {
-		mockParseTransitionSource.mockReturnValueOnce({
-			load: () => Promise.resolve({ template }),
-		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({
+		mockParseTransitionSource.mockReturnValueOnce(source);
+		mockPromptForOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
 		mockRunTemplate.mockRejectedValueOnce(new Error("Oh no!"));
 
 		const actual = await runModeTransition({
@@ -283,14 +260,11 @@ describe("runModeTransition", () => {
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
-	it("doesn't clear the existing repository when no forked template locator is available", async () => {
-		mockParseTransitionSource.mockReturnValueOnce({
-			load: () => Promise.resolve({ template }),
-		});
-		mockPromptForBaseOptions.mockResolvedValueOnce({
+	it("doesn't clear the existing repository when the template does not have a repository locator", async () => {
+		mockParseTransitionSource.mockReturnValueOnce(source);
+		mockPromptForOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
-		mockGetForkedRepositoryLocator.mockResolvedValueOnce(undefined);
 
 		const actual = await runModeTransition({
 			args,
@@ -307,12 +281,12 @@ describe("runModeTransition", () => {
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
-	it("clears the existing repository online when a forked template locator is available and offline is falsy", async () => {
+	it("clears the existing repository online when a forked repository locator is available and offline is falsy", async () => {
 		const descriptor = "Test Source";
 		const type = "template";
 
-		mockParseTransitionSource.mockReturnValueOnce(source);
-		mockPromptForBaseOptions.mockResolvedValueOnce({
+		mockParseTransitionSource.mockReturnValueOnce(sourceWithRepository);
+		mockPromptForOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
 		mockGetForkedRepositoryLocator.mockResolvedValueOnce({
@@ -345,12 +319,12 @@ describe("runModeTransition", () => {
 		expect(mockLogRerunSuggestion).toHaveBeenCalledWith(args, promptedOptions);
 	});
 
-	it("clears the existing repository offline when a forked template locator is available and offline is true", async () => {
+	it("clears the existing repository offline when a forked repository locator is available and offline is true", async () => {
 		const descriptor = "Test Source";
 		const type = "template";
 
-		mockParseTransitionSource.mockReturnValueOnce(source);
-		mockPromptForBaseOptions.mockResolvedValueOnce({
+		mockParseTransitionSource.mockReturnValueOnce(sourceWithRepository);
+		mockPromptForOptions.mockResolvedValueOnce({
 			prompted: promptedOptions,
 		});
 		mockGetForkedRepositoryLocator.mockResolvedValueOnce({

@@ -8,8 +8,8 @@ describe("findPositionalFrom", () => {
 		[["./create-typescript-app"], "./create-typescript-app"],
 		[["./create-typescript-app", "other"], "./create-typescript-app"],
 		[["./typescript-app"], "./typescript-app"],
-		[["bingo-typescript-app"], "bingo-typescript-app"],
-		[["typescript-app"], "bingo-typescript-app"],
+		[["create-typescript-app"], "create-typescript-app"],
+		[["typescript-app"], "create-typescript-app"],
 	])("%j", (input, expected) => {
 		expect(findPositionalFrom(input)).toBe(expected);
 	});

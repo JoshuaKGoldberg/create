@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { mergeCreations } from "./mergeCreations.js";
 
 const emptyCreation = {
-	addons: [],
 	files: {},
 	requests: [],
 	scripts: [],
@@ -34,7 +33,6 @@ describe("mergeCreations", () => {
 
 		expect(actual).toMatchInlineSnapshot(`
 			{
-			  "addons": [],
 			  "files": {
 			    "README.md": "Hello, world!",
 			    "src": {

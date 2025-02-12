@@ -28,7 +28,7 @@ describe("createRepositoryOnGitHub", () => {
 	it("creates using a template when one is provided", async () => {
 		const template = {
 			owner: "JoshuaKGoldberg",
-			repository: "bingo-typescript-app",
+			repository: "create-typescript-app",
 		};
 
 		await createRepositoryOnGitHub(options, createMockOctokit(), template);

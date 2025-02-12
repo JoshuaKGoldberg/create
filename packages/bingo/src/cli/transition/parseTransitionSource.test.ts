@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { createTemplate } from "../../creators/createTemplate.js";
 import {
 	parseTransitionSource,
 	TransitionSource,
@@ -57,10 +58,12 @@ describe("parseTransitionSource", () => {
 		);
 	});
 
-	it("returns a config loader when only configFile is defined", async () => {
-		const expected = { configFile: true };
+	it.only("returns a config loader when only configFile is defined", async () => {
+		const template = createTemplate({
+			produce: () => ({}),
+		});
 
-		mockTryImportConfig.mockResolvedValueOnce(expected);
+		mockTryImportConfig.mockResolvedValueOnce({ template });
 
 		const actual = parseTransitionSource({
 			configFile: "bingo.config.js",
@@ -74,7 +77,7 @@ describe("parseTransitionSource", () => {
 		});
 
 		const loaded = await (actual as TransitionSource).load();
-		expect(loaded).toBe(expected);
+		expect(loaded).toBe(template);
 		expect(mockTryImportTemplate).not.toHaveBeenCalled();
 	});
 

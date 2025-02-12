@@ -28,7 +28,6 @@ vi.mock("node:fs/promises", () => ({
 }));
 
 const templateWithoutAbout = createTemplate({
-	about: { name: "Test Template" },
 	options: {},
 	produce: vi.fn(),
 });

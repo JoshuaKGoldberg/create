@@ -148,7 +148,7 @@ describe("readProductionSettings", () => {
 		expect(mockRunModeSetup).toHaveBeenCalledWith({
 			args,
 			display: mockDisplay,
-			from: "bingo-typescript-app",
+			from: "create-typescript-app",
 		});
 		expect(mockRunModeTransition).not.toHaveBeenCalled();
 	});

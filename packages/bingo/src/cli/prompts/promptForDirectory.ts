@@ -26,8 +26,11 @@ export async function promptForDirectory({
 	}
 
 	const directory = await prompts.text({
-		// @ts-expect-error -- https://github.com/simov/slugify/issues/196
-		initialValue: template.about?.name && `my-${slugify(template.about.name)}`,
+		initialValue:
+			template.about?.name &&
+			// @ts-expect-error -- https://github.com/simov/slugify/issues/196
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			`my-${slugify(template.about.name, { lower: true })}`,
 		message:
 			"What will the directory and name of the repository be? (--directory)",
 		validate: validateNewDirectory,
