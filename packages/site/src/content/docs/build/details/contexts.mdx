@@ -94,17 +94,10 @@ import { createInput } from "bingo";
 
 export const inputFromFetch = createInput({
 	args: {
-		options: z
-			.object({
-				// TODO: fill out!
-			})
-			.optional(),
 		resource: z.string(),
 	},
 	async produce({ fetchers, offline }) {
-		return offline
-			? undefined
-			: await fetchers.fetch(args.resource, args.options);
+		return offline ? undefined : await fetchers.fetch(args.resource);
 	},
 });
 ```
