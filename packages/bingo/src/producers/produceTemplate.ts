@@ -1,4 +1,4 @@
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 
 import { createSystemContextWithAuth } from "../contexts/createSystemContextWithAuth.js";
 import { mergeCreations } from "../mergers/mergeCreations.js";
@@ -8,7 +8,7 @@ import { ProductionMode } from "../types/modes.js";
 import { Template } from "../types/templates.js";
 
 export interface ProduceTemplateSettings<OptionsShape extends AnyShape>
-	extends Partial<NativeSystem> {
+	extends Partial<BingoSystem> {
 	directory?: string;
 	mode?: ProductionMode;
 	offline?: boolean;

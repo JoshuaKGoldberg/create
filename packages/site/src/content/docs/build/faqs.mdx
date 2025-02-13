@@ -103,6 +103,8 @@ However, mocking out resources during unit testing is much harder if you do.
 They will also throw an error if you accidentally call to a context property without providing a mock function for it.
 This can prevent accidental file writes, network calls, and script commands when running unit tests.
 
+See [Packages > `bingo-systems`](/build/packages/bingo-systems) for documentation on the system call wrappers.
+
 ### Why is the `prepareOptions()` API not a part of `produceTemplate()` or `runTemplate()`?
 
 Not every caller of [`produceTemplate()`](/build/apis/produce-template) or [`runTemplate()`](/build/apis/run-template) may want to asynchronously load in options.

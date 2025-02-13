@@ -1,8 +1,9 @@
 import * as prompts from "@clack/prompts";
-import { SystemDisplay, SystemDisplayItem } from "bingo-systems";
 import { CachedFactory } from "cached-factory";
 
-export interface ClackDisplay extends SystemDisplay {
+import { Display, DisplayItem } from "../../contexts/createDisplay.js";
+
+export interface ClackDisplay extends Display {
 	dumpItems(): SystemItemsDump;
 	spinner: ClackSpinner;
 }
@@ -10,14 +11,13 @@ export interface ClackDisplay extends SystemDisplay {
 // TODO: suggest making a type for all these things to Clack :)
 export type ClackSpinner = ReturnType<typeof prompts.spinner>;
 
-export type SystemItemsDump = Record<string, Record<string, SystemDisplayItem>>;
+export type SystemItemsDump = Record<string, Record<string, DisplayItem>>;
 
 export function createClackDisplay(): ClackDisplay {
 	const spinner = prompts.spinner();
-	const groups = new CachedFactory<
-		string,
-		CachedFactory<string, SystemDisplayItem>
-	>(() => new CachedFactory(() => ({})));
+	const groups = new CachedFactory<string, CachedFactory<string, DisplayItem>>(
+		() => new CachedFactory(() => ({})),
+	);
 
 	const display = {
 		item(group, id, item) {
@@ -26,7 +26,7 @@ export function createClackDisplay(): ClackDisplay {
 		log(message) {
 			spinner.message(message);
 		},
-	} satisfies SystemDisplay;
+	} satisfies Display;
 
 	return {
 		...display,

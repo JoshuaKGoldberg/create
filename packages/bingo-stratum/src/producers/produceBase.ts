@@ -4,12 +4,12 @@ import {
 	createSystemContextWithAuth,
 	InferredObject,
 } from "bingo";
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 
 import { Base } from "../types/bases.js";
 
 export interface ProduceBaseSettings<OptionsShape extends AnyShape>
-	extends Partial<NativeSystem> {
+	extends Partial<BingoSystem> {
 	directory?: string;
 	offline?: boolean;
 	options?: Partial<InferredObject<OptionsShape>>;

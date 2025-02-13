@@ -71,7 +71,6 @@ export async function runModeTransition({
 
 	const system = await createSystemContextWithAuth({
 		directory,
-		display,
 		offline,
 	});
 

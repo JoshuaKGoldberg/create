@@ -227,6 +227,9 @@ importers:
       execa:
         specifier: ^9.5.2
         version: 9.5.2
+      get-github-auth-token:
+        specifier: ^0.1.1
+        version: 0.1.1
       octokit:
         specifier: ^4.1.1
         version: 4.1.1

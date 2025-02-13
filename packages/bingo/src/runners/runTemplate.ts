@@ -1,4 +1,4 @@
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 import fs from "node:fs/promises";
 
 import { createSystemContextWithAuth } from "../contexts/createSystemContextWithAuth.js";
@@ -9,7 +9,7 @@ import { ProductionMode } from "../types/modes.js";
 import { Template } from "../types/templates.js";
 import { runCreation } from "./runCreation.js";
 
-export interface RunSettingsBase extends Partial<NativeSystem> {
+export interface RunSettingsBase extends Partial<BingoSystem> {
 	auth?: string;
 	directory?: string;
 	mode?: ProductionMode;

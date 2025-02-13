@@ -1,7 +1,7 @@
 import { createSystemFetchers } from "./createSystemFetchers.js";
 import { SystemFetchers } from "./types.js";
 
-export function createOfflineFetchers(): SystemFetchers {
+export function createSystemFetchersOffline(): SystemFetchers {
 	return createSystemFetchers({
 		fetch: () =>
 			Promise.reject(

@@ -6,7 +6,10 @@ import {
 } from "./createSystemContext.js";
 
 export async function createSystemContextWithAuth(
-	settings: SystemContextSettings,
+	settings: Pick<
+		SystemContextSettings,
+		"auth" | "directory" | "fetchers" | "offline"
+	>,
 ) {
 	const authToken =
 		settings.fetchers?.octokit || settings.auth || settings.offline

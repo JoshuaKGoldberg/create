@@ -1,28 +1,27 @@
 import {
-	createOfflineFetchers,
-	createSystemDisplay,
+	BingoSystem,
 	createSystemFetchers,
+	createSystemFetchersOffline,
 	createSystemRunner,
 	createWritingFileSystem,
-	NativeSystem,
-	SystemDisplay,
 } from "bingo-systems";
 
 import { TakeInput } from "../types/inputs.js";
+import { createDisplay, Display } from "./createDisplay.js";
 
-export interface SystemContextSettings extends Partial<NativeSystem> {
+export interface SystemContextSettings extends Partial<BingoSystem> {
 	auth?: string;
 	directory: string;
-	display?: SystemDisplay;
+	display?: Display;
 	offline?: boolean;
 }
 
 export function createSystemContext(settings: SystemContextSettings) {
-	const system: NativeSystem = {
+	const system: BingoSystem = {
 		fetchers:
 			settings.fetchers ??
 			(settings.offline
-				? createOfflineFetchers()
+				? createSystemFetchersOffline()
 				: createSystemFetchers(settings)),
 		fs: settings.fs ?? createWritingFileSystem(),
 		runner: settings.runner ?? createSystemRunner(settings.directory),
@@ -33,7 +32,7 @@ export function createSystemContext(settings: SystemContextSettings) {
 	return {
 		...system,
 		directory: settings.directory,
-		display: settings.display ?? createSystemDisplay(),
+		display: settings.display ?? createDisplay(),
 		take,
 	};
 }

@@ -72,7 +72,6 @@ export async function runModeSetup({
 
 	const system = await createSystemContextWithAuth({
 		directory,
-		display,
 		offline,
 	});
 

@@ -7,11 +7,6 @@ const mockOfflineFetchers = {
 	variant: "offline",
 };
 
-const mockSystemDisplay = {
-	item: vi.fn(),
-	log: vi.fn(),
-};
-
 const mockSystemFetchers = {
 	variant: "system",
 };
@@ -26,11 +21,19 @@ const mockWritingFileSystem = {
 };
 
 vi.mock("bingo-systems", () => ({
-	createOfflineFetchers: () => mockOfflineFetchers,
-	createSystemDisplay: () => mockSystemDisplay,
 	createSystemFetchers: () => mockSystemFetchers,
+	createSystemFetchersOffline: () => mockOfflineFetchers,
 	createSystemRunner: () => mockSystemRunner,
 	createWritingFileSystem: () => mockWritingFileSystem,
+}));
+
+const mockDisplay = {
+	item: vi.fn(),
+	log: vi.fn(),
+};
+
+vi.mock("./createDisplay.js", () => ({
+	createDisplay: () => mockDisplay,
 }));
 
 describe("createSystemContext", () => {
@@ -49,10 +52,10 @@ describe("createSystemContext", () => {
 			expect(display).toBe(provided);
 		});
 
-		it("creates a writing file system when display is not provided", () => {
+		it("creates a system display when display is not provided", () => {
 			const { display } = createSystemContext({ directory: "." });
 
-			expect(display).toBe(mockSystemDisplay);
+			expect(display).toBe(mockDisplay);
 		});
 	});
 

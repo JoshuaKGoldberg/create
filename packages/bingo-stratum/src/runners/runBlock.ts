@@ -1,5 +1,5 @@
 import { createSystemContextWithAuth, runCreation } from "bingo";
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 
 import { produceBlock } from "../producers/produceBlock.js";
 import { BlockWithAddons, BlockWithoutAddons } from "../types/blocks.js";
@@ -19,7 +19,7 @@ export interface RunBlockSettingsWithOptionalAddons<
 }
 
 export interface RunBlockSettingsWithoutAddons<Options extends object>
-	extends Partial<NativeSystem> {
+	extends Partial<BingoSystem> {
 	directory?: string;
 	offline?: boolean;
 	options: Options;

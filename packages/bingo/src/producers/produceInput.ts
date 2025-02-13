@@ -1,11 +1,11 @@
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 
 import { createSystemContext } from "../contexts/createSystemContext.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Input } from "../types/inputs.js";
 
 export interface ProduceInputSettings<Args extends object = object>
-	extends Partial<NativeSystem> {
+	extends Partial<BingoSystem> {
 	args: Args;
 	auth?: string;
 	directory?: string;

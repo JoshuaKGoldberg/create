@@ -26,6 +26,7 @@
 	"dependencies": {
 		"bingo-fs": "workspace:^",
 		"execa": "^9.5.2",
+		"get-github-auth-token": "^0.1.1",
 		"octokit": "^4.1.1"
 	},
 	"devDependencies": {

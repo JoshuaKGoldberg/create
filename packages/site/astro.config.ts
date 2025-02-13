@@ -184,7 +184,6 @@ export default defineConfig({
 								],
 								label: "Stratum",
 							},
-							{ label: "Custom Engines", link: "engines/custom" },
 						],
 						label: "Templating Engines",
 						link: "/engines/about",

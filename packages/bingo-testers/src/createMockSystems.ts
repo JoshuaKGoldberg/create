@@ -1,5 +1,5 @@
 import { TakeInput } from "bingo";
-import { NativeSystem } from "bingo-systems";
+import { BingoSystem } from "bingo-systems";
 
 import { createMockFetchers } from "./createMockFetchers.js";
 import { createMockFileSystem } from "./createMockFileSystem.js";
@@ -7,7 +7,7 @@ import { MockSystemOptions } from "./types.js";
 import { createFailingFunction } from "./utils.js";
 
 export interface MockSystems {
-	system: NativeSystem;
+	system: BingoSystem;
 	take: TakeInput;
 }
 

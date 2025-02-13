@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { createOfflineFetchers } from "./createOfflineFetchers.js";
+import { createSystemFetchersOffline } from "./createSystemFetchersOffline.js";
 
-describe("createOfflineFetchers", () => {
+describe("createSystemFetchersOffline", () => {
 	it("rejects when called", async () => {
-		const fetchers = createOfflineFetchers();
+		const fetchers = createSystemFetchersOffline();
 
 		await expect(
 			async () => await fetchers.fetch(""),
