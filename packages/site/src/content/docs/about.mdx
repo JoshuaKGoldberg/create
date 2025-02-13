@@ -6,13 +6,13 @@ title: About Bingo
 import { PackageManagers } from "starlight-package-managers";
 
 Bingo is a tool for delightful web repository templates.
-Pass the name of a template to the `bingo` CLI command, and it'll make a new repository for you.
+Pass the name of a template to the `bingo` CLI command, and it'll walk you through making a new repository from that template:
 
 <PackageManagers type="dlx" pkg="bingo" args="typescript-app@beta" />
 
 With Bingo templates, you can have fully-formed, wonderful dev tooling in your repositories -- without setting all those tools up from scratch yourself.
 
-> 🚀 See **[CLI](/cli)** to generate your first repository from a template with the Bingo command.
+> 🚀 See **[CLI](/cli)** for more details on generating repositories from Bingo templates.
 
 ## What?
 
@@ -23,7 +23,7 @@ Bingo provides tooling for:
 
 The Bingo project also provides rich scaffolding for building flexible repository templates that describe the files and settings for projects.
 
-> ⚙️ See **[Templating Engine](/build/about)** to learn how to write your own templates.
+> ⚙️ See **[Building Templates](/build/about)** to learn how to write your own templates.
 
 ## Why?
 
@@ -34,8 +34,8 @@ Keeping up to date with the latest and greatest in web development tooling can b
 
 Bingo helps with both of those problems.
 
-It allows you to pull in great tooling from templates such as [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) without needing to configure it all from scratch.
-Templates can define both the raw files on disk as well as GitHub repository settings and commands to run that initialize repositories.
+Bingo brings you great tooling from templates like [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) without needing to configure it all from scratch yourself.
+Templates can define files, initialization commands, and even GitHub repository settings to set via the API.
 
 Bingo additionally includes great support for updating your repositories as templates change.
 Existing template options are inferred from your existing repository.
