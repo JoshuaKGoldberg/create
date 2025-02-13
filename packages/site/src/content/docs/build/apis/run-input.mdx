@@ -1,21 +1,21 @@
 ---
 description: Bingo API to run an input.
-title: produceTemplate
+title: runInput
 ---
 
 Given an [Input](/build/concepts/inputs), runs its `produce()` with any provided args.
 
-`produceInput` takes in up to two arguments:
+`runInput` takes in up to two arguments:
 
 1. `input` _(required)_: an Input
 2. `context` _(optional)_: any properties from an [Input Context](/build/details/contexts#input-contexts)
 
-`produceInput` returns the result of the Input's [`produce()`](/build/apis/create-input#produce).
+`runInput` returns the result of the Input's [`produce()`](/build/apis/create-input#produce).
 
 For example, this Input production reads data from an existing `data.json` file on disk:
 
 ```ts
-import { createInput, produceInput } from "bingo";
+import { createInput, runInput } from "bingo";
 
 const inputDataJson = createInput({
 	async produce({ fs }) {
@@ -24,7 +24,7 @@ const inputDataJson = createInput({
 });
 
 // Type: string
-await produceInput(inputDataJson);
+await runInput(inputDataJson);
 ```
 
 ### `args`
@@ -46,7 +46,7 @@ const inputJsonFile = createInput({
 	},
 });
 
-await produceInput(inputJsonFile, {
+await runInput(inputJsonFile, {
 	args: "data.json",
 });
 ```
@@ -60,7 +60,7 @@ This is equivalent to the [`--offline` CLI flag](/cli#--offline).
 For example, this input returns `undefined` instead of fetching a cat fact when `offline` is enabled:
 
 ```ts
-import { createInput, produceInput } from "bingo";
+import { createInput, runInput } from "bingo";
 import { z } from "zod";
 
 export const inputCatFact = createInput({
@@ -77,8 +77,8 @@ export const inputCatFact = createInput({
 });
 
 // "Cats can jump up to 7 times their tail length."
-await produceInput(inputCatFact);
+await runInput(inputCatFact);
 
 // undefined
-await produceInput(inputCatFact, { offline: true });
+await runInput(inputCatFact, { offline: true });
 ```

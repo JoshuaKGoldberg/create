@@ -58,7 +58,7 @@ describe("parseTransitionSource", () => {
 		);
 	});
 
-	it.only("returns a config loader when only configFile is defined", async () => {
+	it("returns a config loader when only configFile is defined", async () => {
 		const template = createTemplate({
 			produce: () => ({}),
 		});

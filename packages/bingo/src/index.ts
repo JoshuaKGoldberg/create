@@ -15,11 +15,11 @@ export * from "./mergers/applyMerger.js";
 export * from "./mergers/mergeCreations.js";
 
 // Producers
-export * from "./producers/produceInput.js";
 export * from "./producers/produceTemplate.js";
 
 // Runners
 export * from "./runners/runCreation.js";
+export * from "./runners/runInput.js";
 export * from "./runners/runTemplate.js";
 
 // Runtime (Miscellaneous)

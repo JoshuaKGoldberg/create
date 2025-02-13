@@ -4,7 +4,7 @@ import { createSystemContext } from "../contexts/createSystemContext.js";
 import { AnyShape, InferredObject } from "../options.js";
 import { Input } from "../types/inputs.js";
 
-export interface ProduceInputSettings<Args extends object = object>
+export interface RunInputSettings<Args extends object = object>
 	extends Partial<BingoSystem> {
 	args: Args;
 	auth?: string;
@@ -12,9 +12,9 @@ export interface ProduceInputSettings<Args extends object = object>
 	offline?: boolean;
 }
 
-export function produceInput<Result, ArgsShape extends AnyShape>(
+export function runInput<Result, ArgsShape extends AnyShape>(
 	input: Input<Result, ArgsShape>,
-	settings: ProduceInputSettings<InferredObject<ArgsShape>>,
+	settings: RunInputSettings<InferredObject<ArgsShape>>,
 ) {
 	const system = createSystemContext({
 		directory: settings.directory ?? ".",

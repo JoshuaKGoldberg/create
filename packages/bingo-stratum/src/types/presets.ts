@@ -13,7 +13,7 @@ export interface PresetAbout extends AboutBase {
 	name: string;
 }
 
-export interface PresetDefinition<Options extends object> {
+export interface PresetDefinition<Options extends object = object> {
 	about: PresetAbout;
 	// TODO: Figure out how to replace this with ... never? object?
 	// Note it needs to pass tsc both in this repo and in create-typescript-app.

@@ -71,7 +71,7 @@ For example, if a `src/index.ts` has content `abc` in `actual` but content `bbc`
 
 ## `testInput`
 
-For [Inputs](/build/concepts/inputs), a `testInput` function is exported that is analogous to [`produceInput`](/build/apis/produce-input).
+For [Inputs](/build/concepts/inputs), a `testInput` function is exported that is analogous to [`runInput`](/build/apis/run-input).
 It takes in similar arguments:
 
 1. `input` _(required)_: an [Input](/build/concepts/inputs)
@@ -94,7 +94,7 @@ describe("inputNow", () => {
 });
 ```
 
-As with [`produceInput`](/build/apis/produce-input), `testInput` returns the data from the Input.
+As with [`runInput`](/build/apis/run-input), `testInput` returns the data from the Input.
 
 `settings` and all its properties are optional.
 However, some properties will cause `testInput` to throw an error if they're not provided and the Input attempts to use them:
@@ -203,7 +203,7 @@ If the input calls to any property that isn't provided, an error will be thrown.
 
 ### `runner` {#testinput-runner}
 
-A mock function to act as a [`SystemRunner`](/build/packages/bingo-systems#systemrunner).
+A mock function to act as a [`SystemRunner`](/build/packages/bingo-systems#runner).
 
 For example, this test asserts that an `inputGitUserEmail` Input returns the text from running `git config user.email`:
 

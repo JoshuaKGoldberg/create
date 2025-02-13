@@ -1,4 +1,4 @@
-import { ProductionMode, SystemContext } from "bingo";
+import { ProductionMode } from "bingo";
 
 import { mergeBlockCreations } from "../mergers/mergeBlockCreations.js";
 import { Block, BlockWithAddons } from "../types/blocks.js";
@@ -14,12 +14,11 @@ export interface ProduceBlocksSettings<Options extends object> {
 	mode?: ProductionMode;
 	offline?: boolean;
 	options: Options;
-	system: SystemContext;
 }
 
 export function produceBlocks<Options extends object>(
 	blocks: Block<object | undefined, Options>[],
-	{ addons, mode, offline, options, system }: ProduceBlocksSettings<Options>,
+	{ addons, mode, offline, options }: ProduceBlocksSettings<Options>,
 ) {
 	// From Templating Engines > Stratum > Details > Execution:
 	// This engine continuously re-runs Blocks until no new Addons are provided.
@@ -45,7 +44,6 @@ export function produceBlocks<Options extends object>(
 			const blockCreation = produceBlock(
 				currentBlock as BlockWithAddons<object, Options>,
 				{
-					...system,
 					addons: previousAddons,
 					mode,
 					offline,

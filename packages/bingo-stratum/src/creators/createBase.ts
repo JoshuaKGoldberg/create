@@ -1,5 +1,7 @@
 import { AnyOptionalShape, AnyShape, InferredObject } from "bingo";
+import { z } from "zod";
 
+import { produceStratumTemplate } from "../producers/produceStratumTemplate.js";
 import { Base, BaseDefinition } from "../types/bases.js";
 import {
 	BlockContextWithAddons,
@@ -14,12 +16,15 @@ import {
 	StratumTemplateDefinition,
 } from "../types/templates.js";
 import { assertNoDuplicateBlocks } from "./assertNoDuplicateBlocks.js";
+import { assertNoPresetOption } from "./assertNoPresetOption.js";
 import { applyZodDefaults, isDefinitionWithAddons } from "./utils.js";
 
 export function createBase<OptionsShape extends AnyShape>(
 	baseDefinition: BaseDefinition<OptionsShape>,
 ): Base<OptionsShape> {
 	type Options = InferredObject<OptionsShape>;
+
+	assertNoPresetOption(baseDefinition);
 
 	function createBlock<AddonsShape extends AnyOptionalShape>(
 		blockDefinition: BlockDefinitionWithAddons<AddonsShape, Options>,
@@ -73,24 +78,26 @@ export function createBase<OptionsShape extends AnyShape>(
 	function createStratumTemplate(
 		templateDefinition: StratumTemplateDefinition<OptionsShape>,
 	): StratumTemplate<OptionsShape> {
-		return {
+		const template: StratumTemplate<OptionsShape> = {
 			...templateDefinition,
 			base,
-			options: {} as OptionsShape,
-			produce() {
-				// TODO: implement:
-				// - blocks engine in general
-				// - settings.blocks.(add,remove)
-				return {};
+			options: {
+				...base.options,
+				preset: z.string(),
+			},
+			produce(context) {
+				return produceStratumTemplate(template, context);
 			},
 		};
+
+		return template;
 	}
 
-	const base = {
+	const base: Base<OptionsShape> = {
 		...baseDefinition,
 		createBlock,
 		createPreset,
-		createTemplate: createStratumTemplate,
+		createStratumTemplate,
 	};
 
 	return base;

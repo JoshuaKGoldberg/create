@@ -24,7 +24,7 @@ For the API to only create those objects in memory, see [Producers](/engines/str
 
 ## `runBlock`
 
-Given a [Block](/engines/stratum/concepts/blocks), creates a [Creation](/build/concepts/creations) output by running its [`produce()`](/engines/stratum/apis/creators#createblock-produce).
+Given a [Block](/engines/stratum/concepts/blocks), creates a [Creation](/build/concepts/creations) output by running its [`produce()`](/engines/stratum/apis/create-base#createblock-produce).
 
 `runBlock` allows up to two parameters:
 
@@ -54,7 +54,7 @@ runBlock(blockReadme, { options: { title: "My App" } });
 
 ### `addons` {#runblock-addons}
 
-Any number of [Addons](/engines/stratum/apis/creators#createblock-addons) defined by the Block.
+Any number of [Addons](/engines/stratum/apis/create-base#createblock-addons) defined by the Block.
 
 For example, given this Block with a `prefix` Addon and a `name` Option, both can be specified in `runBlock`:
 
@@ -182,7 +182,7 @@ producePreset(preset, {
 
 ### `addons` {#preset-addons}
 
-Any of [Addons](/engines/stratum/apis/creators#createblock-addons) to pass to the Preset's Blocks.
+Any of [Addons](/engines/stratum/apis/create-base#createblock-addons) to pass to the Preset's Blocks.
 
 For example, this production adds a `"generated"` Addon to a Prettier Block:
 
@@ -284,7 +284,7 @@ await runPreset(preset, {
 
 #### Adding Base Options
 
-Although Presets are associated with [Bases](/engines/stratum/concepts/bases), running `producePreset` does not automatically infer default option values.
+Although Presets are associated with [Bases](/engines/stratum/concepts/bases), running `runPreset` does not automatically infer default option values.
 If you want to include the inferred options from a Preset's Base you'll have to call the [`prepareOptions`](/build/apis/prepare-options) API first yourself.
 
 For example, this directly passes produced Options from a Base to a Preset:

@@ -9,7 +9,6 @@ import { Template } from "../types/templates.js";
 
 export interface ProduceTemplateSettings<OptionsShape extends AnyShape>
 	extends Partial<BingoSystem> {
-	directory?: string;
 	mode?: ProductionMode;
 	offline?: boolean;
 	options: InferredObject<OptionsShape>;

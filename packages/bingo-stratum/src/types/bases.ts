@@ -4,7 +4,6 @@ import {
 	InferredObject,
 	LazyOptionalOptions,
 	TakeInput,
-	Template,
 } from "bingo";
 
 import {
@@ -14,12 +13,12 @@ import {
 	BlockWithoutAddons,
 } from "./blocks.js";
 import { Preset, PresetDefinition } from "./presets.js";
-import { StratumTemplateDefinition } from "./templates.js";
+import { StratumTemplate, StratumTemplateDefinition } from "./templates.js";
 
 export interface Base<OptionsShape extends AnyShape = AnyShape> {
 	createBlock: CreateBlock<InferredObject<OptionsShape>>;
 	createPreset: CreatePreset<OptionsShape>;
-	createTemplate: CreateStratumTemplate<OptionsShape>;
+	createStratumTemplate: CreateStratumTemplate<OptionsShape>;
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
 }
@@ -29,7 +28,7 @@ export interface BaseContext<Options> {
 	take: TakeInput;
 }
 
-export interface BaseDefinition<OptionsShape extends AnyShape> {
+export interface BaseDefinition<OptionsShape extends AnyShape = AnyShape> {
 	options: OptionsShape;
 	produce?: BaseProducer<InferredObject<OptionsShape>>;
 }
@@ -60,4 +59,4 @@ export type CreatePreset<OptionsShape extends AnyShape> = (
 
 export type CreateStratumTemplate<OptionsShape extends AnyShape> = (
 	templateDefinition: StratumTemplateDefinition<OptionsShape>,
-) => Template<OptionsShape>;
+) => StratumTemplate<OptionsShape>;

@@ -65,12 +65,12 @@ export default defineConfig({
 										link: "build/apis/prepare-options",
 									},
 									{
-										label: "produceInput",
-										link: "build/apis/produce-input",
-									},
-									{
 										label: "produceTemplate",
 										link: "build/apis/produce-template",
+									},
+									{
+										label: "runInput",
+										link: "build/apis/run-input",
 									},
 									{
 										label: "runTemplate",
@@ -153,8 +153,8 @@ export default defineConfig({
 									{
 										items: [
 											{
-												label: "Creators",
-												link: "engines/stratum/apis/creators",
+												label: "createBase",
+												link: "engines/stratum/apis/create-base",
 											},
 											{
 												label: "Producers",

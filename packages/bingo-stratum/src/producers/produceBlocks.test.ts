@@ -1,26 +1,8 @@
-import { createSystemFetchers } from "bingo-systems";
 import { describe, expect, it, test, vi } from "vitest";
 import { z } from "zod";
 
 import { createBase } from "../creators/createBase.js";
 import { produceBlocks } from "./produceBlocks.js";
-
-const presetContext = {
-	directory: ".",
-	display: {
-		item: vi.fn(),
-		log: vi.fn(),
-	},
-	fetchers: createSystemFetchers({ fetch: vi.fn() }),
-	fs: {
-		readDirectory: vi.fn(),
-		readFile: vi.fn(),
-		writeDirectory: vi.fn(),
-		writeFile: vi.fn(),
-	},
-	runner: vi.fn(),
-	take: vi.fn(),
-};
 
 const base = createBase({
 	options: {
@@ -43,7 +25,6 @@ describe("produceBlocks", () => {
 
 		const result = produceBlocks([block], {
 			options: { value: "Hello, world!" },
-			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -71,7 +52,6 @@ describe("produceBlocks", () => {
 		const result = produceBlocks([block], {
 			addons: [block({ extra: "line" })],
 			options: { value: "Hello, world!" },
-			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -106,7 +86,6 @@ describe("produceBlocks", () => {
 
 		const result = produceBlocks([blockKnown], {
 			options: { value: "Hello, world!" },
-			system: presetContext,
 		});
 
 		expect(result).toEqual({
@@ -144,7 +123,6 @@ describe("produceBlocks", () => {
 		it("does not augment creations with a Block's setup() or transition() when mode is undefined", () => {
 			const result = produceBlocks([block], {
 				options: { value: "Hello, world!" },
-				system: presetContext,
 			});
 
 			expect(result).toEqual({
@@ -158,7 +136,6 @@ describe("produceBlocks", () => {
 			const result = produceBlocks([block], {
 				mode: "setup",
 				options: { value: "Hello, world!" },
-				system: presetContext,
 			});
 
 			expect(result).toEqual({
@@ -173,7 +150,6 @@ describe("produceBlocks", () => {
 			const result = produceBlocks([block], {
 				mode: "transition",
 				options: { value: "Hello, world!" },
-				system: presetContext,
 			});
 
 			expect(result).toEqual({

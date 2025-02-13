@@ -1,9 +1,4 @@
-import {
-	AnyShape,
-	createSystemContext,
-	InferredObject,
-	ProduceTemplateSettings,
-} from "bingo";
+import { AnyShape, InferredObject, ProduceTemplateSettings } from "bingo";
 
 import { BlockCreation, CreatedBlockAddons } from "../types/creations.js";
 import { Preset } from "../types/presets.js";
@@ -24,19 +19,11 @@ export function producePreset<OptionsShape extends AnyShape>(
 	{
 		addons,
 		blocks: blockModifications,
-		directory = ".",
 		mode,
 		offline,
 		options,
-		...providedSystem
 	}: ProducePresetSettings<OptionsShape>,
 ): BlockCreation<InferredObject<OptionsShape>> {
-	const system = createSystemContext({
-		directory,
-		offline,
-		...providedSystem,
-	});
-
 	const blocks = applyBlockModifications(preset.blocks, blockModifications);
 
 	const creation = produceBlocks(blocks, {
@@ -44,7 +31,6 @@ export function producePreset<OptionsShape extends AnyShape>(
 		mode,
 		offline,
 		options,
-		system: { ...system, directory },
 	});
 
 	return {

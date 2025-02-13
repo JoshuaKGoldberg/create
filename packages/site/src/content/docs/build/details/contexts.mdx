@@ -3,16 +3,16 @@ description: "Options and shared helpers made available to inputs and templates.
 title: Contexts
 ---
 
-_Context_ objects are provided to producer methods of [Inputs](/build/concepts/templates) and [Templates](/build/concepts/templates).
+_Context_ objects are provided to methods of [Inputs](/build/concepts/templates) and [Templates](/build/concepts/templates).
 Each contains shared helper functions and information.
 
-- Inputs APIs receive an [Input Context](#input-contexts)
-- Options APIs receive an [Options Context](#options-contexts)
-- Template APIs receive an [Template Context](#template-contexts)
+- Inputs receive an [Input Context](#input-contexts)
+- Options receive an [Options Context](#options-contexts)
+- Template receive an [Template Context](#template-contexts)
 
 ## Input Contexts
 
-This context object is provided to [`produceInput`](/build/apis/produce-input).
+This context object is provided to [`runInput`](/build/apis/run-input).
 
 ### `args` {#input-args}
 
