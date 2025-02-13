@@ -92,6 +92,9 @@ You can force running in transition mode in a non-Git directory with `--mode tra
 	args="typescript-app@beta --mode transition"
 />
 
+Transition mode can be used even if the repository wasn't built with the template being transitioned to.
+Templates can include specific logic to migrate existing repositories onto their tooling.
+
 ## Flags
 
 The first argument passed to Bingo can be a shorthand [`--from`](#--from) for an npm package default-exporting a template.

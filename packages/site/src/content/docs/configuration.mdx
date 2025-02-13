@@ -3,10 +3,16 @@ description: "Configuring Bingo from a config file."
 title: Configuration
 ---
 
-Running the [Transition mode](/cli#transition-mode) in an existing repository will re-run Bingo on that repository.
+Most options for Bingo templates can be specified on the [`bingo` CLI](/cli).
 
-You can store persistent customizations to the repository's template in a configuration file named `bingo.config.js`.
-It should `export default` a call to a `createConfig()` function that takes in a template and which preset to use.
+For describing complex options and/or keeping them persist over time, you may want to create a configuration file named `bingo.config.js`.
+Bingo configuration files are useful if you:
+
+- Have rich customizations to the template that should be applied to the repository
+- Keep your repository updating to the latest template versions using [CLI > Transition Mode](/cli#transition-mode)
+
+Bingo provides a `createConfig()` function that takes in a template and returns a configuration object.
+`bingo.config.js` configuration files should `export default` that object.
 
 For example, this configuration keeps a repository up-to-date with [`create-example`](https://github.com/JoshuaKGoldberg/bingo-example):
 
