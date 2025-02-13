@@ -1,7 +1,7 @@
 {
 	"name": "bingo-fs",
 	"version": "0.2.0",
-	"description": "The file system used by Bingo. 🗄️",
+	"description": "The virtual file system used by Bingo. 🗄️",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/JoshuaKGoldberg/bingo",
