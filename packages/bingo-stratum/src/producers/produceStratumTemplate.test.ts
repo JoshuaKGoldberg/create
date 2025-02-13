@@ -123,7 +123,7 @@ describe("produceStratumTemplate", () => {
 		});
 	});
 
-	it("throws an error when a preset string cannot be matched to its name", async () => {
+	it("throws an error when a preset string cannot be matched to its name", () => {
 		const base = createBase({
 			options: {},
 		});
